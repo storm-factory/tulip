@@ -1,0 +1,3 @@
+var Track = Segment.extend({
+  
+});
