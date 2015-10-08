@@ -17,14 +17,6 @@ var Segment = Class({
 
     this.origin = this.makeOrigin(editOrigin);
 
-    this.midpointOne = this.makeCurveMidPoint(this.line.path[1][1], this.line.path[1][2]);
-    this.midpointOne.name = "midpointOne";
-    canvas.add(this.midpointOne);
-
-    this.midpointTwo = this.makeCurveMidPoint(this.line.path[3][1], this.line.path[3][2])
-    this.midpointTwo.name = "midpointTwo";
-    canvas.add(this.midpointTwo);
-
     this.join = this.makeCurveEndPoint(this.line.path[1][3], this.line.path[1][4]);
     this.join.name = "join";
     canvas.add(this.join);
@@ -32,13 +24,6 @@ var Segment = Class({
     this.end = this.makeCurveEndPoint(this.line.path[3][3], this.line.path[3][4]);
     this.end.name = "end";
     canvas.add(this.end);
-
-    this.midpointOne.opposite = this.midpointTwo;
-    this.midpointTwo.opposite = this.midpointOne;
-    this.end.midpointOne = this.midpointOne;
-    this.end.midpointTwo = this.midpointTwo;
-    this.origin.midpointOne = this.midpointOne;
-    this.origin.midpointTwo = this.midpointTwo;
 
     canvas.on({
         'object:moving': this.pointMoving,
@@ -89,95 +74,89 @@ var Segment = Class({
   pointMoving: function(e){
     var p = e.target;
 
+    function getControlPoints(x0,y0,x1,y1,x2,y2,t){
+        var d01=Math.sqrt(Math.pow(x1-x0,2)+Math.pow(y1-y0,2));
+        var d12=Math.sqrt(Math.pow(x2-x1,2)+Math.pow(y2-y1,2));
+        var fa=t*d01/(d01+d12);   // scaling factor for triangle Ta
+        var fb=t*d12/(d01+d12);   // ditto for Tb, simplifies to fb=t-fa
+        var p1x=x1-fa*(x2-x0);    // x2-x0 is the width of triangle T
+        var p1y=y1-fa*(y2-y0);    // y2-y0 is the height of T
+        var p2x=x1+fb*(x2-x0);
+        var p2y=y1+fb*(y2-y0);
+        return [p1x,p1y,p2x,p2y];
+    }
+
     if (e.target.name == "origin") {
       var deltaX = p.line.path[0][1] - p.left;
-      var deltaY = p.line.path[0][2] - p.top;
+      var deltaY = p.line.path[1][2] - p.top;
       p.line.path[0][1] = p.left;
       p.line.path[0][2] = p.top;
-      //move opposite part midpoint
-      p.line.path[1][1] = p.line.path[1][1] + deltaX;
-      p.line.path[1][2] = p.line.path[1][2] + deltaY;
-      p.midpointOne.setLeft(p.midpointOne.left + deltaX).setCoords();
-      p.midpointOne.setTop(p.midpointOne.top + deltaY).setCoords();
-      //move this part mid point
-      p.line.path[3][1] = p.line.path[3][1] + deltaX;
-      p.line.path[3][2] = p.line.path[3][2] + deltaY;
-      p.midpointTwo.setLeft(p.midpointTwo.left + deltaX).setCoords();
-      p.midpointTwo.setTop(p.midpointTwo.top + deltaY).setCoords();
-      //move segment midpoint
-      p.line.path[1][3] = p.line.path[1][3] + deltaX;
-      p.line.path[1][4] = p.line.path[1][4] + deltaY;
-      p.line.path[2][1] = p.line.path[2][1] + deltaX;
-      p.line.path[2][2] = p.line.path[2][2] + deltaY;
+
+      var controlPoints = getControlPoints(p.line.path[0][1],p.line.path[0][2],p.line.path[1][3],p.line.path[1][4],p.line.path[3][3],p.line.path[1][4],1);
+      console.log(controlPoints);
+
+      p.line.path[1][1] = controlPoints[0];
+      p.line.path[1][2] = controlPoints[1];
+
+      p.line.path[3][1] = controlPoints[2];
+      p.line.path[3][2] = controlPoints[3];
+
+
     }else if(e.target.name == "end"){
       var deltaX = p.line.path[3][3] - p.left;
       var deltaY = p.line.path[3][4] - p.top;
-
       p.line.path[3][3] = p.left;
       p.line.path[3][4] = p.top;
 
-      //move opposite part midpoint
-      p.line.path[1][1] = p.line.path[1][1] + deltaX;
-      p.line.path[1][2] = p.line.path[1][2] + deltaY;
-      p.midpointOne.setLeft(p.midpointOne.left + deltaX).setCoords();
-      p.midpointOne.setTop(p.midpointOne.top + deltaY).setCoords();
-      //move this part mid point
-      p.line.path[3][1] = p.line.path[3][1] + deltaX;
-      p.line.path[3][2] = p.line.path[3][2] + deltaY;
-      p.midpointTwo.setLeft(p.midpointTwo.left + deltaX).setCoords();
-      p.midpointTwo.setTop(p.midpointTwo.top + deltaY).setCoords();
-      //move segment midpoint
-      p.line.path[1][3] = p.line.path[1][3] + deltaX;
-      p.line.path[1][4] = p.line.path[1][4] + deltaY;
-      p.line.path[2][1] = p.line.path[2][1] + deltaX;
-      p.line.path[2][2] = p.line.path[2][2] + deltaY;
+      var controlPoints = getControlPoints(p.line.path[0][1],p.line.path[0][2],p.line.path[1][3],p.line.path[1][4],p.line.path[3][3],p.line.path[1][4],1);
+      console.log(controlPoints);
 
-      deltaX = 0;
-      deltaY = 0;
-    }else if (e.target.name == "midpointTwo") {
-        var deltaX = p.line.path[3][1] - p.left;
-        var deltaY = p.line.path[3][2] - p.top;
-        p.line.path[3][1] = p.left;
-        p.line.path[3][2] = p.top;
-        //Move complimentary midpoint by same X amount in opposite direction
-        p.line.path[1][1] = p.line.path[1][1] + deltaX;
-        p.opposite.setLeft(p.opposite.left + deltaX).setCoords();
-        deltaX = 0;
-        //Move complimentary midpoint by same Y amount in opposite direction
-        p.line.path[1][2] = p.line.path[1][2] + deltaY;
-        p.opposite.setTop(p.opposite.top + deltaY).setCoords();
-        deltaY = 0;
-    } else if(e.target.name == "midpointOne") {
-        var deltaX = p.line.path[1][1] - p.left;
-        var deltaY = p.line.path[1][2] - p.top;
-        p.line.path[1][1] = p.left;
-        p.line.path[1][2] = p.top;
-        //Move complimentary midpoint by same X amount in opposite direction
-        p.line.path[3][1] = p.line.path[3][1] + deltaX;
-        p.opposite.setLeft(p.opposite.left + deltaX).setCoords();
-        deltaX = 0;
-        //Move complimentary midpoint by same Y amount in opposite direction
-        p.line.path[3][2] = p.line.path[3][2] + deltaY;
-        p.opposite.setTop(p.opposite.top + deltaY).setCoords();
-        deltaY = 0;
+      p.line.path[1][1] = controlPoints[0];
+      p.line.path[1][2] = controlPoints[1];
+
+      p.line.path[3][1] = controlPoints[2];
+      p.line.path[3][2] = controlPoints[3];
+
+
     } else if(e.target.name == "join") {
+      //works great if you keep the segment on the same orientation, breaks down if you try to flip the segment 90 degrees
+      //Do something along the lines of ignore the deltas if they approach an endpoint and follow the mid point after that
       var deltaX = p.line.path[1][3] - p.left;
       var deltaY = p.line.path[1][4] - p.top;
-      console.log("X: " + deltaX + " Y: "+deltaY)
+
+      //Move the ends of the paths
       p.line.path[1][3] = p.left;
       p.line.path[1][4] = p.top;
       p.line.path[2][1] = p.left;
       p.line.path[2][2] = p.top;
-      //move opposite part midpoint
-      p.line.path[1][1] = p.line.path[1][1] - deltaX;
-      p.line.path[1][2] = p.line.path[1][2] - deltaY;
-      // p.midpointOne.setLeft(p.midpointOne.left + deltaX).setCoords();
-      // p.midpointOne.setTop(p.midpointOne.top + deltaY).setCoords();
-      //move this part mid point
-      p.line.path[3][1] = p.line.path[3][1] - deltaX;
-      p.line.path[3][2] = p.line.path[3][2] - deltaY;
-      // p.midpointTwo.setLeft(p.midpointTwo.left + deltaX).setCoords();
-      // p.midpointTwo.setTop(p.midpointTwo.top + deltaY).setCoords();
+      //move first control point, but if it approaches the end point smooth the control point
+      // p.line.path[1][1] = p.line.path[1][1] - deltaX;
+      // p.line.path[1][2] = p.line.path[1][2] - deltaY;
+
+      //move second control point, but if it approaches the end point smooth the control point
+      // p.line.path[3][1] = p.line.path[3][1] - deltaX;
+      // p.line.path[3][2] = p.line.path[3][2] - deltaY;
+
+      var controlPoints = getControlPoints(p.line.path[0][1],p.line.path[0][2],p.line.path[1][3],p.line.path[1][4],p.line.path[3][3],p.line.path[1][4],1);
+      console.log(controlPoints);
+
+      p.line.path[1][1] = controlPoints[0];
+      p.line.path[1][2] = controlPoints[1];
+
+      p.line.path[3][1] = controlPoints[2];
+      p.line.path[3][2] = controlPoints[3];
     }
   },
+
+  getControlPoints: function(x0,y0,x1,y1,x2,y2,t){
+      var d01=Math.sqrt(Math.pow(x1-x0,2)+Math.pow(y1-y0,2));
+      var d12=Math.sqrt(Math.pow(x2-x1,2)+Math.pow(y2-y1,2));
+      var fa=t*d01/(d01+d12);   // scaling factor for triangle Ta
+      var fb=t*d12/(d01+d12);   // ditto for Tb, simplifies to fb=t-fa
+      var p1x=x1-fa*(x2-x0);    // x2-x0 is the width of triangle T
+      var p1y=y1-fa*(y2-y0);    // y2-y0 is the height of T
+      var p2x=x1+fb*(x2-x0);
+      var p2y=y1+fb*(y2-y0);
+      return [p1x,p1y,p2x,p2y];
+  }
 });
