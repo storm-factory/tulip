@@ -77,23 +77,21 @@ var Segment = Class({
     function getControlPoints(x0,y0,x1,y1,x2,y2,t){
         var d01=Math.sqrt(Math.pow(x1-x0,2)+Math.pow(y1-y0,2));
         var d12=Math.sqrt(Math.pow(x2-x1,2)+Math.pow(y2-y1,2));
-        var fa=t*d01/(d01+d12);   // scaling factor for triangle Ta
-        var fb=t*d12/(d01+d12);   // ditto for Tb, simplifies to fb=t-fa
+        var fa=(t)*d01/(d01+d12);   // scaling factor for triangle Ta
+        var fb=(t)*d12/(d01+d12);   // ditto for Tb, simplifies to fb=t-fa
         var p1x=x1-fa*(x2-x0);    // x2-x0 is the width of triangle T
         var p1y=y1-fa*(y2-y0);    // y2-y0 is the height of T
         var p2x=x1+fb*(x2-x0);
         var p2y=y1+fb*(y2-y0);
+
         return [p1x,p1y,p2x,p2y];
     }
 
-    if (e.target.name == "origin") {
-      var deltaX = p.line.path[0][1] - p.left;
-      var deltaY = p.line.path[1][2] - p.top;
+    if (p.name == "origin") {
       p.line.path[0][1] = p.left;
       p.line.path[0][2] = p.top;
 
-      var controlPoints = getControlPoints(p.line.path[0][1],p.line.path[0][2],p.line.path[1][3],p.line.path[1][4],p.line.path[3][3],p.line.path[1][4],1);
-      console.log(controlPoints);
+      var controlPoints = getControlPoints(p.line.path[0][1],p.line.path[0][2],p.line.path[1][3],p.line.path[1][4],p.line.path[3][3],p.line.path[3][4],.7);
 
       p.line.path[1][1] = controlPoints[0];
       p.line.path[1][2] = controlPoints[1];
@@ -102,14 +100,11 @@ var Segment = Class({
       p.line.path[3][2] = controlPoints[3];
 
 
-    }else if(e.target.name == "end"){
-      var deltaX = p.line.path[3][3] - p.left;
-      var deltaY = p.line.path[3][4] - p.top;
+    }else if(p.name == "end"){
       p.line.path[3][3] = p.left;
       p.line.path[3][4] = p.top;
 
-      var controlPoints = getControlPoints(p.line.path[0][1],p.line.path[0][2],p.line.path[1][3],p.line.path[1][4],p.line.path[3][3],p.line.path[1][4],1);
-      console.log(controlPoints);
+      var controlPoints = getControlPoints(p.line.path[0][1],p.line.path[0][2],p.line.path[1][3],p.line.path[1][4],p.line.path[3][3],p.line.path[3][4],.7);
 
       p.line.path[1][1] = controlPoints[0];
       p.line.path[1][2] = controlPoints[1];
@@ -118,27 +113,15 @@ var Segment = Class({
       p.line.path[3][2] = controlPoints[3];
 
 
-    } else if(e.target.name == "join") {
-      //works great if you keep the segment on the same orientation, breaks down if you try to flip the segment 90 degrees
-      //Do something along the lines of ignore the deltas if they approach an endpoint and follow the mid point after that
-      var deltaX = p.line.path[1][3] - p.left;
-      var deltaY = p.line.path[1][4] - p.top;
+    } else if(p.name == "join") {
 
       //Move the ends of the paths
       p.line.path[1][3] = p.left;
       p.line.path[1][4] = p.top;
       p.line.path[2][1] = p.left;
       p.line.path[2][2] = p.top;
-      //move first control point, but if it approaches the end point smooth the control point
-      // p.line.path[1][1] = p.line.path[1][1] - deltaX;
-      // p.line.path[1][2] = p.line.path[1][2] - deltaY;
 
-      //move second control point, but if it approaches the end point smooth the control point
-      // p.line.path[3][1] = p.line.path[3][1] - deltaX;
-      // p.line.path[3][2] = p.line.path[3][2] - deltaY;
-
-      var controlPoints = getControlPoints(p.line.path[0][1],p.line.path[0][2],p.line.path[1][3],p.line.path[1][4],p.line.path[3][3],p.line.path[1][4],1);
-      console.log(controlPoints);
+      var controlPoints = getControlPoints(p.line.path[0][1],p.line.path[0][2],p.line.path[1][3],p.line.path[1][4],p.line.path[3][3],p.line.path[3][4],.7);
 
       p.line.path[1][1] = controlPoints[0];
       p.line.path[1][2] = controlPoints[1];
@@ -147,16 +130,4 @@ var Segment = Class({
       p.line.path[3][2] = controlPoints[3];
     }
   },
-
-  getControlPoints: function(x0,y0,x1,y1,x2,y2,t){
-      var d01=Math.sqrt(Math.pow(x1-x0,2)+Math.pow(y1-y0,2));
-      var d12=Math.sqrt(Math.pow(x2-x1,2)+Math.pow(y2-y1,2));
-      var fa=t*d01/(d01+d12);   // scaling factor for triangle Ta
-      var fb=t*d12/(d01+d12);   // ditto for Tb, simplifies to fb=t-fa
-      var p1x=x1-fa*(x2-x0);    // x2-x0 is the width of triangle T
-      var p1y=y1-fa*(y2-y0);    // y2-y0 is the height of T
-      var p2x=x1+fb*(x2-x0);
-      var p2y=y1+fb*(y2-y0);
-      return [p1x,p1y,p2x,p2y];
-  }
 });
