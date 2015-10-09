@@ -80,20 +80,13 @@ var Segment = Class({
         return [p1x,p1y,p2x,p2y];
     }
 
-    if (p.name == "origin") {
-      p.line.path[0][1] = p.left;
-      p.line.path[0][2] = p.top;
-
+    function interpolatePath(){
       var controlPoints = getControlPoints(p.line.path[0][1],p.line.path[0][2],p.line.path[0][1],p.line.path[0][2],p.line.path[1][3],p.line.path[1][4],.4);
       //
       p.line.path[1][1] = controlPoints[0];
       p.line.path[1][2] = controlPoints[1];
 
-    }else if(p.name == "end"){
-      p.line.path[3][5] = p.left;
-      p.line.path[3][6] = p.top;
-
-      var controlPoints = getControlPoints(p.line.path[1][5],p.line.path[1][6],p.line.path[3][5],p.line.path[3][6],p.line.path[3][5],p.line.path[3][6],.4);
+      controlPoints = getControlPoints(p.line.path[1][5],p.line.path[1][6],p.line.path[3][5],p.line.path[3][6],p.line.path[3][5],p.line.path[3][6],.4);
 
       p.line.path[3][1] = controlPoints[0];
       p.line.path[3][2] = controlPoints[1];
@@ -109,13 +102,7 @@ var Segment = Class({
       p.line.path[3][1] = controlPoints[2];
       p.line.path[3][2] = controlPoints[3];
 
-
-    } else if(p.name == "joinOne") {
-      //Move the ends of the paths
-      p.line.path[1][5] = p.left;
-      p.line.path[1][6] = p.top;
-
-      var controlPoints = getControlPoints(p.line.path[0][1],p.line.path[0][2],p.line.path[1][5],p.line.path[1][6],p.line.path[2][5],p.line.path[2][6],.4);
+      controlPoints = getControlPoints(p.line.path[0][1],p.line.path[0][2],p.line.path[1][5],p.line.path[1][6],p.line.path[2][5],p.line.path[2][6],.4);
 
       p.line.path[1][1] = controlPoints[0];
       p.line.path[1][2] = controlPoints[1];
@@ -133,13 +120,8 @@ var Segment = Class({
 
       p.line.path[3][1] = controlPoints[2];
       p.line.path[3][2] = controlPoints[3];
-    } else if(p.name == "joinTwo") {
 
-      //Move the ends of the paths
-      p.line.path[2][5] = p.left;
-      p.line.path[2][6] = p.top;
-
-      var controlPoints = getControlPoints(p.line.path[1][5],p.line.path[1][6],p.line.path[2][5],p.line.path[2][6],p.line.path[3][5],p.line.path[3][6],.4);
+      controlPoints = getControlPoints(p.line.path[1][5],p.line.path[1][6],p.line.path[2][5],p.line.path[2][6],p.line.path[3][5],p.line.path[3][6],.4);
       // console.log(controlPoints);
       p.line.path[2][3] = controlPoints[0];
       p.line.path[2][4] = controlPoints[1];
@@ -158,6 +140,32 @@ var Segment = Class({
 
       p.line.path[2][1] = controlPoints[2];
       p.line.path[2][2] = controlPoints[3];
+    }
+
+    if (p.name == "origin") {
+      //Move this point on the path 
+      p.line.path[0][1] = p.left;
+      p.line.path[0][2] = p.top;
+      interpolatePath();
+
+    }else if(p.name == "end"){
+      //Move this point on the path
+      p.line.path[3][5] = p.left;
+      p.line.path[3][6] = p.top;
+      interpolatePath();
+
+    } else if(p.name == "joinOne") {
+      //Move this point on the path
+      p.line.path[1][5] = p.left;
+      p.line.path[1][6] = p.top;
+      interpolatePath();
+
+    } else if(p.name == "joinTwo") {
+      //Move this point on the path
+      p.line.path[2][5] = p.left;
+      p.line.path[2][6] = p.top;
+      interpolatePath();
+
     }
   },
 });
