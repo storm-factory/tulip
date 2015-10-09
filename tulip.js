@@ -1,4 +1,5 @@
 var canvas = new fabric.Canvas('main');
+canvas.selection = false;
 //
 var originX = 150;
 var originY = 300;
