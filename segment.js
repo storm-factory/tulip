@@ -182,8 +182,6 @@ var Segment = Class({
 
       /*
         figure out the angle of the end cap USING VECTORS AND TRIG!
-
-        works if we stay in the same quadrant we need to see if adj is positive do one thing, if it's negative do another
       */
       var x1 = p.line.path[3][5];
       var y1 = p.line.path[3][6];
@@ -193,8 +191,11 @@ var Segment = Class({
       var opp = x1 - x2;
       var adj = y1 - y2;
       var hyp = Math.sqrt(Math.pow(opp,2)+Math.pow(adj,2));
-      theta = Math.asin(opp/hyp);
-      p.line.end.angle = theta * (180/3.14);
+      theta = Math.asin(opp/hyp) * (180/3.14);
+      if(adj > 0) {
+        theta = 180 - theta
+      }
+      p.line.end.angle = theta;
     }
 
     if (p.name == "origin") {
