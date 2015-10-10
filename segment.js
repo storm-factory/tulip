@@ -4,7 +4,7 @@
   DONE: change quadradic curve to bezier curve
   DONE: Re add listeners
   DONE: interpolate curves on path
-  TODO: simplify interpolation
+  DONE: simplify interpolation
 
   Phase2
   DONE: make the start point optional
@@ -34,12 +34,15 @@ var Segment = Class({
     //
     this.end = this.makeEnd(this.line.path[3][5], this.line.path[3][6]);
     this.end.name = "end";
+    // this.end.centeredRotation = true;
     canvas.add(this.end);
 
     canvas.on({
         'object:moving': this.pointMoving,
     });
     console.log(this.line);
+    this.line.end = this.end
+    this.line.origin = this.origin
   },
 
   makeOrigin: function(editOrigin){
@@ -114,12 +117,12 @@ var Segment = Class({
     function interpolatePath(){
 
       var tension = .3;
-
+      var controlPoints;
       /*
         ### Origin Point ###
         the origin point is relatively easy in that it is only a knot for one control point, it is just an asymetrical relationship
       */
-      var controlPoints = getControlPoints(p.line.path[0][1],p.line.path[0][2],p.line.path[0][1],p.line.path[0][2],p.line.path[1][3],p.line.path[1][4],tension);
+      controlPoints = getControlPoints(p.line.path[0][1],p.line.path[0][2],p.line.path[0][1],p.line.path[0][2],p.line.path[1][5],p.line.path[1][6],tension);
 
       p.line.path[1][1] = controlPoints[0];
       p.line.path[1][2] = controlPoints[1];
@@ -131,7 +134,7 @@ var Segment = Class({
         ### End Point ###
         the end point is relatively easy in that it is only a knot for one control point, it is just an asymetrical relationship
       */
-      controlPoints = getControlPoints(p.line.path[1][5],p.line.path[1][6],p.line.path[3][5],p.line.path[3][6],p.line.path[3][5],p.line.path[3][6],tension);
+      controlPoints = getControlPoints(p.line.path[2][5],p.line.path[2][6],p.line.path[3][5],p.line.path[3][6],p.line.path[3][5],p.line.path[3][6],tension);
 
       p.line.path[3][1] = controlPoints[0];
       p.line.path[3][2] = controlPoints[1];
@@ -175,6 +178,23 @@ var Segment = Class({
 
       p.line.path[2][1] = controlPoints[2];
       p.line.path[2][2] = controlPoints[3];
+
+
+      /*
+        figure out the angle of the end cap USING VECTORS AND TRIG!
+
+        works if we stay in the same quadrant we need to see if adj is positive do one thing, if it's negative do another
+      */
+      var x1 = p.line.path[3][5];
+      var y1 = p.line.path[3][6];
+      var x2 = p.line.path[3][1];
+      var y2 = p.line.path[3][2];
+
+      var opp = x1 - x2;
+      var adj = y1 - y2;
+      var hyp = Math.sqrt(Math.pow(opp,2)+Math.pow(adj,2));
+      theta = Math.asin(opp/hyp);
+      p.line.end.angle = theta * (180/3.14);
     }
 
     if (p.name == "origin") {
