@@ -21,14 +21,14 @@ var entryTrackOrigin = new fabric.Circle({
 
 var entryTrack = new fabric.Group([ entryTrackPath, entryTrackOrigin ], {
   hasControls: false,
-  lockMovementX: true,
+
   lockMovementY: true,
   hasBorders: false
 });
 entryTrack.type = 'track';
 canvas.add(entryTrack);
 
-
+var exitTrackpath;
 var exitTrackEnd;
 var exitTrack;
 
@@ -38,6 +38,8 @@ canvas.on('object:selected', function(e){
   console.log(e.target.type);
   //if the object is a track let it be edited
   if (e.target.type == 'track' && !(e.target == currentSelectedObject)) {
+    //also need to redraw edit points if track is moved
+
     currentSelectedObject = new TrackEditor(e.target._objects[0],false)
   }
 

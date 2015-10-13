@@ -1,17 +1,10 @@
 /*
+  This class handles all the drag and drop editing of tracks on the canvas
+  I've attempted to make it as simple as possible using what I could learn about bezier curve interpolation
+  and also some basic linear algebra I picked up along the way.
 
-  Phase1
-  DONE: change quadradic curve to bezier curve
-  DONE: Re add listeners
-  DONE: interpolate curves on path
-  DONE: simplify interpolation
-
-  Phase2
-  DONE: make the start point optional
-  TODO: reintegrate parameterized size
-  DONE: add arrow on end
-  TODO show or hide points if this segment is clicked on
-  TODO extend segment for off-piste, track, road, dual-carrage-way part types. Change number of parts and link points to move parts in parallel.
+  Much thanks to Rob Spencer and his post about spline interpolation, it was the perfect amount of detail meets simplicity:
+  http://scaledinnovation.com/analytics/splines/aboutSplines.html
 
 */
 
@@ -112,18 +105,18 @@ var TrackEditor = Class({
   pointMoving: function(e){
     var p = e.target;
 
-    function getControlPoints(x0,y0,x1,y1,x2,y2,t){
-        //needs attribution and deplagariztion
-        var d01=Math.sqrt(Math.pow(x1-x0,2)+Math.pow(y1-y0,2));
-        var d12=Math.sqrt(Math.pow(x2-x1,2)+Math.pow(y2-y1,2));
-        var fa=(t)*d01/(d01+d12);   // scaling factor for triangle Ta
-        var fb=(t)*d12/(d01+d12);   // ditto for Tb, simplifies to fb=t-fa
-        var p1x=x1-fa*(x2-x0);    // x2-x0 is the width of triangle T
-        var p1y=y1-fa*(y2-y0);    // y2-y0 is the height of T
-        var p2x=x1+fb*(x2-x0);
-        var p2y=y1+fb*(y2-y0);
+    function getControlPoints(x1,y1,x2,y2,x3,y3,t){
+        //Thanks Rob
+        var delta1=Math.sqrt(Math.pow(x2-x1,2)+Math.pow(y2-y1,2));
+        var delta2=Math.sqrt(Math.pow(x3-x2,2)+Math.pow(y3-y2,2));
+        var scale1=(t)*delta1/(delta1+delta2);
+        var scale2=(t)*delta2/(delta1+delta2);
+        var controlPoint1x=x2-scale1*(x3-x1);
+        var controlPoint1y=y2-scale1*(y3-y1);
+        var controlPoint2x=x2+scale2*(x3-x1);
+        var controlPoint2y=y2+scale2*(y3-y1);
 
-        return [p1x,p1y,p2x,p2y];
+        return [controlPoint1x,controlPoint1y,controlPoint2x,controlPoint2y];
     }
 
     function interpolatePath(){
