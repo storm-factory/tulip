@@ -9,3 +9,31 @@ canvas {
 {
   padding: 0 !important;
 }
+#roadbook {
+  padding-top: 1.2rem;
+  padding-bottom: 1.2rem;
+}
+.waypoint {
+  width:90rem;
+  border: 2px solid #000;
+  height:180px;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  margin-top: 10px !important;
+}
+.waypoint-tulip {
+  border-left: 1px solid #000;
+  border-right: 1px solid #000;
+}
+.waypoint-distance,
+.waypoint-notes,
+.waypoint-tulip {
+  height: 178px;
+}
+.total-distance {
+  height: 150px;
+  border-bottom: 1px solid #000;
+}
+.relative-distance {
+  height: 28px;
+}

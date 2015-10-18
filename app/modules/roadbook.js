@@ -17,6 +17,6 @@ var RoadbookView = Backbone.View.extend({
   // $el - it's a cached jQuery object (el), in which you can use jQuery functions
   //       to push content. Like the Hello World in this case.
   render: function(){
-    this.$el.html("Hello World this is the roadbook");
+    this.$el.html("this is the roadbook");
   }
 });

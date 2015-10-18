@@ -8,14 +8,37 @@
   <body>
     <div id="content">
       <div class="row">
-        <div class='map-container large-8 columns'>
+        <div class='map-container large-8 column'>
           <div id="map">
           </div>
         </div>
 
-        <div class='roadbook-container large-4 columns'>
+        <div class='roadbook-container large-4 column'>
           <div id='roadbook'>
           </div>
+          <!--
+            Waypoint Template
+          -->
+          <script type="text/template" id="waypoint-template">
+            <div class='waypoint row'>
+              <div class='waypoint-distance large-3 column'>
+                <div class='row total-distance'>
+                  <div class="large-12 column">
+                    <%= totalDistance %>
+                  </div>
+                </div>
+                <div class='row relative-distance'>
+                  <div class="large-12 column">
+                    <%= relativeDistance %>
+                  </div>
+                </div>
+              </div>
+              <div class='waypoint-tulip large-5 column'>
+              </div>
+              <div class='waypoint-notes large-4 column'>
+              </div>
+            </div>
+          </script>
         <!-- <div class='tulip-container large-4 columns'>
           <canvas id="main" width="300" height="300">
           </canvas>
@@ -41,6 +64,7 @@
   <script src='src/modules/track-editor.js'></script>
   <script src='src/modules/tulip.js'></script>
   <script src='src/modules/roadbook.js'></script>
+  <script src='src/modules/waypoint.js'></script>
   <!--
     Load the application
   -->
