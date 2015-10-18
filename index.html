@@ -1,23 +1,48 @@
-<head>
-  <link rel="stylesheet" type="text/css" href="app/tulip.css">
-  <link rel="stylesheet" href="app/libs/ol/ol.css" />
-  <link rel="stylesheet" href="app/libs/foundation-5.5.3/css/foundation.css" />
-</head>
-<body>
-  <div class="row">
-    <div class='map-container large-8 columns'>
-      <div id="map">
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="assets/css/tulip.css">
+    <link rel="stylesheet" href="assets/libs/ol/ol.css" />
+    <link rel="stylesheet" href="assets/libs/foundation-5.5.3/css/foundation.css" />
+    <title>tulip</title>
+  </head>
+  <body>
+    <div id="content">
+      <div class="row">
+        <div class='map-container large-8 columns'>
+          <div id="map">
+          </div>
+        </div>
+
+        <div class='roadbook-container large-4 columns'>
+          <div id='roadbook'>
+          </div>
+        <!-- <div class='tulip-container large-4 columns'>
+          <canvas id="main" width="300" height="300">
+          </canvas>
+        </div> -->
       </div>
     </div>
-    <div class='tulip-container large-4 columns'>
-      <canvas id="main" width="300" height="300">
-      </canvas>
-    </div>
-  </div>
-</body>
- <script src="app/libs/ol/ol.js"></script>
-<script src="app/libs/jsclass/dist/browser/js.class.min.js"></script>
-<script src='app/libs/fabric.min.js'></script>
-<script src='app/track-editor.js'></script>
-<script src='app/tulip.js'></script>
-<script src='app/mapping.js'></script>
+  </body>
+  <script>
+    //Jquery sees is is running in CommonJS env, and wants to be used as such.
+    window.$ = window.jQuery = require('./assets/libs/jquery-2.1.4.min.js');
+  </script>
+  <!--
+    Load the rest of out libraries
+  -->
+  <script src="assets/libs/underscore-min.js"></script>
+  <script src="assets/libs/backbone-min.js"></script>
+  <script src="assets/libs/ol/ol.js"></script>
+  <script src='assets/libs/fabric.min.js'></script>
+  <!--
+    Load modules
+  -->
+  <script src='src/modules/mapping.js'></script>
+  <script src='src/modules/track-editor.js'></script>
+  <script src='src/modules/tulip.js'></script>
+  <script src='src/modules/roadbook.js'></script>
+  <!--
+    Load the application
+  -->
+  <script src='src/application.js'></script>
+</html>

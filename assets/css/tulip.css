@@ -5,3 +5,7 @@ canvas {
   height: 100%;
   width: 100%;
 }
+.map-container
+{
+  padding: 0 !important;
+}

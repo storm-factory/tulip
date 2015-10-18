@@ -1,5 +1,5 @@
 /*
-  This class handles all the drag and drop editing of tracks on the canvas
+  This object handles all the drag and drop editing of tracks on the canvas
   I've attempted to make it as simple as possible using what I could learn about bezier curve interpolation
   and also some basic linear algebra I picked up along the way.
 
@@ -8,7 +8,7 @@
 
 */
 
-var TrackEditor = Class({
+var TrackEditor = {
 
   create: function(track, entryTrack, editOrigin) {
     fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
@@ -231,4 +231,4 @@ var TrackEditor = Class({
 
     }
   },
-});
+};
