@@ -1,7 +1,9 @@
-// var roadbookView = new RoadbookView();
+/*
+  Define the application namespace
+*/
+var app = {};
 
-var wpt1 = new WaypointModel({totalDistance: 11, relativeDistance:3});
-var wpt1V = new WaypointView({model: wpt1});
-
-var wpt2 = new WaypointModel({totalDistance: 12, relativeDistance:1});
-var wpt2V = new WaypointView({model: wpt2});
+$(document).ready(function(){
+  var wpt = new Waypoint({totalDistance: 10, relativeDistance: 3, notes: 'here is some stuff'});
+  riot.mount('waypoint',wpt);
+});

@@ -8,7 +8,7 @@
 
 */
 
-var TrackEditor = {
+var TrackEditor = Class({
 
   create: function(track, entryTrack, editOrigin) {
     fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
@@ -231,4 +231,4 @@ var TrackEditor = {
 
     }
   },
-};
+});
