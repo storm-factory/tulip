@@ -1,14 +1,15 @@
 <waypoint>
+<div each={ opts.waypoints }>
   <div class='waypoint row'>
     <div class='waypoint-distance large-3 column'>
       <div class='row total-distance'>
         <div class="large-12 column">
-          {opts.totalDistance}
+          {this.totalDistance}
         </div>
       </div>
       <div class='row relative-distance'>
         <div class="large-12 column">
-          {opts.relativeDistance}
+          {this.relativeDistance}
         </div>
       </div>
     </div>
@@ -16,7 +17,8 @@
       Tulip
     </div>
     <div class='waypoint-notes large-4 column'>
-      {opts.notes}
+      {this.notes}
     </div>
   </div>
+</div>
 </waypoint>
