@@ -8,6 +8,10 @@ canvas {
 .map-container
 {
   padding: 0 !important;
+  height: 100%;
+}
+#content,#content .content-container {
+  height: 100%;
 }
 #roadbook {
   padding-top: 1.2rem;
