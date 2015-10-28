@@ -7,7 +7,7 @@ var MapEditor = Class({
     _this = this;
     this.initializeMap();
     this.initializeListeners();
-    this.routePath = poly.getPath();
+    this.routePathPoints = this.routePath.getPath();
   },
 
   initializeMap: function(){
@@ -20,17 +20,33 @@ var MapEditor = Class({
 
     this.attemptGeolocation();
 
-    poly = new google.maps.Polyline({
+    this.routePath = new google.maps.Polyline({
       strokeColor: 'yellow',
       strokeOpacity: 1.0,
-      strokeWeight: 3
+      strokeWeight: 3,
+      editable: true,
+      map: this.map,
+      suppressUndo: true
     });
-    poly.setMap(this.map);
   },
 
   initializeListeners: function() {
     // Add a listener for the click event
     this.map.addListener('click', this.addRoutePoint);
+
+    google.maps.event.addListener(this.routePath, 'rightclick', function(evt) {
+      // Check if click was on a vertex control point
+      if (evt.vertex != undefined) {
+        _this.routePathPoints.removeAt(evt.vertex);
+      }
+    });
+
+    google.maps.event.addListener(this.routePath, 'dblclick', function(evt) {
+      // Check if click was on a vertex control point
+      if (evt.vertex != undefined) {
+        console.log('turn this into a waypoint! (unless it is one...)');
+      }
+    });
   },
 
   attemptGeolocation: function(){
@@ -45,6 +61,6 @@ var MapEditor = Class({
   },
 
   addRoutePoint: function(evt){
-    _this.routePath.push(evt.latLng);
+    _this.routePathPoints.push(evt.latLng);
   },
 });

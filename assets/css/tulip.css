@@ -1,21 +1,28 @@
-canvas {
-  border: 1px solid #000;
-}
 #map {
-  height: 100%;
-  width: 100%;
+  height: 151%;
+  width: 151%;
+  position: absolute;
+  left: -25.5%;
+  top: -25.5%;
 }
 .map-container
 {
   padding: 0 !important;
   height: 100%;
+  overflow: hidden;
 }
-#content,#content .content-container {
+#content,
+#content .content-container {
   height: 100%;
 }
 #roadbook {
   padding-top: 1.2rem;
   padding-bottom: 1.2rem;
+}
+
+#zout:focus,
+#zin:focus {
+  background-color: #008CBA;
 }
 .waypoint {
   width:90rem;

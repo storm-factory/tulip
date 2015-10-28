@@ -2,24 +2,41 @@
 <html>
   <head>
     <link rel="stylesheet" type="text/css" href="assets/css/tulip.css">
-    <link rel="stylesheet" href="assets/libs/ol/ol.css" />
     <link rel="stylesheet" href="assets/libs/foundation-5.5.3/css/foundation.css" />
+    <link rel="stylesheet" href="assets/css/foundation-icons/foundation-icons.css" />
     <title>tulip</title>
   </head>
   <body>
     <div id="content">
+      <!-- top navigation tools -->
+      <nav class="top-bar" data-topbar role="navigation">
+        <!-- map Section -->
+        <ul class="left">
+          <li>
+            <a href="#" class="button tiny radius secondary" id="zin"><i class="fi-plus"></i></a>
+            <a href="#" class="button tiny radius secondary" id="zout"><i class="fi-minus"></i></a>
+          </li>
+        </ul>
+        <!-- <ul class="left">
+          <li>
+            <a href="#" class="button tiny radius secondary" id="anti-clockwise"><i class="fi-arrow-left"></i></a>
+            <a href="#" class="button tiny radius secondary" id="reorient"><i class="fi-compass"></i></a>
+            <a href="#" class="button tiny radius secondary" id="clockwise"><i class="fi-arrow-right"></i></a>
+          </li>
+        </ul> -->
+      </nav>
       <div class="row content-container">
         <div class='map-container large-8 column'>
           <div id="map">
           </div>
         </div>
-
         <div class='roadbook-container large-4 column'>
           <div id='roadbook'>
             <!-- render waypoint templates here -->
             <waypoint></waypoint>
           </div>
       </div>
+
     </div>
   </body>
   <script>
@@ -31,7 +48,6 @@
   -->
   <script src="assets/libs/jsclass/dist/browser/js.class.min.js"></script>
   <script src="assets/libs/riot+compiler.js"></script>
-
   <script src='assets/libs/fabric.min.js'></script>
   <!--
     Load the application

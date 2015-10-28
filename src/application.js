@@ -14,4 +14,61 @@ $(document).ready(function(){
   wpt1 = new Waypoint({totalDistance: 11, relativeDistance: 1, notes: 'here is some more stuff'});
   roadbook.addWaypoint(wpt);
   roadbook.addWaypoint(wpt1);
+  app.listeners = {
+    bind: function(){
+      $('#zin').click(function(){
+        // var map = app.mapEditor.map;
+        // map.setZoom(map.getZoom() + 1);
+        app.mapControls.zin();
+        $(this).blur();
+      });
+
+      $('#zout').click(function(){
+        // var map = app.mapEditor.map;
+        // map.setZoom(map.getZoom() - 1);
+        app.mapControls.zout();
+        $(this).blur();
+      });
+
+      $('#clockwise').click(function(){
+        app.mapControls.rotate(1);
+      });
+
+      $('#reorient').click(function(){
+        app.mapControls.reorient();
+      });
+
+      $('#anti-clockwise').click(function(){
+        app.mapControls.rotate(-1);
+      });
+
+
+    },
+  };
+  var rotation = 0;
+  app.mapControls = {
+    map: function(){
+      return app.mapEditor.map;
+    },
+
+    zin: function(){
+      var map = this.map();
+      map.setZoom(map.getZoom() + 1);
+    },
+
+    zout: function(){
+      var map = this.map();
+      map.setZoom(map.getZoom() - 1);
+    },
+
+    rotate: function(directionModifier){
+      rotation += 5*directionModifier;
+      $('#map').css({'-webkit-transform' : 'rotate('+ rotation +'deg)'});
+    },
+
+    reorient: function(){
+      $('#map').css({'-webkit-transform' : 'rotate(0deg)'});
+    },
+  }
+  app.listeners.bind();
 });
