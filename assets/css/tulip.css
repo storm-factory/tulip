@@ -1,9 +1,12 @@
 #map {
+  /*
   height: 151%;
   width: 151%;
   position: absolute;
   left: -25.5%;
-  top: -25.5%;
+  top: -25.5%;*/
+  height: 100%;
+  width: 100%;
 }
 .map-container
 {
@@ -11,7 +14,9 @@
   height: 100%;
   overflow: hidden;
 }
-#content,
+#content {
+  height: 95%;
+}
 #content .content-container {
   height: 100%;
 }
