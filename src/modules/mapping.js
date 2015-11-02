@@ -66,7 +66,7 @@ var MapEditor = Class({
   initializeListeners: function() {
     // Add a listener for the click event
     this.map.addListener('click', this.addRoutePoint);
-    
+
     /*
       hovering over the route between verticies will display a potential point, which if clicked on will add a point to the route
     */
@@ -104,7 +104,8 @@ var MapEditor = Class({
   */
   pointIcon: function(){
     return {
-              path: google.maps.SymbolPath.CIRCLE,
+              path: 'M -1,-1 1,-1 0,1z',
+              // path: google.maps.SymbolPath.CIRCLE,
               scale: 7,
               strokeWeight: 2,
               strokeColor: '#ffba29',
@@ -118,7 +119,8 @@ var MapEditor = Class({
   */
   waypointIcon: function(){
     return {
-              path: google.maps.SymbolPath.CIRCLE,
+              path: 'M-1.25,-1.25 1.25,-1.25 0,1.25z',
+              // path: google.maps.SymbolPath.CIRCLE,
               scale: 7,
               strokeWeight: 2,
               strokeColor: '#ff9000',
@@ -231,19 +233,33 @@ var MapEditor = Class({
     return an array of these measurements in both impertial and metric
   */
   computeDistances: function(waypointIndex){
+    var waypointIndex = waypointIndex || this.routePathPoints.length;
+    var routePathPoints = this.routePathPoints.getArray();
 
-    var waypointIndex = waypointIndex || this.waypointIndex.length;
-    var pointsArray = this.routePathPoints.getArray();
-    //get the meters then convert so we are only making a single call to the Google API per measurement needed
-    var metersFromStart = google.maps.geometry.spherical.computeLength(pointsArray.slice(0, waypointIndex));
-    var metersFromLastWaypoint = google.maps.geometry.spherical.computeLength(pointsArray.slice(waypointIndex - 1, waypointIndex));
-    console.log(metersFromStart);
-    console.log(metersFromLastWaypoint);
+    var points;
+    switch(waypointIndex) {
+      case 0:
+        // the first point in the route has a distance of 0
+        return {startMI: 0,startKM: 0, lastWaypointMI: 0, lastWaypointKM: 0};;
+        break;
+      case 1:
+        // slicing an array with length 2 causes problems
+        points = routePathPoints;
+        break;
+      default:
+        // slice and dice
+        points = routePathPoints.slice(0, waypointIndex)
+    }
+    var metersFromStart = google.maps.geometry.spherical.computeLength(points);
+    //TODO waypoints need to be fully implimented
+    // var metersFromLastWaypoint = google.maps.geometry.spherical.computeLength(pointsArray.slice(waypointIndex - 1, waypointIndex));
 
     //do some conversions
-    // var milesFromStart =
-    //
-    // return {startMI: 0,startKM: 0, lastWaypointMI: 0, lastWaypointKM: 0};
+    var milesFromStart = (metersFromStart * 0.00062137);
+    var kmFromStart = (metersFromStart/1000);
+
+    //return
+    return {startMI: milesFromStart,startKM: kmFromStart, lastWaypointMI: 0, lastWaypointKM: 0};
 
   },
 
