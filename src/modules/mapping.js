@@ -20,7 +20,7 @@ var MapEditor = Class({
        center: {lat: 36.068209, lng: -105.629669},
        zoom: 4,
        disableDefaultUI: true,
-       mapTypeId: google.maps.MapTypeId.HYBRID
+       mapTypeId: google.maps.MapTypeId.SATELLITE
     });
   },
 
@@ -33,6 +33,7 @@ var MapEditor = Class({
       strokeOpacity: 1.0,
       strokeWeight: 4,
       map: this.map,
+      geodesic: true,
     });
 
     /*
@@ -60,12 +61,15 @@ var MapEditor = Class({
 
       Waypoints must be inserted into the array in order of distance from the start of the route.
     */
-    this.routeWaypoints = [];
+    this.routeWaypoints = [];  //TODO this could almost certainly be implimented as a b-tree, but would the speed advantage be worth the complexity?
   },
 
   initializeListeners: function() {
-    // Add a listener for the click event
-    this.map.addListener('click', this.addRoutePoint);
+    // Add a listener for the map's click event
+    // TODO add a switch on this so it can be turned on and off by the app
+    this.map.addListener('click', function(evt){
+      _this.addRoutePoint(evt.latLng)
+    });
 
     /*
       hovering over the route between verticies will display a potential point, which if clicked on will add a point to the route
@@ -86,13 +90,29 @@ var MapEditor = Class({
         google.maps.event.addListener(_this.routePath, 'mouseout', function(evt){
           point.setMap(null);
         });
-
+        // TODO listen to dragging but don't make new points if we don't need them
         google.maps.event.addListener(point, 'click', function(evt){
-          var points = _this.routePathPoints;
-          //iterate through pairs of points
-          //if point falls between the point pairs put it on that segment
-          //TODO wire this part up
-
+          //it's easier to mess with the array
+          var points = _this.routePathPoints.getArray();
+          /*
+            Iterate through the point pairs on the segment
+            determine which edge the click event falls upon
+            and insert a new point into route at the index of the end point
+            then increment the mapVertexIndex of all the points after that index
+          */
+          var x0 = evt.latLng.lat();
+          var y0 = evt.latLng.lng();
+          for(i = 1; i < points.length; i++ ){
+            var x1 = points[i-1].lat();
+            var y1 = points[i-1].lng();
+            var x2 = points[i].lat();
+            var y2 = points[i].lng();
+            // does the event point fit in the bounds of the two reference points
+            if(((x1 <= x0 && x0 <= x2) || (x1 >= x0 && x0 >= x2)) && ((y1 <= y0 && y0 <= y2) || (y1 >= y0 && y0 >= y2))) {
+                _this.addRoutePoint(evt.latLng, i);
+                break; //we found it, we're done here
+            }
+          }
         });
       }
     });
@@ -104,7 +124,7 @@ var MapEditor = Class({
   */
   pointIcon: function(){
     return {
-              path: 'M -1,-1 1,-1 0,1z',
+              path: 'M-1,-1 1,-1 1,1 -1,1z',
               // path: google.maps.SymbolPath.CIRCLE,
               scale: 7,
               strokeWeight: 2,
@@ -119,7 +139,7 @@ var MapEditor = Class({
   */
   waypointIcon: function(){
     return {
-              path: 'M-1.25,-1.25 1.25,-1.25 0,1.25z',
+              path: 'M-1.25,-1.25 1.25,-1.25 1.25,1.25 -1.25,1.25z',
               // path: google.maps.SymbolPath.CIRCLE,
               scale: 7,
               strokeWeight: 2,
@@ -136,20 +156,24 @@ var MapEditor = Class({
 
     Listeners are bound to the point to allow it to be toggled as a waypoint or to be removed entirely
   */
-  addRoutePoint: function(evt){
+  addRoutePoint: function(latLng, index){
     /*
       add this point to the routePath Polyline path MVC array
     */
-    _this.routePathPoints.push(evt.latLng);
+    if(index){
+      _this.routePathPoints.insertAt(index,latLng)
+    } else {
+      _this.routePathPoints.push(latLng);
+    }
     /*
       Creates a google maps marker to denote a vertex or point on the route polyline and
     */
     var point = new google.maps.Marker({
                       icon: _this.pointIcon(),
                       map: _this.map,
-                      position: evt.latLng,
+                      position: latLng,
                       draggable: true,
-                      mapVertexIndex: _this.routePathPoints.indexOf(evt.latLng),
+                      mapVertexIndex: _this.routePathPoints.indexOf(latLng),
                       isWaypoint: false,
                     });
     /*
@@ -199,7 +223,12 @@ var MapEditor = Class({
     /*
       Add this point to the marker management array
     */
-    _this.routeMarkers.push(point);
+    if(index){
+      _this.routeMarkers.splice(index,0,point);
+      _this.incrementRouteVertexIndecies(index);
+    } else {
+      _this.routeMarkers.push(point);
+    }
   },
 
   /*
@@ -211,10 +240,11 @@ var MapEditor = Class({
 
     point.setMap(null);
     /*
-      Reduce the vertexIndex of each point on the route after the point being
+      Decrement the vertexIndex of each point on the route after the point being
       removed by one.
     */
     if(pointIndex >= 0){
+        //remove the marker from our markers array
         this.routeMarkers.splice(pointIndex,1);
         for(i = pointIndex; i < this.routeMarkers.length; i++){
           var point = this.routeMarkers[i];
@@ -223,7 +253,6 @@ var MapEditor = Class({
         if(vertexIndex >= 0) {
           this.routePathPoints.removeAt(vertexIndex)
         }
-
     }
   },
 
@@ -285,5 +314,23 @@ var MapEditor = Class({
     });
 
     //TODO make the map enter on the latLng of the start of a route if one is loaded
+  },
+
+  /*
+    increments the route vertex index of each point along the route after the passed in index
+  */
+  incrementRouteVertexIndecies: function(startIndex) {
+    startIndex++;
+    for(i = startIndex; i < this.routeMarkers.length; i++){
+      var point = this.routeMarkers[i];
+      point.mapVertexIndex = point.mapVertexIndex + 1;
+    }
+  },
+
+  /*
+    decrements the route vertex index of each point along the route after the passed in index
+  */
+  decrementRouteVertexIndecies: function(startIndex) {
+
   },
 });
