@@ -74,9 +74,10 @@ var MapEditor = Class({
     /*
       hovering over the route between verticies will display a potential point, which if clicked on will add a point to the route
     */
-    google.maps.event.addListener(this.routePath, 'mousemove', function(evt){
-      //TODO still needs to add new vertex
+    google.maps.event.addListener(this.routePath, 'mouseover', function(evt){
       if(_this.displayEdge){
+        var dragging = false;
+        var loc;
         var point = new google.maps.Marker({
                                 icon: _this.pointIcon(),
                                 map: this.map,
@@ -87,11 +88,26 @@ var MapEditor = Class({
         google.maps.event.addListener(_this.routePath, 'mousemove', function(evt){
           point.setPosition(evt.latLng);
         });
+
         google.maps.event.addListener(_this.routePath, 'mouseout', function(evt){
-          point.setMap(null);
+          if(!dragging){
+            point.setMap(null);
+          }
         });
-        // TODO listen to dragging but don't make new points if we don't need them
-        google.maps.event.addListener(point, 'click', function(evt){
+
+        google.maps.event.addListener(point, 'mousedown', function(evt){
+          console.log('down')
+          dragging = true;
+          google.maps.event.addListener(point, 'dragging', function(evt){
+            console.log('dragging')
+            point.setPosition(evt.latLng);
+          });
+          console.log(dragging);
+          loc = evt.latLng;
+        });
+
+        google.maps.event.addListener(point, 'mouseup', function(evt){
+          dragging = false;
           //it's easier to mess with the array
           var points = _this.routePathPoints.getArray();
           /*
@@ -100,8 +116,10 @@ var MapEditor = Class({
             and insert a new point into route at the index of the end point
             then increment the mapVertexIndex of all the points after that index
           */
-          var x0 = evt.latLng.lat();
-          var y0 = evt.latLng.lng();
+          var x0 = loc.lat();
+          var y0 = loc.lng();
+          // var x0 = evt.latLng.lat();
+          // var y0 = evt.latLng.lng();
           for(i = 1; i < points.length; i++ ){
             var x1 = points[i-1].lat();
             var y1 = points[i-1].lng();
@@ -208,7 +226,7 @@ var MapEditor = Class({
     });
 
     /*
-      turns off display of the potential point marker on the route path so other UI functions are not impeeded.
+      turns off display of the potential point marker on the route path so UI functions over a point are not impeeded.
     */
     google.maps.event.addListener(point, 'mouseover', function(evt) {
       _this.displayEdge = false;
