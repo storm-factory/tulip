@@ -5,9 +5,9 @@ var MapEditor = Class({
 
   create: function(){
     _this = this;
-    this.initializeMap();
-    this.initializeRoute();
-    this.initializeListeners();
+    this.initMap();
+    this.initRoute();
+    this.initRouteListeners();
     /*
       displayEdge is a global variable which tracks whether a potential route vertex should be shown when the user hovers the mouse over the route.
     */
@@ -15,7 +15,7 @@ var MapEditor = Class({
     this.attemptGeolocation();
   },
 
-  initializeMap: function(){
+  initMap: function(){
     this.map = new google.maps.Map(document.getElementById('map'), {
        center: {lat: 36.068209, lng: -105.629669},
        zoom: 4,
@@ -24,7 +24,7 @@ var MapEditor = Class({
     });
   },
 
-  initializeRoute: function() {
+  initRoute: function() {
     /*
       This Polyline object is the backbone of a route.
     */
@@ -62,79 +62,6 @@ var MapEditor = Class({
       Waypoints must be inserted into the array in order of distance from the start of the route.
     */
     this.routeWaypoints = [];  //TODO this could almost certainly be implimented as a b-tree, but would the speed advantage be worth the complexity?
-  },
-
-  initializeListeners: function() {
-    // Add a listener for the map's click event
-    // TODO add a switch on this so it can be turned on and off by the app
-    this.map.addListener('click', function(evt){
-      _this.addRoutePoint(evt.latLng)
-    });
-
-    /*
-      hovering over the route between verticies will display a potential point, which if clicked on will add a point to the route
-    */
-    google.maps.event.addListener(this.routePath, 'mouseover', function(evt){
-      if(_this.displayEdge){
-        var dragging = false;
-        var loc;
-        var point = new google.maps.Marker({
-                                icon: _this.pointIcon(),
-                                map: this.map,
-                                position: evt.latLng,
-                                draggable: true,
-                                mapVertex: evt.vertex,
-                              });
-        google.maps.event.addListener(_this.routePath, 'mousemove', function(evt){
-          point.setPosition(evt.latLng);
-        });
-
-        google.maps.event.addListener(_this.routePath, 'mouseout', function(evt){
-          if(!dragging){
-            point.setMap(null);
-          }
-        });
-
-        google.maps.event.addListener(point, 'mousedown', function(evt){
-          console.log('down')
-          dragging = true;
-          google.maps.event.addListener(point, 'dragging', function(evt){
-            console.log('dragging')
-            point.setPosition(evt.latLng);
-          });
-          console.log(dragging);
-          loc = evt.latLng;
-        });
-
-        google.maps.event.addListener(point, 'mouseup', function(evt){
-          dragging = false;
-          //it's easier to mess with the array
-          var points = _this.routePathPoints.getArray();
-          /*
-            Iterate through the point pairs on the segment
-            determine which edge the click event falls upon
-            and insert a new point into route at the index of the end point
-            then increment the mapVertexIndex of all the points after that index
-          */
-          var x0 = loc.lat();
-          var y0 = loc.lng();
-          // var x0 = evt.latLng.lat();
-          // var y0 = evt.latLng.lng();
-          for(i = 1; i < points.length; i++ ){
-            var x1 = points[i-1].lat();
-            var y1 = points[i-1].lng();
-            var x2 = points[i].lat();
-            var y2 = points[i].lng();
-            // does the event point fit in the bounds of the two reference points
-            if(((x1 <= x0 && x0 <= x2) || (x1 >= x0 && x0 >= x2)) && ((y1 <= y0 && y0 <= y2) || (y1 >= y0 && y0 >= y2))) {
-                _this.addRoutePoint(evt.latLng, i);
-                break; //we found it, we're done here
-            }
-          }
-        });
-      }
-    });
-
   },
 
   /*
@@ -194,49 +121,11 @@ var MapEditor = Class({
                       mapVertexIndex: _this.routePathPoints.indexOf(latLng),
                       isWaypoint: false,
                     });
-    /*
-      right clicking on a route point removes it from the route
-    */
-    google.maps.event.addListener(point, 'rightclick', function(evt) {
-      _this.deletePoint(this);
-      _this.displayEdge = true;
-    });
 
     /*
-      double clicking on a route point toggles whether the point is a waypoint or not
+      Bind the listeners for this point
     */
-    google.maps.event.addListener(point, 'dblclick', function(evt) {
-      if(this.isWaypoint){
-        this.isWaypoint = false;
-        this.setIcon(_this.pointIcon());
-      } else {
-        this.isWaypoint = true;
-        this.setIcon(_this.waypointIcon());
-        _this.computeDistances(this.mapVertexIndex);
-      }
-
-
-    });
-
-    /*
-      Dragging the point updates the latLng vertex position on the route Polyline
-    */
-    google.maps.event.addListener(point, 'drag', function(evt) {
-      _this.routePathPoints.setAt(this.mapVertexIndex, evt.latLng);
-    });
-
-    /*
-      turns off display of the potential point marker on the route path so UI functions over a point are not impeeded.
-    */
-    google.maps.event.addListener(point, 'mouseover', function(evt) {
-      _this.displayEdge = false;
-    });
-    /*
-      turns display of the potential point marker on the route path back on.
-    */
-    google.maps.event.addListener(point, 'mouseout', function(evt) {
-      _this.displayEdge = true;
-    });
+    _this.initPointListeners(point);
 
     /*
       Add this point to the marker management array
@@ -264,10 +153,8 @@ var MapEditor = Class({
     if(pointIndex >= 0){
         //remove the marker from our markers array
         this.routeMarkers.splice(pointIndex,1);
-        for(i = pointIndex; i < this.routeMarkers.length; i++){
-          var point = this.routeMarkers[i];
-          point.mapVertexIndex = point.mapVertexIndex - 1;
-        }
+        //decriment the remaining point's vertex indecies
+        this.decrementRouteVertexIndecies(pointIndex);
         if(vertexIndex >= 0) {
           this.routePathPoints.removeAt(vertexIndex)
         }
@@ -349,6 +236,139 @@ var MapEditor = Class({
     decrements the route vertex index of each point along the route after the passed in index
   */
   decrementRouteVertexIndecies: function(startIndex) {
+    for(i = startIndex; i < this.routeMarkers.length; i++){
+      var point = this.routeMarkers[i];
+      point.mapVertexIndex = point.mapVertexIndex - 1;
+    }
+  },
+
+  initPointListeners: function(point){
+    /*
+      right clicking on a route point removes it from the route
+    */
+    google.maps.event.addListener(point, 'rightclick', function(evt) {
+      _this.deletePoint(this);
+      _this.displayEdge = true;
+    });
+
+    /*
+      double clicking on a route point toggles whether the point is a waypoint or not
+    */
+    google.maps.event.addListener(point, 'dblclick', function(evt) {
+      if(this.isWaypoint){
+        this.isWaypoint = false;
+        this.setIcon(_this.pointIcon());
+      } else {
+        this.isWaypoint = true;
+        this.setIcon(_this.waypointIcon());
+        _this.computeDistances(this.mapVertexIndex);
+        //TODO add to waypoint management array
+        //TODO add the waypoint to the actual route
+      }
+
+
+    });
+
+    /*
+      Dragging the point updates the latLng vertex position on the route Polyline
+    */
+    google.maps.event.addListener(point, 'drag', function(evt) {
+      _this.routePathPoints.setAt(this.mapVertexIndex, evt.latLng);
+    });
+
+    /*
+      turns off display of the potential point marker on the route path so UI functions over a point are not impeeded.
+    */
+    google.maps.event.addListener(point, 'mouseover', function(evt) {
+      _this.displayEdge = false;
+    });
+    /*
+      turns display of the potential point marker on the route path back on.
+    */
+    google.maps.event.addListener(point, 'mouseout', function(evt) {
+      _this.displayEdge = true;
+    });
+  },
+
+  initRouteListeners: function() {
+    // Add a listener for the map's click event
+    // TODO add a switch on this so it can be turned on and off by the app
+    this.map.addListener('click', function(evt){
+      _this.addRoutePoint(evt.latLng)
+    });
+
+    /*
+      hovering over the route between verticies will display a potential point, which if clicked on will add a point to the route
+    */
+    google.maps.event.addListener(this.routePath, 'mouseover', function(evt){
+      /*
+        If we aren't over a point display a potential point
+      */
+      if(_this.displayEdge){
+        var dragging = false;
+        var loc;
+        var point = new google.maps.Marker({
+                                icon: _this.pointIcon(),
+                                map: this.map,
+                                position: evt.latLng,
+                                draggable: true,
+                                mapVertex: evt.vertex,
+                              });
+        google.maps.event.addListener(_this.routePath, 'mousemove', function(evt){
+          point.setPosition(evt.latLng);
+        });
+        /*
+          make the point go away if the mouse leaves the route
+        */
+        google.maps.event.addListener(_this.routePath, 'mouseout', function(evt){
+          if(!dragging){
+            point.setMap(null);
+          }
+        });
+
+        /*
+          If the user mouses down then we need to set override the mouseout behaviour of the route so the point stays visible
+          we also need to update the position of the point to follow the mouse
+        */
+        google.maps.event.addListener(point, 'mousedown', function(evt){
+          dragging = true;
+          google.maps.event.addListener(point, 'dragging', function(evt){
+            point.setPosition(evt.latLng);
+          });
+          loc = evt.latLng;
+        });
+        /*
+          add the point to the route, ideally we could do this on mouse down or click and then drag the whole route
+        */
+        google.maps.event.addListener(point, 'mouseup', function(evt){
+          dragging = false;
+          point.setMap(null);
+          //it's easier to mess with the array
+          var points = _this.routePathPoints.getArray();
+          /*
+            Iterate through the point pairs on the segment
+            determine which edge the click event falls upon
+            and insert a new point into route at the index of the end point
+            then increment the mapVertexIndex of all the points after that index
+          */
+          var x0 = loc.lat();
+          var y0 = loc.lng();
+          // var x0 = evt.latLng.lat();
+          // var y0 = evt.latLng.lng();
+          for(i = 1; i < points.length; i++ ){
+            var x1 = points[i-1].lat();
+            var y1 = points[i-1].lng();
+            var x2 = points[i].lat();
+            var y2 = points[i].lng();
+            // does the event point fit in the bounds of the two reference points
+            if(((x1 <= x0 && x0 <= x2) || (x1 >= x0 && x0 >= x2)) && ((y1 <= y0 && y0 <= y2) || (y1 >= y0 && y0 >= y2))) {
+                _this.addRoutePoint(evt.latLng, i);
+                break; //we found it, we're done here
+            }
+          }
+        });
+      }
+    });
 
   },
 });
