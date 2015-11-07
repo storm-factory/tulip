@@ -298,51 +298,39 @@ var MapEditor = Class({
     });
 
     /*
-      hovering over the route between verticies will display a potential point, which if clicked on will add a point to the route
+      hovering over the route between verticies will display a handle, which if clicked on will add a point to the route
     */
     google.maps.event.addListener(this.routePath, 'mouseover', function(evt){
       /*
-        If we aren't over a point display a potential point
+        If we aren't over a point display a handle to add a new route point
       */
       if(_this.displayEdge){
         var dragging = false;
         var loc;
-        var point = new google.maps.Marker({
+        var handle = new google.maps.Marker({
                                 icon: _this.pointIcon(),
                                 map: this.map,
                                 position: evt.latLng,
                                 draggable: true,
-                                mapVertex: evt.vertex,
+                                // mapVertex: evt.vertex,
                               });
         google.maps.event.addListener(_this.routePath, 'mousemove', function(evt){
-          point.setPosition(evt.latLng);
+          handle.setPosition(evt.latLng);
         });
         /*
-          make the point go away if the mouse leaves the route
+          make the point go away if the mouse leaves the route, but not if it's being dragged
         */
         google.maps.event.addListener(_this.routePath, 'mouseout', function(evt){
           if(!dragging){
-            point.setMap(null);
+            handle.setMap(null);
           }
         });
 
         /*
-          If the user mouses down then we need to set override the mouseout behaviour of the route so the point stays visible
-          we also need to update the position of the point to follow the mouse
+          add the point to the route
         */
-        google.maps.event.addListener(point, 'mousedown', function(evt){
+        google.maps.event.addListener(handle, 'mousedown', function(evt){
           dragging = true;
-          google.maps.event.addListener(point, 'dragging', function(evt){
-            point.setPosition(evt.latLng);
-          });
-          loc = evt.latLng;
-        });
-        /*
-          add the point to the route, ideally we could do this on mouse down or click and then drag the whole route
-        */
-        google.maps.event.addListener(point, 'mouseup', function(evt){
-          dragging = false;
-          point.setMap(null);
           //it's easier to mess with the array
           var points = _this.routePathPoints.getArray();
           /*
@@ -351,10 +339,11 @@ var MapEditor = Class({
             and insert a new point into route at the index of the end point
             then increment the mapVertexIndex of all the points after that index
           */
-          var x0 = loc.lat();
-          var y0 = loc.lng();
-          // var x0 = evt.latLng.lat();
-          // var y0 = evt.latLng.lng();
+          // TODO refactor this logic into it's own function
+          var x0 = evt.latLng.lat();
+          var y0 = evt.latLng.lng();
+          var idx;
+          var done;
           for(i = 1; i < points.length; i++ ){
             var x1 = points[i-1].lat();
             var y1 = points[i-1].lng();
@@ -362,10 +351,27 @@ var MapEditor = Class({
             var y2 = points[i].lng();
             // does the event point fit in the bounds of the two reference points
             if(((x1 <= x0 && x0 <= x2) || (x1 >= x0 && x0 >= x2)) && ((y1 <= y0 && y0 <= y2) || (y1 >= y0 && y0 >= y2))) {
+                idx = i;
                 _this.addRoutePoint(evt.latLng, i);
                 break; //we found it, we're done here
             }
           }
+          /*
+            Add listeners to move the new route point and the route to the mouse drag position of the handle
+          */
+          google.maps.event.addListener(handle, 'drag', function(evt){
+            var point = _this.routeMarkers[idx];
+            point.setPosition(evt.latLng);
+            _this.routePathPoints.setAt(point.mapVertexIndex, evt.latLng);
+
+          });
+          /*
+            get rid of the handle
+          */
+          google.maps.event.addListener(handle, 'mouseup', function(evt){
+            dragging = false;
+            this.setMap(null);
+          });
         });
       }
     });
