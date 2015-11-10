@@ -1,4 +1,5 @@
-
+//TODO make this a module for map route path and points, make seperate module for listeners maybe, and a third module for waypoints
+// we need to keep our concerns isolated and this class is growing too big.
 var MapEditor = Class({
   //maintain context in listeners
   _this: {},
@@ -61,7 +62,7 @@ var MapEditor = Class({
 
       Waypoints must be inserted into the array in order of distance from the start of the route.
     */
-    this.routeWaypoints = [];  //TODO this could almost certainly be implimented as a b-tree, but would the speed advantage be worth the complexity?
+    this.routeWaypoints = [];
   },
 
   /*
@@ -135,7 +136,57 @@ var MapEditor = Class({
       _this.incrementRouteVertexIndecies(index);
     } else {
       _this.routeMarkers.push(point);
+      //this is the first point and thus the start of the route
+      if(_this.routeWaypoints.length == 0 && _this.routeMarkers.length == 1 && _this.routePathPoints.length == 1) {
+        point.setIcon(_this.waypointIcon());
+        point.kmFromStart = 0;
+        point.miFromStart = 0;
+        point.kmFromPrev = 0;
+        point.miFromPrev = 0;
+        _this.routeWaypoints.push(point);
+      }
     }
+  },
+  /*
+    Add a waypoint to the route waypoints array in the proper spot with accurate distance measurements
+  */
+  addWaypoint: function(point) {
+      var distances = this.computeDistances(point);
+      var index = this.determineWaypointInsertionIndex(distances.kmFromStart);
+
+      point.kmFromStart = distances.kmFromStart;
+      point.miFromStart = distances.miFromStart;;
+      point.kmFromPrev = 0;
+      point.miFromPrev = 0;
+      this.routeWaypoints.splice(Math.abs(index),0,point);
+  },
+
+  /*
+    Use a binary search algorithm to determine the point at which to insert the index into the route waypoints array
+
+  */
+  determineWaypointInsertionIndex: function(kmFromStart){
+    var minIndex = 0;
+    var maxIndex = this.routeWaypoints.length - 1;
+    var currentIndex;
+    var midpoint = this.routeWaypoints.length/2 | 0;
+    var currentElement;
+
+    while (minIndex <= maxIndex) {
+      currentIndex = (minIndex + maxIndex) / 2 | 0;
+      currentElement = _this.routeWaypoints[currentIndex];
+
+      if (currentElement.kmFromStart < kmFromStart) {
+        minIndex = currentIndex + 1;
+      }
+      else if (currentElement.kmFromStart > kmFromStart) {
+        maxIndex = currentIndex - 1;
+      }
+      else {
+        return currentIndex;
+      }
+    }
+    return ~maxIndex;
   },
 
   /*
@@ -161,16 +212,19 @@ var MapEditor = Class({
     }
   },
 
+  deleteWaypoint: function(point){
+
+  },
+
   /*
     Determine the distance of a passed in waypoint from the start and from the previous waypoint.
 
     return an array of these measurements in both impertial and metric
   */
-  computeDistances: function(waypointIndex){
-    var waypointIndex = waypointIndex || this.routePathPoints.length;
+  computeDistances: function(waypoint){
+    var waypointIndex = waypoint.mapVertexIndex
     var routePathPoints = this.routePathPoints.getArray();
-
-    var points;
+    var points = [];
     switch(waypointIndex) {
       case 0:
         // the first point in the route has a distance of 0
@@ -178,22 +232,24 @@ var MapEditor = Class({
         break;
       case 1:
         // slicing an array with length 2 causes problems
-        points = routePathPoints;
+        points.push(routePathPoints[0]);
+        points.push(routePathPoints[1]);
         break;
       default:
         // slice and dice
-        points = routePathPoints.slice(0, waypointIndex)
+        points = routePathPoints.slice(0, waypointIndex+1)
     }
     var metersFromStart = google.maps.geometry.spherical.computeLength(points);
     //TODO waypoints need to be fully implimented
     // var metersFromLastWaypoint = google.maps.geometry.spherical.computeLength(pointsArray.slice(waypointIndex - 1, waypointIndex));
 
-    //do some conversions
-    var milesFromStart = (metersFromStart * 0.00062137);
-    var kmFromStart = (metersFromStart/1000);
-
-    //return
-    return {startMI: milesFromStart,startKM: kmFromStart, lastWaypointMI: 0, lastWaypointKM: 0};
+    //do some conversions and return the results
+    return {
+            miFromStart: (metersFromStart * 0.00062137),
+            kmFromStart: (metersFromStart/1000),
+            lastWaypointMI: 0,
+            lastWaypointKM: 0
+          };
 
   },
 
@@ -258,10 +314,11 @@ var MapEditor = Class({
       if(this.isWaypoint){
         this.isWaypoint = false;
         this.setIcon(_this.pointIcon());
+        _this.deleteWaypoint(this);
       } else {
         this.isWaypoint = true;
         this.setIcon(_this.waypointIcon());
-        _this.computeDistances(this.mapVertexIndex);
+        _this.addWaypoint(this);
         //TODO add to waypoint management array
         //TODO add the waypoint to the actual route
       }
@@ -339,7 +396,7 @@ var MapEditor = Class({
             and insert a new point into route at the index of the end point
             then increment the mapVertexIndex of all the points after that index
           */
-          // TODO refactor this logic into it's own function
+          // TODO refactor this logic into it's own function exactly like the waypoint insertion method
           var x0 = evt.latLng.lat();
           var y0 = evt.latLng.lng();
           var idx;
