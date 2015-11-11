@@ -6,19 +6,16 @@ var Roadbook = Class({
 
   addWaypoint: function(wptData){
 
-    console.log(wptData);
     //determine index of waypoint based on distance from start
     var index = this.determineWaypointInsertionIndex(wptData.kmFromStart);
     var waypoint = new Waypoint(wptData);
     waypoint.id = index;
-    // if(this.waypoints.length == 0) {
-    //
-    // } else {
-    //
-    // }
 
-    this.waypoints.splice(Math.abs(index),0,waypoint);
+    this.waypoints.splice(index,0,waypoint);
+    this.reindexWaypoints();
     this.renderWaypoints();
+
+    return waypoint;
   },
 
   deleteWaypoint: function(wptId){
@@ -52,7 +49,7 @@ var Roadbook = Class({
         return currentIndex;
       }
     }
-    return ~maxIndex;
+    return Math.abs(~maxIndex);
   },
 
   reindexWaypoints: function(){

@@ -152,7 +152,10 @@ var MapEditor = Class({
       point.miFromStart = distances.miFromStart;;
       point.kmFromPrev = distances;
       point.miFromPrev = distances;
-      app.roadbook.addWaypoint(distances);
+
+      //bind the waypoint to this map point and update its icon
+      point.waypoint = app.roadbook.addWaypoint(distances);
+      point.setIcon(this.waypointIcon());
   },
 
   /*
@@ -179,7 +182,12 @@ var MapEditor = Class({
   },
 
   deleteWaypoint: function(point){
+    //remove the waypoint from the roadbook
+    app.roadbook.deleteWaypoint(point.waypoint.id);
 
+    //update the point's icon and remove its waypoint object
+    point.setIcon(this.pointIcon());
+    point.waypoint = null;
   },
 
   /*
@@ -277,16 +285,11 @@ var MapEditor = Class({
       double clicking on a route point toggles whether the point is a waypoint or not
     */
     google.maps.event.addListener(point, 'dblclick', function(evt) {
-      if(this.isWaypoint){
-        this.isWaypoint = false;
-        this.setIcon(_this.pointIcon());
+      //If the point has a waypoint remove it, otherwise add one
+      if(this.waypoint){
         _this.deleteWaypoint(this);
       } else {
-        this.isWaypoint = true;
-        this.setIcon(_this.waypointIcon());
         _this.addWaypoint(this);
-        //TODO add to waypoint management array
-        //TODO add the waypoint to the actual route
       }
 
 
@@ -297,6 +300,7 @@ var MapEditor = Class({
     */
     google.maps.event.addListener(point, 'drag', function(evt) {
       _this.routePathPoints.setAt(this.mapVertexIndex, evt.latLng);
+      //TODO recalculate route distances after the drag for each waypoint
     });
 
     /*
@@ -335,10 +339,14 @@ var MapEditor = Class({
                                 map: this.map,
                                 position: evt.latLng,
                                 draggable: true,
-                                // mapVertex: evt.vertex,
+                                zIndex: -1,
                               });
         google.maps.event.addListener(_this.routePath, 'mousemove', function(evt){
-          handle.setPosition(evt.latLng);
+          if(_this.displayEdge){
+            handle.setPosition(evt.latLng);
+          } else {
+            handle.setMap(null);
+          }
         });
         /*
           make the point go away if the mouse leaves the route, but not if it's being dragged
@@ -362,7 +370,7 @@ var MapEditor = Class({
             and insert a new point into route at the index of the end point
             then increment the mapVertexIndex of all the points after that index
           */
-          // TODO refactor this logic into it's own function exactly like the waypoint insertion method
+          // TODO refactor this logic into it's own function exactly like the waypoint insertion method in the roadbook module
           var x0 = evt.latLng.lat();
           var y0 = evt.latLng.lng();
           var idx;
@@ -386,7 +394,7 @@ var MapEditor = Class({
             var point = _this.routeMarkers[idx];
             point.setPosition(evt.latLng);
             _this.routePathPoints.setAt(point.mapVertexIndex, evt.latLng);
-
+            //TODO recalculate route distances after the drag for each waypoint
           });
           /*
             get rid of the handle

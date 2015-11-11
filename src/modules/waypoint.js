@@ -1,7 +1,5 @@
 var Waypoint = Class({
   create: function(opts){
-    console.log(opts);
-    console.log(opts.kmFromStart);
     this.id  = opts.id
     this.kmFromStart = opts.kmFromStart;
     this.miFromStart = opts.miFromStart;
