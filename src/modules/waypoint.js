@@ -1,8 +1,15 @@
 var Waypoint = Class({
   create: function(opts){
+    console.log(opts);
+    console.log(opts.kmFromStart);
     this.id  = opts.id
-    this.totalDistance = opts.totalDistance;
-    this.relativeDistance = opts.relativeDistance;
+    this.kmFromStart = opts.kmFromStart;
+    this.miFromStart = opts.miFromStart;
+    this.kmFromPrev = opts.kmFromPrev;
+    this.miFromPrev = opts.miFromPrev;
+
+    this.distFromPrev = opts.miFromPrev;
+    this.totalDistance = opts.miFromStart;
     this.tulipJSON = opts.tulipJSON
     this.notes = opts.notes;
   },

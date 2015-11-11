@@ -9,11 +9,13 @@ function initMap() {
   app.mapEditor = new MapEditor();
 }
 $(document).ready(function(){
-  roadbook = new Roadbook();
-  wpt = new Waypoint({totalDistance: 10, relativeDistance: 3, notes: 'here is some stuff'});
-  wpt1 = new Waypoint({totalDistance: 11, relativeDistance: 1, notes: 'here is some more stuff'});
-  roadbook.addWaypoint(wpt);
-  roadbook.addWaypoint(wpt1);
+  app.roadbook = new Roadbook();
+  // wpt = new Waypoint({totalDistance: 10, relativeDistance: 3, notes: 'here is some stuff'});
+  // wpt1 = new Waypoint({totalDistance: 11, relativeDistance: 1, notes: 'here is some more stuff'});
+  // app.roadbook.addWaypoint(wpt);
+  // app.roadbook.addWaypoint(wpt1);
+
+  //TODO move to map controls module
   app.listeners = {
     bind: function(){
       $('#zin').click(function(){

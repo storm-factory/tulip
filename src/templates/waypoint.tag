@@ -9,7 +9,7 @@
       </div>
       <div class='row relative-distance'>
         <div class="large-12 column">
-          {this.relativeDistance}
+          {this.distFromPrev}
         </div>
       </div>
     </div>

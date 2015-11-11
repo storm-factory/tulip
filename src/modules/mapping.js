@@ -1,5 +1,9 @@
-//TODO make this a module for map route path and points, make seperate module for listeners maybe, and a third module for waypoints
-// we need to keep our concerns isolated and this class is growing too big.
+/*
+  PROBLEM: This class is no longer cohesive, there are too many interclass dependencies, lack of DRYness , and too many LOC
+  SOLUTIONS.
+  TODO make this a module for map route path and maybe also points, make seperate module for listeners, and a final module for waypoints(roadbook module), potentially with observer implimentation
+  TODO Impliment Singleton Design Pattern as there can be only one functioning map module at any time. It can then be used across modules safely.
+*/
 var MapEditor = Class({
   //maintain context in listeners
   _this: {},
@@ -53,16 +57,6 @@ var MapEditor = Class({
       Points must be inserted into the array in order of distance from the start of the route.
     */
     this.routeMarkers = [];
-
-    /*
-      The waypoints array contains the Markers along the route which
-      denote the verticies in the route Polyline Object (routePath) which are also waypoints.
-
-      Maintaining this seperate array of waypoints eases the complexity of computing distances along the route
-
-      Waypoints must be inserted into the array in order of distance from the start of the route.
-    */
-    this.routeWaypoints = [];
   },
 
   /*
@@ -136,57 +130,29 @@ var MapEditor = Class({
       _this.incrementRouteVertexIndecies(index);
     } else {
       _this.routeMarkers.push(point);
-      //this is the first point and thus the start of the route
-      if(_this.routeWaypoints.length == 0 && _this.routeMarkers.length == 1 && _this.routePathPoints.length == 1) {
+      //this is the first point and thus the start of the route, make it a waypoint
+      if(_this.routeMarkers.length == 1 && _this.routePathPoints.length == 1) {
         point.setIcon(_this.waypointIcon());
         point.kmFromStart = 0;
         point.miFromStart = 0;
         point.kmFromPrev = 0;
         point.miFromPrev = 0;
-        _this.routeWaypoints.push(point);
+        _this.addWaypoint(point);
       }
     }
   },
   /*
     Add a waypoint to the route waypoints array in the proper spot with accurate distance measurements
+    //TODO notify the roadbook observer that there is a new waypoint to render
   */
   addWaypoint: function(point) {
       var distances = this.computeDistances(point);
-      var index = this.determineWaypointInsertionIndex(distances.kmFromStart);
 
       point.kmFromStart = distances.kmFromStart;
       point.miFromStart = distances.miFromStart;;
-      point.kmFromPrev = 0;
-      point.miFromPrev = 0;
-      this.routeWaypoints.splice(Math.abs(index),0,point);
-  },
-
-  /*
-    Use a binary search algorithm to determine the point at which to insert the index into the route waypoints array
-
-  */
-  determineWaypointInsertionIndex: function(kmFromStart){
-    var minIndex = 0;
-    var maxIndex = this.routeWaypoints.length - 1;
-    var currentIndex;
-    var midpoint = this.routeWaypoints.length/2 | 0;
-    var currentElement;
-
-    while (minIndex <= maxIndex) {
-      currentIndex = (minIndex + maxIndex) / 2 | 0;
-      currentElement = _this.routeWaypoints[currentIndex];
-
-      if (currentElement.kmFromStart < kmFromStart) {
-        minIndex = currentIndex + 1;
-      }
-      else if (currentElement.kmFromStart > kmFromStart) {
-        maxIndex = currentIndex - 1;
-      }
-      else {
-        return currentIndex;
-      }
-    }
-    return ~maxIndex;
+      point.kmFromPrev = distances;
+      point.miFromPrev = distances;
+      app.roadbook.addWaypoint(distances);
   },
 
   /*
@@ -228,7 +194,7 @@ var MapEditor = Class({
     switch(waypointIndex) {
       case 0:
         // the first point in the route has a distance of 0
-        return {startMI: 0,startKM: 0, lastWaypointMI: 0, lastWaypointKM: 0};;
+        return {miFromStart: 0,kmFromStart: 0, miFromPrev: 0, kmFromPrev: 0};;
         break;
       case 1:
         // slicing an array with length 2 causes problems
@@ -240,15 +206,15 @@ var MapEditor = Class({
         points = routePathPoints.slice(0, waypointIndex+1)
     }
     var metersFromStart = google.maps.geometry.spherical.computeLength(points);
-    //TODO waypoints need to be fully implimented
+    //TODO Impliment prev distances
     // var metersFromLastWaypoint = google.maps.geometry.spherical.computeLength(pointsArray.slice(waypointIndex - 1, waypointIndex));
 
     //do some conversions and return the results
     return {
             miFromStart: (metersFromStart * 0.00062137),
             kmFromStart: (metersFromStart/1000),
-            lastWaypointMI: 0,
-            lastWaypointKM: 0
+            miFromPrev: 0,
+            kmFromPrev: 0
           };
 
   },
