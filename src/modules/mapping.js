@@ -143,16 +143,16 @@ var MapEditor = Class({
     and notify the roadbook observer that there is a new waypoint to render
   */
   addWaypoint: function(point) {
-      var distances = this.computeDistances(point);
+      var distances = this.computeDistanceFromStart(point);
 
       point.kmFromStart = distances.kmFromStart;
       point.miFromStart = distances.miFromStart;;
-      point.kmFromPrev = distances;
-      point.miFromPrev = distances;
 
       //bind the waypoint to this map point and update its icon
       point.waypoint = app.roadbook.addWaypoint(distances);
       point.setIcon(this.waypointIcon());
+      //recompute distances between waypoints
+      _this.updateRoute();
   },
 
   /*
@@ -194,14 +194,14 @@ var MapEditor = Class({
 
     return an array of these measurements in both impertial and metric
   */
-  computeDistances: function(waypoint){
-    var waypointIndex = waypoint.mapVertexIndex
+  computeDistanceFromStart: function(point){
+    var pointIndex = point.mapVertexIndex;
     var routePoints = this.routePoints.getArray();
     var points = [];
-    switch(waypointIndex) {
+    switch(pointIndex) {
       case 0:
         // the first point in the route has a distance of 0
-        return {miFromStart: 0,kmFromStart: 0, miFromPrev: 0, kmFromPrev: 0};;
+        return {miFromStart: 0,kmFromStart: 0};;
         break;
       case 1:
         // slicing an array with length 2 causes problems
@@ -209,21 +209,45 @@ var MapEditor = Class({
         points.push(routePoints[1]);
         break;
       default:
-        // slice and dice
-        points = routePoints.slice(0, waypointIndex+1)
+        // slice and dice (we add one to the point index because slice is not inclusive)
+        points = routePoints.slice(0, pointIndex+1)
     }
     var metersFromStart = google.maps.geometry.spherical.computeLength(points);
-    //TODO Impliment prev distances
-    // var metersFromLastWaypoint = google.maps.geometry.spherical.computeLength(pointsArray.slice(waypointIndex - 1, waypointIndex));
 
     //do some conversions and return the results
     return {
             miFromStart: (metersFromStart * 0.00062137),
             kmFromStart: (metersFromStart/1000),
-            miFromPrev: 0,
-            kmFromPrev: 0
           };
 
+  },
+
+  computeDistanceBetweenPoints: function(previousPoint, point){
+    var previousPointIndex = previousPoint.mapVertexIndex;
+    var pointIndex = point.mapVertexIndex;
+    var routePoints = this.routePoints.getArray();
+    var points = [];
+    switch(pointIndex) {
+      case 0:
+        // the first point in the route has a distance of 0
+        return {miFromPrev: 0, kmFromPrev: 0};;
+        break;
+      case 1:
+        // slicing an array with length 2 causes problems
+        points.push(routePoints[0]);
+        points.push(routePoints[1]);
+        break;
+      default:
+        // slice and dice (we add one to the pointIndex because slice is not inclusive)
+        points = routePoints.slice(previousPointIndex , pointIndex+1)
+    }
+    var metersFromPrev = google.maps.geometry.spherical.computeLength(points);
+
+    //do some conversions and return the results
+    return {
+            miFromPrev: (metersFromPrev * 0.00062137),
+            kmFromPrev: (metersFromPrev/1000),
+          };
   },
 
   /*
@@ -414,9 +438,16 @@ var MapEditor = Class({
   updateRoute: function() {
     for(i = 0; i < this.routeMarkers.length; i++) {
       var marker = this.routeMarkers[i];
+      var previous;
       if(marker.waypoint) {
-        var distances = this.computeDistances(marker);
+        var distances = this.computeDistanceFromStart(marker);
+        if(previous) {
+          $.extend(distances,this.computeDistanceBetweenPoints(previous,marker));
+        } else {
+          $.extend(distances,{miFromPrev: 0, kmFromPrev: 0});
+        }
         marker.waypoint.updateWaypoint(distances);
+        previous = marker;
       }
     }
   },

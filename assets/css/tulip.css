@@ -35,10 +35,21 @@
 }
 .relative-distance {
   height: 28px;
+  color: #000;
+  font-weight: bold;
 }
 .total-distance {
   height: 150px;
   border-bottom: 1px solid #000;
+  font-size: 2.2em;
+  color: #000;
+  font-weight: bold;
+  text-align: center;
+}
+
+.total-distance div.column {
+  padding-left: 0.1rem;
+  padding-right: 0.1rem;
 }
 .waypoint {
   width:90rem;
