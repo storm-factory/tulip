@@ -396,17 +396,14 @@ var MapEditor = Class({
             var point = _this.routeMarkers[idx];
             point.setPosition(evt.latLng);
             _this.routePoints.setAt(point.mapVertexIndex, evt.latLng);
-            _this.updateRoute();
           });
 
-          google.maps.event.addListener(handle, 'dragend', function(evt) {
-            _this.updateRoute();
-          });
           /*
             get rid of the handle
           */
           google.maps.event.addListener(handle, 'mouseup', function(evt){
             dragging = false;
+            _this.updateRoute();
             this.setMap(null);
           });
         });

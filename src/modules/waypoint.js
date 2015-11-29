@@ -17,10 +17,6 @@ var Waypoint = Class({
   },
 
   updateWaypoint: function (distances){
-    // this.kmFromStart = distances.kmFromStart;
-    // this.miFromStart = distances.miFromStart;
-    // this.kmFromPrev = distances.kmFromPrev;
-    // this.miFromPrev = distances.miFromPrev;
 
     this.kmFromStart = distances.kmFromStart;
     this.miFromStart = distances.miFromStart;
