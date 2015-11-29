@@ -1,16 +1,19 @@
 var Roadbook = Class({
   create: function(opts){
-    riot.observable(this);
-    this.waypoints = [];
+    this.waypoints = ko.observableArray([]);
   },
 
+  //TODO impliment two way data binding between the mapping module and this module.
+  //      with that we can take an update from the mapping module and know the most efficent
+  //      method of updating our collection of waypoints. we will lose flexibilty with this
+  //      so if possible somehow impliment a face or interface to decrease coupling as much as
+  //      possible.
   addWaypoint: function(wptData){
 
     //determine index of waypoint based on distance from start
     var index = this.determineWaypointInsertionIndex(wptData.kmFromStart);
     var waypoint = new Waypoint(wptData);
     waypoint.id = index;
-
     this.waypoints.splice(index,0,waypoint);
     this.reindexWaypoints();
     this.renderWaypoints();
@@ -25,19 +28,20 @@ var Roadbook = Class({
   },
 
   /*
-    Use a binary search algorithm to determine the index to insert the waypoing into the roadbook
+    Use a binary search algorithm to determine the index to insert the waypoint into the roadbook
     waypoints array
   */
   determineWaypointInsertionIndex: function(kmFromStart){
     var minIndex = 0;
-    var maxIndex = this.waypoints.length - 1;
+
+    var maxIndex = this.waypoints().length - 1;
     var currentIndex;
-    var midpoint = this.waypoints.length/2 | 0;
+    var midpoint = this.waypoints().length/2 | 0;
     var currentElement;
 
     while (minIndex <= maxIndex) {
       currentIndex = (minIndex + maxIndex) / 2 | 0;
-      currentElement = this.waypoints[currentIndex];
+      currentElement = this.waypoints()[currentIndex];
 
       if (currentElement.kmFromStart < kmFromStart) {
         minIndex = currentIndex + 1;
@@ -53,13 +57,13 @@ var Roadbook = Class({
   },
 
   reindexWaypoints: function(){
-    for(i = 0; i < this.waypoints.length; i++){
-      waypoint = this.waypoints[i];
+    for(i = 0; i < this.waypoints().length; i++){
+      waypoint = this.waypoints()[i];
       waypoint.id = i + 1; //we don't need no zero index
     }
   },
 
   renderWaypoints: function(){
-    riot.mount('waypoint', {waypoints: this.waypoints});
-  }
+
+  },
 });

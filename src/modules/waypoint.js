@@ -6,13 +6,28 @@ var Waypoint = Class({
     this.kmFromPrev = opts.kmFromPrev;
     this.miFromPrev = opts.miFromPrev;
 
-    this.distFromPrev = opts.miFromPrev;
-    this.totalDistance = opts.miFromStart;
+    this.distFromPrev = ko.observable(opts.miFromPrev);
+    this.totalDistance = ko.observable(opts.miFromStart);
     this.tulipJSON = opts.tulipJSON
-    this.notes = opts.notes;
+    this.notes = ko.observable(opts.notes);
   },
 
   initializeTulip: function(){
 
+  },
+
+  updateWaypoint: function (distances){
+    // this.kmFromStart = distances.kmFromStart;
+    // this.miFromStart = distances.miFromStart;
+    // this.kmFromPrev = distances.kmFromPrev;
+    // this.miFromPrev = distances.miFromPrev;
+
+    this.kmFromStart = distances.kmFromStart;
+    this.miFromStart = distances.miFromStart;
+    this.kmFromPrev = distances.kmFromPrev;
+    this.miFromPrev = distances.miFromPrev;
+
+
+    this.totalDistance(this.miFromStart);
   },
 });

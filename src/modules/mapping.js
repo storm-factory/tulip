@@ -14,7 +14,7 @@ var MapEditor = Class({
     this.initRoute();
     this.initRouteListeners();
     /*
-      displayEdge is a global variable which tracks whether a potential route vertex should be shown when the user hovers the mouse over the route.
+      displayEdge is a global variable which tracks whether a handle should be shown when the user hovers the mouse over the route.
     */
     this.displayEdge = true;
     this.attemptGeolocation();
@@ -33,7 +33,7 @@ var MapEditor = Class({
     /*
       This Polyline object is the backbone of a route.
     */
-    this.routePath = new google.maps.Polyline({
+    this.route = new google.maps.Polyline({
       strokeColor: '#ffba29',
       strokeOpacity: 1.0,
       strokeWeight: 4,
@@ -48,11 +48,11 @@ var MapEditor = Class({
 
       UI interfacing is accomplished by the following two arrays routeMarkers and routeWaypoints
     */
-    this.routePathPoints = this.routePath.getPath();
+    this.routePoints = this.route.getPath();
 
     /*
       The route point markers array contains the Markers along the route which
-      denote the verticies in the route Polyline Object (routePath).
+      denote the verticies in the route Polyline Object (route).
 
       Points must be inserted into the array in order of distance from the start of the route.
     */
@@ -65,7 +65,6 @@ var MapEditor = Class({
   pointIcon: function(){
     return {
               path: 'M-1,-1 1,-1 1,1 -1,1z',
-              // path: google.maps.SymbolPath.CIRCLE,
               scale: 7,
               strokeWeight: 2,
               strokeColor: '#ffba29',
@@ -80,7 +79,6 @@ var MapEditor = Class({
   waypointIcon: function(){
     return {
               path: 'M-1.25,-1.25 1.25,-1.25 1.25,1.25 -1.25,1.25z',
-              // path: google.maps.SymbolPath.CIRCLE,
               scale: 7,
               strokeWeight: 2,
               strokeColor: '#ff9000',
@@ -98,12 +96,12 @@ var MapEditor = Class({
   */
   addRoutePoint: function(latLng, index){
     /*
-      add this point to the routePath Polyline path MVC array
+      add this point to the route Polyline path MVC array
     */
     if(index){
-      _this.routePathPoints.insertAt(index,latLng)
+      _this.routePoints.insertAt(index,latLng)
     } else {
-      _this.routePathPoints.push(latLng);
+      _this.routePoints.push(latLng);
     }
     /*
       Creates a google maps marker to denote a vertex or point on the route polyline and
@@ -113,8 +111,7 @@ var MapEditor = Class({
                       map: _this.map,
                       position: latLng,
                       draggable: true,
-                      mapVertexIndex: _this.routePathPoints.indexOf(latLng),
-                      isWaypoint: false,
+                      mapVertexIndex: _this.routePoints.indexOf(latLng),
                     });
 
     /*
@@ -131,7 +128,7 @@ var MapEditor = Class({
     } else {
       _this.routeMarkers.push(point);
       //this is the first point and thus the start of the route, make it a waypoint
-      if(_this.routeMarkers.length == 1 && _this.routePathPoints.length == 1) {
+      if(_this.routeMarkers.length == 1 && _this.routePoints.length == 1) {
         point.setIcon(_this.waypointIcon());
         point.kmFromStart = 0;
         point.miFromStart = 0;
@@ -143,7 +140,7 @@ var MapEditor = Class({
   },
   /*
     Add a waypoint to the route waypoints array in the proper spot with accurate distance measurements
-    //TODO notify the roadbook observer that there is a new waypoint to render
+    and notify the roadbook observer that there is a new waypoint to render
   */
   addWaypoint: function(point) {
       var distances = this.computeDistances(point);
@@ -164,7 +161,9 @@ var MapEditor = Class({
   deletePoint: function(point){
     var pointIndex = this.routeMarkers.indexOf(point);
     var vertexIndex = point.mapVertexIndex;
-
+    if(point.waypoint){
+      this.deleteWaypoint(point);
+    }
     point.setMap(null);
     /*
       Decrement the vertexIndex of each point on the route after the point being
@@ -176,11 +175,11 @@ var MapEditor = Class({
         //decriment the remaining point's vertex indecies
         this.decrementRouteVertexIndecies(pointIndex);
         if(vertexIndex >= 0) {
-          this.routePathPoints.removeAt(vertexIndex)
+          this.routePoints.removeAt(vertexIndex)
         }
     }
   },
-
+  //TODO If the start waypoint is deleted assign it to the next point in the route
   deleteWaypoint: function(point){
     //remove the waypoint from the roadbook
     app.roadbook.deleteWaypoint(point.waypoint.id);
@@ -197,7 +196,7 @@ var MapEditor = Class({
   */
   computeDistances: function(waypoint){
     var waypointIndex = waypoint.mapVertexIndex
-    var routePathPoints = this.routePathPoints.getArray();
+    var routePoints = this.routePoints.getArray();
     var points = [];
     switch(waypointIndex) {
       case 0:
@@ -206,12 +205,12 @@ var MapEditor = Class({
         break;
       case 1:
         // slicing an array with length 2 causes problems
-        points.push(routePathPoints[0]);
-        points.push(routePathPoints[1]);
+        points.push(routePoints[0]);
+        points.push(routePoints[1]);
         break;
       default:
         // slice and dice
-        points = routePathPoints.slice(0, waypointIndex+1)
+        points = routePoints.slice(0, waypointIndex+1)
     }
     var metersFromStart = google.maps.geometry.spherical.computeLength(points);
     //TODO Impliment prev distances
@@ -299,8 +298,11 @@ var MapEditor = Class({
       Dragging the point updates the latLng vertex position on the route Polyline
     */
     google.maps.event.addListener(point, 'drag', function(evt) {
-      _this.routePathPoints.setAt(this.mapVertexIndex, evt.latLng);
-      //TODO recalculate route distances after the drag for each waypoint
+      _this.routePoints.setAt(this.mapVertexIndex, evt.latLng);
+    });
+
+    google.maps.event.addListener(point, 'dragend', function(evt) {
+      _this.updateRoute();
     });
 
     /*
@@ -327,7 +329,7 @@ var MapEditor = Class({
     /*
       hovering over the route between verticies will display a handle, which if clicked on will add a point to the route
     */
-    google.maps.event.addListener(this.routePath, 'mouseover', function(evt){
+    google.maps.event.addListener(this.route, 'mouseover', function(evt){
       /*
         If we aren't over a point display a handle to add a new route point
       */
@@ -341,7 +343,7 @@ var MapEditor = Class({
                                 draggable: true,
                                 zIndex: -1,
                               });
-        google.maps.event.addListener(_this.routePath, 'mousemove', function(evt){
+        google.maps.event.addListener(_this.route, 'mousemove', function(evt){
           if(_this.displayEdge){
             handle.setPosition(evt.latLng);
           } else {
@@ -351,7 +353,7 @@ var MapEditor = Class({
         /*
           make the point go away if the mouse leaves the route, but not if it's being dragged
         */
-        google.maps.event.addListener(_this.routePath, 'mouseout', function(evt){
+        google.maps.event.addListener(_this.route, 'mouseout', function(evt){
           if(!dragging){
             handle.setMap(null);
           }
@@ -363,7 +365,7 @@ var MapEditor = Class({
         google.maps.event.addListener(handle, 'mousedown', function(evt){
           dragging = true;
           //it's easier to mess with the array
-          var points = _this.routePathPoints.getArray();
+          var points = _this.routePoints.getArray();
           /*
             Iterate through the point pairs on the segment
             determine which edge the click event falls upon
@@ -393,8 +395,12 @@ var MapEditor = Class({
           google.maps.event.addListener(handle, 'drag', function(evt){
             var point = _this.routeMarkers[idx];
             point.setPosition(evt.latLng);
-            _this.routePathPoints.setAt(point.mapVertexIndex, evt.latLng);
-            //TODO recalculate route distances after the drag for each waypoint
+            _this.routePoints.setAt(point.mapVertexIndex, evt.latLng);
+            _this.updateRoute();
+          });
+
+          google.maps.event.addListener(handle, 'dragend', function(evt) {
+            _this.updateRoute();
           });
           /*
             get rid of the handle
@@ -406,6 +412,17 @@ var MapEditor = Class({
         });
       }
     });
-
   },
+
+  updateRoute: function() {
+    for(i = 0; i < this.routeMarkers.length; i++) {
+      var marker = this.routeMarkers[i];
+      if(marker.waypoint) {
+        var distances = this.computeDistances(marker);
+        marker.waypoint.updateWaypoint(distances);
+      }
+    }
+  },
+
+
 });

@@ -33,7 +33,7 @@
         <div class='roadbook-container large-4 column'>
           <div id='roadbook'>
             <!-- render waypoint templates here -->
-            <waypoint></waypoint>
+            <div data-bind="template: { name: 'waypoint-template', foreach: app.roadbook.waypoints }"></div>
           </div>
       </div>
 
@@ -47,7 +47,7 @@
     Load the rest of our libraries
   -->
   <script src="assets/libs/jsclass/dist/browser/js.class.min.js"></script>
-  <script src="assets/libs/riot+compiler.js"></script>
+  <script src="assets/libs/knockout-3.4.0.js"></script>
   <script src='assets/libs/fabric.min.js'></script>
   <!--
     Load the application
@@ -65,7 +65,25 @@
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBC3SLdbHfZGQKP3A_NRdAUewVFP9fwnYw&callback=initMap">
   </script>
   <!--
-    Load templates
+    Define templates
   -->
-  <script src='src/templates/waypoint.tag' type="riot/tag"></script>
+  <script type="text/html" id="waypoint-template">
+    <div class='waypoint row'>
+      <div class='waypoint-distance large-3 column'>
+        <div class='row total-distance'>
+          <div class="large-12 column" data-bind="text: totalDistance">
+          </div>
+        </div>
+        <div class='row relative-distance'>
+          <div class="large-12 column" data-bind="text: distFromPrev">
+          </div>
+        </div>
+      </div>
+      <div class='waypoint-tulip large-5 column'>
+        Tulip
+      </div>
+      <div class='waypoint-notes large-4 column' data-bind="text: notes">
+      </div>
+    </div>
+  </script>
 </html>

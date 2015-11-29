@@ -1,24 +1,19 @@
-<waypoint>
-<div each={ opts.waypoints }>
+<script type="text/html" id="waypoint-template">
   <div class='waypoint row'>
     <div class='waypoint-distance large-3 column'>
       <div class='row total-distance'>
-        <div class="large-12 column">
-          {this.totalDistance}
+        <div class="large-12 column" data-bind="text: totalDistance">
         </div>
       </div>
       <div class='row relative-distance'>
-        <div class="large-12 column">
-          {this.distFromPrev}
+        <div class="large-12 column" data-bind="text: distFromPrev">
         </div>
       </div>
     </div>
     <div class='waypoint-tulip large-5 column'>
       Tulip
     </div>
-    <div class='waypoint-notes large-4 column'>
-      {this.notes}
+    <div class='waypoint-notes large-4 column' data-bind="text: notes">
     </div>
   </div>
-</div>
-</waypoint>
+</script>

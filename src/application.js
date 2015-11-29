@@ -2,18 +2,13 @@
   Define the application namespace
 */
 var app = {};
-var wpt;
-var wpt1;
-var roadbook;
+
 function initMap() {
   app.mapEditor = new MapEditor();
 }
 $(document).ready(function(){
   app.roadbook = new Roadbook();
-  // wpt = new Waypoint({totalDistance: 10, relativeDistance: 3, notes: 'here is some stuff'});
-  // wpt1 = new Waypoint({totalDistance: 11, relativeDistance: 1, notes: 'here is some more stuff'});
-  // app.roadbook.addWaypoint(wpt);
-  // app.roadbook.addWaypoint(wpt1);
+
 
   //TODO move to map controls module
   app.listeners = {
@@ -73,4 +68,5 @@ $(document).ready(function(){
     },
   }
   app.listeners.bind();
+  ko.applyBindings(app.roadbook);
 });
