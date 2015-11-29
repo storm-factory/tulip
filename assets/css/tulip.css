@@ -1,3 +1,9 @@
+#content {
+  height: 95%;
+}
+#content .content-container {
+  height: 100%;
+}
 #map {
   /*
   height: 151%;
@@ -8,26 +14,31 @@
   height: 100%;
   width: 100%;
 }
+#roadbook {
+  padding-top: 1.2rem;
+  padding-bottom: 1.2rem;
+  height: 100%;
+  overflow: auto;
+}
+#zout:focus,
+#zin:focus {
+  background-color: #008CBA;
+}
 .map-container
 {
   padding: 0 !important;
   height: 100%;
   overflow: hidden;
 }
-#content {
-  height: 95%;
-}
-#content .content-container {
+.roadbook-container {
   height: 100%;
 }
-#roadbook {
-  padding-top: 1.2rem;
-  padding-bottom: 1.2rem;
+.relative-distance {
+  height: 28px;
 }
-
-#zout:focus,
-#zin:focus {
-  background-color: #008CBA;
+.total-distance {
+  height: 150px;
+  border-bottom: 1px solid #000;
 }
 .waypoint {
   width:90rem;
@@ -45,11 +56,4 @@
 .waypoint-notes,
 .waypoint-tulip {
   height: 178px;
-}
-.total-distance {
-  height: 150px;
-  border-bottom: 1px solid #000;
-}
-.relative-distance {
-  height: 28px;
 }
