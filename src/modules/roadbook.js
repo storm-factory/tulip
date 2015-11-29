@@ -3,11 +3,6 @@ var Roadbook = Class({
     this.waypoints = ko.observableArray([]);
   },
 
-  //TODO impliment two way data binding between the mapping module and this module.
-  //      with that we can take an update from the mapping module and know the most efficent
-  //      method of updating our collection of waypoints. we will lose flexibilty with this
-  //      so if possible somehow impliment a face or interface to decrease coupling as much as
-  //      possible.
   addWaypoint: function(wptData){
 
     //determine index of waypoint based on distance from start
@@ -16,7 +11,6 @@ var Roadbook = Class({
     waypoint.id = index;
     this.waypoints.splice(index,0,waypoint);
     this.reindexWaypoints();
-    this.renderWaypoints();
 
     return waypoint;
   },
@@ -24,7 +18,6 @@ var Roadbook = Class({
   deleteWaypoint: function(wptId){
     this.waypoints.splice(wptId - 1,1);
     this.reindexWaypoints();
-    this.renderWaypoints();
   },
 
   /*
@@ -43,10 +36,10 @@ var Roadbook = Class({
       currentIndex = (minIndex + maxIndex) / 2 | 0;
       currentElement = this.waypoints()[currentIndex];
 
-      if (currentElement.kmFromStart < kmFromStart) {
+      if (currentElement.kmFromStart() < kmFromStart) {
         minIndex = currentIndex + 1;
       }
-      else if (currentElement.kmFromStart > kmFromStart) {
+      else if (currentElement.kmFromStart() > kmFromStart) {
         maxIndex = currentIndex - 1;
       }
       else {
@@ -63,7 +56,4 @@ var Roadbook = Class({
     }
   },
 
-  renderWaypoints: function(){
-
-  },
 });
