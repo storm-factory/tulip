@@ -6,7 +6,7 @@ var Roadbook = Class({
   addWaypoint: function(wptData){
 
     //determine index of waypoint based on distance from start
-    var index = this.determineWaypointInsertionIndex(wptData.kmFromStart);
+    var index = this.determineWaypointInsertionIndex(wptData.distances.kmFromStart);
     var waypoint = new Waypoint(wptData);
     waypoint.id = index;
     this.waypoints.splice(index,0,waypoint);

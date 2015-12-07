@@ -144,12 +144,17 @@ var MapEditor = Class({
   */
   addWaypoint: function(point) {
       var distances = this.computeDistanceFromStart(point);
-
+      var angles = this.computeHeading(point);
       point.kmFromStart = distances.kmFromStart;
       point.miFromStart = distances.miFromStart;;
+      point.heading = angles.heading;
 
+      opts = {
+          distances: distances,
+          angles: angles,
+      }
       //bind the waypoint to this map point and update its icon
-      point.waypoint = app.roadbook.addWaypoint(distances);
+      point.waypoint = app.roadbook.addWaypoint(opts);
       point.setIcon(this.waypointIcon());
       //recompute distances between waypoints
       _this.updateRoute();
@@ -253,8 +258,47 @@ var MapEditor = Class({
   /*
     Compute the cap heading of this waypoint
   */
-  computeHeading: function(waypoint){
+  computeHeading: function(point){
+    // google.maps.geometry.spherical.computeHeading(from:LatLng, to:LatLng)
+    //not the first or last
+    var pointIndex = point.mapVertexIndex;
+    var heading = 0;
+    var relativeAngle = 0;
 
+    //the heading is from this point to the last one
+    //the relative angle is the heading minus the heading from the last point to this one
+    if(pointIndex != 0 && pointIndex != (this.routePoints.getLength()-1)){
+      heading = google.maps.geometry.spherical.computeHeading(point.getPosition(), this.routePoints.getAt(pointIndex+1));
+      relativeAngle = heading + google.maps.geometry.spherical.computeHeading(this.routePoints.getAt(pointIndex-1), point.getPosition());
+    } else if(pointIndex == 0){
+      // the first point in the route has a heading to the next point
+      if(this.routePoints.getLength() == 0) {
+        heading = google.maps.geometry.spherical.computeHeading(point.getPosition(), this.routePoints.getAt(1));
+        relativeAngle = 0;
+      } else{
+        heading = 0;
+        relativeAngle = 0;
+      }
+
+    } else if(pointIndex == (this.routePoints.getLength()-1)){
+      // the last point in the route has a heading to the previous point
+      heading = google.maps.geometry.spherical.computeHeading(this.routePoints.getAt(pointIndex-1), point.getPosition());
+      relativeAngle = 0;
+    }
+    return {
+      heading: this.convertHeadingToBearing(heading),
+      relativeAngle: relativeAngle
+    };
+  },
+
+  /*
+    google maps headings are between [-180,180] so convert them to a compass bearing
+  */
+  convertHeadingToBearing(heading){
+    if(heading < 0){
+      return 360 + heading;
+    }
+    return heading;
   },
 
 
@@ -441,12 +485,13 @@ var MapEditor = Class({
       var previous;
       if(marker.waypoint) {
         var distances = this.computeDistanceFromStart(marker);
+        var angles = this.computeHeading(marker);
         if(previous) {
           $.extend(distances,this.computeDistanceBetweenPoints(previous,marker));
         } else {
           $.extend(distances,{miFromPrev: 0, kmFromPrev: 0});
         }
-        marker.waypoint.updateWaypoint(distances);
+        marker.waypoint.updateWaypoint(distances, angles.heading);
         previous = marker;
       }
     }
