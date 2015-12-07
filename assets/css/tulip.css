@@ -30,6 +30,9 @@ canvas {
 }
 .heading {
   font-family: Tahoma, Geneva, sans-serif;
+  color: #000;
+  text-align: center;
+  font-size: 2.5em;
 }
 .map-container
 {
@@ -44,13 +47,13 @@ canvas {
   height: 28px;
   color: #000;
   font-weight: bold;
+  border-top: 1px solid #000;
 }
 nav.top-bar {
   background: -webkit-linear-gradient(top, rgba(255,68,0,1) 0%, rgba(255,68,0,1) 33%, rgba(255,145,0,1) 34%, rgba(255,145,0,1) 68%, rgba(255,187,41,1) 68%, rgba(255,187,41,1) 100%);
 }
 .total-distance {
-  height: 150px;
-  border-bottom: 1px solid #000;
+  height: 90px;
   font-size: 2.2em;
   color: #000;
   font-weight: bold;

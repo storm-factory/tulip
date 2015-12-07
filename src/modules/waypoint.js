@@ -65,6 +65,6 @@ var Waypoint = Class({
   computedHeading: function(){
     var heading = Math.round(this.exactHeading());
     //round the exaxt heading and zero pad it
-    return Array(Math.max(3 - String(heading).length + 1, 0)).join(0) + heading + '\&deg;';
+    return Array(Math.max(3 - String(heading).length + 1, 0)).join(0) + heading + '\xB0';
   }
 });
