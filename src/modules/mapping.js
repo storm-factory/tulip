@@ -164,7 +164,6 @@ var MapEditor = Class({
     Removes a point or waypoint from the route
   */
   deletePoint: function(point){
-    var pointIndex = this.routeMarkers.indexOf(point);
     var vertexIndex = point.mapVertexIndex;
     if(point.waypoint){
       this.deleteWaypoint(point);
@@ -174,20 +173,25 @@ var MapEditor = Class({
       Decrement the vertexIndex of each point on the route after the point being
       removed by one.
     */
-    if(pointIndex >= 0){
+    if(vertexIndex >= 0){
         //remove the marker from our markers array
-        this.routeMarkers.splice(pointIndex,1);
+        this.routeMarkers.splice(vertexIndex,1);
         //decriment the remaining point's vertex indecies
-        this.decrementRouteVertexIndecies(pointIndex);
-        if(vertexIndex >= 0) {
-          this.routePoints.removeAt(vertexIndex)
-        }
+        this.decrementRouteVertexIndecies(vertexIndex);
+        //remove the point from our points array
+        this.routePoints.removeAt(vertexIndex)
     }
+    _this.updateRoute();
   },
-  //TODO If the start waypoint is deleted assign it to the next point in the route
+
   deleteWaypoint: function(point){
     //remove the waypoint from the roadbook
     app.roadbook.deleteWaypoint(point.waypoint.id);
+
+    //If the start waypoint is deleted assign it to the next point in the route
+    if(point.mapVertexIndex == 0 && (this.routeMarkers.length > 2)){
+      this.addWaypoint(this.routeMarkers[1]);
+    }
 
     //update the point's icon and remove its waypoint object
     point.setIcon(this.pointIcon());
@@ -272,7 +276,7 @@ var MapEditor = Class({
       relativeAngle = heading + google.maps.geometry.spherical.computeHeading(this.routePoints.getAt(pointIndex-1), point.getPosition());
     } else if(pointIndex == 0){
       // the first point in the route has a heading to the next point
-      if(this.routePoints.getLength() == 0) {
+      if(this.routePoints.getLength() > 1) {
         heading = google.maps.geometry.spherical.computeHeading(point.getPosition(), this.routePoints.getAt(1));
         relativeAngle = 0;
       } else{
@@ -296,7 +300,7 @@ var MapEditor = Class({
   */
   convertHeadingToBearing(heading){
     if(heading < 0){
-      return 360 + heading;
+      heading = 360 + heading;
     }
     return heading;
   },
