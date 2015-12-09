@@ -2,7 +2,6 @@ var Waypoint = Class({
   /*
 
     opts: {
-            id: INTEGER,
             distances: {
               kmFromStart: FLOAT,
               miFromStart: FLOAT,
@@ -18,13 +17,14 @@ var Waypoint = Class({
     }
   */
   create: function(opts){
-    this.id  = opts.id
+
     this.kmFromStart  = ko.observable(opts.distances.kmFromStart);
     this.miFromStart  = ko.observable(opts.distances.miFromStart);
     this.kmFromPrev   = ko.observable(opts.distances.kmFromPrev);
     this.miFromPrev   = ko.observable(opts.distances.miFromPrev);
     this.exactHeading = ko.observable(opts.angles.heading);
 
+    this.id             = ko.computed(this.computedId, this);
     this.distFromPrev   = ko.computed(this.computedDistanceFromPrev, this);
     this.totalDistance  = ko.computed(this.computedTotalDistance, this);
     this.heading        = ko.computed(this.computedHeading, this);
@@ -34,11 +34,10 @@ var Waypoint = Class({
   },
 
   initializeTulip: function(json, relativeAngle){
-
+    var canvas = $('#' + this.computedId).find('canvas');
   },
 
   updateWaypoint: function (distances, heading){
-
     if(distances){
       this.kmFromStart(distances.kmFromStart);
       this.miFromStart(distances.miFromStart);
@@ -66,5 +65,10 @@ var Waypoint = Class({
     var heading = Math.round(this.exactHeading());
     //round the exaxt heading and zero pad it
     return Array(Math.max(3 - String(heading).length + 1, 0)).join(0) + heading + '\xB0';
-  }
+  },
+
+  computedId: function(){
+
+    return 'wpt_' + this.kmFromStart().toFixed(2).replace('.','');
+  },
 });

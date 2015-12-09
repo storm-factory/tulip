@@ -68,7 +68,7 @@
     Define templates
   -->
   <script type="text/html" id="waypoint-template">
-    <div class='waypoint row'>
+    <div class='waypoint row' data-bind="attr: {'id': id()}">
       <div class='waypoint-distance large-3 column'>
         <div class='row total-distance'>
           <div class="large-12 column" data-bind="text: totalDistance">
