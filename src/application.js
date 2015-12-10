@@ -8,11 +8,26 @@ function initMap() {
 }
 $(document).ready(function(){
   app.roadbook = new Roadbook();
+  app.drawRoute = false;
 
 
-  //TODO move to map controls module
   app.listeners = {
     bind: function(){
+
+      /*
+          App Listeners
+      */
+      $('#draw-route').click(function(){
+
+      });
+
+      $('#toggle-roadbook').click(function(){
+        $('.roadbook-container').toggleClass('collapsed');
+        $('.roadbook-container').toggleClass('expanded');
+      });
+      /*
+          Map Listeners
+      */
       $('#zin').click(function(){
         // var map = app.mapEditor.map;
         // map.setZoom(map.getZoom() + 1);
@@ -42,6 +57,10 @@ $(document).ready(function(){
 
     },
   };
+
+  //TODO move to map controls module
+
+
   var rotation = 0;
   app.mapControls = {
     map: function(){

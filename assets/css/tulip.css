@@ -1,3 +1,8 @@
+@font-face{
+  font-family:bellybeans;
+  src:url(../fonts/bellybeans.ttf);
+}
+
 canvas {
   width: 180px;
   height: 180px;
@@ -21,9 +26,31 @@ canvas {
 #roadbook {
   padding-top: 1.2rem;
   padding-bottom: 1.2rem;
-  height: 100%;
+  height: 90%;
   overflow: auto;
 }
+#roadbook-header {
+  font-family: bellybeans;
+  font-size: 3rem;
+  text-shadow: -3px 3px 2px rgba(255,144,0, 1);
+  text-align: left;
+  background-color: #787878;
+  color: #ffba29;
+  padding: 0;
+}
+
+#roadbook-header .menu {
+  text-align: right;
+}
+
+#roadbook-header .menu a{
+  text-shadow: none;
+  vertical-align: middle;
+  margin: 0;
+  font-size: 2rem;
+  padding: 0 .65rem 0 .65rem;
+}
+
 #zout:focus,
 #zin:focus {
   background-color: #008CBA;
@@ -42,7 +69,6 @@ canvas {
   z-index: 0;
 }
 .roadbook-container {
-  height: 95%;
   width: 500px;
   position: absolute;
   top: 1rem;
@@ -50,9 +76,19 @@ canvas {
   z-index: 10;
   background-color: #fff;
   padding: 10px;
-
-  -webkit-box-shadow: -12px 4px 29px -2px rgba(120,120,120,0.89);
+  -webkit-box-shadow: -12px 4px 29px -2px rgba(0,0,0,0.89);
+  overflow: hidden;
 }
+.roadbook-container.collapsed{
+  height: 90px;
+  transition:all 1s;
+}
+
+.roadbook-container.expanded{
+  height: 95%;
+  transition:all 1s;
+}
+
 .relative-distance {
   height: 28px;
   color: #000;

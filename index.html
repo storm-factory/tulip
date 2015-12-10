@@ -16,6 +16,12 @@
           <a href="#" class="button tiny radius secondary" id="zout"><i class="fi-minus"></i></a>
         </li>
       </ul>
+      <ul class="left">
+        <li>
+          <a href="#" class="button tiny radius secondary" id="draw-route"><i class="fi-pencil"></i></a>
+
+        </li>
+      </ul>
       <!-- <ul class="left">
         <li>
           <a href="#" class="button tiny radius secondary" id="anti-clockwise"><i class="fi-arrow-left"></i></a>
@@ -30,13 +36,22 @@
           <div id="map">
           </div>
         <!-- </div> -->
-        <div class='roadbook-container'>
+        <div class='roadbook-container collapsed'>
+          <div class="row" id="roadbook-header">
+            <div class="large-3 column title">
+              Tulip
+            </div>
+            <div class="large-4 column menu">
+              <a href="#" class="button tiny radius secondary" id="toggle-roadbook"><i class="fi-arrow-down"></i></a>
+              <a href="#" class="button tiny radius secondary" id="roadbook-menu"><i class="fi-list"></i></a>
+            </div>
+          </div>
           <div id='roadbook'>
             <!-- render waypoint templates here -->
             <div data-bind="template: { name: 'waypoint-template', foreach: app.roadbook.waypoints }"></div>
           </div>
+        </div>
       </div>
-
     </div>
   </body>
   <script>
