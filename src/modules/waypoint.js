@@ -34,7 +34,7 @@ var Waypoint = Class({
   },
 
   initializeTulip: function(json, relativeAngle){
-    var canvas = $('#' + this.computedId).find('canvas');
+    this.tulip = new Tulip(this.computedId());
   },
 
   updateWaypoint: function (distances, heading){
@@ -68,7 +68,6 @@ var Waypoint = Class({
   },
 
   computedId: function(){
-
     return 'wpt_' + this.kmFromStart().toFixed(2).replace('.','');
   },
 });

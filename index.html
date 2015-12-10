@@ -25,12 +25,12 @@
       </ul> -->
     </nav>
     <div id="content">
-      <div class="row content-container">
-        <div class='map-container large-8 column'>
+      <div class="content-container">
+        <!-- <div class='map-container column' > -->
           <div id="map">
           </div>
-        </div>
-        <div class='roadbook-container large-4 column'>
+        <!-- </div> -->
+        <div class='roadbook-container'>
           <div id='roadbook'>
             <!-- render waypoint templates here -->
             <div data-bind="template: { name: 'waypoint-template', foreach: app.roadbook.waypoints }"></div>
@@ -68,26 +68,22 @@
     Define templates
   -->
   <script type="text/html" id="waypoint-template">
-    <div class='waypoint row' data-bind="attr: {'id': id()}">
-      <div class='waypoint-distance large-3 column'>
+    <div class='waypoint row'>
+      <div class='waypoint-distance'>
         <div class='row total-distance'>
           <div class="large-12 column" data-bind="text: totalDistance">
           </div>
         </div>
-        <div class='row heading'>
-          <div class="large-12 column" data-bind="text: heading">
-          </div>
+        <div class='heading' data-bind="text: heading">
         </div>
-        <div class='row relative-distance'>
-          <div class="large-12 column" data-bind="text: distFromPrev">
-          </div>
+        <div class='relative-distance' data-bind="text: distFromPrev">
         </div>
       </div>
-      <div class='waypoint-tulip large-5 column'>
-        <canvas>
+      <div class='waypoint-tulip'>
+        <canvas data-bind="attr: {'id': id()}" width='180' height='180'>
         </canvas>
       </div>
-      <div class='waypoint-notes large-4 column' data-bind="text: notes">
+      <div class='waypoint-notes' data-bind="text: notes">
       </div>
     </div>
   </script>
