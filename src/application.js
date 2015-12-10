@@ -24,6 +24,9 @@ $(document).ready(function(){
       $('#toggle-roadbook').click(function(){
         $('.roadbook-container').toggleClass('collapsed');
         $('.roadbook-container').toggleClass('expanded');
+
+        $('#toggle-roadbook i').toggleClass('fi-arrow-down');
+        $('#toggle-roadbook i').toggleClass('fi-arrow-up');
       });
       /*
           Map Listeners

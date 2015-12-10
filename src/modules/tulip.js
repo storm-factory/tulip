@@ -4,43 +4,18 @@
 */
 
 fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
-// var canvas = new fabric.Canvas('main');
-// canvas.selection = false;
-
-// var currentSelectedObject;
-
-// var entryTrackPath = new fabric.Path('M 150 290 C 150, 285, 150, 265, 150, 250 C 150, 235, 150, 215, 150, 200 C 150, 185, 150, 165, 150, 150', { fill: '', stroke: 'black', strokeWidth: 3, hasControls: false});
-// var entryTrackOrigin = new fabric.Circle({
-//   left: entryTrackPath.path[0][1],
-//   top: entryTrackPath.path[0][2],
-//   strokeWidth: 1,
-//   radius: 5,
-//   fill: 'black',
-//   stroke: '#666'
-// });
-//
-// var entryTrack = new fabric.Group([ entryTrackPath, entryTrackOrigin ], {
-//   hasControls: false,
-//
-//   lockMovementY: true,
-//   hasBorders: false
-// });
-// entryTrack.type = 'track';
-// canvas.add(entryTrack);
-
-// var exitTrackpath;
-// var exitTrackEnd;
-// var exitTrack;
-//
-// var objects;
 
 var Tulip = Class({
+  // _this: {},
+
   create: function(el){
-    this.canvas = new fabric.Canvas(el, {width:180, height:180});
+    // _this = this;
+    this.canvas = new fabric.Canvas(el);
     this.canvas.selection = false;
     this.currentSelectedObject;
 
     this.initTracks();
+    this.initListeners();
   },
 
   initTracks: function(){
@@ -62,17 +37,7 @@ var Tulip = Class({
       hasBorders: false
     });
     this.entryTrack.type = 'track';
-    // this.canvas.add(this.entryTrack);
-    var circle = new fabric.Circle({
-      left: 10,
-      top: 10,
-      strokeWidth: 1,
-      radius: 5,
-      fill: 'black',
-      stroke: '#666'
-    });
-
-    this.canvas.add(circle);
+    this.canvas.add(this.entryTrack);
 
     this.exitTrackpath;
     this.exitTrackEnd;
@@ -82,19 +47,19 @@ var Tulip = Class({
   },
 
   initListeners: function(){
-
+    console.log(this.canvas);
     this.canvas.on('object:selected', function(e){
       console.log(e.target.type);
       //if the object is a track let it be edited
-      if (e.target.type == 'track' && !(e.target == currentSelectedObject)) {
+      if (e.target.type == 'track' && !(e.target == _this.currentSelectedObject)) {
         //also need to redraw edit points if track is moved
-
-        currentSelectedObject = new TrackEditor(e.target._objects[0],false)
+        console.log(_this.canvas);
+        _this.currentSelectedObject = new TrackEditor(_this.canvas, e.target._objects[0],false)
       }
     });
 
     this.canvas.on('selection:cleared', function(e){
-      this.currentSelectedObject.destroy();
+      _this.currentSelectedObject.destroy();
     });
   },
 

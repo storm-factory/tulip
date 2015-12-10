@@ -6,10 +6,9 @@
 */
 var MapEditor = Class({
   //maintain context in listeners
-  _this: {},
-
+  
   create: function(){
-    _this = this;
+    _this = this; //not scoped, pollutes global scope
     this.initMap();
     this.initRoute();
     this.initRouteListeners();

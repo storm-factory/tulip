@@ -1,4 +1,5 @@
 var Waypoint = Class({
+  _this: {},
   /*
 
     opts: {
@@ -17,24 +18,30 @@ var Waypoint = Class({
     }
   */
   create: function(opts){
-
+    // _this = this;
     this.kmFromStart  = ko.observable(opts.distances.kmFromStart);
     this.miFromStart  = ko.observable(opts.distances.miFromStart);
     this.kmFromPrev   = ko.observable(opts.distances.kmFromPrev);
     this.miFromPrev   = ko.observable(opts.distances.miFromPrev);
     this.exactHeading = ko.observable(opts.angles.heading);
+    this.tulipJson    = ko.observable();
 
-    this.id             = ko.computed(this.computedId, this);
     this.distFromPrev   = ko.computed(this.computedDistanceFromPrev, this);
     this.totalDistance  = ko.computed(this.computedTotalDistance, this);
     this.heading        = ko.computed(this.computedHeading, this);
 
-    this.initializeTulip(opts.tulip, opts.angles.relativeAngle);
+
+    // ko.bindingHandlers.waypointCanvasRendered = {
+    //   init: function(element){
+    //     _this.initializeTulip(element, null, null);
+    //   }
+    // };
+
     this.notes = ko.observable(opts.notes);
   },
 
-  initializeTulip: function(json, relativeAngle){
-    this.tulip = new Tulip(this.computedId());
+  initializeTulip: function(element, json, relativeAngle){
+    this.tulip = new Tulip(element);
   },
 
   updateWaypoint: function (distances, heading){
@@ -67,7 +74,4 @@ var Waypoint = Class({
     return Array(Math.max(3 - String(heading).length + 1, 0)).join(0) + heading + '\xB0';
   },
 
-  computedId: function(){
-    return 'wpt_' + this.kmFromStart().toFixed(2).replace('.','');
-  },
 });

@@ -1,5 +1,5 @@
 /*
-  This object handles all the drag and drop editing of tracks on the canvas
+  This object handles all the drag and drop editing of tracks on the this.canvas
   I've attempted to make it as simple as possible using what I could learn about bezier curve interpolation
   and also some basic linear algebra I picked up along the way.
 
@@ -10,24 +10,25 @@
 
 var TrackEditor = Class({
 
-  create: function(track, entryTrack, editOrigin) {
+  create: function(canvas, track, entryTrack, editOrigin) {
     fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
     this.track = track
-
+    this.canvas = canvas
+    
     this.origin = this.makeOrigin(entryTrack, editOrigin);
 
     this.joinOne = this.makeMidPoint(this.track.path[1][5], this.track.path[1][6]);
     this.joinOne.name = "joinOne";
-    canvas.add(this.joinOne);
+    this.canvas.add(this.joinOne);
 
     this.joinTwo = this.makeMidPoint(this.track.path[2][5], this.track.path[2][6]);
     this.joinTwo.name = "joinTwo";
-    canvas.add(this.joinTwo);
+    this.canvas.add(this.joinTwo);
     //
     this.end = this.makeEnd(entryTrack);
 
 
-    canvas.on({
+    this.canvas.on({
         'object:moving': this.pointMoving,
     });
 
@@ -36,10 +37,10 @@ var TrackEditor = Class({
   },
 
   destroy: function(){
-    canvas.remove(this.origin);
-    canvas.remove(this.joinOne);
-    canvas.remove(this.joinTwo);
-    canvas.remove(this.end);
+    this.canvas.remove(this.origin);
+    this.canvas.remove(this.joinOne);
+    this.canvas.remove(this.joinTwo);
+    this.canvas.remove(this.end);
     delete this;
   },
 
@@ -57,7 +58,7 @@ var TrackEditor = Class({
       origin.name = "origin";
       origin.hasBorders = origin.hasControls = false;
       origin.track = this.track
-      canvas.add(origin);
+      this.canvas.add(origin);
       return origin
     }
   },
@@ -95,7 +96,7 @@ var TrackEditor = Class({
       end.track = this.track;
       end.name = "end";
       // this.end.centeredRotation = true;
-      canvas.add(end);
+      this.canvas.add(end);
       return end;
     }
 
