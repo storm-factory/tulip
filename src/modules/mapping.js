@@ -6,9 +6,8 @@
 */
 var MapEditor = Class({
   //maintain context in listeners
-  
+
   create: function(){
-    _this = this; //not scoped, pollutes global scope
     this.initMap();
     this.initRoute();
     this.initRouteListeners();
@@ -98,42 +97,42 @@ var MapEditor = Class({
       add this point to the route Polyline path MVC array
     */
     if(index){
-      _this.routePoints.insertAt(index,latLng)
+      this.routePoints.insertAt(index,latLng)
     } else {
-      _this.routePoints.push(latLng);
+      this.routePoints.push(latLng);
     }
     /*
       Creates a google maps marker to denote a vertex or point on the route polyline and
     */
     var point = new google.maps.Marker({
-                      icon: _this.pointIcon(),
-                      map: _this.map,
+                      icon: this.pointIcon(),
+                      map: this.map,
                       position: latLng,
                       draggable: true,
-                      mapVertexIndex: _this.routePoints.indexOf(latLng),
+                      mapVertexIndex: this.routePoints.indexOf(latLng),
                     });
 
     /*
       Bind the listeners for this point
     */
-    _this.initPointListeners(point);
+    this.initPointListeners(point);
 
     /*
       Add this point to the marker management array
     */
     if(index){
-      _this.routeMarkers.splice(index,0,point);
-      _this.incrementRouteVertexIndecies(index);
+      this.routeMarkers.splice(index,0,point);
+      this.incrementRouteVertexIndecies(index);
     } else {
-      _this.routeMarkers.push(point);
+      this.routeMarkers.push(point);
       //this is the first point and thus the start of the route, make it a waypoint
-      if(_this.routeMarkers.length == 1 && _this.routePoints.length == 1) {
-        point.setIcon(_this.waypointIcon());
+      if(this.routeMarkers.length == 1 && this.routePoints.length == 1) {
+        point.setIcon(this.waypointIcon());
         point.kmFromStart = 0;
         point.miFromStart = 0;
         point.kmFromPrev = 0;
         point.miFromPrev = 0;
-        _this.addWaypoint(point);
+        this.addWaypoint(point);
       }
     }
   },
@@ -156,7 +155,7 @@ var MapEditor = Class({
       point.waypoint = app.roadbook.addWaypoint(opts);
       point.setIcon(this.waypointIcon());
       //recompute distances between waypoints
-      _this.updateRoute();
+      this.updateRoute();
   },
 
   /*
@@ -180,7 +179,7 @@ var MapEditor = Class({
         //remove the point from our points array
         this.routePoints.removeAt(vertexIndex)
     }
-    _this.updateRoute();
+    this.updateRoute();
   },
 
   deleteWaypoint: function(point){
@@ -309,6 +308,7 @@ var MapEditor = Class({
     figure out where the user is in the world and center the map there
   */
   attemptGeolocation: function(){
+    var _this = this;
     navigator.geolocation.getCurrentPosition(function(position) {
       var pos = {
         lat: position.coords.latitude,
@@ -343,6 +343,7 @@ var MapEditor = Class({
   },
 
   initPointListeners: function(point){
+    var _this = this;
     /*
       right clicking on a route point removes it from the route
     */
@@ -391,6 +392,7 @@ var MapEditor = Class({
   },
 
   initRouteListeners: function() {
+    var _this = this;
     // Add a listener for the map's click event
     // TODO add a switch on this so it can be turned on and off by the app
     this.map.addListener('click', function(evt){

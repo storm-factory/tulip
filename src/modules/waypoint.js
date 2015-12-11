@@ -18,7 +18,7 @@ var Waypoint = Class({
     }
   */
   create: function(opts){
-    // _this = this;
+
     this.kmFromStart  = ko.observable(opts.distances.kmFromStart);
     this.miFromStart  = ko.observable(opts.distances.miFromStart);
     this.kmFromPrev   = ko.observable(opts.distances.kmFromPrev);
@@ -30,12 +30,12 @@ var Waypoint = Class({
     this.totalDistance  = ko.computed(this.computedTotalDistance, this);
     this.heading        = ko.computed(this.computedHeading, this);
 
-
-    // ko.bindingHandlers.waypointCanvasRendered = {
-    //   init: function(element){
-    //     _this.initializeTulip(element, null, null);
-    //   }
-    // };
+    var _this = this;
+    ko.bindingHandlers.waypointCanvasRendered = {
+      init: function(element){
+        _this.initializeTulip(element, null, null);
+      }
+    };
 
     this.notes = ko.observable(opts.notes);
   },

@@ -14,7 +14,7 @@ var TrackEditor = Class({
     fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
     this.track = track
     this.canvas = canvas
-    
+
     this.origin = this.makeOrigin(entryTrack, editOrigin);
 
     this.joinOne = this.makeMidPoint(this.track.path[1][5], this.track.path[1][6]);
@@ -81,7 +81,7 @@ var TrackEditor = Class({
 
   makeEnd: function(left, top){
 
-    if(!entryTrack){
+    if(!this.entryTrack){
       var end = new fabric.Triangle({
         left: this.track.path[3][5],
         top: this.track.path[3][6],
@@ -92,7 +92,8 @@ var TrackEditor = Class({
         stroke: '#666'
       });
 
-      end.hasBorders = r.hasControls = false;
+      // end.hasBorders = r.hasControls = false;
+      end.hasBorders = false;
       end.track = this.track;
       end.name = "end";
       // this.end.centeredRotation = true;

@@ -6,10 +6,8 @@
 fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
 
 var Tulip = Class({
-  // _this: {},
 
   create: function(el){
-    // _this = this;
     this.canvas = new fabric.Canvas(el);
     this.canvas.selection = false;
     this.currentSelectedObject;
@@ -47,13 +45,11 @@ var Tulip = Class({
   },
 
   initListeners: function(){
-    console.log(this.canvas);
+    var _this = this;
     this.canvas.on('object:selected', function(e){
-      console.log(e.target.type);
       //if the object is a track let it be edited
       if (e.target.type == 'track' && !(e.target == _this.currentSelectedObject)) {
         //also need to redraw edit points if track is moved
-        console.log(_this.canvas);
         _this.currentSelectedObject = new TrackEditor(_this.canvas, e.target._objects[0],false)
       }
     });
