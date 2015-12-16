@@ -31,17 +31,18 @@ var Waypoint = Class({
     this.heading        = ko.computed(this.computedHeading, this);
 
     var _this = this;
+    var angle = opts.angles.relativeAngle;
     ko.bindingHandlers.waypointCanvasRendered = {
       init: function(element){
-        _this.initializeTulip(element, null, null);
+        _this.initializeTulip(element, null, angle);
       }
     };
 
     this.notes = ko.observable(opts.notes);
   },
 
-  initializeTulip: function(element, json, relativeAngle){
-    this.tulip = new Tulip(element);
+  initializeTulip: function(element, json, angle){
+    this.tulip = new Tulip(element, null, angle);
   },
 
   updateWaypoint: function (distances, heading){

@@ -7,18 +7,17 @@ fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
 
 var Tulip = Class({
 
-  create: function(el){
+  create: function(el, json, angle){
     this.canvas = new fabric.Canvas(el);
     this.canvas.selection = false;
     this.currentSelectedObject;
-
-    this.initTracks();
+    console.log(angle);
+    this.initTracks(angle);
     this.initListeners();
   },
 
-  initTracks: function(){
-    //this.entryTrackPath = new fabric.Path('M 150 290 C 150, 285, 150, 265, 150, 250 C 150, 235, 150, 215, 150, 200 C 150, 185, 150, 165, 150, 150', { fill: '', stroke: 'black', strokeWidth: 3, hasControls: false});
-    this.entryTrackPath = new fabric.Path('M 90 174 C 90, 171, 90, 159, 90, 150 C 90, 141, 90, 129, 90, 120 C 90, 111, 90, 99, 90, 90', { fill: '', stroke: 'black', strokeWidth: 3, hasControls: false});
+  initTracks: function(angle){
+    this.entryTrackPath = new fabric.Path('M 90 171 C 90, 165, 90, 159, 90, 150 C 90, 141, 90, 129, 90, 120 C 90, 111, 90, 99, 90, 90', { fill: '', stroke: 'black', strokeWidth: 3, hasControls: false});
     this.entryTrackOrigin = new fabric.Circle({
       left: this.entryTrackPath.path[0][1],
       top: this.entryTrackPath.path[0][2],
@@ -30,16 +29,32 @@ var Tulip = Class({
 
     this.entryTrack = new fabric.Group([ this.entryTrackPath, this.entryTrackOrigin ], {
       hasControls: false,
-
+      lockMovementX: true,
       lockMovementY: true,
       hasBorders: false
     });
     this.entryTrack.type = 'track';
     this.canvas.add(this.entryTrack);
 
-    this.exitTrackpath;
-    this.exitTrackEnd;
-    this.exitTrack;
+    this.exitTrackpath = new fabric.Path('M 90 90 C 90, 81, 90, 72, 90, 63 C 90, 54, 90, 45, 90, 36 C 90, 27, 90, 99, 90, 9', { fill: '', stroke: 'black', strokeWidth: 3, hasControls: false});
+    this.exitTrackEnd = new fabric.Triangle({
+      left: this.exitTrackpath.path[3][5],
+      top: this.exitTrackpath.path[3][6],
+      strokeWidth: 1,
+      height: 12,
+      width: 12,
+      fill: '#000',
+      stroke: '#666'
+    });
+
+    this.exitTrack = new fabric.Group([ this.exitTrackpath, this.exitTrackEnd ], {
+      hasControls: false,
+      lockMovementX: true,
+      lockMovementY: true,
+      hasBorders: false
+    });
+    this.exitTrack.type = 'track';
+    this.canvas.add(this.exitTrack);
 
     this.objects;
   },
@@ -48,9 +63,12 @@ var Tulip = Class({
     var _this = this;
     this.canvas.on('object:selected', function(e){
       //if the object is a track let it be edited
-      if (e.target.type == 'track' && !(e.target == _this.currentSelectedObject)) {
-        //also need to redraw edit points if track is moved
-        _this.currentSelectedObject = new TrackEditor(_this.canvas, e.target._objects[0],false)
+
+      if(e.target == _this.entryTrack && !(e.target == _this.currentSelectedObject)) {
+        _this.currentSelectedObject = new TrackEditor(_this.canvas, e.target._objects[0],true, false);
+      }
+      if (e.target == _this.exitTrack && !(e.target == _this.currentSelectedObject)) {
+        _this.currentSelectedObject = new TrackEditor(_this.canvas, e.target._objects[0], false, true);
       }
     });
 

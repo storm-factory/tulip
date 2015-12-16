@@ -9,13 +9,15 @@
 */
 
 var TrackEditor = Class({
-
-  create: function(canvas, track, entryTrack, editOrigin) {
+  // change params to entryTrack and exitTrack: entry track can't move end point, exit track can't move origin.
+  // all other bets are off.
+  create: function(canvas, track, editOrigin, editEnd) {
     fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
     this.track = track
     this.canvas = canvas
-
-    this.origin = this.makeOrigin(entryTrack, editOrigin);
+    this.editOrigin = editOrigin;
+    this.editEnd = editEnd;
+    this.origin = this.makeOrigin();
 
     this.joinOne = this.makeMidPoint(this.track.path[1][5], this.track.path[1][6]);
     this.joinOne.name = "joinOne";
@@ -25,7 +27,7 @@ var TrackEditor = Class({
     this.joinTwo.name = "joinTwo";
     this.canvas.add(this.joinTwo);
     //
-    this.end = this.makeEnd(entryTrack);
+    this.end = this.makeEnd();
 
 
     this.canvas.on({
@@ -44,8 +46,8 @@ var TrackEditor = Class({
     delete this;
   },
 
-  makeOrigin: function(entryTrack,editOrigin){
-    if (!entryTrack && editOrigin) {
+  makeOrigin: function(){
+    if (this.editOrigin) {
       var origin = new fabric.Circle({
         left: this.track.path[0][1],
         top: this.track.path[0][2],
@@ -80,8 +82,7 @@ var TrackEditor = Class({
   },
 
   makeEnd: function(left, top){
-
-    if(!this.entryTrack){
+    if(this.editEnd){
       var end = new fabric.Triangle({
         left: this.track.path[3][5],
         top: this.track.path[3][6],
@@ -92,7 +93,7 @@ var TrackEditor = Class({
         stroke: '#666'
       });
 
-      // end.hasBorders = r.hasControls = false;
+      end.hasBorders = end.hasControls = false;
       end.hasBorders = false;
       end.track = this.track;
       end.name = "end";

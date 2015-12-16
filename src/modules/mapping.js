@@ -271,7 +271,7 @@ var MapEditor = Class({
     //the relative angle is the heading minus the heading from the last point to this one
     if(pointIndex != 0 && pointIndex != (this.routePoints.getLength()-1)){
       heading = google.maps.geometry.spherical.computeHeading(point.getPosition(), this.routePoints.getAt(pointIndex+1));
-      relativeAngle = heading + google.maps.geometry.spherical.computeHeading(this.routePoints.getAt(pointIndex-1), point.getPosition());
+      relativeAngle = heading - google.maps.geometry.spherical.computeHeading(this.routePoints.getAt(pointIndex-1), point.getPosition());
     } else if(pointIndex == 0){
       // the first point in the route has a heading to the next point
       if(this.routePoints.getLength() > 1) {
