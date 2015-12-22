@@ -159,7 +159,7 @@ var TrackEditor = Class({
 
     /*
       ### Join 1 and Join 2 ###
-      the joins form their own knot in the middle of the path so we need to interpolate this to be able to flatten the path when we transform which plane it is on
+      the joins form their own knot in the middle of the path so we need to interpolate this to be able to flatten the path when we transform between vertical and horizontal planes
     */
 
     controlPoints = this.getControlPoints(p.track.path[1][5],p.track.path[1][6],p.track.path[2][5],p.track.path[2][6],p.track.path[3][5],p.track.path[3][6],tension);

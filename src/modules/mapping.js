@@ -12,7 +12,7 @@ var MapEditor = Class({
     this.initRoute();
     this.initRouteListeners();
     /*
-      displayEdge is a global variable which tracks whether a handle should be shown when the user hovers the mouse over the route.
+      displayEdge is a instance variable which tracks whether a handle should be shown when the user hovers the mouse over the route.
     */
     this.displayEdge = true;
     this.attemptGeolocation();
