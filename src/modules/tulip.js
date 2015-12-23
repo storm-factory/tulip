@@ -16,7 +16,7 @@ var Tulip = Class({
   },
 
   initTracks: function(angle){
-    this.entryTrack = new fabric.Path('M 90 171 C 90, 165, 90, 159, 90, 150 C 90, 141, 90, 129, 90, 120 C 90, 111, 90, 99, 90, 90',
+    this.entryTrack = new fabric.Path('M 90 171 C 90, 165, 90, 159, 90, 150 C 90, 141, 90, 129, 90, 120 C 90, 111, 90, 99, 90, 88',
                                               { fill: '',
                                                 stroke: '#000',
                                                 strokeWidth: 5,
@@ -110,6 +110,9 @@ var Tulip = Class({
     the angles is provided from the mapping module.
   */
   buildExitTrackPathString: function(angle) {
+
+    // TODO this is some error with angle reporting when the track is at a certain point
+    console.log(angle);
 
     var xy1 =  this.rotatePoint(9,angle);
     var xy2 =  this.rotatePoint(18,angle);
