@@ -271,13 +271,14 @@ var MapEditor = Class({
     //the relative angle is the heading minus the heading from the last point to this one
     if(pointIndex != 0 && pointIndex != (this.routePoints.getLength()-1)){
       heading = google.maps.geometry.spherical.computeHeading(point.getPosition(), this.routePoints.getAt(pointIndex+1));
-      console.log(heading);
-      console.log(google.maps.geometry.spherical.computeHeading(this.routePoints.getAt(pointIndex-1), point.getPosition()));
+
       relativeAngle = heading - google.maps.geometry.spherical.computeHeading(this.routePoints.getAt(pointIndex-1), point.getPosition());
-      // we want to limit what we return to being 0 < angle < 180 for right turns and 0 > angle < -180 for left turns
+      // we want to limit what we return to being 0 < angle < 180 for right turns and 0 > angle > -180 for left turns
       if(relativeAngle > 180) {
+        //left turn
         relativeAngle = -(360 - relativeAngle);
       } else if ( relativeAngle < -180) {
+        //right turn
         relativeAngle = (360 + relativeAngle);
       }
     } else if(pointIndex == 0){

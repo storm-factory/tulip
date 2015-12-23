@@ -29,12 +29,19 @@ var Waypoint = Class({
     this.distFromPrev   = ko.computed(this.computedDistanceFromPrev, this);
     this.totalDistance  = ko.computed(this.computedTotalDistance, this);
     this.heading        = ko.computed(this.computedHeading, this);
+    this.currentlyEditing = false;
 
     var _this = this;
     var angle = opts.angles.relativeAngle;
     ko.bindingHandlers.waypointCanvasRendered = {
       init: function(element){
         _this.initializeTulip(element, null, angle);
+      }
+    };
+
+    ko.bindingHandlers.waypointRendered = {
+      init: function(element){
+        _this.initListeners(element);
       }
     };
 
@@ -75,4 +82,13 @@ var Waypoint = Class({
     return Array(Math.max(3 - String(heading).length + 1, 0)).join(0) + heading + '\xB0';
   },
 
+  initListeners: function(element){
+    var _this = this;
+    $(element).click(function(){
+      if(!_this.currentlyEditing){
+        _this.currentlyEditing = true;
+        _this.tulip.beginEdit();
+      }
+    })
+  }
 });

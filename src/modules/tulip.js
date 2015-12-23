@@ -10,9 +10,10 @@ var Tulip = Class({
   create: function(el, json, angle){
     this.canvas = new fabric.Canvas(el);
     this.canvas.selection = false;
-    this.currentSelectedObject;
+    this.objects = [];
+    this.currentlyEditingObjects = [];
     this.initTracks(angle);
-    this.initListeners();
+    // this.initListeners();
   },
 
   initTracks: function(angle){
@@ -39,6 +40,7 @@ var Tulip = Class({
     });
     this.entryTrackOrigin.track = this.entryTrack;
     this.entryTrack.origin = this.entryTrackOrigin;
+    this.entryTrack.objectType = 'track'
 
 
     this.canvas.add(this.entryTrack);
@@ -72,37 +74,33 @@ var Tulip = Class({
     });
     this.exitTrackEnd.track = this.exitTrack
     this.exitTrack.end = this.exitTrackEnd;
+    this.exitTrack.objectType = 'track'
 
     this.canvas.add(this.exitTrack);
     this.canvas.add(this.exitTrackEnd);
 
-    this.objects;
+    this.objects.push(this.exitTrack);
+    this.objects.push(this.exitTrackEnd);
+    this.objects.push(this.entryTrack);
+    this.objects.push(this.entryTrackOrigin);
   },
 
-  initListeners: function(){
-    var _this = this;
-    this.canvas.on('object:selected', function(e){
-      //if the object is a track let it be edited
-      if(e.target == _this.entryTrack || e.target == _this.entryTrackOrigin) {
-        if(_this.currentSelectedObject && _this.currentSelectedObject != e.target){
-          _this.currentSelectedObject.destroy();
-        }
-        _this.currentSelectedObject = new TrackEditor(_this.canvas, _this.entryTrack,true, false);
-      }
-      if (e.target == _this.exitTrack || e.target == _this.exitTrackEnd) {
-        if(_this.currentSelectedObject && _this.currentSelectedObject != e.target){
-          _this.currentSelectedObject.destroy();
-        }
-        _this.currentSelectedObject = new TrackEditor(_this.canvas, _this.exitTrack, false, true);
-      }
-    });
+  beginEdit: function() {
 
-    this.canvas.on('selection:cleared', function(e){
-      _this.exitTrackEnd.setCoords();
-      _this.entryTrackOrigin.setCoords();
+    for(i = 0; i < this.objects.length; i++) {
+      if(this.objects[i].objectType == 'track'){
+        if(this.objects[i] == this.entryTrack){
+          this.currentlyEditingObjects.push(new TrackEditor(this.canvas, this.entryTrack,true, false));
+        }
+        if(this.objects[i] == this.exitTrack){
+          this.currentlyEditingObjects.push(new TrackEditor(this.canvas, this.exitTrack,false, true));
+        }
+      }
+    }
+  },
 
-      _this.currentSelectedObject.destroy();
-    });
+  finishEdit: function() {
+
   },
 
   /*

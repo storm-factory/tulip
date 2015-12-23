@@ -83,7 +83,7 @@
     Define templates
   -->
   <script type="text/html" id="waypoint-template">
-    <div class='waypoint row'>
+    <div class='waypoint row' data-bind="waypointRendered">
       <div class='waypoint-distance'>
         <div class='row total-distance'>
           <div class="large-12 column" data-bind="text: totalDistance">
@@ -95,7 +95,7 @@
         </div>
       </div>
       <div class='waypoint-tulip'>
-        <canvas data-bind="waypointCanvasRendered: tulipJson" width='180' height='180'>
+        <canvas data-bind="waypointCanvasRendered" width='180' height='180'>
         </canvas>
       </div>
       <div class='waypoint-notes' data-bind="text: notes">
