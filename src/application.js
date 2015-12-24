@@ -1,7 +1,25 @@
 /*
   Define the application namespace
 */
-var app = {};
+var app = {
+  currentlyEditing: false,
+
+  requestEdit: function(){
+    if(!this.currentlyEditing){
+      this.currentlyEditing = true;
+      $('#save-waypoint i').slideDown('slow');
+      return true;
+    }
+  },
+
+  finishEdit: function(){
+    if(this.currentlyEditing){
+      this.currentlyEditing = false;
+      $('#save-waypoint i').slideUp('slow');
+      return true;
+    }
+  }
+};
 
 function initMap() {
   app.mapEditor = new MapEditor();
@@ -9,7 +27,7 @@ function initMap() {
 $(document).ready(function(){
   app.roadbook = new Roadbook();
   app.drawRoute = false;
-
+  app.currentlyEditing = false;
 
   app.listeners = {
     bind: function(){

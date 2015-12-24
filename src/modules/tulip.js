@@ -11,13 +11,13 @@ var Tulip = Class({
     this.canvas = new fabric.Canvas(el);
     this.canvas.selection = false;
     this.objects = [];
-    this.currentlyEditingObjects = [];
+    this.activeEditors = [];
     this.initTracks(angle);
     // this.initListeners();
   },
 
   initTracks: function(angle){
-    this.entryTrack = new fabric.Path('M 90 171 C 90, 165, 90, 159, 90, 150 C 90, 141, 90, 129, 90, 120 C 90, 111, 90, 99, 90, 88',
+    this.entryTrack = new fabric.Path('M 90 171 C 90, 165, 90, 159, 90, 150 C 90, 141, 90, 129, 90, 120 C 90, 111, 90, 99, 90, 90',
                                               { fill: '',
                                                 stroke: '#000',
                                                 strokeWidth: 5,
@@ -86,20 +86,28 @@ var Tulip = Class({
   },
 
   beginEdit: function() {
-
+    console.log('begin')
     for(i = 0; i < this.objects.length; i++) {
       if(this.objects[i].objectType == 'track'){
         if(this.objects[i] == this.entryTrack){
-          this.currentlyEditingObjects.push(new TrackEditor(this.canvas, this.entryTrack,true, false));
+          this.activeEditors.push(new TrackEditor(this.canvas, this.entryTrack,true, false));
         }
         if(this.objects[i] == this.exitTrack){
-          this.currentlyEditingObjects.push(new TrackEditor(this.canvas, this.exitTrack,false, true));
+          this.activeEditors.push(new TrackEditor(this.canvas, this.exitTrack,false, true));
         }
       }
     }
+    console.log(this)
   },
 
   finishEdit: function() {
+    console.log('here tlp');
+    console.log(this.activeEditors);
+    for(i = 0; i < this.activeEditors.length; i++) {
+      console.log(this.activeEditors[i]);
+      var editor = this.activeEditors.pop();
+      editor.destroy();
+    }
 
   },
 
@@ -108,9 +116,6 @@ var Tulip = Class({
     the angles is provided from the mapping module.
   */
   buildExitTrackPathString: function(angle) {
-
-    // TODO this is some error with angle reporting when the track is at a certain point
-    console.log(angle);
 
     var xy1 =  this.rotatePoint(9,angle);
     var xy2 =  this.rotatePoint(18,angle);

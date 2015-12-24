@@ -1,5 +1,4 @@
 var Waypoint = Class({
-  _this: {},
   /*
 
     opts: {
@@ -29,7 +28,7 @@ var Waypoint = Class({
     this.distFromPrev   = ko.computed(this.computedDistanceFromPrev, this);
     this.totalDistance  = ko.computed(this.computedTotalDistance, this);
     this.heading        = ko.computed(this.computedHeading, this);
-    this.currentlyEditing = false;
+    // this.currentlyEditing = false;
 
     var _this = this;
     var angle = opts.angles.relativeAngle;
@@ -85,10 +84,16 @@ var Waypoint = Class({
   initListeners: function(element){
     var _this = this;
     $(element).click(function(){
-      if(!_this.currentlyEditing){
-        _this.currentlyEditing = true;
+      if(app.requestEdit()){
         _this.tulip.beginEdit();
       }
-    })
+    });
+
+    $('#save-waypoint').click(function(){
+      if(app.finishEdit()){
+        console.log('here wpt');
+        _this.tulip.finishEdit();
+      }
+    });
   }
 });
