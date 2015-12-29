@@ -3,11 +3,15 @@
 */
 var app = {
   currentlyEditing: false,
-
-  requestEdit: function(){
-    if(!this.currentlyEditing){
+  currentlyEditingObject: null,
+  requestEdit: function(object){
+    if(object != this.currentlyEditingObject){
+      if(this.currentlyEditingObject){
+        this.currentlyEditingObject.finishEdit();
+      }
+      this.currentlyEditingObject = object;
       this.currentlyEditing = true;
-      $('#save-waypoint i').slideDown('slow');
+      $('#save-waypoint i').show();
       return true;
     }
   },
@@ -15,7 +19,7 @@ var app = {
   finishEdit: function(){
     if(this.currentlyEditing){
       this.currentlyEditing = false;
-      $('#save-waypoint i').slideUp('slow');
+      $('#save-waypoint i').hide();
       return true;
     }
   }
@@ -75,7 +79,16 @@ $(document).ready(function(){
         app.mapControls.rotate(-1);
       });
 
-
+      $('#save-waypoint').click(function(){
+        // TODO this creates a weird coupling workflow, make more make this listener more single principle.
+        if(app.finishEdit()){
+          for(i = 0; i < app.roadbook.waypoints().length; i++){
+            app.currentlyEditingObject.finishEdit();
+            app.currentlyEditingObject = null;
+            //TODO save app state
+          }
+        }
+      });
     },
   };
 

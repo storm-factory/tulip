@@ -13,7 +13,6 @@ var Tulip = Class({
     this.objects = [];
     this.activeEditors = [];
     this.initTracks(angle);
-    // this.initListeners();
   },
 
   initTracks: function(angle){
@@ -86,7 +85,6 @@ var Tulip = Class({
   },
 
   beginEdit: function() {
-    console.log('begin')
     for(i = 0; i < this.objects.length; i++) {
       if(this.objects[i].objectType == 'track'){
         if(this.objects[i] == this.entryTrack){
@@ -97,18 +95,13 @@ var Tulip = Class({
         }
       }
     }
-    console.log(this)
   },
 
   finishEdit: function() {
-    console.log('here tlp');
-    console.log(this.activeEditors);
     for(i = 0; i < this.activeEditors.length; i++) {
-      console.log(this.activeEditors[i]);
-      var editor = this.activeEditors.pop();
-      editor.destroy();
+      this.activeEditors[i].destroy();
     }
-
+    this.activeEditors = [];
   },
 
   /*
@@ -174,6 +167,6 @@ var Tulip = Class({
     }
 
     return [x + 90, y + 90]
-  }
+  },
 
 });

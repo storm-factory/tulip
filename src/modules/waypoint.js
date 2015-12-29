@@ -34,20 +34,15 @@ var Waypoint = Class({
     var angle = opts.angles.relativeAngle;
     ko.bindingHandlers.waypointCanvasRendered = {
       init: function(element){
-        _this.initializeTulip(element, null, angle);
-      }
-    };
-
-    ko.bindingHandlers.waypointRendered = {
-      init: function(element){
-        _this.initListeners(element);
+        _this.initTulip(element, null, angle);
+        _this.initTulipListeners($(element).parents('.waypoint-tulip'));
       }
     };
 
     this.notes = ko.observable(opts.notes);
   },
 
-  initializeTulip: function(element, json, angle){
+  initTulip: function(element, json, angle){
     this.tulip = new Tulip(element, null, angle);
   },
 
@@ -81,19 +76,12 @@ var Waypoint = Class({
     return Array(Math.max(3 - String(heading).length + 1, 0)).join(0) + heading + '\xB0';
   },
 
-  initListeners: function(element){
+  initTulipListeners: function(element){
     var _this = this;
     $(element).click(function(){
-      if(app.requestEdit()){
+      if(app.requestEdit(_this.tulip)){
         _this.tulip.beginEdit();
       }
     });
-
-    $('#save-waypoint').click(function(){
-      if(app.finishEdit()){
-        console.log('here wpt');
-        _this.tulip.finishEdit();
-      }
-    });
-  }
+  },
 });
