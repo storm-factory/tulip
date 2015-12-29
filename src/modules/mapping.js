@@ -1,11 +1,10 @@
 /*
-  PROBLEM: This class is no longer cohesive, there are too many interclass dependencies, lack of DRYness , and too many LOC
-  SOLUTIONS.
+  PROBLEM: This class is no longer cohesive, there are too many interclass dependencies, lack of DRYness , and too many LOC.
+  SOLUTIONS:
   TODO make this a module for map route path and maybe also points, make seperate module for listeners, and a final module for waypoints(roadbook module), potentially with observer implimentation
-  TODO Impliment Singleton Design Pattern as there can be only one functioning map module at any time. It can then be used across modules safely.
 */
 var MapEditor = Class({
-  //maintain context in listeners
+  singleton: true,
 
   create: function(){
     this.initMap();
