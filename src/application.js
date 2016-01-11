@@ -9,9 +9,12 @@ var App = Class({
       declare some state instance variables
     */
     this.drawRoute = false;
-    this.currentlyEditing = false;
-    this.currentlyEditingObject = null;
+    this.currentlyEditingCanvas = false; //Change to be a canvas object specific variable
+    this.currentlyEditingCanvasObject = null; //Change to be a canvas object specific variable
 
+    //persistence objects
+    this.remote = require('remote');
+    this.dialog = this.remote.require('dialog');
     /*
       instantiate the roadbook
     */
@@ -24,24 +27,45 @@ var App = Class({
     this.mapControls = MapControls.instance();
   },
 
+  /*
+    App control flow
+  */
+
+  //Need to change to request canvas edit
   requestEdit: function(object){
-    if(object != this.currentlyEditingObject){
-      if(this.currentlyEditingObject){
-        this.currentlyEditingObject.finishEdit();
+    if(object != this.currentlyEditingCanvasObject){
+      if(this.currentlyEditingCanvasObject){
+        this.currentlyEditingCanvasObject.finishEdit();
       }
-      this.currentlyEditingObject = object;
-      this.currentlyEditing = true;
-      $('#save-roadbook i').show();
+      this.currentlyEditingCanvasObject = object;
+      this.currentlyEditingCanvas = true;
+      $('#save-roadbook').removeClass('secondary');
       return true;
     }
   },
 
+  //Need to change to finish canvas edit
   finishEdit: function(){
-    if(this.currentlyEditing){
-      this.currentlyEditing = false;
-      $('#save-roadbook i').hide();
+    if(this.currentlyEditingCanvas){
+      this.currentlyEditingCanvas = false;
+      $('#save-roadbook').addClass('secondary');
       return true;
     }
+  },
+
+  /*
+    App persistence
+    TODO create a persistence module and move this into it.
+  */
+
+  openRoadBook: function(){
+    dialog.showOpenDialog(function (fileNames) {
+    });
+  },
+
+  saveRoadBook: function(){
+    this.dialog.showSaveDialog(function (fileName) {
+    });
   },
 
   initListeners: function(){
@@ -59,17 +83,22 @@ var App = Class({
 
       $('#toggle-roadbook i').toggleClass('fi-arrow-down');
       $('#toggle-roadbook i').toggleClass('fi-arrow-up');
+      $(this).blur();
     });
 
+
+    //TODO create way of tracking map AND canvas edits
     $('#save-roadbook').click(function(){
       // TODO this creates a weird coupling workflow, make more make this listener more single principle.
       if(_this.finishEdit()){
         for(i = 0; i < _this.roadbook.waypoints().length; i++){
-          _this.currentlyEditingObject.finishEdit();
-          _this.currentlyEditingObject = null;
+          _this.currentlyEditingCanvasObject.finishEdit();
+          _this.currentlyEditingCanvasObject = null;
           //TODO save app state
         }
+        _this.saveRoadBook();
       }
+      $(this).blur();
     });
   },
 });
@@ -80,6 +109,9 @@ $(document).ready(function(){
   app = App.instance();
   ko.applyBindings(app.roadbook);
 });
+/*
+  instantiate the google map
+*/
 function initMap() {
   app.mapEditor = MapEditor.instance();
   app.mapControls.map = app.mapEditor.map;

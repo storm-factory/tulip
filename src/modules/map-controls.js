@@ -33,15 +33,11 @@ var MapControls = Class({
     */
     var _this = this;
     $('#zin').click(function(){
-      // var map = app.mapEditor.map;
-      // map.setZoom(map.getZoom() + 1);
       _this.zin();
       $(this).blur();
     });
 
     $('#zout').click(function(){
-      // var map = app.mapEditor.map;
-      // map.setZoom(map.getZoom() - 1);
       _this.zout();
       $(this).blur();
     });
