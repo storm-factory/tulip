@@ -1,14 +1,21 @@
 var Roadbook = Class({
   create: function(opts){
     this.waypoints = ko.observableArray([]);
+
+    /*
+      declare some state instance variables
+    */
+    this.drawRoute = false;
+    this.currentlyEditingCanvas = false; //Change to be a canvas object specific variable
+    this.currentlyEditingCanvasObject = null; //Change to be a canvas object specific variable
   },
 
   addWaypoint: function(wptData){
 
     //determine index of waypoint based on distance from start
     var index = this.determineWaypointInsertionIndex(wptData.distances.kmFromStart);
-    var waypoint = new Waypoint(wptData);
-    
+    var waypoint = new Waypoint(this, wptData);
+
     this.waypoints.splice(index,0,waypoint);
     this.reindexWaypoints();
 
@@ -53,6 +60,39 @@ var Roadbook = Class({
     for(i = 0; i < this.waypoints().length; i++){
       waypoint = this.waypoints()[i];
       waypoint.id = i + 1; //we don't need no zero index
+    }
+  },
+
+  /*
+    Roadbook edit control flow
+  */
+
+  //TODO Change to request canvas edit
+  //TODO Move this into the roadbook module
+  requestCanvasEdit: function(object){
+    if(object != this.currentlyEditingCanvasObject){
+      if(this.currentlyEditingCanvasObject){
+        this.currentlyEditingCanvasObject.finishEdit();
+      }
+      this.currentlyEditingCanvasObject = object;
+      this.currentlyEditingCanvas = true;
+      $('#save-roadbook').removeClass('secondary');
+      return true;
+    }
+  },
+
+  //TODO Change to finish canvas edit
+  //TODO Move this into the roadbook module
+  finishCanvasEdit: function(){
+    if(this.currentlyEditingCanvas){
+      this.currentlyEditingCanvas = false;
+
+      for(i = 0; i < this.waypoints().length; i++){
+        this.currentlyEditingCanvasObject.finishEdit();
+        this.currentlyEditingCanvasObject = null;
+      }
+
+      return true;
     }
   },
 

@@ -16,7 +16,7 @@ var Waypoint = Class({
             notes: STRING,
     }
   */
-  create: function(opts){
+  create: function(roadbook, opts){
 
     this.kmFromStart  = ko.observable(opts.distances.kmFromStart);
     this.miFromStart  = ko.observable(opts.distances.miFromStart);
@@ -28,7 +28,7 @@ var Waypoint = Class({
     this.distFromPrev   = ko.computed(this.computedDistanceFromPrev, this);
     this.totalDistance  = ko.computed(this.computedTotalDistance, this);
     this.heading        = ko.computed(this.computedHeading, this);
-    // this.currentlyEditing = false;
+    this.roadbook = roadbook;
 
     var _this = this;
     var angle = opts.angles.relativeAngle;
@@ -79,7 +79,7 @@ var Waypoint = Class({
   initTulipListeners: function(element){
     var _this = this;
     $(element).click(function(){
-      if(app.requestEdit(_this.tulip)){
+      if(_this.roadbook.requestCanvasEdit(_this.tulip)){
         _this.tulip.beginEdit();
       }
     });

@@ -24,10 +24,7 @@ app.on('ready', function() {
   mainWindow = new BrowserWindow({width: 1500, height: 1000, 'min-height': 700});
 
   // and load the index.html of the app.
-  mainWindow.loadUrl('file://' + __dirname + '/index.html');
-
-  // Open the DevTools.
-  mainWindow.openDevTools();
+  mainWindow.loadURL('file://' + __dirname + '/index.html');
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function() {

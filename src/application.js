@@ -8,9 +8,6 @@ var App = Class({
     /*
       declare some state instance variables
     */
-    this.drawRoute = false;
-    this.currentlyEditingCanvas = false; //Change to be a canvas object specific variable
-    this.currentlyEditingCanvasObject = null; //Change to be a canvas object specific variable
 
     //persistence objects
     this.remote = require('remote');
@@ -28,32 +25,6 @@ var App = Class({
   },
 
   /*
-    App control flow
-  */
-
-  //Need to change to request canvas edit
-  requestEdit: function(object){
-    if(object != this.currentlyEditingCanvasObject){
-      if(this.currentlyEditingCanvasObject){
-        this.currentlyEditingCanvasObject.finishEdit();
-      }
-      this.currentlyEditingCanvasObject = object;
-      this.currentlyEditingCanvas = true;
-      $('#save-roadbook').removeClass('secondary');
-      return true;
-    }
-  },
-
-  //Need to change to finish canvas edit
-  finishEdit: function(){
-    if(this.currentlyEditingCanvas){
-      this.currentlyEditingCanvas = false;
-      $('#save-roadbook').addClass('secondary');
-      return true;
-    }
-  },
-
-  /*
     App persistence
     TODO create a persistence module and move this into it.
   */
@@ -64,6 +35,7 @@ var App = Class({
   },
 
   saveRoadBook: function(){
+    //TODO serialize the roadbook
     this.dialog.showSaveDialog(function (fileName) {
     });
   },
@@ -89,13 +61,9 @@ var App = Class({
 
     //TODO create way of tracking map AND canvas edits
     $('#save-roadbook').click(function(){
-      // TODO this creates a weird coupling workflow, make more make this listener more single principle.
-      if(_this.finishEdit()){
-        for(i = 0; i < _this.roadbook.waypoints().length; i++){
-          _this.currentlyEditingCanvasObject.finishEdit();
-          _this.currentlyEditingCanvasObject = null;
-          //TODO save app state
-        }
+      // TODO this creates a weird coupling workflow with roadbook.
+      if(_this.roadbook.finishCanvasEdit()){
+        $(this).addClass('secondary');
         _this.saveRoadBook();
       }
       $(this).blur();
