@@ -5,10 +5,16 @@ var Roadbook = Class({
     /*
       declare some state instance variables
     */
-    this.drawRoute = false;
-    this.currentlyEditingCanvas = false; //Change to be a canvas object specific variable
-    this.currentlyEditingCanvasObject = null; //Change to be a canvas object specific variable
+    // this.drawRoute = false; // I don' think this is being used
+    this.currentlyEditingCanvas = false;
+    this.currentlyEditingCanvasObject = null;
   },
+
+  /*
+    ---------------------------------------------------------------------------
+      Waypoint management
+    ---------------------------------------------------------------------------
+  */
 
   addWaypoint: function(wptData){
 
@@ -64,11 +70,12 @@ var Roadbook = Class({
   },
 
   /*
-    Roadbook edit control flow
+    ---------------------------------------------------------------------------
+      Roadbook edit control flow
+    ---------------------------------------------------------------------------
   */
 
-  //TODO Change to request canvas edit
-  //TODO Move this into the roadbook module
+  // Keeps track of which waypoint canvas is being edited so there aren't too many UI controls all at once
   requestCanvasEdit: function(object){
     if(object != this.currentlyEditingCanvasObject){
       if(this.currentlyEditingCanvasObject){
@@ -81,8 +88,7 @@ var Roadbook = Class({
     }
   },
 
-  //TODO Change to finish canvas edit
-  //TODO Move this into the roadbook module
+  // Removes all the edit UI from the roadbook waypoints
   finishCanvasEdit: function(){
     if(this.currentlyEditingCanvas){
       this.currentlyEditingCanvas = false;

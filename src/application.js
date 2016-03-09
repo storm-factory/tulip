@@ -59,9 +59,11 @@ var App = Class({
     });
 
 
-    //TODO create way of tracking map AND canvas edits
+
     $('#save-roadbook').click(function(){
-      // TODO this creates a weird coupling workflow with roadbook.
+
+      //TODO create way of tracking map in addition to canvas edits
+      
       if(_this.roadbook.finishCanvasEdit()){
         $(this).addClass('secondary');
         _this.saveRoadBook();
