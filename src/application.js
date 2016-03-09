@@ -36,8 +36,10 @@ var App = Class({
 
   saveRoadBook: function(){
     //TODO serialize the roadbook
-    this.dialog.showSaveDialog(function (fileName) {
-    });
+
+    this.roadbook.save();
+    // this.dialog.showSaveDialog(function (fileName) {
+    // });
   },
 
   initListeners: function(){
@@ -63,8 +65,8 @@ var App = Class({
     $('#save-roadbook').click(function(){
 
       //TODO create way of tracking map in addition to canvas edits
-      
-      if(_this.roadbook.finishCanvasEdit()){
+
+      if(_this.roadbook.finishCanvasEdit() || _this.roadbook.newWaypoints){
         $(this).addClass('secondary');
         _this.saveRoadBook();
       }

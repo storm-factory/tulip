@@ -8,6 +8,7 @@ var Roadbook = Class({
     // this.drawRoute = false; // I don' think this is being used
     this.currentlyEditingCanvas = false;
     this.currentlyEditingCanvasObject = null;
+    this.newWaypoints = false;
   },
 
   /*
@@ -24,6 +25,10 @@ var Roadbook = Class({
 
     this.waypoints.splice(index,0,waypoint);
     this.reindexWaypoints();
+
+    //persistence tracking
+    this.newWaypoints = true;
+    $('#save-roadbook').removeClass('secondary');
 
     return waypoint;
   },
@@ -100,6 +105,34 @@ var Roadbook = Class({
 
       return true;
     }
+  },
+
+  /*
+    ---------------------------------------------------------------------------
+      Roadbook persistence
+    ---------------------------------------------------------------------------
+  */
+
+  save:  function(){
+    var roadbookJSON = {
+      waypoints: [],
+    }
+    // this sort of works but in reality we need all the points from the mapEditor object, and if it is a waypoint we need that as well.
+    // for now building this persistence object at the roadbook level makes sense though
+    ko.utils.arrayForEach(this.waypoints(), function(waypoint) {
+        var waypointJSON = {
+          lat: "placeholder to get from mapping",
+          long: "placeholder to get from mapping",
+          tulipJson: "placeholder to get from waypoint",
+          kmFromStart: waypoint.kmFromStart(),
+          kmFromPrev: waypoint.kmFromPrev(),
+          heading: waypoint.heading()
+        }
+
+        roadbookJSON.waypoints.push(waypointJSON);
+    });
+    console.log(app.)
+    console.log(roadbookJSON);
   },
 
 });
