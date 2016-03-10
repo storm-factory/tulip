@@ -88,10 +88,10 @@ var Tulip = Class({
     for(i = 0; i < this.objects.length; i++) {
       if(this.objects[i].objectType == 'track'){
         if(this.objects[i] == this.entryTrack){
-          this.activeEditors.push(new TrackEditor(this.canvas, this.entryTrack,true, false));
+          this.activeEditors.push(new TulipEditor(this.canvas, this.entryTrack,true, false));
         }
         if(this.objects[i] == this.exitTrack){
-          this.activeEditors.push(new TrackEditor(this.canvas, this.exitTrack,false, true));
+          this.activeEditors.push(new TulipEditor(this.canvas, this.exitTrack,false, true));
         }
       }
     }

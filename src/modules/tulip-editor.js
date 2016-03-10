@@ -8,7 +8,7 @@
 
 */
 
-var TrackEditor = Class({
+var TulipEditor = Class({
   // change params to entryTrack and exitTrack: entry track can't move end point, exit track can't move origin.
   // all other bets are off.
   create: function(canvas, track, editOrigin, editEnd) {

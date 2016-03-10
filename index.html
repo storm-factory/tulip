@@ -47,7 +47,21 @@
               <a href="#" class="button tiny radius secondary" id="roadbook-menu"><i class="fi-list"></i></a>
             </div>
           </div>
-          <div id='roadbook'>
+          <div id="roadbook">
+            <div class="row">
+              <div id="roadbook-name" class="large-12 column">
+                <a href="#">Roadbook name</a>
+                <p></p>
+                 <input type="text" placeholder="Roadbook Name" />
+              </div>
+            </div>
+              <div class="row">
+                <div id="roadbook-desc" class="large-12 column">
+                  <a href="#">Roadbook description</a>
+                  <p></p>
+                  <textarea placeholder="Roadbook Description"></textarea>
+                </div>
+              </div>
             <!-- render waypoint templates here -->
             <div data-bind="template: { name: 'waypoint-template', foreach: app.roadbook.waypoints }"></div>
           </div>
@@ -72,9 +86,9 @@
   <!--
     Load modules
   -->
-  <script src='src/modules/mapping.js'></script>
+  <script src='src/modules/map-editor.js'></script>
   <script src='src/modules/map-controls.js'></script>
-  <script src='src/modules/track-editor.js'></script>
+  <script src='src/modules/tulip-editor.js'></script>
   <script src='src/modules/tulip.js'></script>
   <script src='src/modules/roadbook.js'></script>
   <script src='src/modules/waypoint.js'></script>
