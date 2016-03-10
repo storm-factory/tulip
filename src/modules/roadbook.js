@@ -117,22 +117,22 @@ var Roadbook = Class({
     var roadbookJSON = {
       waypoints: [],
     }
-    // this sort of works but in reality we need all the points from the mapEditor object, and if it is a waypoint we need that as well.
-    // for now building this persistence object at the roadbook level makes sense though
-    ko.utils.arrayForEach(this.waypoints(), function(waypoint) {
+
+    points = app.mapEditor.routeMarkers
+    for(i = 0; i < points.length; i++){
         var waypointJSON = {
-          lat: "placeholder to get from mapping",
-          long: "placeholder to get from mapping",
-          tulipJson: "placeholder to get from waypoint",
-          kmFromStart: waypoint.kmFromStart(),
-          kmFromPrev: waypoint.kmFromPrev(),
-          heading: waypoint.heading()
+          lat: points[i].getPosition().lat(),
+          long: points[i].getPosition().lng(),
+          waypoint: points[i].waypoint ? true : false,
+          tulipJson: points[i].waypoint ? points[i].waypoint.tulip.toJSON() : null,
+          kmFromStart: points[i].waypoint ? points[i].waypoint.kmFromStart() : null,
+          kmFromPrev: points[i].waypoint ? points[i].waypoint.kmFromPrev() : null,
+          heading: points[i].waypoint ? points[i].waypoint.exactHeading() : null,
         }
 
         roadbookJSON.waypoints.push(waypointJSON);
-    });
-    console.log(app.)
-    console.log(roadbookJSON);
+    }
+    return roadbookJSON;
   },
 
 });

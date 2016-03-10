@@ -22,6 +22,10 @@ var App = Class({
     */
     this.initListeners();
     this.mapControls = MapControls.instance();
+    /*
+      file io
+    */
+    // this.fs = require('fs');
   },
 
   /*
@@ -35,11 +39,15 @@ var App = Class({
   },
 
   saveRoadBook: function(){
-    //TODO serialize the roadbook
 
-    this.roadbook.save();
-    // this.dialog.showSaveDialog(function (fileName) {
-    // });
+    var fs = require('fs');
+    var tulipFile = JSON.stringify(this.roadbook.save());
+    this.dialog.showSaveDialog({ filters: [
+       { name: 'tulip', extensions: ['tlp'] }
+      ]},function (fileName) {
+      if (fileName === undefined) return;
+        fs.writeFile(fileName, tulipFile, function (err) {});
+    });
   },
 
   initListeners: function(){
@@ -63,9 +71,6 @@ var App = Class({
 
 
     $('#save-roadbook').click(function(){
-
-      //TODO create way of tracking map in addition to canvas edits
-
       if(_this.roadbook.finishCanvasEdit() || _this.roadbook.newWaypoints){
         $(this).addClass('secondary');
         _this.saveRoadBook();

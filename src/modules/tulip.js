@@ -169,4 +169,12 @@ var Tulip = Class({
     return [x + 90, y + 90]
   },
 
+
+  /*
+    return the canvas object as JSON so it can be persisted
+  */
+  toJSON: function(){
+    return this.canvas.toJSON();
+  }
+
 });

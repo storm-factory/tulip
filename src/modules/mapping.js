@@ -126,7 +126,6 @@ var MapEditor = Class({
       this.routeMarkers.push(point);
       //this is the first point and thus the start of the route, make it a waypoint
       if(this.routeMarkers.length == 1 && this.routePoints.length == 1) {
-        point.setIcon(this.waypointIcon());
         point.kmFromStart = 0;
         point.miFromStart = 0;
         point.kmFromPrev = 0;
