@@ -50,16 +50,17 @@
           <div id="roadbook">
             <div class="row">
               <div id="roadbook-name" class="large-12 column">
-                <a href="#">Roadbook name</a>
-                <p></p>
-                 <input type="text" placeholder="Roadbook Name" />
+                <hr>
+                <a href="#" data-bind="text: app.roadbook.name"></a>
+                 <input type="text" placeholder="Roadbook Name" data-bind="textInput: app.roadbook.name"/>
+                 <hr>
               </div>
             </div>
               <div class="row">
                 <div id="roadbook-desc" class="large-12 column">
-                  <a href="#">Roadbook description</a>
-                  <p></p>
-                  <textarea placeholder="Roadbook Description"></textarea>
+                  <a href="#" data-bind="text: app.roadbook.desc"></a>
+                  <textarea placeholder="Roadbook Description" data-bind="textInput: app.roadbook.desc"></textarea>
+                  <hr>
                 </div>
               </div>
             <!-- render waypoint templates here -->

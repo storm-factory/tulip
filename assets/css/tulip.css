@@ -51,6 +51,11 @@ canvas {
   padding: 0 .65rem 0 .65rem;
 }
 
+#roadbook-name,
+#roadbook-desc {
+  text-align: center;
+}
+
 #roadbook-name input,
 #roadbook-desc textarea{
   display:none;
@@ -61,11 +66,12 @@ canvas {
   color: #000;
   font-weight: bold;
   font-size: 20px;
+  text-align: center;
 }
 
 #roadbook-name a:hover,
 #roadbook-desc a:hover{
-  color: rgba(255,144,0, 1);
+  color: #ffba29; /* rgba(255,144,0, 1);*/
   text-shadow: -3px 3px 2px rgba(0,0,0, 1);
   font-family: bellybeans;
   font-size: 30px;

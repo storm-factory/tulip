@@ -8,7 +8,11 @@ var Roadbook = Class({
     // this.drawRoute = false; // I don' think this is being used
     this.currentlyEditingCanvas = false;
     this.currentlyEditingCanvasObject = null;
+    this.editingNameDesc = false;
+
     this.newWaypoints = false;
+    this.name = ko.observable('Name:');
+    this.desc = ko.observable('Description:');
   },
 
   /*
@@ -107,6 +111,15 @@ var Roadbook = Class({
     }
   },
 
+  finishNameDescEdit: function(){
+    if(this.editingNameDesc == true){
+      this.editingNameDesc = false;
+      $('#roadbook-desc, #roadbook-name').find('a').show('fast')
+      $('#roadbook-desc, #roadbook-name').find(':input').hide('fast');
+      return true;
+    }
+  },
+
   /*
     ---------------------------------------------------------------------------
       Roadbook persistence
@@ -115,6 +128,8 @@ var Roadbook = Class({
 
   save:  function(){
     var roadbookJSON = {
+      name: this.name(),
+      desc: this.desc(),
       waypoints: [],
     }
 

@@ -57,7 +57,7 @@ var App = Class({
 
   */
   canSave: function(){
-    return _this.roadbook.finishCanvasEdit() || _this.roadbook.newWaypoints
+    return this.roadbook.finishCanvasEdit() || this.roadbook.newWaypoints || this.roadbook.finishNameDescEdit()
   },
 
   openRoadBook: function(){
@@ -101,7 +101,7 @@ var App = Class({
 
 
     $('#save-roadbook').click(function(){
-      if(this.canSave()){ //make method
+      if(_this.canSave()){
         $(this).addClass('secondary');
         _this.saveRoadBook();
       }
@@ -109,14 +109,12 @@ var App = Class({
     });
 
     $('#roadbook-desc, #roadbook-name').find('a').click(function(){
-
+      $(this).hide();
       $(this).parent('div').find(':input').toggle('fast');
-    });
-
-    $('#roadbook-desc, #roadbook-name').find(':input').keyup(function(){
-      // on we click we also need to make the save dialog available
-      // and assign this text to the roadbook.
-      $(this).parent('div').find('p').text($(this).val());
+      $(this).parent('div').find(':input').val('');
+      $(this).parent('div').find(':input').focus();
+      $('#save-roadbook').removeClass('secondary');
+      _this.roadbook.editingNameDesc = true;
     });
   },
 });
