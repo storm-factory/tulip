@@ -78,7 +78,10 @@ var App = Class({
           var points = roadbook.waypoints;
           for(i=0;i<points.length;i++){
             var latLng = new google.maps.LatLng(points[i].lat, points[i].long)
-            _this.mapEditor.addRoutePoint(latLng);
+            var point = _this.mapEditor.addRoutePoint(latLng);
+            if(points[i].waypoint && i > 0){
+              _this.mapEditor.addWaypoint(point);
+            }
           }
         });
     });

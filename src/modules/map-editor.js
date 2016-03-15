@@ -133,6 +133,7 @@ var MapEditor = Class({
         this.addWaypoint(point);
       }
     }
+    return point;
   },
   /*
     Add a waypoint to the route waypoints array in the proper spot with accurate distance measurements
@@ -154,6 +155,8 @@ var MapEditor = Class({
       point.setIcon(this.waypointIcon());
       //recompute distances between waypoints
       this.updateRoute();
+
+      return point;
   },
 
   /*
