@@ -43,7 +43,7 @@ var App = Class({
     /*
       file io
     */
-    // this.fs = require('fs');
+    this.fs = require('fs');
   },
 
   /*
@@ -61,19 +61,29 @@ var App = Class({
   },
 
   openRoadBook: function(){
-    dialog.showOpenDialog(function (fileNames) {
+    var _this = this;
+    this.dialog.showOpenDialog({ filters: [
+       { name: 'tulip', extensions: ['tlp'] }
+      ]},function (fileNames) {
+      var fs = require('fs');
+      if (fileNames === undefined) return;
+        var fileName = fileNames[0];
+        _this.fs.readFile(fileName, 'utf-8', function (err, data) {
+          var roadbook = JSON.parse(data);
+          _this.roadbook.name(roadbook.name);
+          _this.roadbook.desc(roadbook.desc);
+        });
     });
   },
 
   saveRoadBook: function(){
-
-    var fs = require('fs');
+    var _this = this
     var tulipFile = JSON.stringify(this.roadbook.save());
     this.dialog.showSaveDialog({ filters: [
        { name: 'tulip', extensions: ['tlp'] }
       ]},function (fileName) {
       if (fileName === undefined) return;
-        fs.writeFile(fileName, tulipFile, function (err) {});
+        _this.fs.writeFile(fileName, tulipFile, function (err) {});
     });
   },
 
@@ -98,7 +108,9 @@ var App = Class({
       $(this).blur();
     });
 
-
+    $('#open-roadbook').click(function(){
+      _this.openRoadBook();
+    });
 
     $('#save-roadbook').click(function(){
       if(_this.canSave()){
@@ -111,7 +123,12 @@ var App = Class({
     $('#roadbook-desc, #roadbook-name').find('a').click(function(){
       $(this).hide();
       $(this).parent('div').find(':input').toggle('fast');
-      $(this).parent('div').find(':input').val('');
+      var text = $(this).parent('div').find(':input').val();
+      if(text == "Name:" || text == "Description:"){
+        $(this).parent('div').find(':input').val('');
+      } else {
+        $(this).parent('div').text();
+      }
       $(this).parent('div').find(':input').focus();
       $('#save-roadbook').removeClass('secondary');
       _this.roadbook.editingNameDesc = true;
@@ -126,6 +143,7 @@ var App = Class({
 $(document).ready(function(){
   app = App.instance();
   ko.applyBindings(app.roadbook);
+  $(document).foundation();
 });
 /*
   ---------------------------------------------------------------------------

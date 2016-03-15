@@ -2,10 +2,29 @@
   font-family:bellybeans;
   src:url(../fonts/bellybeans.ttf);
 }
-
+h2 {
+  font-family: bellybeans;
+  font-size: 1.5rem !important;
+  color: rgba(255,144,0,1) !important;
+  text-shadow: -3px 3px 2px rgba(0,0,0, 1);
+  font-family: bellybeans !important;
+  font-size: 30px;
+}
 canvas {
   width: 180px;
   height: 180px;
+}
+aside {
+  padding:15px;
+}
+aside ul {
+  list-style-type: none;
+}
+aside ul li a.main-menu{
+  font-size: 1rem !important;
+}
+aside.right-off-canvas-menu {
+  background: #787878;
 }
 #content {
   height: 100%;
@@ -32,7 +51,7 @@ canvas {
 #roadbook-header {
   font-family: bellybeans;
   font-size: 3rem;
-  text-shadow: -3px 3px 2px rgba(255,144,0, 1);
+  text-shadow: -3px 3px 2px rgba(0,0,0, 1);
   text-align: left;
   background-color: #787878;
   color: #ffba29;
@@ -71,7 +90,7 @@ canvas {
 
 #roadbook-name a:hover,
 #roadbook-desc a:hover{
-  color: #ffba29; /* rgba(255,144,0, 1);*/
+  color: rgba(255,144,0,1);
   text-shadow: -3px 3px 2px rgba(0,0,0, 1);
   font-family: bellybeans;
   font-size: 30px;
@@ -123,7 +142,7 @@ canvas {
   padding-left: 5px;
 }
 nav.top-bar {
-  background: -webkit-linear-gradient(top, rgba(255,68,0,1) 0%, rgba(255,68,0,1) 33%, rgba(255,145,0,1) 34%, rgba(255,145,0,1) 68%, rgba(255,187,41,1) 68%, rgba(255,187,41,1) 100%);
+  background: -webkit-linear-gradient(top, rgba(255,68,0,1) 0%, rgba(255,68,0,1) 33%, rgba(255,144,0,1) 34%, rgba(255,144,0,1) 68%, rgba(255,187,41,1) 68%, rgba(255,187,41,1) 100%);
   -webkit-box-shadow: 0px 13px 115px 1px rgba(120,120,120,0.89);
   z-index: 5;
   position: absolute;

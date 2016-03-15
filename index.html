@@ -6,8 +6,10 @@
     <link rel="stylesheet" href="assets/css/foundation-icons/foundation-icons.css" />
     <title>tulip</title>
   </head>
-  <body>
+  <body class="off-canvas-wrap" data-offcanvas>
     <!-- top navigation tools -->
+    <main class="inner-wrap" style="height:100%">
+    <!-- START NAV -->
     <nav class="top-bar" data-topbar role="navigation">
       <!-- map Section -->
       <ul class="left">
@@ -30,6 +32,27 @@
         </li>
       </ul> -->
     </nav>
+    <!-- END NAV -->
+    <!--  START ADVANCED MENU -->
+    <aside class="right-off-canvas-menu">
+        <!-- whatever you want goes here -->
+        <h2>
+          Advanced:
+        </h2>
+        <ul>
+          <li><a href="#" id="open-roadbook" class="main-menu button tiny radius info"><i class="fi-folder"></i> Open Roadbook</a></li>
+          <hr>
+          <li><a href="#" class="main-menu button tiny radius disabled"><i class="fi-download"></i> Import GPX</a></li>
+          <li><a href="#" class="main-menu button tiny radius disabled"><i class="fi-download"></i> Import Waypoints</a></li>
+          <hr>
+          <li><a href="#" class="main-menu button tiny radius disabled"><i class="fi-upload"></i> Export GPX</a></li>
+          <li><a href="#" class="main-menu button tiny radius disabled"><i class="fi-upload"></i> Export Waypoints</a></li>
+          <hr>
+          <li><a href="#" class="main-menu button tiny radius disabled"><i class="fi-print"></i> Print</a></li>
+        </ul>
+    </aside>
+    <!--  END ADVANCED MENU -->
+    <!--  START CONTENT -->
     <div id="content">
       <div class="content-container">
         <!-- <div class='map-container column' > -->
@@ -44,7 +67,7 @@
             <div class="large-5 column menu">
               <a href="#" class="button tiny radius secondary" id="save-roadbook"><i class="fi-save"></i></a>
               <a href="#" class="button tiny radius secondary" id="toggle-roadbook"><i class="fi-arrow-down"></i></a>
-              <a href="#" class="button tiny radius secondary" id="roadbook-menu"><i class="fi-list"></i></a>
+              <a href="#" class="button tiny radius secondary right-off-canvas-toggle" id="main-menu"><i class="fi-list"></i></a>
             </div>
           </div>
           <div id="roadbook">
@@ -69,6 +92,8 @@
         </div>
       </div>
     </div>
+    <!--  END CONTENT -->
+    </main>
   </body>
   <script>
     //Jquery sees it is running in CommonJS env, and wants to be used as such.
@@ -80,6 +105,7 @@
   <script src="assets/libs/jsclass/dist/browser/js.class.min.js"></script>
   <script src="assets/libs/knockout-3.4.0.js"></script>
   <script src='assets/libs/fabric.min.js'></script>
+  <script src='assets/libs/foundation-5.5.3/js/foundation.min.js'></script>
   <!--
     Load the application
   -->
