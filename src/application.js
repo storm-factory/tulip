@@ -54,10 +54,14 @@ var App = Class({
   */
 
   /*
-
+    TODO this isn't working for 'opened' roadbooks
   */
   canSave: function(){
-    return this.roadbook.finishCanvasEdit() || this.roadbook.newWaypoints || this.roadbook.finishNameDescEdit()
+    var can;
+    can = this.roadbook.finishCanvasEdit();
+    can = can || this.roadbook.newWaypoints;
+    can = can || this.roadbook.finishNameDescEdit();
+    return can;
   },
 
   openRoadBook: function(){
@@ -117,6 +121,11 @@ var App = Class({
       $('#toggle-roadbook i').toggleClass('fi-arrow-down');
       $('#toggle-roadbook i').toggleClass('fi-arrow-up');
       $(this).blur();
+    });
+
+    $('#new-roadbook').click(function(){
+      //TODO Something less hacky please
+      location.reload();
     });
 
     $('#open-roadbook').click(function(){
