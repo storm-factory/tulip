@@ -70,8 +70,16 @@ var App = Class({
         var fileName = fileNames[0];
         _this.fs.readFile(fileName, 'utf-8', function (err, data) {
           var roadbook = JSON.parse(data);
+          /*
+            TODO Refactor this into a function in the roadbook module
+          */
           _this.roadbook.name(roadbook.name);
           _this.roadbook.desc(roadbook.desc);
+          var points = roadbook.waypoints;
+          for(i=0;i<points.length;i++){
+            var latLng = new google.maps.LatLng(points[i].lat, points[i].long)
+            _this.mapEditor.addRoutePoint(latLng);
+          }
         });
     });
   },
