@@ -132,8 +132,8 @@ var Roadbook = Class({
       desc: this.desc(),
       waypoints: [],
     }
-
     points = app.mapEditor.routeMarkers
+    console.log(points);
     for(i = 0; i < points.length; i++){
         var waypointJSON = {
           lat: points[i].getPosition().lat(),

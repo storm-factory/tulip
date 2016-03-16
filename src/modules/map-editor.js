@@ -124,7 +124,7 @@ var MapEditor = Class({
       this.incrementRouteVertexIndecies(index);
     } else {
       this.routeMarkers.push(point);
-      //this is the first point and thus the start of the route, make it a waypoint
+      // this is the first point and thus the start of the route, make it a waypoint
       if(this.routeMarkers.length == 1 && this.routePoints.length == 1) {
         point.kmFromStart = 0;
         point.miFromStart = 0;
@@ -158,7 +158,6 @@ var MapEditor = Class({
       point.setIcon(this.waypointIcon());
       //recompute distances between waypoints
       this.updateRoute();
-
       // return point distance options so a roadbook waypoint can be initialized
       return opts;
   },
@@ -376,8 +375,6 @@ var MapEditor = Class({
       } else {
         this.waypoint = app.roadbook.addWaypoint(_this.addWaypoint(this));
       }
-
-
     });
 
     /*

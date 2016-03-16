@@ -73,20 +73,21 @@ var App = Class({
       if (fileNames === undefined) return;
         var fileName = fileNames[0];
         _this.fs.readFile(fileName, 'utf-8', function (err, data) {
-          var roadbook = JSON.parse(data);
+          var json = JSON.parse(data);
           /*
             TODO Refactor this into a function in the roadbook module
           */
           _this.roadbook.name(roadbook.name);
           _this.roadbook.desc(roadbook.desc);
-          var points = roadbook.waypoints;
-          for(i=0;i<points.length;i++){
-            var latLng = new google.maps.LatLng(points[i].lat, points[i].long)
-            var point = _this.mapEditor.addRoutePoint(latLng);
-            if(points[i].waypoint && i > 0){
-              _this.mapEditor.addWaypoint(point);
-              var waypoint = point.waypoint;
-              console.log(waypoint);
+          var points = json.waypoints;
+          
+          // NOTE: For some strange reason, due to canvas rendering a for loop causes points and waypoints to be skipped, hench for...of in
+          for(point of points){
+            console.log(point);
+            var latLng = new google.maps.LatLng(point.lat, point.long)
+            var obj = _this.mapEditor.addRoutePoint(latLng);
+            if(point.waypoint && i > 0){
+              _this.roadbook.addWaypoint(_this.mapEditor.addWaypoint(obj));
             }
           }
         });
