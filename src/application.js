@@ -80,14 +80,16 @@ var App = Class({
           _this.roadbook.name(roadbook.name);
           _this.roadbook.desc(roadbook.desc);
           var points = json.waypoints;
-          
-          // NOTE: For some strange reason, due to canvas rendering a for loop causes points and waypoints to be skipped, hench for...of in
+
+          // NOTE: For some strange reason, due to canvas rendering, a for loop causes points and waypoints to be skipped, hench for...of in
+          // TODO there are still some major problems here, everything visually checks out but bindings are quite a bit off
           for(point of points){
-            console.log(point);
             var latLng = new google.maps.LatLng(point.lat, point.long)
             var obj = _this.mapEditor.addRoutePoint(latLng);
             if(point.waypoint && i > 0){
-              _this.roadbook.addWaypoint(_this.mapEditor.addWaypoint(obj));
+              var opts = _this.mapEditor.addWaypoint(obj);
+              // opts.tulipJson = point.tulipJson;
+              // _this.roadbook.addWaypoint(opts);
             }
           }
         });

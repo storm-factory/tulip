@@ -16,7 +16,7 @@ var Tulip = Class({
       this.initTracks(angle);
     }
     if(json !== undefined){
-      // TODO load form json method
+      this.canvas.loadFromJSON(json);
     }
   },
 
