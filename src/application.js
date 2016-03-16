@@ -85,6 +85,8 @@ var App = Class({
             var point = _this.mapEditor.addRoutePoint(latLng);
             if(points[i].waypoint && i > 0){
               _this.mapEditor.addWaypoint(point);
+              var waypoint = point.waypoint;
+              console.log(waypoint);
             }
           }
         });

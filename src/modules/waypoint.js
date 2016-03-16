@@ -23,7 +23,7 @@ var Waypoint = Class({
     this.kmFromPrev   = ko.observable(opts.distances.kmFromPrev);
     this.miFromPrev   = ko.observable(opts.distances.miFromPrev);
     this.exactHeading = ko.observable(opts.angles.heading);
-    this.tulipJson    = ko.observable();
+    // this.tulipJson    = ko.observable(); At this point I'm not sure if this is valuable here unless the workflow of the mapping editor and the open process is significantly changed
 
     this.distFromPrev   = ko.computed(this.computedDistanceFromPrev, this);
     this.totalDistance  = ko.computed(this.computedTotalDistance, this);
@@ -34,7 +34,7 @@ var Waypoint = Class({
     var angle = opts.angles.relativeAngle;
     ko.bindingHandlers.waypointCanvasRendered = {
       init: function(element){
-        _this.initTulip(element, null, angle);
+        _this.initTulip(element, angle, undefined);
         _this.initTulipListeners($(element).parents('.waypoint-tulip'));
       }
     };
@@ -42,8 +42,8 @@ var Waypoint = Class({
     this.notes = ko.observable(opts.notes);
   },
 
-  initTulip: function(element, json, angle){
-    this.tulip = new Tulip(element, null, angle);
+  initTulip: function(element, angle, json){
+    this.tulip = new Tulip(element, angle, json);
   },
 
   updateWaypoint: function (distances, heading){

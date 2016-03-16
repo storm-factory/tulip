@@ -130,7 +130,7 @@ var MapEditor = Class({
         point.miFromStart = 0;
         point.kmFromPrev = 0;
         point.miFromPrev = 0;
-        this.addWaypoint(point);
+        point.waypoint = app.roadbook.addWaypoint(this.addWaypoint(point));
       }
     }
     return point;
@@ -138,6 +138,10 @@ var MapEditor = Class({
   /*
     Add a waypoint to the route waypoints array in the proper spot with accurate distance measurements
     and notify the roadbook observer that there is a new waypoint to render
+
+    Returns distance options so a new roadbook waypoint can be built from it.
+    The reason we don't just do that here is that it allows the waypoint generation
+    workflow to be more generalized
   */
   addWaypoint: function(point) {
       var distances = this.computeDistanceFromStart(point);
@@ -150,13 +154,13 @@ var MapEditor = Class({
           distances: distances,
           angles: angles,
       }
-      //bind the waypoint to this map point and update its icon
-      point.waypoint = app.roadbook.addWaypoint(opts);
+      //update the waypoint's icon
       point.setIcon(this.waypointIcon());
       //recompute distances between waypoints
       this.updateRoute();
 
-      return point;
+      // return point distance options so a roadbook waypoint can be initialized
+      return opts;
   },
 
   /*
@@ -370,7 +374,7 @@ var MapEditor = Class({
       if(this.waypoint){
         _this.deleteWaypoint(this);
       } else {
-        _this.addWaypoint(this);
+        this.waypoint = app.roadbook.addWaypoint(_this.addWaypoint(this));
       }
 
 

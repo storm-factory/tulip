@@ -7,12 +7,25 @@ fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
 
 var Tulip = Class({
 
-  create: function(el, json, angle){
+  create: function(el, angle, json){
     this.canvas = new fabric.Canvas(el);
     this.canvas.selection = false;
     this.objects = [];
     this.activeEditors = [];
-    this.initTracks(angle);
+    if(angle !== undefined){
+      this.initTracks(angle);
+    }
+    if(json !== undefined){
+      // TODO load form json method
+    }
+  },
+
+  clear: function(){
+    this.canvas.clear();
+    this.entryTrack = null;
+    this.entryTrackOrigin = null;
+    this.exitTrack = null;
+    this.exitTrackEnd = null;
   },
 
   initTracks: function(angle){
