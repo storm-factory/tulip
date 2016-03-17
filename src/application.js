@@ -80,16 +80,16 @@ var App = Class({
           _this.roadbook.name(roadbook.name);
           _this.roadbook.desc(roadbook.desc);
           var points = json.waypoints;
-
+          var wpts = []
           // NOTE: For some strange reason, due to canvas rendering, a for loop causes points and waypoints to be skipped, hench for...of in
-          // TODO there are still some major problems here, everything visually checks out but bindings are quite a bit off
+          // it also seems like there is some weird timing issue with roadbook waypoint rendering and listener binding
           for(point of points){
             var latLng = new google.maps.LatLng(point.lat, point.long)
-            var obj = _this.mapEditor.addRoutePoint(latLng);
-            if(point.waypoint && i > 0){
-              var opts = _this.mapEditor.addWaypoint(obj);
-              // opts.tulipJson = point.tulipJson;
-              // _this.roadbook.addWaypoint(opts);
+            var routePoint = _this.mapEditor.addRoutePoint(latLng); //this returns a point
+            if(point.waypoint && point !== points[0]){
+              var opts = _this.mapEditor.addWaypoint(routePoint); //this returns distance opts
+              // // opts.tulipJson = point.tulipJson;
+              routePoint.waypoint =  _this.roadbook.addWaypoint(opts);
             }
           }
         });

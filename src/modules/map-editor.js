@@ -328,7 +328,7 @@ var MapEditor = Class({
         lng: position.coords.longitude
       };
       _this.map.setCenter(pos);
-      _this.map.setZoom(8);
+      _this.map.setZoom(14);
     });
 
     //TODO make the map enter on the latLng of the start of a route if one is loaded
@@ -357,6 +357,7 @@ var MapEditor = Class({
 
   initPointListeners: function(point){
     var _this = this;
+
     /*
       right clicking on a route point removes it from the route
     */
