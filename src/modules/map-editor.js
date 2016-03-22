@@ -357,7 +357,6 @@ var MapEditor = Class({
 
   initPointListeners: function(point){
     var _this = this;
-
     /*
       right clicking on a route point removes it from the route
     */

@@ -81,14 +81,14 @@ var App = Class({
           _this.roadbook.desc(roadbook.desc);
           var points = json.waypoints;
           var wpts = []
-          // NOTE: For some strange reason, due to canvas rendering, a for loop causes points and waypoints to be skipped, hench for...of in
+          // NOTE: For some strange reason, due to canvas rendering, a for loop causes points and waypoints to be skipped, hence for...of in
           // it also seems like there is some weird timing issue with roadbook waypoint rendering and listener binding
           for(point of points){
             var latLng = new google.maps.LatLng(point.lat, point.long)
             var routePoint = _this.mapEditor.addRoutePoint(latLng); //this returns a point
             if(point.waypoint && point !== points[0]){
               var opts = _this.mapEditor.addWaypoint(routePoint); //this returns distance opts
-              // // opts.tulipJson = point.tulipJson;
+              opts.tulipJson = point.tulipJson;
               routePoint.waypoint =  _this.roadbook.addWaypoint(opts);
             }
           }
@@ -98,7 +98,7 @@ var App = Class({
 
   saveRoadBook: function(){
     var _this = this
-    var tulipFile = JSON.stringify(this.roadbook.save());
+    var tulipFile = JSON.stringify(this.roadbook.save(), null, 2);
     this.dialog.showSaveDialog({ filters: [
        { name: 'tulip', extensions: ['tlp'] }
       ]},function (fileName) {

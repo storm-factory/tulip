@@ -139,7 +139,7 @@ var Roadbook = Class({
           lat: points[i].getPosition().lat(),
           long: points[i].getPosition().lng(),
           waypoint: points[i].waypoint ? true : false,
-          tulipJson: points[i].waypoint ? points[i].waypoint.tulip.toJSON() : null,
+          tulipJson: points[i].waypoint ? points[i].waypoint.serializeTulip() : null,
           kmFromStart: points[i].waypoint ? points[i].waypoint.kmFromStart() : null,
           kmFromPrev: points[i].waypoint ? points[i].waypoint.kmFromPrev() : null,
           heading: points[i].waypoint ? points[i].waypoint.exactHeading() : null,

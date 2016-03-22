@@ -10,13 +10,19 @@ var Tulip = Class({
   create: function(el, angle, json){
     this.canvas = new fabric.Canvas(el);
     this.canvas.selection = false;
-    this.objects = [];
+    this.objects = []; //TODO replace this with the objects array and the paths array
+    //-----------------------
+    this.paths = [];
+    this.glyphs = [];
+    //-----------------------
     this.activeEditors = [];
     if(angle !== undefined){
       this.initTracks(angle);
     }
     if(json !== undefined){
-      this.canvas.loadFromJSON(json);
+      // things are rendering correctly, but we might need to parse and built object by object
+      this.canvas.clear();
+      this.loadFromJson(json);
     }
   },
 
@@ -28,6 +34,9 @@ var Tulip = Class({
     this.exitTrackEnd = null;
   },
 
+  /*
+    TODO refactor this to either take an angle or some json and then break the object creation out into their own methods so as to be more multi-purpose
+  */
   initTracks: function(angle){
     this.entryTrack = new fabric.Path('M 90 171 C 90, 165, 90, 159, 90, 150 C 90, 141, 90, 129, 90, 120 C 90, 111, 90, 99, 90, 90',
                                               { fill: '',
@@ -97,6 +106,9 @@ var Tulip = Class({
     this.objects.push(this.entryTrackOrigin);
   },
 
+  /*
+    TODO have different handlers for default paths (entry and exit) and ad hoc created objects and glyphs
+  */
   beginEdit: function() {
     for(i = 0; i < this.objects.length; i++) {
       if(this.objects[i].objectType == 'track'){
@@ -182,12 +194,30 @@ var Tulip = Class({
     return [x + 90, y + 90]
   },
 
+  /*
+    Build the Canvas object from a json string
+  */
+  loadFromJson: function(json){
+
+  },
 
   /*
     return the canvas object as JSON so it can be persisted
   */
-  toJSON: function(){
-    return this.canvas.toJSON();
+  serialize: function(){
+    var json = {
+      entry: {
+        point: this.entryTrackOrigin,
+        path: this.entryTrack
+      },
+      exit: {
+        point: this.exitTrackEnd,
+        path: this.exitTrack
+      },
+      paths: [],
+      glyphs: [],
+    };
+    return json;
   }
 
 });

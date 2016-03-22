@@ -12,7 +12,7 @@ var Waypoint = Class({
               heading: INTEGER,
               relativeAngle: INTEGER.
             },
-            tulip: OBJECT,
+            tulipJson: OBJECT,
             notes: STRING,
     }
   */
@@ -83,5 +83,9 @@ var Waypoint = Class({
         _this.tulip.beginEdit();
       }
     });
+  },
+
+  serializeTulip: function() {
+    return this.tulip.serialize()
   },
 });
