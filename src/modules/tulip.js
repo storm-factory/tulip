@@ -27,21 +27,28 @@ var Tulip = Class({
   },
 
   /*
-    TODO refactor this to either take an angle or some json and then break the object creation out into their own methods so as to be more multi-purpose
+    TODO refactor this to either take an angle or some json and then break the object creation out into their own methods for angle or json depending on params passed in
   */
   initTracks: function(angle,json){
-
+    console.log('here');
     this.entryTrack = this.buildEntryTrack(json);
     this.entryTrackOrigin = this.buildEntryTrackOrigin(json);
     this.entryTrackOrigin.track = this.entryTrack;
     this.entryTrack.origin = this.entryTrackOrigin;
-    this.canvas.add(this.entryTrack);
-    this.canvas.add(this.entryTrackOrigin);
+
 
     this.exitTrack = this.buildExitTrack(angle,json);
     this.exitTrackEnd = this.buildExitTrackEnd(angle,json);
     this.exitTrackEnd.track = this.exitTrack
     this.exitTrack.end = this.exitTrackEnd;
+    // NOTE this is just a test for json rendered objects
+    this.exitTrack.hasControls = this.entryTrack.hasControls = this.entryTrackOrigin.hasControls = this.exitTrackEnd.hasControls = false;
+    this.exitTrack.lockMovementX = this.entryTrack.lockMovementX = this.entryTrackOrigin.lockMovementX = this.exitTrackEnd.lockMovementX = true;
+    this.exitTrack.lockMovementY = this.entryTrack.lockMovementY = this.entryTrackOrigin.lockMovementY = this.exitTrackEnd.lockMovementY = true;
+    // TODO figure out how to do this with witout rendering things twice in the above methods, perhaps we can do it all in one function and return an array of objects to
+    //    assign to the instance variables, could cut down on complexity and also increase efficiency.
+    this.canvas.add(this.entryTrack);
+    this.canvas.add(this.entryTrackOrigin);
     this.canvas.add(this.exitTrack);
     this.canvas.add(this.exitTrackEnd);
   },
@@ -49,7 +56,12 @@ var Tulip = Class({
   buildEntryTrack: function(json) {
     var track;
     if(json !== undefined){
-      // TODO stuff
+      var json = {
+        "objects": [json.entry.path]
+      }
+      this.canvas.loadFromJSON(json, this.canvas.renderAll.bind(this.canvas), function(o, object) {
+        track = object;
+      });
     } else{
       track = new fabric.Path('M 90 171 C 90, 165, 90, 159, 90, 150 C 90, 141, 90, 129, 90, 120 C 90, 111, 90, 99, 90, 90',
                                                 { fill: '',
@@ -67,7 +79,12 @@ var Tulip = Class({
   buildEntryTrackOrigin: function(json) {
     var origin;
     if(json !== undefined){
-      // TODO stuff
+      var json = {
+        "objects": [json.entry.point]
+      }
+      this.canvas.loadFromJSON(json, this.canvas.renderAll.bind(this.canvas), function(o, object) {
+        origin = object;
+      });
     } else{
       origin = new fabric.Circle({
         left: this.entryTrack.path[0][1],
@@ -88,7 +105,12 @@ var Tulip = Class({
   buildExitTrack: function(angle,json){
     var track;
     if(json !== undefined){
-      // TODO stuff
+      var json = {
+        "objects": [json.exit.path]
+      }
+      this.canvas.loadFromJSON(json, this.canvas.renderAll.bind(this.canvas), function(o, object) {
+        track = object;
+      });
     }else if (angle !== undefined) {
       track = new fabric.Path(this.buildExitTrackPathString(angle),
                                                 { fill: '',
@@ -107,7 +129,12 @@ var Tulip = Class({
   buildExitTrackEnd: function(angle, json) {
     var end;
     if(json !== undefined){
-      // TODO stuff
+      var json = {
+        "objects": [json.exit.point]
+      }
+      this.canvas.loadFromJSON(json, this.canvas.renderAll.bind(this.canvas), function(o, object) {
+        end = object;
+      });
     }else if (angle !== undefined) {
       end = new fabric.Triangle({
         left: this.exitTrack.path[3][5],

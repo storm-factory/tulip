@@ -82,11 +82,11 @@ var App = Class({
           var points = json.waypoints;
           var wpts = []
           // NOTE: For some strange reason, due to canvas rendering, a for loop causes points and waypoints to be skipped, hence for...of in
-          // it also seems like there is some weird timing issue with roadbook waypoint rendering and listener binding
+          // TODO There is still some weirdness going on with the last waypoint. distance  and tulip are correct but the heading angle is off.
           for(point of points){
             var latLng = new google.maps.LatLng(point.lat, point.long)
             var routePoint = _this.mapEditor.addRoutePoint(latLng); //this returns a point
-            if(point.waypoint && point !== points[0]){
+            if(point.waypoint && point !== points[0]){ //TODO this methodology won't work once the first tulip has been edited
               var opts = _this.mapEditor.addWaypoint(routePoint); //this returns distance opts
               opts.tulipJson = point.tulipJson;
               routePoint.waypoint =  _this.roadbook.addWaypoint(opts);
