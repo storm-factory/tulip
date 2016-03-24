@@ -77,8 +77,8 @@ var App = Class({
           /*
             TODO Refactor this into a function in the roadbook module
           */
-          _this.roadbook.name(roadbook.name);
-          _this.roadbook.desc(roadbook.desc);
+          _this.roadbook.name(json.name);
+          _this.roadbook.desc(json.desc);
           var points = json.waypoints;
           var wpts = []
           // NOTE: For some strange reason, due to canvas rendering, a for loop causes points and waypoints to be skipped, hence for...of in
@@ -86,7 +86,7 @@ var App = Class({
           for(point of points){
             var latLng = new google.maps.LatLng(point.lat, point.long)
             var routePoint = _this.mapEditor.addRoutePoint(latLng); //this returns a point
-            if(point.waypoint && point !== points[0]){ //TODO this methodology won't work once the first tulip has been edited
+            if(point.waypoint && point !== points[0]){ //TODO this methodology won't work once the first tulip has been edited, also somehow undefined is getting sent as the first tulip
               var opts = _this.mapEditor.addWaypoint(routePoint); //this returns distance opts
               opts.tulipJson = point.tulipJson;
               routePoint.waypoint =  _this.roadbook.addWaypoint(opts);

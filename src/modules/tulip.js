@@ -1,6 +1,5 @@
 /*
-  This sumbitch should be able to load from a canvas when that particular canvas enters edit mode.
-  It should load shit from svg files in the assests directory and allow them to be placed on and edited in the canvas.
+  Creates a tulip canvas object from either UI interaction or the loading of a saved file
 */
 
 fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
@@ -10,12 +9,12 @@ var Tulip = Class({
   create: function(el, angle, json){
     this.canvas = new fabric.Canvas(el);
     this.canvas.selection = false;
-    //-----------------------
+    //----------------------- NOT YET IMPLIMENTED
     this.paths = [];
     this.glyphs = [];
     //-----------------------
     this.activeEditors = [];
-    this.initTracks(angle,json);
+    this.initTulip(angle,json);
   },
 
   clear: function(){
@@ -27,93 +26,54 @@ var Tulip = Class({
   },
 
   /*
-    TODO refactor this to either take an angle or some json and then break the object creation out into their own methods for angle or json depending on params passed in
+    Creates a tulip either from passed in json from a file load or from a angle provided by UI wpt creation
+    TODO test this doesn't break under UI wpt creation
   */
-  initTracks: function(angle,json){
-    console.log('here');
-    this.entryTrack = this.buildEntryTrack(json);
-    this.entryTrackOrigin = this.buildEntryTrackOrigin(json);
+  initTulip: function(angle,json){
+    if(json !== undefined && angle == 0){ //the map point has been created from serialized json
+      console.log('json');
+      this.buildFromJson(json);
+    } else if(angle !== undefined){
+      console.log('angle');
+      this.buildEntry();
+      this.buildExit(angle);
+    }
+  },
+
+  initEntry: function(point, path){
+    this.entryTrackOrigin = point;
+    this.entryTrack = path;
     this.entryTrackOrigin.track = this.entryTrack;
     this.entryTrack.origin = this.entryTrackOrigin;
-
-
-    this.exitTrack = this.buildExitTrack(angle,json);
-    this.exitTrackEnd = this.buildExitTrackEnd(angle,json);
+  },
+  initExit: function(point, path){
+    this.exitTrack = path;
+    this.exitTrackEnd = point;
     this.exitTrackEnd.track = this.exitTrack
     this.exitTrack.end = this.exitTrackEnd;
-    // NOTE this is just a test for json rendered objects
-    this.exitTrack.hasControls = this.entryTrack.hasControls = this.entryTrackOrigin.hasControls = this.exitTrackEnd.hasControls = false;
-    this.exitTrack.lockMovementX = this.entryTrack.lockMovementX = this.entryTrackOrigin.lockMovementX = this.exitTrackEnd.lockMovementX = true;
-    this.exitTrack.lockMovementY = this.entryTrack.lockMovementY = this.entryTrackOrigin.lockMovementY = this.exitTrackEnd.lockMovementY = true;
-    // TODO figure out how to do this with witout rendering things twice in the above methods, perhaps we can do it all in one function and return an array of objects to
-    //    assign to the instance variables, could cut down on complexity and also increase efficiency.
-    this.canvas.add(this.entryTrack);
-    this.canvas.add(this.entryTrackOrigin);
-    this.canvas.add(this.exitTrack);
-    this.canvas.add(this.exitTrackEnd);
+  },
+  /*
+    Builds the tulip from passed in JSON
+  */
+  buildFromJson: function(json){
+    // TODO merge in paths array and glyphs array and keep track of how to handle them based on their index in the below objects array in the json object
+    var json = {
+      "objects": [json.entry.point, json.entry.path, json.exit.path, json.exit.point]
+    };
+    var obs = [];
+
+    this.canvas.loadFromJSON(json, this.canvas.renderAll.bind(this.canvas), function(o, object) {
+      obs.push(object);
+    });
+
+    this.initEntry(obs[0], obs[1]);
+    this.initExit(obs[3], obs[2]);
   },
 
-  buildEntryTrack: function(json) {
-    var track;
-    if(json !== undefined){
-      var json = {
-        "objects": [json.entry.path]
-      }
-      this.canvas.loadFromJSON(json, this.canvas.renderAll.bind(this.canvas), function(o, object) {
-        track = object;
-      });
-    } else{
-      track = new fabric.Path('M 90 171 C 90, 165, 90, 159, 90, 150 C 90, 141, 90, 129, 90, 120 C 90, 111, 90, 99, 90, 90',
-                                                { fill: '',
-                                                  stroke: '#000',
-                                                  strokeWidth: 5,
-                                                  hasControls: false,
-                                                  lockMovementX: true,
-                                                  lockMovementY: true,
-                                                  hasBorders: false
-                                                });
-    }
-    return track;
-  },
+  buildEntry: function() {
 
-  buildEntryTrackOrigin: function(json) {
-    var origin;
-    if(json !== undefined){
-      var json = {
-        "objects": [json.entry.point]
-      }
-      this.canvas.loadFromJSON(json, this.canvas.renderAll.bind(this.canvas), function(o, object) {
-        origin = object;
-      });
-    } else{
-      origin = new fabric.Circle({
-        left: this.entryTrack.path[0][1],
-        top: this.entryTrack.path[0][2],
-        strokeWidth: 1,
-        radius: 5,
-        fill: '#000',
-        stroke: '#666',
-        hasControls: false,
-        lockMovementX: true,
-        lockMovementY: true,
-        hasBorders: false
-      });
-    }
-    return origin;
-  },
-
-  buildExitTrack: function(angle,json){
-    var track;
-    if(json !== undefined){
-      var json = {
-        "objects": [json.exit.path]
-      }
-      this.canvas.loadFromJSON(json, this.canvas.renderAll.bind(this.canvas), function(o, object) {
-        track = object;
-      });
-    }else if (angle !== undefined) {
-      track = new fabric.Path(this.buildExitTrackPathString(angle),
-                                                { fill: '',
+    var entry = new fabric.Path('M 90 171 C 90, 165, 90, 159, 90, 150 C 90, 141, 90, 129, 90, 120 C 90, 111, 90, 99, 90, 90',
+                                              { fill: '',
                                                 stroke: '#000',
                                                 strokeWidth: 5,
                                                 hasControls: false,
@@ -121,38 +81,54 @@ var Tulip = Class({
                                                 lockMovementY: true,
                                                 hasBorders: false
                                               });
-    }
+    var point = new fabric.Circle({
+      left: entry.path[0][1],
+      top: entry.path[0][2],
+      strokeWidth: 1,
+      radius: 5,
+      fill: '#000',
+      stroke: '#666',
+      hasControls: false,
+      lockMovementX: true,
+      lockMovementY: true,
+      hasBorders: false
+    });
 
-    return track
+    this.initEntry(point, entry);
+    this.canvas.add(this.entryTrack);
+    this.canvas.add(this.entryTrackOrigin)
   },
 
-  buildExitTrackEnd: function(angle, json) {
-    var end;
-    if(json !== undefined){
-      var json = {
-        "objects": [json.exit.point]
-      }
-      this.canvas.loadFromJSON(json, this.canvas.renderAll.bind(this.canvas), function(o, object) {
-        end = object;
-      });
-    }else if (angle !== undefined) {
-      end = new fabric.Triangle({
-        left: this.exitTrack.path[3][5],
-        top: this.exitTrack.path[3][6],
-        strokeWidth: 1,
-        height: 12,
-        width: 12,
-        fill: '#000',
-        stroke: '#666',
-        angle: angle,
-        hasControls: false,
-        lockMovementX: true,
-        lockMovementY: true,
-        hasBorders: false
-      });
-    }
-    return end;
+  buildExit: function(angle){
+    var exit = new fabric.Path(this.buildExitTrackPathString(angle),
+                                              { fill: '',
+                                              stroke: '#000',
+                                              strokeWidth: 5,
+                                              hasControls: false,
+                                              lockMovementX: true,
+                                              lockMovementY: true,
+                                              hasBorders: false
+                                            });
+    var point = new fabric.Triangle({
+      left: exit.path[3][5],
+      top: exit.path[3][6],
+      strokeWidth: 1,
+      height: 12,
+      width: 12,
+      fill: '#000',
+      stroke: '#666',
+      angle: angle,
+      hasControls: false,
+      lockMovementX: true,
+      lockMovementY: true,
+      hasBorders: false
+    });
+
+    this.initExit(point, exit);
+    this.canvas.add(this.exitTrack);
+    this.canvas.add(this.exitTrackEnd);
   },
+
 
   /*
     TODO have different handlers for default paths (entry and exit) and ad hoc created objects and glyphs
