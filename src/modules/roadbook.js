@@ -134,15 +134,16 @@ var Roadbook = Class({
     }
     points = app.mapEditor.routeMarkers
     console.log(points);
+    // TODO fold waypoint into object instead of boolean so we aren't saving nulls
     for(i = 0; i < points.length; i++){
         var waypointJSON = {
           lat: points[i].getPosition().lat(),
           long: points[i].getPosition().lng(),
           waypoint: points[i].waypoint ? true : false,
-          tulipJson: points[i].waypoint ? points[i].waypoint.serializeTulip() : null,
           kmFromStart: points[i].waypoint ? points[i].waypoint.kmFromStart() : null,
           kmFromPrev: points[i].waypoint ? points[i].waypoint.kmFromPrev() : null,
           heading: points[i].waypoint ? points[i].waypoint.exactHeading() : null,
+          tulipJson: points[i].waypoint ? points[i].waypoint.serializeTulip() : null,
         }
 
         roadbookJSON.waypoints.push(waypointJSON);

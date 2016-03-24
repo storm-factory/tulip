@@ -31,10 +31,8 @@ var Tulip = Class({
   */
   initTulip: function(angle,json){
     if(json !== undefined && angle == 0){ //the map point has been created from serialized json
-      console.log('json');
       this.buildFromJson(json);
     } else if(angle !== undefined){
-      console.log('angle');
       this.buildEntry();
       this.buildExit(angle);
     }

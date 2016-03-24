@@ -82,13 +82,14 @@ var App = Class({
           var points = json.waypoints;
           var wpts = []
           // NOTE: For some strange reason, due to canvas rendering, a for loop causes points and waypoints to be skipped, hence for...of in
-          // TODO There is still some weirdness going on with the last waypoint. distance  and tulip are correct but the heading angle is off.
           for(point of points){
             var latLng = new google.maps.LatLng(point.lat, point.long)
-            var routePoint = _this.mapEditor.addRoutePoint(latLng); //this returns a point
-            if(point.waypoint && point !== points[0]){ //TODO this methodology won't work once the first tulip has been edited, also somehow undefined is getting sent as the first tulip
-              var opts = _this.mapEditor.addWaypoint(routePoint); //this returns distance opts
+            var routePoint = _this.mapEditor.addRoutePoint(latLng, null, true); //this returns a point
+            if(point.waypoint){
+              var opts = _this.mapEditor.addWaypoint(routePoint); //this returns distance opts but if we already have that saved then why do we care?
+              console.log(JSON.stringify(opts));
               opts.tulipJson = point.tulipJson;
+              opts.angles.heading = point.heading;
               routePoint.waypoint =  _this.roadbook.addWaypoint(opts);
             }
           }

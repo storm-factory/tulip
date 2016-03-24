@@ -91,7 +91,7 @@ var MapEditor = Class({
 
     Listeners are bound to the point to allow it to be toggled as a waypoint or to be removed entirely
   */
-  addRoutePoint: function(latLng, index){
+  addRoutePoint: function(latLng, index, supressWpt){
     /*
       add this point to the route Polyline path MVC array
     */
@@ -124,8 +124,8 @@ var MapEditor = Class({
       this.incrementRouteVertexIndecies(index);
     } else {
       this.routeMarkers.push(point);
-      // this is the first point and thus the start of the route, make it a waypoint
-      if(this.routeMarkers.length == 1 && this.routePoints.length == 1) {
+      // this is the first point and thus the start of the route, make it a waypoint, but not if the roadbook is being loaded from js
+      if(this.routeMarkers.length == 1 && this.routePoints.length == 1 && !supressWpt) {
         point.kmFromStart = 0;
         point.miFromStart = 0;
         point.kmFromPrev = 0;
