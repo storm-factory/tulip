@@ -82,6 +82,10 @@ var Waypoint = Class({
       if(_this.roadbook.requestCanvasEdit(_this.tulip)){
         _this.tulip.beginEdit();
       }
+
+      $('#roadbook-waypoints').children().hide();
+      $(element).parents('.waypoint.row').show();
+      $('#waypoint-palette').show();
     });
   },
 

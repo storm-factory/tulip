@@ -53,9 +53,6 @@ var App = Class({
     ---------------------------------------------------------------------------
   */
 
-  /*
-    TODO this isn't working for 'opened' roadbooks
-  */
   canSave: function(){
     var can;
     can = this.roadbook.finishCanvasEdit();
@@ -141,6 +138,8 @@ var App = Class({
       if(_this.canSave()){
         $(this).addClass('secondary');
         _this.saveRoadBook();
+        $('.waypoint.row').show();
+        $$('#waypoint-palette').hide();
       }
       $(this).blur();
     });

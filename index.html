@@ -88,7 +88,50 @@
                 </div>
               </div>
             <!-- render waypoint templates here -->
-            <div data-bind="template: { name: 'waypoint-template', foreach: app.roadbook.waypoints }"></div>
+            <div id="roadbook-waypoints" data-bind="template: { name: 'waypoint-template', foreach: app.roadbook.waypoints }"></div>
+            <div id="waypoint-palette">
+              <div class="row">
+                <hr>
+                <div class="large-12 column">
+                  road types
+                  <div class="row">
+                    <div class="large-4 column">
+                      diag
+                    </div>
+                    <div class="large-4 column">
+                      vert
+                    </div>
+                    <div class="large-4 column">
+                      horz
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="large-4 column">
+                      dropdown add
+                    </div>
+                    <div class="large-4 column">
+                      dropdown track to prev
+                    </div>
+                    <div class="large-4 column">
+                      dropdown track to next
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <hr>
+                <div class="large-12 column">
+                  glyphs
+                </div>
+              </div>
+              <div class="row">
+                <hr>
+                <div class="large-12 column">
+                  notes
+                </div>
+                <hr>
+              </div>
+            </div>
           </div>
         </div>
       </div>

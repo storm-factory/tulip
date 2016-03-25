@@ -102,14 +102,10 @@ var Roadbook = Class({
     if(this.currentlyEditingCanvas){
       this.currentlyEditingCanvas = false;
 
-      // for(i = 0; i < this.waypoints().length; i++){
-      //   console.log(i);
-        if(this.currentlyEditingCanvasObject !== null){
-          this.currentlyEditingCanvasObject.finishEdit();
-          this.currentlyEditingCanvasObject = null;
-        }
-      // }
-
+      if(this.currentlyEditingCanvasObject !== null){
+        this.currentlyEditingCanvasObject.finishEdit();
+        this.currentlyEditingCanvasObject = null;
+      }
       return true;
     }
   },
