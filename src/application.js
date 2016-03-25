@@ -87,7 +87,6 @@ var App = Class({
             var routePoint = _this.mapEditor.addRoutePoint(latLng, null, true); //this returns a point
             if(point.waypoint){
               var opts = _this.mapEditor.addWaypoint(routePoint); //this returns distance opts but if we already have that saved then why do we care?
-              console.log(JSON.stringify(opts));
               opts.tulipJson = point.tulipJson;
               opts.angles.heading = point.heading;
               routePoint.waypoint =  _this.roadbook.addWaypoint(opts);

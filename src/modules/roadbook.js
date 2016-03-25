@@ -102,10 +102,13 @@ var Roadbook = Class({
     if(this.currentlyEditingCanvas){
       this.currentlyEditingCanvas = false;
 
-      for(i = 0; i < this.waypoints().length; i++){
-        this.currentlyEditingCanvasObject.finishEdit();
-        this.currentlyEditingCanvasObject = null;
-      }
+      // for(i = 0; i < this.waypoints().length; i++){
+      //   console.log(i);
+        if(this.currentlyEditingCanvasObject !== null){
+          this.currentlyEditingCanvasObject.finishEdit();
+          this.currentlyEditingCanvasObject = null;
+        }
+      // }
 
       return true;
     }
@@ -133,7 +136,6 @@ var Roadbook = Class({
       waypoints: [],
     }
     points = app.mapEditor.routeMarkers
-    console.log(points);
     // TODO fold waypoint into object instead of boolean so we aren't saving nulls
     for(i = 0; i < points.length; i++){
         var waypointJSON = {

@@ -66,6 +66,9 @@ var Tulip = Class({
 
     this.initEntry(obs[0], obs[1]);
     this.initExit(obs[3], obs[2]);
+    this.exitTrack.hasControls = this.entryTrack.hasControls = this.entryTrackOrigin.hasControls = this.exitTrackEnd.hasControls = false;
+    this.exitTrack.lockMovementX = this.entryTrack.lockMovementX = this.entryTrackOrigin.lockMovementX = this.exitTrackEnd.lockMovementX = true;
+    this.exitTrack.lockMovementY = this.entryTrack.lockMovementY = this.entryTrackOrigin.lockMovementY = this.exitTrackEnd.lockMovementY = true;
   },
 
   buildEntry: function() {
