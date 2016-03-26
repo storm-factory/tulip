@@ -139,7 +139,7 @@ var App = Class({
         $(this).addClass('secondary');
         _this.saveRoadBook();
         $('.waypoint.row').show();
-        $$('#waypoint-palette').hide();
+        $('#waypoint-palette').hide();
       }
       $(this).blur();
     });
@@ -156,6 +156,11 @@ var App = Class({
       $(this).parent('div').find(':input').focus();
       $('#save-roadbook').removeClass('secondary');
       _this.roadbook.editingNameDesc = true;
+    });
+
+    $('.track-grid').click(function(){
+      var gridPosition = $(this).attr('class').replace('track-grid','');
+      _this.roadbook.currentlyEditingTulip.addTrack(gridPosition);
     });
   },
 });

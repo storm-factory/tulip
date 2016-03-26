@@ -7,7 +7,7 @@ var Roadbook = Class({
     */
     // this.drawRoute = false; // I don' think this is being used
     this.currentlyEditingCanvas = false;
-    this.currentlyEditingCanvasObject = null;
+    this.currentlyEditingTulip = null;
     this.editingNameDesc = false;
 
     this.newWaypoints = false;
@@ -86,11 +86,11 @@ var Roadbook = Class({
 
   // Keeps track of which waypoint canvas is being edited so there aren't too many UI controls all at once
   requestCanvasEdit: function(object){
-    if(object != this.currentlyEditingCanvasObject){
-      if(this.currentlyEditingCanvasObject){
-        this.currentlyEditingCanvasObject.finishEdit();
+    if(object != this.currentlyEditingTulip){
+      if(this.currentlyEditingTulip){
+        this.currentlyEditingTulip.finishEdit();
       }
-      this.currentlyEditingCanvasObject = object;
+      this.currentlyEditingTulip = object;
       this.currentlyEditingCanvas = true;
       $('#save-roadbook').removeClass('secondary');
       return true;
@@ -102,9 +102,9 @@ var Roadbook = Class({
     if(this.currentlyEditingCanvas){
       this.currentlyEditingCanvas = false;
 
-      if(this.currentlyEditingCanvasObject !== null){
-        this.currentlyEditingCanvasObject.finishEdit();
-        this.currentlyEditingCanvasObject = null;
+      if(this.currentlyEditingTulip !== null){
+        this.currentlyEditingTulip.finishEdit();
+        this.currentlyEditingTulip = null;
       }
       return true;
     }

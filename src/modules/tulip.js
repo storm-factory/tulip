@@ -51,6 +51,12 @@ var Tulip = Class({
     this.exitTrack.end = this.exitTrackEnd;
   },
   /*
+    Adds a track to tulip from UI interaction
+  */
+  addTrack: function(gridPosition) {
+    console.log(gridPosition);
+  },
+  /*
     Builds the tulip from passed in JSON
   */
   buildFromJson: function(json){
