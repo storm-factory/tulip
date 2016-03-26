@@ -10,7 +10,7 @@ var Tulip = Class({
     this.canvas = new fabric.Canvas(el);
     this.canvas.selection = false;
     //----------------------- NOT YET IMPLIMENTED
-    this.paths = [];
+    this.tracks = [];
     this.glyphs = [];
     //-----------------------
     this.activeEditors = [];
@@ -55,6 +55,50 @@ var Tulip = Class({
   */
   addTrack: function(gridPosition) {
     console.log(gridPosition);
+    var angle;
+    // TODO what an ugly piece of code. can we hide this somewhere?
+    switch (gridPosition) {
+      case 'tl':
+          angle = -45;
+        break;
+      case 'tm':
+          angle = 0;
+        break;
+      case 'tr':
+          angle = 45;
+        break;
+      case 'ml':
+        angle = -90;
+        break;
+      case 'undo':
+          console.log('undo');
+        break;
+      case 'mr':
+        angle = 90;
+        break;
+      case 'll':
+        angle = -135;
+        break;
+      case 'lm':
+        angle = 180;
+        break;
+      case 'lr':
+        angle = 135;
+        break;
+      default:
+          angle = 0;
+    }
+    var track = new fabric.Path(this.buildExitTrackPathString(angle),
+                                              { fill: '',
+                                              stroke: '#000',
+                                              strokeWidth: 5,
+                                              hasControls: false,
+                                              hasBorders: false
+                                            });
+
+
+    this.tracks.push(track);
+    this.canvas.add(track);
   },
   /*
     Builds the tulip from passed in JSON

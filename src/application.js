@@ -159,7 +159,7 @@ var App = Class({
     });
 
     $('.track-grid').click(function(){
-      var gridPosition = $(this).attr('class').replace('track-grid','');
+      var gridPosition = $(this).attr('class').replace('track-grid','').replace(/\s+/g, '');
       _this.roadbook.currentlyEditingTulip.addTrack(gridPosition);
     });
   },
