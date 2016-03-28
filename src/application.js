@@ -161,8 +161,12 @@ var App = Class({
     });
 
     $('.track-grid').click(function(){
-      var gridPosition = $(this).attr('class').replace('track-grid','').replace(/\s+/g, '');
-      _this.roadbook.currentlyEditingTulip.addTrack(gridPosition);
+      if($(this).hasClass('undo')){
+        _this.roadbook.currentlyEditingTulip.removeLastTrack();
+        return
+      }
+      var angle = $(this).data('angle');
+      _this.roadbook.currentlyEditingTulip.addTrack(angle);
     });
   },
 });

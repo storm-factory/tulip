@@ -44,51 +44,20 @@ var Tulip = Class({
     this.entryTrackOrigin.track = this.entryTrack;
     this.entryTrack.origin = this.entryTrackOrigin;
   },
+
   initExit: function(point, path){
     this.exitTrack = path;
     this.exitTrackEnd = point;
     this.exitTrackEnd.track = this.exitTrack
     this.exitTrack.end = this.exitTrackEnd;
   },
+
   /*
     Adds a track to tulip from UI interaction
-    TODO make this consume an angle or json just like everything else
+    NOTE if two tracks in a row are added and have overlapping handles the lower handle won't be able to be moved
   */
-  addTrack: function(gridPosition) {
-    var angle;
-    // TODO what an ugly piece of code. can we hide this somewhere?
-    switch (gridPosition) {
-      case 'tl':
-          angle = -45;
-        break;
-      case 'tm':
-          angle = 0;
-        break;
-      case 'tr':
-          angle = 45;
-        break;
-      case 'ml':
-        angle = -90;
-        break;
-      case 'undo':
-          this.removeLastTrack();
-          return
-        break;
-      case 'mr':
-        angle = 90;
-        break;
-      case 'll':
-        angle = -135;
-        break;
-      case 'lm':
-        angle = 180;
-        break;
-      case 'lr':
-        angle = 135;
-        break;
-      default:
-          angle = 0;
-    }
+  addTrack: function(angle) {
+
     var track = new fabric.Path(this.buildTrackPathString(angle),
                                               { fill: '',
                                               stroke: '#000',
@@ -118,6 +87,8 @@ var Tulip = Class({
 
     this.initEntry(obs[0], obs[1]);
     this.initExit(obs[3], obs[2]);
+    // TODO init tracks to handle shutting off the controls and lock X and Y
+
     this.exitTrack.hasControls = this.entryTrack.hasControls = this.entryTrackOrigin.hasControls = this.exitTrackEnd.hasControls = false;
     this.exitTrack.lockMovementX = this.entryTrack.lockMovementX = this.entryTrackOrigin.lockMovementX = this.exitTrackEnd.lockMovementX = true;
     this.exitTrack.lockMovementY = this.entryTrack.lockMovementY = this.entryTrackOrigin.lockMovementY = this.exitTrackEnd.lockMovementY = true;
