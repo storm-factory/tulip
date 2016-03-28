@@ -52,6 +52,7 @@ var Tulip = Class({
   },
   /*
     Adds a track to tulip from UI interaction
+    TODO make this consume an angle or json just like everything else
   */
   addTrack: function(gridPosition) {
     var angle;
@@ -295,7 +296,7 @@ var Tulip = Class({
         point: this.exitTrackEnd,
         path: this.exitTrack
       },
-      paths: [],
+      tracks: this.tracks,
       glyphs: [],
     };
     return json;

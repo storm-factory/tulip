@@ -72,21 +72,26 @@
             </div>
           </div>
           <div id="roadbook">
+            <hr>
             <div class="row">
-              <div id="roadbook-name" class="large-12 column">
-                <hr>
+              <div id="roadbook-total-distance" class="large-4 column">
+                Total Kilometers:
+                <p data-bind="text: app.roadbook.totalDistance"></p>
+              </div>
+              <div id="roadbook-name" class="large-8 column">
                 <a href="#" data-bind="text: app.roadbook.name"></a>
                  <input type="text" placeholder="Roadbook Name" data-bind="textInput: app.roadbook.name"/>
-                 <hr>
+
               </div>
             </div>
-              <div class="row">
-                <div id="roadbook-desc" class="large-12 column">
-                  <a href="#" data-bind="text: app.roadbook.desc"></a>
-                  <textarea placeholder="Roadbook Description" data-bind="textInput: app.roadbook.desc"></textarea>
-                  <hr>
-                </div>
+            <div class="row">
+              <hr>
+              <div id="roadbook-desc" class="large-12 column">
+                <a href="#" data-bind="text: app.roadbook.desc"></a>
+                <textarea placeholder="Roadbook Description" data-bind="textInput: app.roadbook.desc"></textarea>
+                <hr>
               </div>
+            </div>
             <!-- render waypoint templates here -->
             <div id="roadbook-waypoints" data-bind="template: { name: 'waypoint-template', foreach: app.roadbook.waypoints }"></div>
             <div id="waypoint-palette">

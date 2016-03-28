@@ -11,8 +11,9 @@ var Roadbook = Class({
     this.editingNameDesc = false;
 
     this.newWaypoints = false;
-    this.name = ko.observable('Name:');
-    this.desc = ko.observable('Description:');
+    this.name = ko.observable('Name your roadbook');
+    this.desc = ko.observable('Describe your roadbook, click me!');
+    this.totalDistance = ko.observable('0.00');
   },
 
   /*
@@ -147,6 +148,15 @@ var Roadbook = Class({
         roadbookJSON.waypoints.push(waypointJSON);
     }
     return roadbookJSON;
+  },
+
+  updateTotalDistance: function(){
+    if(this.waypoints().length > 0 ){
+      this.totalDistance(this.waypoints()[this.waypoints().length - 1].totalDistance());
+    } else{
+      this.totalDistance(0);
+    }
+    console.log(this.totalDistance());
   },
 
 });

@@ -127,9 +127,7 @@ var MapEditor = Class({
       // this is the first point and thus the start of the route, make it a waypoint, but not if the roadbook is being loaded from js
       if(this.routeMarkers.length == 1 && this.routePoints.length == 1 && !supressWpt) {
         point.kmFromStart = 0;
-        point.miFromStart = 0;
         point.kmFromPrev = 0;
-        point.miFromPrev = 0;
         point.waypoint = app.roadbook.addWaypoint(this.addWaypoint(point));
       }
     }
@@ -147,7 +145,6 @@ var MapEditor = Class({
       var distances = this.computeDistanceFromStart(point);
       var angles = this.computeHeading(point);
       point.kmFromStart = distances.kmFromStart;
-      point.miFromStart = distances.miFromStart;;
       point.heading = angles.heading;
 
       opts = {
@@ -212,7 +209,7 @@ var MapEditor = Class({
     switch(pointIndex) {
       case 0:
         // the first point in the route has a distance of 0
-        return {miFromStart: 0,kmFromStart: 0};;
+        return {kmFromStart: 0};
         break;
       case 1:
         // slicing an array with length 2 causes problems
@@ -227,7 +224,6 @@ var MapEditor = Class({
 
     //do some conversions and return the results
     return {
-            miFromStart: (metersFromStart * 0.00062137),
             kmFromStart: (metersFromStart/1000),
           };
 
@@ -241,7 +237,7 @@ var MapEditor = Class({
     switch(pointIndex) {
       case 0:
         // the first point in the route has a distance of 0
-        return {miFromPrev: 0, kmFromPrev: 0};;
+        return {kmFromPrev: 0};;
         break;
       case 1:
         // slicing an array with length 2 causes problems
@@ -256,7 +252,6 @@ var MapEditor = Class({
 
     //do some conversions and return the results
     return {
-            miFromPrev: (metersFromPrev * 0.00062137),
             kmFromPrev: (metersFromPrev/1000),
           };
   },
@@ -363,6 +358,7 @@ var MapEditor = Class({
     google.maps.event.addListener(point, 'rightclick', function(evt) {
       _this.deletePoint(this);
       _this.displayEdge = true;
+      app.roadbook.updateTotalDistance();
     });
 
     /*
@@ -375,6 +371,7 @@ var MapEditor = Class({
       } else {
         this.waypoint = app.roadbook.addWaypoint(_this.addWaypoint(this));
       }
+      app.roadbook.updateTotalDistance();
     });
 
     /*
@@ -505,7 +502,7 @@ var MapEditor = Class({
         if(previous) {
           $.extend(distances,this.computeDistanceBetweenPoints(previous,marker));
         } else {
-          $.extend(distances,{miFromPrev: 0, kmFromPrev: 0});
+          $.extend(distances,{kmFromPrev: 0});
         }
         marker.waypoint.updateWaypoint(distances, angles.heading);
         previous = marker;

@@ -70,31 +70,40 @@ aside.right-off-canvas-menu {
   padding: 0 .65rem 0 .65rem;
 }
 
+#roadbook-name {border-left: 1px solid #000; min-height: 90px;}
+
 #roadbook-name,
 #roadbook-desc {
-  text-align: center;
+  text-align: right;
 }
-
+#roadbook-total-distance{max-height: 90px;}
 #roadbook-name input,
 #roadbook-desc textarea{
   display:none;
 }
+#roadbook-name a {font-size: 35px; text-align: right; width: 100%; font-family: bellybeans !important;}
+#roadbook-desc a {font-size: 15px; text-align: left;}
 
 #roadbook-name a,
 #roadbook-desc a{
   color: #000;
-  font-weight: bold;
-  font-size: 20px;
-  text-align: center;
+  font-family: Tahoma, Geneva, sans-serif;
 }
-
+#roadbook-name a:hover {font-size: 35px;}
+#roadbook-desc a:hover{font-size: 25px;}
 #roadbook-name a:hover,
 #roadbook-desc a:hover{
   color: rgba(255,144,0,1);
   text-shadow: -3px 3px 2px rgba(0,0,0, 1);
   font-family: bellybeans;
-  font-size: 30px;
 }
+#roadbook-total-distance p{
+  font-family: "Lucida Console", Monaco, monospace;
+  color: #000;
+  text-align: center;
+  font-size: 35px;
+}
+
 #waypoint-tracks {
   padding: 10px 0 10px 0;
 }

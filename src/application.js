@@ -140,6 +140,8 @@ var App = Class({
         _this.saveRoadBook();
         $('.waypoint.row').show();
         $('#waypoint-palette').hide();
+        $('#roadbook-desc, #roadbook-name').find(':input').hide('fast');
+        $('#roadbook-desc, #roadbook-name').find('a').show('fast');
       }
       $(this).blur();
     });
