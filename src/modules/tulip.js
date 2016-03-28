@@ -54,7 +54,6 @@ var Tulip = Class({
     Adds a track to tulip from UI interaction
   */
   addTrack: function(gridPosition) {
-    console.log(gridPosition);
     var angle;
     // TODO what an ugly piece of code. can we hide this somewhere?
     switch (gridPosition) {
@@ -71,7 +70,8 @@ var Tulip = Class({
         angle = -90;
         break;
       case 'undo':
-          console.log('undo');
+          this.removeLastTrack();
+          return
         break;
       case 'mr':
         angle = 90;
@@ -88,17 +88,18 @@ var Tulip = Class({
       default:
           angle = 0;
     }
-    var track = new fabric.Path(this.buildExitTrackPathString(angle),
+    var track = new fabric.Path(this.buildTrackPathString(angle),
                                               { fill: '',
                                               stroke: '#000',
                                               strokeWidth: 5,
                                               hasControls: false,
+                                              lockMovementX: true,
+                                              lockMovementY: true,
                                               hasBorders: false
                                             });
-
-
     this.tracks.push(track);
     this.canvas.add(track);
+    this.activeEditors.push(new TulipEditor(this.canvas, track, true, true, false));
   },
   /*
     Builds the tulip from passed in JSON
@@ -151,7 +152,7 @@ var Tulip = Class({
   },
 
   buildExit: function(angle){
-    var exit = new fabric.Path(this.buildExitTrackPathString(angle),
+    var exit = new fabric.Path(this.buildTrackPathString(angle),
                                               { fill: '',
                                               stroke: '#000',
                                               strokeWidth: 5,
@@ -184,9 +185,12 @@ var Tulip = Class({
   /*
     TODO have different handlers for default paths (entry and exit) and ad hoc created objects and glyphs
   */
-  beginEdit: function() {
-    this.activeEditors.push(new TulipEditor(this.canvas, this.entryTrack,true, false));
-    this.activeEditors.push(new TulipEditor(this.canvas, this.exitTrack,false, true));
+  beginEdit: function(event) {
+    this.activeEditors.push(new TulipEditor(this.canvas, this.entryTrack,true, false, true));
+    this.activeEditors.push(new TulipEditor(this.canvas, this.exitTrack,false, true, true));
+    for(i=0;i<this.tracks.length;i++){
+      this.activeEditors.push(new TulipEditor(this.canvas, this.tracks[i],true, true, false));
+    }
   },
 
   finishEdit: function() {
@@ -200,7 +204,7 @@ var Tulip = Class({
     Creates an SVG string form the assumption that we are originating at the point (90,90) and vectoring out from there at a given angle
     the angles is provided from the mapping module.
   */
-  buildExitTrackPathString: function(angle) {
+  buildTrackPathString: function(angle) {
 
     var xy1 =  this.rotatePoint(9,angle);
     var xy2 =  this.rotatePoint(18,angle);
@@ -222,6 +226,16 @@ var Tulip = Class({
                         + ' C '+ set3[0][0] +', '+ set3[0][1] +', '+ set3[1][0] +', '+ set3[1][1] +', '+ set3[2][0] +', '+ set3[2][1]
 
     return trackString;
+  },
+
+  removeLastTrack: function(){
+    var track = this.tracks.pop()
+    this.canvas.remove(track);
+    for(i = 0; i < this.activeEditors.length; i++) {
+      if(this.activeEditors[i].track == track){
+        this.activeEditors[i].destroy();
+      }
+    }
   },
 
   /*

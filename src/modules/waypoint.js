@@ -35,6 +35,7 @@ var Waypoint = Class({
     ko.bindingHandlers.waypointCanvasRendered = {
       init: function(element){
         _this.initTulip(element, angle, json);
+        // _this.initTulipListeners($(element).parents('.waypoint-tulip'));
         _this.initTulipListeners($(element).parents('.waypoint-tulip'));
       }
     };
@@ -78,11 +79,10 @@ var Waypoint = Class({
 
   initTulipListeners: function(element){
     var _this = this;
-    $(element).click(function(){
+    $(element).click(function(e){
       if(_this.roadbook.requestCanvasEdit(_this.tulip)){
-        _this.tulip.beginEdit();
+        _this.tulip.beginEdit(); //TODO we need to have some sort of event handling, maybe check if it is default track, track, or glyph, and assign the proper editor
       }
-
       $('#roadbook-waypoints').children().hide();
       $(element).parents('.waypoint.row').show();
       $('#waypoint-palette').show();

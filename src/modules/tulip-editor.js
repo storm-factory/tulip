@@ -11,13 +11,28 @@
 var TulipEditor = Class({
   // change params to entryTrack and exitTrack: entry track can't move end point, exit track can't move origin.
   // all other bets are off.
-  create: function(canvas, track, editOrigin, editEnd) {
+  create: function(canvas, track, editOrigin, editEnd, defaultTrack) {
     fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
     this.track = track
     this.canvas = canvas
     this.editOrigin = editOrigin;
     this.editEnd = editEnd;
-    this.origin = this.makeOrigin(this.track.path[0][1],this.track.path[0][2]);
+
+    // We want to treat the entry and exit tracks differently than everything else
+    if(defaultTrack){
+      this.handleColor = '#ffBA29';
+      this.origin = this.makeEntryOrigin(this.track.path[0][1],this.track.path[0][2]);
+      this.end = this.makeExitEnd(this.track.path[3][5],this.track.path[3][6]);
+    } else {
+      this.handleColor = '#296EFF';
+      this.origin = this.makeMidPoint(this.track.path[0][1],this.track.path[0][2]);
+      this.end = this.makeMidPoint(this.track.path[3][5],this.track.path[3][6]);
+      this.origin.name = "origin";
+      this.end.name = "end";
+      this.canvas.add(this.origin);
+      this.canvas.add(this.end);
+    }
+
 
     this.joinOne = this.makeMidPoint(this.track.path[1][5], this.track.path[1][6]);
     this.joinOne.name = "joinOne";
@@ -26,8 +41,6 @@ var TulipEditor = Class({
     this.joinTwo = this.makeMidPoint(this.track.path[2][5], this.track.path[2][6]);
     this.joinTwo.name = "joinTwo";
     this.canvas.add(this.joinTwo);
-
-    this.end = this.makeEnd(this.track.path[3][5],this.track.path[3][6]);
 
     //TODO move to listeners function
     var _this = this;
@@ -44,14 +57,14 @@ var TulipEditor = Class({
     delete this;
   },
 
-  makeOrigin: function(left, top){
+  makeEntryOrigin: function(left, top){
     if (this.editOrigin) {
       var origin = new fabric.Circle({
         left: left,
         top: top,
         strokeWidth: 1,
         radius: 5,
-        fill: '#ffba29',
+        fill: this.handleColor,
         stroke: '#787878'
       });
 
@@ -70,7 +83,7 @@ var TulipEditor = Class({
       strokeWidth: 1,
       height: 8,
       width: 8,
-      fill: '#ffba29',
+      fill: this.handleColor,
       stroke: '#787878'
     });
 
@@ -79,7 +92,7 @@ var TulipEditor = Class({
     return r;
   },
 
-  makeEnd: function(left, top){
+  makeExitEnd: function(left, top){
     if(this.editEnd){
       var end = new fabric.Triangle({
         left: left,
@@ -87,7 +100,7 @@ var TulipEditor = Class({
         strokeWidth: 1,
         height: 12,
         width: 12,
-        fill: '#ffba29',
+        fill: this.handleColor,
         stroke: '#787878'
       });
 
@@ -211,8 +224,10 @@ var TulipEditor = Class({
       point.track.path[0][1] = point.left;
       point.track.path[0][2] = point.top;
 
-      point.track.origin.left = point.left;
-      point.track.origin.top = point.top;
+      if(point.track.origin){
+        point.track.origin.left = point.left;
+        point.track.origin.top = point.top;
+      }
 
       _this.interpolatePath(point);
 
@@ -221,8 +236,10 @@ var TulipEditor = Class({
       point.track.path[3][5] = point.left;
       point.track.path[3][6] = point.top;
 
-      point.track.end.left = point.left;
-      point.track.end.top = point.top;
+      if(point.track.end){
+        point.track.end.left = point.left;
+        point.track.end.top = point.top;
+      }
 
       _this.interpolatePath(point);
 
