@@ -52,6 +52,15 @@ var Tulip = Class({
     this.exitTrack.end = this.exitTrackEnd;
   },
 
+  initTracks: function(trackArray){
+    this.tracks = trackArray;
+    for(i=0;i<this.tracks.length;i++){
+      trackArray[i].hasControls = false;
+      trackArray[i].lockMovementX = true;
+      trackArray[i].lockMovementY = true;
+    }
+  },
+
   /*
     Adds a track to tulip from UI interaction
     NOTE if two tracks in a row are added and have overlapping handles the lower handle won't be able to be moved
@@ -75,9 +84,10 @@ var Tulip = Class({
     Builds the tulip from passed in JSON
   */
   buildFromJson: function(json){
-    // TODO merge in paths array and glyphs array and keep track of how to handle them based on their index in the below objects array in the json object
+    var numTracks = json.tracks.length;
+
     var json = {
-      "objects": [json.entry.point, json.entry.path, json.exit.path, json.exit.point]
+      "objects": [json.entry.point, json.entry.path, json.exit.path, json.exit.point].concat(json.tracks),
     };
     var obs = [];
 
@@ -85,13 +95,26 @@ var Tulip = Class({
       obs.push(object);
     });
 
+    // TODO because the below are each requiring their own comment section means they could refactor into their own functions
+    /*
+      Default Tracks
+    */
     this.initEntry(obs[0], obs[1]);
     this.initExit(obs[3], obs[2]);
-    // TODO init tracks to handle shutting off the controls and lock X and Y
 
     this.exitTrack.hasControls = this.entryTrack.hasControls = this.entryTrackOrigin.hasControls = this.exitTrackEnd.hasControls = false;
     this.exitTrack.lockMovementX = this.entryTrack.lockMovementX = this.entryTrackOrigin.lockMovementX = this.exitTrackEnd.lockMovementX = true;
     this.exitTrack.lockMovementY = this.entryTrack.lockMovementY = this.entryTrackOrigin.lockMovementY = this.exitTrackEnd.lockMovementY = true;
+    /*
+      Aux tracks
+    */
+    // slice and dice obs (we add one to the point index because slice is not inclusive) and don't want to change to obs array
+    var tracks = obs.slice(4, 4 + numTracks);
+    this.initTracks(tracks);
+    /*
+      Glyphs
+    */
+
   },
 
   buildEntry: function() {
