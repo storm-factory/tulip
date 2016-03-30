@@ -9,11 +9,19 @@ var Roadbook = Class({
     this.currentlyEditingCanvas = false;
     this.currentlyEditingTulip = null;
     this.editingNameDesc = false;
-
     this.newWaypoints = false;
+
+    /*
+      declare some observable instance variables
+    */
     this.name = ko.observable('Name your roadbook');
     this.desc = ko.observable('Describe your roadbook, click me!');
     this.totalDistance = ko.observable('0.00');
+
+    /*
+      Declare some internal variables
+    */
+    this.filePath = null;
   },
 
   /*
@@ -130,6 +138,8 @@ var Roadbook = Class({
     var roadbookJSON = {
       name: this.name(),
       desc: this.desc(),
+      totalDistance: this.totalDistance(),
+      filePath: this.filePath,
       waypoints: [],
     }
     points = app.mapEditor.routeMarkers
