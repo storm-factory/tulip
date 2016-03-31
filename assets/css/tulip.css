@@ -113,6 +113,10 @@ aside.right-off-canvas-menu {
   font-size: 35px;
 }
 
+#roadbook-waypoints{
+  padding-bottom: 20px;
+}
+
 #track-glyphs li img,
 #safety-glyphs li img,
 #orga-glyphs li img {
@@ -161,8 +165,12 @@ aside.right-off-canvas-menu {
 .heading {
   font-family: Tahoma, Geneva, sans-serif;
   color: #000;
-  text-align: center;
-  font-size: 2.5em;
+  font-size: 2em;
+  position: relative;
+  top: 135px;
+}
+.heading label {
+  display: inline;
 }
 .map-container
 {
@@ -171,6 +179,17 @@ aside.right-off-canvas-menu {
   overflow: hidden;
   z-index: 0;
 }
+
+.relative-distance {
+  height: 28px;
+  color: #000;
+  font-weight: bold;
+  border-top: 1px solid #000;
+  text-align: right;
+  margin-top: 45px;
+  padding-right: 3px;
+}
+
 .roadbook-container {
   width: 500px;
   position: absolute;
@@ -192,13 +211,6 @@ aside.right-off-canvas-menu {
   transition:all 1s;
 }
 
-.relative-distance {
-  height: 28px;
-  color: #000;
-  font-weight: bold;
-  border-top: 1px solid #000;
-  padding-left: 5px;
-}
 .track-type, .glyph-position, .glyph-selection {min-height: 130px;}
 .track-grid, .glyph-grid {
   width: 40px;
@@ -224,6 +236,7 @@ aside.right-off-canvas-menu {
 .lr {left: 93px; top: 78px; border-bottom-right-radius: 10px;}
 
 .track-grid.undo {background-color: #000; color: #e8e8e8}
+
 .track-grid.tl div,
 .track-grid.lr div {
   transform:rotate(-45deg);
@@ -244,16 +257,14 @@ nav.top-bar {
 }
 .total-distance {
   height: 90px;
-  font-family: "Lucida Console", Monaco, monospace;
-  font-size: 1.75em;
+  font-family: Tahoma, Geneva, sans-serif;
+  font-size: 2.45em;
   color: #000;
-  font-weight: bold;
   text-align: center;
 }
 
-.total-distance div.column {
-  padding-left: 0.1rem;
-  padding-right: 0.1rem;
+.total-distance div {
+  margin-top: 20px
 }
 
 .waypoint {
@@ -271,6 +282,7 @@ nav.top-bar {
 
 .waypoint-notes {
   width:175px;
+  padding: 3px;
 }
 
 .waypoint-tulip {
