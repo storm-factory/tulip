@@ -166,8 +166,6 @@ aside.right-off-canvas-menu {
   font-family: Tahoma, Geneva, sans-serif;
   color: #000;
   font-size: 2em;
-  position: relative;
-  top: 135px;
 }
 .heading label {
   display: inline;
@@ -283,6 +281,11 @@ nav.top-bar {
 .waypoint-notes {
   width:175px;
   padding: 3px;
+}
+
+.waypoint-notes .notes {
+  overflow: hidden;
+  height: 135px;
 }
 
 .waypoint-tulip {
