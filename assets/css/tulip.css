@@ -26,6 +26,15 @@ aside ul li a.main-menu{
 aside.right-off-canvas-menu {
   background: #787878;
 }
+#active-tulip-glyph{
+  height: 75px;
+  width: 75px;
+  border: 1px solid #000;
+  box-shadow: 3px 1px 13px -3px rgba(0,0,0,0.60);
+  margin-top: 1.5em;
+  display: none;
+  background-color: #fff;
+}
 #content {
   height: 100%;
 }
@@ -104,7 +113,19 @@ aside.right-off-canvas-menu {
   font-size: 35px;
 }
 
-#waypoint-tracks {
+#track-glyphs li img,
+#safety-glyphs li img,
+#orga-glyphs li img {
+  width:100px;
+}
+#track-glyphs li,
+#safety-glyphs li,
+#orga-glyphs li {
+  width:100px;
+  text-align: center;
+}
+
+#waypoint-tracks, #waypoint-glyphs {
   padding: 10px 0 10px 0;
 }
 #waypoint-palette {
@@ -116,6 +137,26 @@ aside.right-off-canvas-menu {
 #zout:focus,
 #zin:focus {
   background-color: #008CBA;
+}
+
+.active.content{
+  background: #DEE9FF !important;
+}
+
+.glyph-modal {
+  width: 400px !important;
+}
+.glyph-selection button {
+  width: 90px;
+}
+.glyph-selection.first {
+  margin-top: 2.2em
+}
+.glyph-selection.second {
+  margin-top: 0.75em
+}
+.glyph-position.column {
+      margin-top: 1em !important;
 }
 .heading {
   font-family: Tahoma, Geneva, sans-serif;
@@ -138,7 +179,7 @@ aside.right-off-canvas-menu {
   z-index: 10;
   background-color: #fff;
   padding: 10px;
-  -webkit-box-shadow: -12px 4px 29px -2px rgba(0,0,0,0.89);
+  box-shadow: -12px 4px 29px -2px rgba(0,0,0,0.89);
   overflow: hidden;
 }
 .roadbook-container.collapsed{
@@ -158,11 +199,11 @@ aside.right-off-canvas-menu {
   border-top: 1px solid #000;
   padding-left: 5px;
 }
-.track-type {min-height: 130px;}
-.track-grid {
+.track-type, .glyph-position, .glyph-selection {min-height: 130px;}
+.track-grid, .glyph-grid {
   width: 40px;
   height: 40px;
-  border: 1px solid #000;
+  box-shadow: 5px 5px 22px -2px rgba(0,0,0,0.60);
   position: absolute;
   text-align: center;
   font-size: 25px;
@@ -170,31 +211,32 @@ aside.right-off-canvas-menu {
   text-shadow: -1px 1px 4px rgba(0,0,0, 1);
   background: #e8e8e8;
 }
-.track-grid:hover {background-color: rgba(255,144,0,1); cursor: pointer;}
-.track-grid.undo:hover {background-color: #000; color: #ffba29}
-.tl {left: 0; top: 0; border-top-left-radius: 10px;}
-.tm {left: 39px; top: 0;}
-.tr {left: 78px; top: 0; border-top-right-radius: 10px;}
-.ml {left: 0; top: 39px;}
-.undo {left: 39px; top: 39px; background-color: #000; color: #e8e8e8}
-.mr {left: 78px; top: 39px;}
-.ll {left: 0; top: 78px; border-bottom-left-radius: 10px;}
-.lm {left: 39px; top: 78px;}
-.lr {left: 78px; top: 78px; border-bottom-right-radius: 10px;}
+.track-grid:hover, .glyph-grid:hover {background-color: rgba(255,144,0,1); cursor: pointer; box-shadow: 5px 5px 22px -2px rgba(0,0,0,0.60);}
+.track-grid.undo:hover {background-color: #000; color: #ffba29;}
+.tl {left: 15; top: 0; border-top-left-radius: 10px;}
+.tm {left: 54px; top: 0;}
+.tr {left: 93px; top: 0; border-top-right-radius: 10px;}
+.ml {left: 15; top: 39px;}
+.mm {left: 54px; top: 39px;}
+.mr {left: 93px; top: 39px;}
+.ll {left: 15; top: 78px; border-bottom-left-radius: 10px;}
+.lm {left: 54px; top: 78px;}
+.lr {left: 93px; top: 78px; border-bottom-right-radius: 10px;}
 
-.tl div,
-.lr div {
+.track-grid.undo {background-color: #000; color: #e8e8e8}
+.track-grid.tl div,
+.track-grid.lr div {
   transform:rotate(-45deg);
 }
 
-.tr div,
-.ll div {
+.track-grid.tr div,
+.track-grid.ll div {
   transform:rotate(45deg);
 }
 
 nav.top-bar {
   background: -webkit-linear-gradient(top, rgba(255,68,0,1) 0%, rgba(255,68,0,1) 33%, rgba(255,144,0,1) 34%, rgba(255,144,0,1) 68%, rgba(255,187,41,1) 68%, rgba(255,187,41,1) 100%);
-  -webkit-box-shadow: 0px 13px 115px 1px rgba(120,120,120,0.89);
+  box-shadow: 0px 13px 115px 1px rgba(120,120,120,0.89);
   z-index: 5;
   position: absolute;
   top: 2rem;

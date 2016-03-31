@@ -191,6 +191,14 @@ var App = Class({
       var angle = $(this).data('angle');
       _this.roadbook.currentlyEditingTulip.addTrack(angle);
     });
+
+    $('.glyph').click(function(){
+
+      var src = $(this).attr('src');
+      $("#active-tulip-glyph").find('img').attr('src', src);
+      $("#active-tulip-glyph").show();
+      $(this).parents('.reveal-modal').foundation('reveal', 'close');
+    });
   },
 });
 /*

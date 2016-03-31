@@ -106,24 +106,49 @@
                         <div class="tr track-grid" data-angle="45"><div><i class="fi-arrow-up"></i></div></div>
 
                         <div class="ml track-grid" data-angle="-90"><i class="fi-arrow-left"></i></div>
-                        <div class="track-grid undo"><i class="fi-refresh"></i></div>
+                        <div class="mm track-grid undo"><i class="fi-refresh"></i></div>
                         <div class="mr track-grid" data-angle="90"><i class="fi-arrow-right"></i></div>
 
                         <div class="ll track-grid" data-angle="-135"><div><i class="fi-arrow-down"></i></div></div>
                         <div class="lm track-grid"data-angle="180"><i class="fi-arrow-down"></i></div>
                         <div class="lr track-grid" data-angle="135"><div><i class="fi-arrow-down"></i></div></div>
                       </div>
-                      <div class="large-4 column track-type">
-                      </div>
-                      <div class="large-4 column track-type">
+                      <div class="large-8 column track-type">
                       </div>
                     </div>
                   </div>
                 </li>
                 <li class="accordion-navigation">
-                  <a href="#waypoint-gylphs">Glyphs</a>
-                  <div id="waypoint-gylphs" class="content">
-                    Panel 2. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                  <a href="#waypoint-glyphs">Glyphs</a>
+                  <div id="waypoint-glyphs" class="content">
+                    <div class="row">
+                      <div class="large-6 column glyph-position">
+                        <div class="tl glyph-grid"></div>
+                        <div class="tm glyph-grid"></div>
+                        <div class="tr glyph-grid"></div>
+
+                        <div class="ml glyph-grid"></div>
+                        <div class="mm glyph-grid"></div>
+                        <div class="mr glyph-grid"></div>
+
+                        <div class="ll glyph-grid"></div>
+                        <div class="lm glyph-grid"></div>
+                        <div class="lr glyph-grid"></div>
+
+                        <div id="active-tulip-glyph" class="right">
+                          <img src=''>
+                        </div>
+                      </div>
+                      <div class="left large-3 column glyph-selection first">
+                        <button href="#" data-reveal-id="direction-glyphs" class="tiny button">Directions</button>
+                        <button href="#" data-reveal-id="terrain-glyphs" class="tiny button">Terrain</button>
+                      </div>
+                      <div class="left large-3 column glyph-selection second">
+                        <button href="#" data-reveal-id="track-glyphs" class="tiny button">Track</button>
+                        <button href="#" data-reveal-id="safety-glyphs" class="tiny button">Safety</button>
+                        <button href="#" data-reveal-id="orga-glyphs" class="tiny button">Orga</button>
+                      </div>
+                    </div>
                   </div>
                 </li>
                 <li class="accordion-navigation">
@@ -191,5 +216,58 @@
       </div>
     </div>
   </script>
+
+  <!--
+    Glyph Modals
+  -->
+  <div id="direction-glyphs" class="reveal-modal glyph-modal" data-reveal aria-hidden="true" role="dialog">
+    <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+  </div>
+
+  <div id="terrain-glyphs" class="reveal-modal glyph-modal" data-reveal aria-hidden="true" role="dialog">
+    <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+  </div>
+
+  <div id="track-glyphs" class="reveal-modal glyph-modal" data-reveal aria-hidden="true" role="dialog">
+    <ul class="small-block-grid-3">
+      <li><a class="th" href="#"><img class="glyph" src="./assets/svg/tracks/big.svg"></a><p>big</p></li>
+      <li><a class="th" href="#"><img class="glyph" src="./assets/svg/tracks/big-track.svg"></a><p> big track</p></li>
+      <li><a class="th" href="#"><img class="glyph" src="./assets/svg/tracks/main-track.svg"></a><p> main track</p></li>
+      <li><a class="th" href="#"><img class="glyph" src="./assets/svg/tracks/off-track.svg"></a><p>off track</p></li>
+      <li><a class="th" href="#"><img class="glyph" src="./assets/svg/tracks/off-track-forbidden.svg"></a><p>off track forbidden</p></li>
+      <li><a class="th" href="#"><img class="glyph" src="./assets/svg/tracks/parallel-tracks.svg"></a><p>parallel tracks</p></li>
+      <li><a class="th" href="#"><img class="glyph" src="./assets/svg/tracks/road.svg"></a><p>road</p></li>
+      <li><a class="th" href="#"><img class="glyph" src="./assets/svg/tracks/track.svg"></a><p>track</p></li>
+      <li><a class="th" href="#"><img class="glyph" src="./assets/svg/tracks/winding-track.svg"></a><p>winding track</p></li>
+      <li><a class="th" href="#"><img class="glyph" src="./assets/svg/tracks/winding-main-track.svg"></a><p>winding main track</p></li>
+    </ul>
+    <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+  </div>
+
+  <div id="safety-glyphs" class="reveal-modal glyph-modal" data-reveal aria-hidden="true" role="dialog">
+    <ul class="small-block-grid-2">
+      <li><a class="th" href="#"><img class="glyph" src="./assets/svg/safety/danger-3.svg"></a><p></p></li>
+      <li><a class="th" href="#"><img class="glyph" src="./assets/svg/safety/danger-2.svg"></a><p></p></li>
+      <li><a class="th" href="#"><img class="glyph" src="./assets/svg/safety/danger-1.svg"></a><p></p></li>
+      <li><a class="th" href="#"><img class="glyph" src="./assets/svg/safety/stop.svg"></a><p></p></li>
+    </ul>
+    <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+  </div>
+
+  <div id="orga-glyphs" class="reveal-modal glyph-modal" data-reveal aria-hidden="true" role="dialog">
+    <ul class="small-block-grid-3">
+      <li><a class="th" href="#"><img class="glyph" src="./assets/svg/orga/camp.svg"></a><p>camp</p></li>
+      <li><a class="th" href="#"><img class="glyph" src="./assets/svg/orga/finish-of-selective-section.svg"></a><p>finish selective section</p></li>
+      <li><a class="th" href="#"><img class="glyph" src="./assets/svg/orga/finish.svg"></a><p>finish</p></li>
+      <li><a class="th" href="#"><img class="glyph" src="./assets/svg/orga/start-of-selective-section.svg"></a><p>start selective section</p></li>
+      <li><a class="th" href="#"><img class="glyph" src="./assets/svg/orga/start.svg"></a><p>start</p></li>
+      <li><a class="th" href="#"><img class="glyph" src="./assets/svg/orga/village.svg"></a><p>village</p></li>
+      <li><a class="th" href="#"><img class="glyph" src="./assets/svg/safety/danger-3.svg"></a><p></p></li>
+      <li><a class="th" href="#"><img class="glyph" src="./assets/svg/safety/danger-2.svg"></a><p></p></li>
+      <li><a class="th" href="#"><img class="glyph" src="./assets/svg/safety/danger-1.svg"></a><p></p></li>
+      <li><a class="th" href="#"><img class="glyph" src="./assets/svg/safety/stop.svg"></a><p></p></li>
+    </ul>
+    <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+  </div>
 
 </html>
