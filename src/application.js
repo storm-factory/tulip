@@ -192,6 +192,13 @@ var App = Class({
       _this.roadbook.currentlyEditingTulip.addTrack(angle);
     });
 
+    $('.glyph-grid').click(function(){
+
+      var position = {top: $(this).data('top'), left: $(this).data('left')};
+      var uri = $("#active-tulip-glyph").find('img').attr('src');
+      _this.roadbook.currentlyEditingTulip.addGlyph(position,uri);
+    });
+
     $('.glyph').click(function(){
 
       var src = $(this).attr('src');

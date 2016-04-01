@@ -493,7 +493,7 @@ var MapEditor = Class({
   },
 
   updateRoute: function() {
-    // TODO this guy is a little broken, when does that previous variable even do?
+    // TODO this guy is a little broken maybe, the last previous distance isn't being updated
     for(i = 0; i < this.routeMarkers.length; i++) {
       var marker = this.routeMarkers[i];
       var previous;
