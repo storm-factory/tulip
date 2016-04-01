@@ -118,7 +118,8 @@ aside.right-off-canvas-menu {
 }
 
 #track-glyphs li img,
-#safety-glyphs li img,
+#feature-glyphs li img,
+#detail-glyphs li img,
 #orga-glyphs li img {
   width:100px;
 }
@@ -143,24 +144,18 @@ aside.right-off-canvas-menu {
   background-color: #008CBA;
 }
 
-.active.content{
-  background: #DEE9FF !important;
+.glyph-modal {
+  /*width: 400px !important;*/
+  height: 500px;
+  overflow: scroll;
 }
 
-.glyph-modal {
-  width: 400px !important;
-}
 .glyph-selection button {
   width: 90px;
-}
-.glyph-selection.first {
   margin-top: 2.2em
 }
-.glyph-selection.second {
-  margin-top: 0.75em
-}
 .glyph-position.column {
-      margin-top: 1em !important;
+  margin-top: 1em !important;
 }
 .heading {
   font-family: Tahoma, Geneva, sans-serif;
