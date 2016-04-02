@@ -306,9 +306,17 @@ var Tulip = Class({
         path: this.exitTrack
       },
       tracks: this.tracks,
-      glyphs: this.glyphs,
+      glyphs: this.serializeGlyphs(),
     };
     return json;
-  }
+  },
+
+  serializeGlyphs: function(){
+    var glyphsJson = [];
+    for(i=0;i<this.glyphs.length;i++){
+      glyphsJson.push(this.glyphs[i].toJSON());
+    }
+    return glyphsJson;
+  },
 
 });
