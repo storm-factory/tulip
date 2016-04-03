@@ -84,16 +84,26 @@ var Tulip = Class({
   addGlyph: function(position,uri){
     var _this = this;
     var position = position;
-    console.log(position);
-    console.log(uri);
-    var glyph = new fabric.Image.fromURL(uri, function(oImg) {
-      oImg.top = position.top;
-      oImg.left = position.left;
-      oImg.scaleToWidth(75);
-      _this.canvas.add(oImg);
-    });
-    this.glyphs.push(glyph);
-    console.log(this.glyphs);
+    // console.log(position);
+    // console.log(uri);
+    // var glyph = new fabric.Image.fromURL(uri, function(oImg) {
+    //   oImg.top = position.top;
+    //   oImg.left = position.left;
+    //   oImg.scaleToWidth(75);
+    //   _this.canvas.add(oImg);
+    // });
+    // this.glyphs.push(glyph);
+
+    var imgObj = new Image();
+    imgObj.src = uri;
+    imgObj.onload = function () {
+      var image = new fabric.Image(imgObj);
+      image.top = position.top;
+      image.left = position.left;
+      image.scaleToWidth(75);
+      _this.canvas.add(image);
+      _this.glyphs.push(image);
+    }
   },
   /*
     Builds the tulip from passed in JSON
