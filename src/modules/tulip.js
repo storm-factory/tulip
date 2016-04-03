@@ -109,15 +109,21 @@ var Tulip = Class({
     Builds the tulip from passed in JSON
   */
   buildFromJson: function(json){
-    var numTracks = json.tracks.length;
 
+    var _this = this;
+    var numTracks = json.tracks.length;
+    // build a propperly formatted json string to import
     var json = {
-      "objects": [json.entry.point, json.entry.path, json.exit.path, json.exit.point].concat(json.tracks),
+      "objects": [json.entry.point, json.entry.path, json.exit.path, json.exit.point].concat(json.tracks).concat(json.glyphs),
     };
     var obs = [];
 
     this.canvas.loadFromJSON(json, this.canvas.renderAll.bind(this.canvas), function(o, object) {
       obs.push(object);
+      if(object.type == "image"){
+          //if the object is an image add it to the glyphs array
+          _this.glyphs.push(object);
+      }
     });
 
     // TODO because the below are each requiring their own comment section means they could refactor into their own functions
@@ -133,13 +139,11 @@ var Tulip = Class({
     /*
       Aux tracks
     */
-    // slice and dice obs (we add one to the point index because slice is not inclusive) and don't want to change to obs array
-    var tracks = obs.slice(4, 4 + numTracks);
-    this.initTracks(tracks);
-    /*
-      Glyphs
-    */
-
+    // slice and dice obs
+    if(numTracks > 0){
+      var tracks = obs.slice(4, 4 + numTracks);
+      this.initTracks(tracks);
+    }
   },
 
   buildEntry: function() {
@@ -218,6 +222,8 @@ var Tulip = Class({
       this.activeEditors[i].destroy();
     }
     this.activeEditors = [];
+    // remove controls from glyphs and update the canvas' visual state
+    this.canvas.deactivateAll().renderAll();
   },
 
   /*

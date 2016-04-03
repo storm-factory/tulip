@@ -77,7 +77,7 @@ var App = Class({
           _this.roadbook.name(json.name);
           _this.roadbook.desc(json.desc);
           _this.roadbook.totalDistance(json.totalDistance);
-          _this.roadbook.filePath = json.filePath; // TODO figure out what to do if the user changes the name of the file probably use fileNames[0]
+          _this.roadbook.filePath = fileName //we need to figure out how to watch a file while it's being edited so if it's moved it gets saved to the right place
           var points = json.waypoints;
           var wpts = []
           // NOTE: For some strange reason, due to canvas rendering, a for loop causes points and waypoints to be skipped, hence for...of in
@@ -98,14 +98,8 @@ var App = Class({
   saveRoadBook: function(){
     var _this = this
     // TODO determine users OS and derive where to save roadbooks by default (to documents or something defined at install or in preferences)
-    // come up with a default directory in the preferences
-    // var OSName="Unknown OS";
-    // if (navigator.appVersion.indexOf("Win")!=-1) OSName="Windows";
-    // if (navigator.appVersion.indexOf("Mac")!=-1) OSName="MacOS";
-    // if (navigator.appVersion.indexOf("X11")!=-1) OSName="UNIX";
-    // if (navigator.appVersion.indexOf("Linux")!=-1) OSName="Linux";
-    //
-    // console.log('Your OS: '+OSName);
+    // come up with a default directory in the preferences. this should be possible through Node IPC
+
     var tulipFile = this.roadbook.save();
     if(tulipFile.filePath == null){
       var title = this.roadbook.name() == 'Name your roadbook' ? 'Untitled' : this.roadbook.name().replace(' ', '-')

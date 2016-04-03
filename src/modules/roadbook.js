@@ -110,7 +110,6 @@ var Roadbook = Class({
   finishCanvasEdit: function(){
     if(this.currentlyEditingCanvas){
       this.currentlyEditingCanvas = false;
-
       if(this.currentlyEditingTulip !== null){
         this.currentlyEditingTulip.finishEdit();
         this.currentlyEditingTulip = null;
