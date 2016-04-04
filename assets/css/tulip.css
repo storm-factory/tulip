@@ -291,12 +291,12 @@ nav.top-bar {
   width:120px;
 }
 
-.waypoint-notes {
+.waypoint-note {
   width:175px;
   padding: 3px;
 }
 
-.waypoint-notes .notes {
+.waypoint-note .notes {
   overflow: hidden;
   height: 135px;
 }
@@ -310,7 +310,7 @@ nav.top-bar {
 }
 
 .waypoint-distance,
-.waypoint-notes,
+.waypoint-note,
 .waypoint-tulip {
   height: 180px;
   float: left

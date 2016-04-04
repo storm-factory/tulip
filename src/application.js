@@ -77,7 +77,7 @@ var App = Class({
           _this.roadbook.name(json.name);
           _this.roadbook.desc(json.desc);
           _this.roadbook.totalDistance(json.totalDistance);
-          _this.roadbook.filePath = fileName //we need to figure out how to watch a file while it's being edited so if it's moved it gets saved to the right place
+          _this.roadbook.filePath = fileName //we need to figure out how to watch a file while it's being edited so if it's moved it gets saved to the right place ***fs.watch***
           var points = json.waypoints;
           var wpts = []
           // NOTE: For some strange reason, due to canvas rendering, a for loop causes points and waypoints to be skipped, hence for...of in

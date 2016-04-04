@@ -151,8 +151,8 @@
                   </div>
                 </li>
                 <li class="accordion-navigation">
-                  <a href="#waypoint-notes">Notes</a>
-                  <div id="waypoint-notes" class="content">
+                  <a href="#waypoint-note">Notes</a>
+                  <div id="waypoint-note" class="content">
                     Panel 3. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
                   </div>
                 </li>
@@ -186,6 +186,7 @@
   <script src='src/modules/map-editor.js'></script>
   <script src='src/modules/map-controls.js'></script>
   <script src='src/modules/tulip-editor.js'></script>
+  <script src='src/modules/note.js'></script>
   <script src='src/modules/tulip.js'></script>
   <script src='src/modules/roadbook.js'></script>
   <script src='src/modules/waypoint.js'></script>
@@ -211,9 +212,9 @@
         <canvas data-bind="waypointCanvasRendered" width='180' height='180'>
         </canvas>
       </div>
-      <div class='waypoint-notes'>
-        <div class='notes' data-bind="text: notes">
-        </div>
+      <div class='waypoint-note'>
+        <canvas data-bind="waypointNotesRendered" width='170' height='130'>
+        </canvas>
         <div class='heading' >
           <label>CAP </label><span data-bind="text: heading"></span>
         </div>
