@@ -197,6 +197,7 @@ var App = Class({
 
       var src = $(this).attr('src');
       $("#active-tulip-glyph").find('img').attr('src', src);
+      $(".glyph-position").css('visibility', 'visible');
       $("#active-tulip-glyph").show();
       $(this).parents('.reveal-modal').foundation('reveal', 'close');
     });

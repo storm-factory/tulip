@@ -28,11 +28,8 @@ aside.right-off-canvas-menu {
 }
 
 #active-tulip-glyph{
-  height: 75px;
-  width: 75px;
-  border: 1px solid #000;
+  border-radius: 10px;
   box-shadow: 3px 1px 13px -3px rgba(0,0,0,0.60);
-  margin-top: 1.5em;
   display: none;
   background-color: #fff;
 }
@@ -168,11 +165,16 @@ aside.right-off-canvas-menu {
 }
 
 .glyph-selection button {
-  width: 90px;
-  margin-top: 2.2em
+  width: 100%;
+  margin: 0;
+  box-shadow: 5px 5px 22px -2px rgba(0,0,0,0.60);
 }
 .glyph-position.column {
   margin-top: 1em !important;
+  visibility: hidden;
+}
+.glyph-selection.column {
+  margin-top: .5em !important;
 }
 .heading {
   font-family: Tahoma, Geneva, sans-serif;
@@ -221,17 +223,20 @@ aside.right-off-canvas-menu {
   transition:all 1s;
 }
 
+.row label {
+  height: 5px !important;
+}
+
 .track-type, .glyph-position, .glyph-selection {min-height: 130px;}
 .track-grid, .glyph-grid {
   width: 40px;
   height: 40px;
-  box-shadow: 5px 5px 22px -2px rgba(0,0,0,0.60);
+  box-shadow: 2px 3px 6px -1px rgba(0,0,0,0.60);
   position: absolute;
   text-align: center;
   font-size: 25px;
   color: #ffba29;
   text-shadow: -1px 1px 4px rgba(0,0,0, 1);
-  background: #e8e8e8;
 }
 .track-grid:hover, .glyph-grid:hover {background-color: rgba(255,144,0,1); cursor: pointer; box-shadow: 5px 5px 22px -2px rgba(0,0,0,0.60);}
 
@@ -246,7 +251,7 @@ aside.right-off-canvas-menu {
 .lm {left: 54px; top: 78px;}
 .lr {left: 93px; top: 78px; border-bottom-right-radius: 10px;}
 
-.track-grid.undo {background-color: #000; color: #e8e8e8}
+.track-grid.undo {color: #000}
 
 .track-grid.tl div,
 .track-grid.lr div {

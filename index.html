@@ -100,6 +100,8 @@
                   <a href="#waypoint-tracks">Tracks</a>
                   <div id="waypoint-tracks" class="content active">
                     <div class="row">
+                      <label>Select a track and place it on tulip using panel:</label>
+                      <hr>
                       <div class="large-4 column track-type">
                         <div class="tl track-grid" data-angle="-45"><div><i class="fi-arrow-up"></i></div></div>
                         <div class="tm track-grid" data-angle="0"><i class="fi-arrow-up"></i></div>
@@ -122,30 +124,31 @@
                   <a href="#waypoint-glyphs">Glyphs</a>
                   <div id="waypoint-glyphs" class="content">
                     <div class="row">
-                      <div class="large-6 column glyph-position">
-                        <div class="tl glyph-grid" data-top="30" data-left="30"><i class="fi-annotate"></i></div>
-                        <div class="tm glyph-grid" data-top="30" data-left="85"><i class="fi-annotate"></i></div>
-                        <div class="tr glyph-grid" data-top="30" data-left="145"><i class="fi-annotate"></i></div>
+                      <label>Select a glyph and place it on tulip using panel:</label>
+                      <hr>
+                      <div class="large-4 column glyph-position">
+                        <div class="tl glyph-grid" data-top="30" data-left="30"><i class="fi-plus"></i></div>
+                        <div class="tm glyph-grid" data-top="30" data-left="85"><i class="fi-plus"></i></div>
+                        <div class="tr glyph-grid" data-top="30" data-left="145"><i class="fi-plus"></i></div>
 
-                        <div class="ml glyph-grid" data-top="95" data-left="30"><i class="fi-annotate"></i></div>
-                        <div class="mm glyph-grid" data-top="95" data-left="85"><i class="fi-annotate"></i></div>
-                        <div class="mr glyph-grid" data-top="95" data-left="145"><i class="fi-annotate"></i></div>
+                        <div class="ml glyph-grid" data-top="95" data-left="30"><i class="fi-plus"></i></div>
+                        <div class="mm glyph-grid" data-top="95" data-left="85"><i class="fi-plus" style="display:block;"></i></div>
+                        <div class="mr glyph-grid" data-top="95" data-left="145"><i class="fi-plus"></i></div>
 
-                        <div class="ll glyph-grid" data-top="140" data-left="30"><i class="fi-annotate"></i></div>
-                        <div class="lm glyph-grid" data-top="140" data-left="85"><i class="fi-annotate"></i></div>
-                        <div class="lr glyph-grid" data-top="140" data-left="145"><i class="fi-annotate"></i></div>
-
-                        <div id="active-tulip-glyph" class="right">
-                          <img src=''>
-                        </div>
+                        <div class="ll glyph-grid" data-top="140" data-left="30"><i class="fi-plus"></i></div>
+                        <div class="lm glyph-grid" data-top="140" data-left="85"><i class="fi-plus"></i></div>
+                        <div class="lr glyph-grid" data-top="140" data-left="145"><i class="fi-plus"></i></div>
                       </div>
-                      <div class="left large-3 column glyph-selection">
+                      <div class="left large-4 column glyph-selection">
                         <button href="#" data-reveal-id="detail-glyphs" class="tiny button">Details</button>
                         <button href="#" data-reveal-id="feature-glyphs" class="tiny button">Features</button>
-                      </div>
-                      <div class="left large-3 column glyph-selection">
                         <button href="#" data-reveal-id="track-glyphs" class="tiny button">Tracks</button>
                         <button href="#" data-reveal-id="orga-glyphs" class="tiny button">Orga</button>
+                      </div>
+                      <div class="left large-4 column glyph-selection">
+                        <div id="active-tulip-glyph">
+                          <img src=''>
+                        </div>
                       </div>
                     </div>
                   </div>
