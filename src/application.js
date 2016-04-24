@@ -96,12 +96,14 @@ var App = Class({
   },
 
   saveRoadBook: function(){
+    console.log('start');
     var _this = this
     // TODO determine users OS and derive where to save roadbooks by default (to documents or something defined at install or in preferences)
     // come up with a default directory in the preferences. this should be possible through Node IPC
 
     var tulipFile = this.roadbook.save();
     if(tulipFile.filePath == null){
+      console.log('here');
       var title = this.roadbook.name() == 'Name your roadbook' ? 'Untitled' : this.roadbook.name().replace(' ', '-')
       this.dialog.showSaveDialog({
                                   title: 'Save your roadbook',
@@ -116,6 +118,7 @@ var App = Class({
           _this.fs.writeFile(fileName, tulipFile, function (err) {});
       });
     } else {
+      console.log('here2');
       this.fs.writeFile(tulipFile.filePath, JSON.stringify(tulipFile, null, 2), function (err) {});
     }
 
@@ -167,13 +170,14 @@ var App = Class({
       $(this).hide();
       $(this).parent('div').find(':input').toggle('fast');
       var text = $(this).parent('div').find(':input').val();
-      if(text == "Name:" || text == "Description:"){
+      if($(this).data('default')){
         $(this).parent('div').find(':input').val('');
       } else {
         $(this).parent('div').text();
       }
       $(this).parent('div').find(':input').focus();
       $('#save-roadbook').removeClass('secondary');
+      $(this).data('default', false)
       _this.roadbook.editingNameDesc = true;
     });
 

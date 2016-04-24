@@ -329,8 +329,11 @@ var Tulip = Class({
 
   serializeGlyphs: function(){
     var glyphsJson = [];
-    for(i=0;i<this.glyphs.length;i++){
-      glyphsJson.push(this.glyphs[i].toJSON());
+    // NOTE not sure, but again here the for loop doesn't error out like the for each
+    // for(i=0;i<this.glyphs.length;i++){
+    for(glyph of this.glyphs) {
+      // glyphsJson.push(this.glyphs[i].toJSON());
+      glyphsJson.push(glyph.toJSON());
     }
     return glyphsJson;
   },
