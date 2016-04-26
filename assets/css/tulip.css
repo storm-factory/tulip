@@ -121,19 +121,12 @@ aside.right-off-canvas-menu {
 #orga-glyphs li img {
   width:100px;
 }
-#track-glyphs li,
-#feature-glyphs li,
-#detail-glyphs li,
-#orga-glyphs li {
-  width:130px;
-  text-align: center;
-}
 
 #track-glyphs li.tab-title,
 #feature-glyphs li.tab-title,
 #detail-glyphs li.tab-title,
 #orga-glyphs li.tab-title {
-  text-align: left;
+  text-align: center;
 }
 
 #waypoint-tracks, #waypoint-glyphs {
@@ -164,18 +157,10 @@ aside.right-off-canvas-menu {
   overflow: scroll;
 }
 
-.glyph-selection button {
-  width: 100%;
-  margin: 0;
-  box-shadow: 5px 5px 22px -2px rgba(0,0,0,0.60);
-}
-.glyph-position.column {
-  margin-top: 1em !important;
-  visibility: hidden;
-}
 .glyph-selection.column {
   margin-top: .5em !important;
 }
+
 .heading {
   font-family: Tahoma, Geneva, sans-serif;
   color: #000;

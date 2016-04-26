@@ -26,7 +26,7 @@ var App = Class({
     /*
       declare some state instance variables
     */
-
+    this.glyphPlacementPosition = {top: 30,left: 30};
     //persistence objects
     this.remote = require('remote');
     this.dialog = this.remote.require('dialog');
@@ -190,9 +190,11 @@ var App = Class({
       _this.roadbook.currentlyEditingTulip.addTrack(angle);
     });
 
+    //TODO add a listener to open the glyph modal if there is no  loaded image or place the glyph if an image is loaded
     $('.glyph-grid').click(function(){
 
-      var position = {top: $(this).data('top'), left: $(this).data('left')};
+      $('#glyphs').foundation('reveal', 'open');
+      _this.glyphPlacementPosition = {top: $(this).data('top'), left: $(this).data('left')};
       var uri = $("#active-tulip-glyph").find('img').attr('src');
       _this.roadbook.currentlyEditingTulip.addGlyph(position,uri);
     });
@@ -200,10 +202,12 @@ var App = Class({
     $('.glyph').click(function(){
 
       var src = $(this).attr('src');
-      $("#active-tulip-glyph").find('img').attr('src', src);
-      $(".glyph-position").css('visibility', 'visible');
-      $("#active-tulip-glyph").show();
-      $(this).parents('.reveal-modal').foundation('reveal', 'close');
+
+      _this.roadbook.currentlyEditingTulip.addGlyph(_this.glyphPlacementPosition,src);
+      // $("#active-tulip-glyph").find('img').attr('src', src);
+      // $(".glyph-position").css('visibility', 'visible');
+      // $("#active-tulip-glyph").show();
+      $('#glyphs').foundation('reveal', 'close');
     });
   },
 });
