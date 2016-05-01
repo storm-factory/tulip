@@ -11,7 +11,10 @@ var Waypoint = Class({
               relativeAngle: INTEGER.
             },
             tulipJson: OBJECT,
-            notes: STRING,
+            notes: {
+              glyphs:[],
+              text: STRING,
+            },
     }
   */
   create: function(roadbook, opts){
@@ -23,6 +26,10 @@ var Waypoint = Class({
     this.distFromPrev   = ko.computed(this.computedDistanceFromPrev, this);
     this.totalDistance  = ko.computed(this.computedTotalDistance, this);
     this.heading        = ko.computed(this.computedHeading, this);
+    // TODO
+    var noteText = opts.notes != undefined ? opts.notes.text : '';
+    this.noteText = ko.observable(noteText);
+
     this.roadbook = roadbook;
 
     var _this = this;
@@ -31,21 +38,9 @@ var Waypoint = Class({
     ko.bindingHandlers.waypointCanvasRendered = {
       init: function(element){
         _this.initTulip(element, angle, json);
-        _this.initTulipListeners($(element).parents('.waypoint-tulip'));
+        _this.initWaypointListeners($(element).parents('.waypoint'));
       }
     };
-
-    // this.notes = ko.observable(opts.notes);
-    ko.bindingHandlers.waypointNotesRendered = {
-      init: function(element){
-        _this.initNote(element, json);
-        _this.initNoteListeners($(element).parents('.waypoint-note'));
-      }
-    };
-  },
-
-  initNote: function(element, json){
-    this.note = new Note(element, json)
   },
 
   initTulip: function(element, angle, json){
@@ -80,7 +75,7 @@ var Waypoint = Class({
     return Array(Math.max(3 - String(heading).length + 1, 0)).join(0) + heading + '\xB0';
   },
 
-  initTulipListeners: function(element){
+  initWaypointListeners: function(element){
     var _this = this;
     $(element).click(function(e){
       if(_this.roadbook.requestCanvasEdit(_this.tulip)){
@@ -88,16 +83,7 @@ var Waypoint = Class({
       }
 
       $('#roadbook-waypoints').children().hide();
-      $(element).parents('.waypoint.row').show();
-      $('#waypoint-palette').show();
-    });
-  },
-
-  initNoteListeners: function(element){
-    var _this = this;
-    $(element).click(function(e){
-      $('#roadbook-waypoints').children().hide();
-      $(element).parents('.waypoint.row').show();
+      $(element).show();
       $('#waypoint-palette').show();
     });
   },

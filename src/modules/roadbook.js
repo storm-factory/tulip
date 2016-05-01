@@ -5,9 +5,11 @@ var Roadbook = Class({
     /*
       declare some state instance variables
     */
-    // this.drawRoute = false; // I don' think this is being used
+    // TODO refactor this to be more waypoint centric
     this.currentlyEditingCanvas = false;
     this.currentlyEditingTulip = null;
+    this.currentlyEditingWaypoint = null;
+
     this.editingNameDesc = false;
     this.newWaypoints = false;
 
@@ -92,6 +94,10 @@ var Roadbook = Class({
       Roadbook edit control flow
     ---------------------------------------------------------------------------
   */
+
+  requestWaypointEdit: function(){
+
+  },
 
   // Keeps track of which waypoint canvas is being edited so there aren't too many UI controls all at once
   requestCanvasEdit: function(object){

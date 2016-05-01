@@ -27,10 +27,13 @@ aside.right-off-canvas-menu {
   background: #787878;
 }
 textarea {
-  height: 75px !important;
   box-shadow: 3px 1px 13px -3px rgba(0,0,0,0.60) !important;
+  padding: 0.2rem !important;
 }
-
+textarea.waypoint-palette{
+  height: 75px !important;
+  width: 120px !important;
+}
 #content {
   height: 100%;
 }
@@ -136,6 +139,15 @@ textarea {
   padding: 10px 0;
 }
 
+#waypoint-palette h3{
+  background: #787878;
+  padding: 5px;
+}
+
+#waypoint-palette h3 a{
+  color: #ff4200;
+}
+
 #zout:focus,
 #zin:focus {
   background-color: #008CBA;
@@ -143,7 +155,7 @@ textarea {
 
 .glyph-modal {
   width: 700px !important;
-  height: 500px;
+  height: 75%;
   overflow: scroll;
 }
 
