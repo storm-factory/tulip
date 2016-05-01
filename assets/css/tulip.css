@@ -26,13 +26,11 @@ aside ul li a.main-menu{
 aside.right-off-canvas-menu {
   background: #787878;
 }
-
-#active-tulip-glyph{
-  border-radius: 10px;
-  box-shadow: 3px 1px 13px -3px rgba(0,0,0,0.60);
-  display: none;
-  background-color: #fff;
+textarea {
+  height: 75px !important;
+  box-shadow: 3px 1px 13px -3px rgba(0,0,0,0.60) !important;
 }
+
 #content {
   height: 100%;
 }
@@ -143,22 +141,10 @@ aside.right-off-canvas-menu {
   background-color: #008CBA;
 }
 
-.glyph-grid i {
-  display:none;
-}
-
-.glyph-grid:hover i {
-  display:block;
-}
-
 .glyph-modal {
   width: 700px !important;
   height: 500px;
   overflow: scroll;
-}
-
-.glyph-selection.column {
-  margin-top: .5em !important;
 }
 
 .heading {
@@ -212,20 +198,38 @@ aside.right-off-canvas-menu {
   height: 5px !important;
 }
 
-.track-type, .glyph-position, .glyph-selection {min-height: 130px;}
+.track-selection, .glyph-selection {min-height: 130px;}
+.glyph-selection.note-selection {min-height: 40px;margin-bottom: 5px;}
 .track-grid, .glyph-grid {
   width: 40px;
   height: 40px;
-  box-shadow: 2px 3px 6px -1px rgba(0,0,0,0.60);
+  box-shadow: 2px 3px 6px 1px rgba(0,0,0,0.60);
   position: absolute;
   text-align: center;
   font-size: 25px;
   color: #ffba29;
   text-shadow: -1px 1px 4px rgba(0,0,0, 1);
+  background-color: #efefef;
 }
+
+.track-grid.undo, .glyph-grid.undo {color: #000}
+
 .track-grid:hover, .glyph-grid:hover {background-color: rgba(255,144,0,1); cursor: pointer; box-shadow: 5px 5px 22px -2px rgba(0,0,0,0.60);}
 
-.track-grid.undo:hover {background-color: #000; color: #ffba29;}
+.track-grid.undo:hover, .glyph-grid.undo:hover {background-color: #000; color: #ffba29;}
+
+.track-grid i, .glyph-grid i {
+  display:none;
+}
+
+.track-grid:hover i,
+.glyph-grid:hover i,
+.track-grid.undo i,
+.glyph-grid.undo i  {
+  display:block;
+}
+.note-grid.tl {border-bottom-left-radius: 10px;}
+.note-grid.tr {border-bottom-right-radius: 10px;}
 .tl {left: 15; top: 0; border-top-left-radius: 10px;}
 .tm {left: 54px; top: 0;}
 .tr {left: 93px; top: 0; border-top-right-radius: 10px;}
@@ -235,8 +239,6 @@ aside.right-off-canvas-menu {
 .ll {left: 15; top: 78px; border-bottom-left-radius: 10px;}
 .lm {left: 54px; top: 78px;}
 .lr {left: 93px; top: 78px; border-bottom-right-radius: 10px;}
-
-.track-grid.undo {color: #000}
 
 .track-grid.tl div,
 .track-grid.lr div {

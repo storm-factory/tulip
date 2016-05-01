@@ -254,6 +254,11 @@ var Tulip = Class({
     return trackString;
   },
 
+  removeLastGlyph: function(){
+    var glyph = this.glyphs.pop()
+    this.canvas.remove(glyph);
+  },
+
   removeLastTrack: function(){
     var track = this.tracks.pop()
     this.canvas.remove(track);

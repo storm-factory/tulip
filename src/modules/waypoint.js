@@ -86,9 +86,7 @@ var Waypoint = Class({
       if(_this.roadbook.requestCanvasEdit(_this.tulip)){
         _this.tulip.beginEdit(); //TODO we need to have some sort of event handling, maybe check if it is default track, track, or glyph, and assign the proper editor
       }
-      $('#waypoint-palette ul li, #waypoint-palette ul li div').removeClass('active');
-      $('#waypoint-tracks, #waypoint-glyphs').addClass('active');
-      $('#waypoint-tracks, #waypoint-glyphs').parent('li').addClass('active');
+
       $('#roadbook-waypoints').children().hide();
       $(element).parents('.waypoint.row').show();
       $('#waypoint-palette').show();
@@ -98,12 +96,6 @@ var Waypoint = Class({
   initNoteListeners: function(element){
     var _this = this;
     $(element).click(function(e){
-      // if(_this.roadbook.requestCanvasEdit(_this.tulip)){
-      //   _this.tulip.beginEdit(); //TODO we need to have some sort of event handling, maybe check if it is default track, track, or glyph, and assign the proper editor
-      // }
-      $('#waypoint-palette ul li, #waypoint-palette ul li div').removeClass('active');
-      $('#waypoint-note').addClass('active');
-      $('#waypoint-note').parent('li').addClass('active');
       $('#roadbook-waypoints').children().hide();
       $(element).parents('.waypoint.row').show();
       $('#waypoint-palette').show();

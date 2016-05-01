@@ -97,12 +97,28 @@
             <div id="waypoint-palette">
               <ul class="accordion" data-accordion>
                 <li class="accordion-navigation">
-                  <a href="#waypoint-tracks">Tracks</a>
-                  <div id="waypoint-tracks" class="content active">
+                  <a href="#waypoint-tulip-controls">+/- Edit Waypoint x</a>
+                  <div id="waypoint-tulip-controls" class="content active">
                     <div class="row">
-                      <label>Select a track and place it on tulip using panel:</label>
+                      <div class="large-4 column selection-label">
+                        <span data-tooltip aria-haspopup="true" class="has-tip" title="Add tracks to the tulip radiating from the center in the selected direction">
+                          Tulip tracks
+                        </span>
+                      </div>
+                      <div class="large-4 column selection-label">
+                        <span data-tooltip aria-haspopup="true" class="has-tip" title="Add glyphs to the tulip in the selected position">
+                          Tulip glyphs
+                        </span>
+                      </div>
+                      <div class="large-4 column selection-label">
+                        <span data-tooltip aria-haspopup="true" class="has-tip" title="Add glyphs and text to the notes section on the right">
+                          Waypoint notes
+                        </span>
+                      </div>
                       <hr>
-                      <div class="large-4 column track-type">
+                    </div>
+                    <div class="row">
+                      <div class="large-4 column track-selection">
                         <div class="tl track-grid" data-angle="-45"><div><i class="fi-arrow-up"></i></div></div>
                         <div class="tm track-grid" data-angle="0"><i class="fi-arrow-up"></i></div>
                         <div class="tr track-grid" data-angle="45"><div><i class="fi-arrow-up"></i></div></div>
@@ -115,43 +131,34 @@
                         <div class="lm track-grid"data-angle="180"><i class="fi-arrow-down"></i></div>
                         <div class="lr track-grid" data-angle="135"><div><i class="fi-arrow-down"></i></div></div>
                       </div>
-                      <div class="large-8 column track-type">
-                      </div>
-                    </div>
-                  </div>
-                </li>
-                <li class="accordion-navigation">
-                  <a href="#waypoint-glyphs">Glyphs</a>
-                  <div id="waypoint-glyphs" class="content">
-                    <div class="row">
-                      <label>Place gylphs on the tulip:</label>
-                      <hr>
-                      <div class="large-4 column glyph-selection">
-                        some directions here
-                      </div>
                       <div class="left large-4 column glyph-selection">
                         <div class="tl glyph-grid" data-top="30" data-left="30"><i class="fi-plus"></i></div>
                         <div class="tm glyph-grid" data-top="30" data-left="85"><i class="fi-plus"></i></div>
                         <div class="tr glyph-grid" data-top="30" data-left="145"><i class="fi-plus"></i></div>
 
                         <div class="ml glyph-grid" data-top="95" data-left="30"><i class="fi-plus"></i></div>
-                        <div class="mm glyph-grid" data-top="95" data-left="85"><i class="fi-plus"></i></div>
+                        <div class="mm glyph-grid undo"><i class="fi-refresh"></i></div>
                         <div class="mr glyph-grid" data-top="95" data-left="145"><i class="fi-plus"></i></div>
 
                         <div class="ll glyph-grid" data-top="140" data-left="30"><i class="fi-plus"></i></div>
                         <div class="lm glyph-grid" data-top="140" data-left="85"><i class="fi-plus"></i></div>
                         <div class="lr glyph-grid" data-top="140" data-left="145"><i class="fi-plus"></i></div>
                       </div>
-                      <div class="left large-4 column glyph-selection">
-                        some way to remove them here
+                      <div class="left large-4 column">
+                        <div class="row">
+                          <div class="left large-4 column glyph-selection note-selection">
+                            <div class="tl glyph-grid note-grid" data-target="left"><i class="fi-plus"></i></div>
+                            <div class="tm glyph-grid note-grid" data-target="middle"><i class="fi-plus"></i></div>
+                            <div class="tr glyph-grid note-grid" data-target="right"><i class="fi-plus"></i></div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="left large-12 column">
+                            <textarea>
+                            </textarea>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                </li>
-                <li class="accordion-navigation">
-                  <a href="#waypoint-note">Notes</a>
-                  <div id="waypoint-note" class="content">
-                    Panel 3. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
                   </div>
                 </li>
               </ul>
@@ -174,6 +181,8 @@
   <script src="assets/libs/knockout-3.4.0.js"></script>
   <script src='assets/libs/fabric.min.js'></script>
   <script src='assets/libs/foundation-5.5.3/js/foundation.min.js'></script>
+  <script src='assets/libs/foundation-5.5.3/js/foundation/foundation.tooltip.js'></script>
+  <script src='assets/libs/foundation-5.5.3/js/vendor/modernizr.js'></script>
   <!--
     Load the application
   -->
@@ -222,6 +231,7 @@
 
   <!--
     Glyph Modal
+    TODO change to accodian:tabs structure
   -->
   <div id="glyphs" class="reveal-modal glyph-modal" data-reveal aria-hidden="true" role="dialog">
     <ul class="tabs" data-tab>

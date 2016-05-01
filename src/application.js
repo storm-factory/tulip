@@ -103,7 +103,6 @@ var App = Class({
 
     var tulipFile = this.roadbook.save();
     if(tulipFile.filePath == null){
-      console.log('here');
       var title = this.roadbook.name() == 'Name your roadbook' ? 'Untitled' : this.roadbook.name().replace(' ', '-')
       this.dialog.showSaveDialog({
                                   title: 'Save your roadbook',
@@ -118,7 +117,6 @@ var App = Class({
           _this.fs.writeFile(fileName, tulipFile, function (err) {});
       });
     } else {
-      console.log('here2');
       this.fs.writeFile(tulipFile.filePath, JSON.stringify(tulipFile, null, 2), function (err) {});
     }
 
@@ -190,23 +188,29 @@ var App = Class({
       _this.roadbook.currentlyEditingTulip.addTrack(angle);
     });
 
-    //TODO add a listener to open the glyph modal if there is no  loaded image or place the glyph if an image is loaded
+    //TODO fill out this todo, you know you wanna.
     $('.glyph-grid').click(function(){
-
+      if($(this).hasClass('undo')){
+        _this.roadbook.currentlyEditingTulip.removeLastGlyph();
+        return
+      }
+      if($(this).hasClass('note-grid')){
+        $('.glyph').addClass('note');
+      } else {
+        _this.glyphPlacementPosition = {top: $(this).data('top'), left: $(this).data('left')};
+        $('.glyph').removeClass('note');
+      }
       $('#glyphs').foundation('reveal', 'open');
-      _this.glyphPlacementPosition = {top: $(this).data('top'), left: $(this).data('left')};
-      var uri = $("#active-tulip-glyph").find('img').attr('src');
-      _this.roadbook.currentlyEditingTulip.addGlyph(position,uri);
     });
 
     $('.glyph').click(function(){
-
       var src = $(this).attr('src');
 
-      _this.roadbook.currentlyEditingTulip.addGlyph(_this.glyphPlacementPosition,src);
-      // $("#active-tulip-glyph").find('img').attr('src', src);
-      // $(".glyph-position").css('visibility', 'visible');
-      // $("#active-tulip-glyph").show();
+      if($(this).hasClass('note')){
+        // TODO add the glyph to the notes
+      } else {
+        _this.roadbook.currentlyEditingTulip.addGlyph(_this.glyphPlacementPosition,src);
+      }
       $('#glyphs').foundation('reveal', 'close');
     });
   },
