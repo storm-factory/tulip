@@ -114,7 +114,7 @@ var Roadbook = Class({
     if(waypoint != this.currentlyEditingWaypoint){ //we need this to discard click events fired from editing the waypoint tulip canvas
       this.finishWaypointEdit(); //clear any existing UI just to be sure
       this.currentlyEditingWaypoint = waypoint;
-      waypoint.noteText(this.currentlyEditingWaypointNoteText());
+      this.currentlyEditingWaypointNoteText(waypoint.noteText());
     }
     return true;
   },
