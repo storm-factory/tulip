@@ -300,9 +300,10 @@ nav.top-bar {
   padding: 3px;
 }
 
-.waypoint-note .notes {
-  overflow: hidden;
-  height: 135px;
+.waypoint-note p {
+  width: 100%;
+  height: 100px;
+  margin: 0;
 }
 
 .waypoint-tulip {

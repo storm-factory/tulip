@@ -78,7 +78,7 @@ var Waypoint = Class({
   initWaypointListeners: function(element){
     var _this = this;
     $(element).click(function(e){
-      if(_this.roadbook.requestCanvasEdit(_this.tulip)){
+      if(_this.roadbook.requestWaypointEdit(_this)){
         _this.tulip.beginEdit(); //TODO we need to have some sort of event handling, maybe check if it is default track, track, or glyph, and assign the proper editor
       }
 

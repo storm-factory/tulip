@@ -154,7 +154,7 @@
                       <div class="left large-12 column">
                         <!-- data-bind="textInput: currentlyEditingWaypointNoteText" -->
                         <!-- TODO work out bindings -->
-                        <textarea class="waypoint-palette">
+                        <textarea class="waypoint-palette" data-bind="textInput: currentlyEditingWaypointNoteText">
                         </textarea>
                       </div>
                     </div>
@@ -218,7 +218,7 @@
       </div>
       <div class='waypoint-note'>
 
-        <span data-bind="text: noteText"></span>
+        <p data-bind="text: noteText"></p>
         <div class='heading' >
           <label>CAP </label><span data-bind="text: heading"></span>
         </div>

@@ -9,11 +9,11 @@ var Tulip = Class({
   create: function(el, angle, json){
     this.canvas = new fabric.Canvas(el);
     this.canvas.selection = false;
-    //----------------------- NOT YET IMPLIMENTED
+
     this.tracks = [];
     this.glyphs = [];
-    //-----------------------
     this.activeEditors = [];
+
     this.initTulip(angle,json);
   },
 
@@ -84,15 +84,6 @@ var Tulip = Class({
   addGlyph: function(position,uri){
     var _this = this;
     var position = position;
-    // console.log(position);
-    // console.log(uri);
-    // var glyph = new fabric.Image.fromURL(uri, function(oImg) {
-    //   oImg.top = position.top;
-    //   oImg.left = position.left;
-    //   oImg.scaleToWidth(75);
-    //   _this.canvas.add(oImg);
-    // });
-    // this.glyphs.push(glyph);
 
     var imgObj = new Image();
     imgObj.src = uri;

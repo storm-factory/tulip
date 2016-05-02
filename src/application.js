@@ -55,7 +55,7 @@ var App = Class({
 
   canSave: function(){
     var can;
-    can = this.roadbook.finishCanvasEdit();
+    can = this.roadbook.finishWaypointEdit();
     can = can || this.roadbook.newWaypoints;
     can = can || this.roadbook.finishNameDescEdit();
     return can;
@@ -181,17 +181,17 @@ var App = Class({
 
     $('.track-grid').click(function(){
       if($(this).hasClass('undo')){
-        _this.roadbook.currentlyEditingTulip.removeLastTrack();
+        _this.roadbook.currentlyEditingWaypoint.tulip.removeLastTrack();
         return
       }
       var angle = $(this).data('angle');
-      _this.roadbook.currentlyEditingTulip.addTrack(angle);
+      _this.roadbook.currentlyEditingWaypoint.tulip.addTrack(angle);
     });
 
     //TODO fill out this todo, you know you wanna.
     $('.glyph-grid').click(function(){
       if($(this).hasClass('undo')){
-        _this.roadbook.currentlyEditingTulip.removeLastGlyph();
+        _this.roadbook.currentlyEditingWaypoint.tulip.removeLastGlyph();
         return
       }
       if($(this).hasClass('note-grid')){
@@ -209,7 +209,7 @@ var App = Class({
       if($(this).hasClass('note')){
         // TODO add the glyph to the notes
       } else {
-        _this.roadbook.currentlyEditingTulip.addGlyph(_this.glyphPlacementPosition,src);
+        _this.roadbook.currentlyEditingWaypoint.tulip.addGlyph(_this.glyphPlacementPosition,src);
       }
       $('#glyphs').foundation('reveal', 'close');
     });

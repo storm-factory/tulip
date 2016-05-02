@@ -6,9 +6,9 @@ var Roadbook = Class({
       declare some state instance variables
     */
     // TODO refactor this to be more waypoint centric
-    this.currentlyEditingCanvas = false;
-    this.currentlyEditingTulip = null;
-    this.currentlyEditingWaypoint = null;
+    this.currentlyEditingCanvas = false; //TODO depricate this
+    this.currentlyEditingTulip = null; //TODO depricate this
+    this.currentlyEditingWaypoint = null; //TODO make this the hingepoint
 
     this.editingNameDesc = false;
     this.newWaypoints = false;
@@ -24,6 +24,20 @@ var Roadbook = Class({
       Declare some internal variables
     */
     this.filePath = null;
+    /*
+      Extend the binding for the palette's note text input
+      TODO this should go to it's own function and be cleaned up
+    */
+    var _this = this;
+    ko.extenders.paletteNoteChange = function(target, option) {
+        target.subscribe(function(newValue) {
+           if(_this.currentlyEditingWaypoint !== null) {
+             _this.currentlyEditingWaypoint.noteText(newValue);
+           }
+        });
+        return target;
+    };
+    this.currentlyEditingWaypointNoteText = ko.observable().extend({paletteNoteChange: ""});
   },
 
   /*
@@ -92,36 +106,26 @@ var Roadbook = Class({
   /*
     ---------------------------------------------------------------------------
       Roadbook edit control flow
+      // TODO this needs some major refactoring to move away from old paradigms
     ---------------------------------------------------------------------------
   */
 
-  requestWaypointEdit: function(){
-
+  requestWaypointEdit: function(waypoint){
+    if(waypoint != this.currentlyEditingWaypoint){ //we need this to discard click events fired from editing the waypoint tulip canvas
+      this.finishWaypointEdit(); //clear any existing UI just to be sure
+      this.currentlyEditingWaypoint = waypoint;
+      waypoint.noteText(this.currentlyEditingWaypointNoteText());
+    }
+    return true;
   },
 
-  // Keeps track of which waypoint canvas is being edited so there aren't too many UI controls all at once
-  requestCanvasEdit: function(object){
-    if(object != this.currentlyEditingTulip){
-      if(this.currentlyEditingTulip){
-        this.currentlyEditingTulip.finishEdit();
-      }
-      this.currentlyEditingTulip = object;
-      this.currentlyEditingCanvas = true;
-      $('#save-roadbook').removeClass('secondary');
-      return true;
+  finishWaypointEdit: function(){
+    if(this.currentlyEditingWaypoint !== null){
+      this.currentlyEditingWaypoint.tulip.finishEdit();
+      this.currentlyEditingWaypoint = null;
+      this.currentlyEditingWaypointNoteText('');
     }
-  },
-
-  // Removes all the edit UI from the roadbook waypoints
-  finishCanvasEdit: function(){
-    if(this.currentlyEditingCanvas){
-      this.currentlyEditingCanvas = false;
-      if(this.currentlyEditingTulip !== null){
-        this.currentlyEditingTulip.finishEdit();
-        this.currentlyEditingTulip = null;
-      }
-      return true;
-    }
+    return true;
   },
 
   finishNameDescEdit: function(){
