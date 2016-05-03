@@ -196,6 +196,7 @@ var App = Class({
       }
       if($(this).hasClass('note-grid')){
         $('.glyph').addClass('note');
+        _this.glyphPlacementPosition = $(this).data('target');
       } else {
         _this.glyphPlacementPosition = {top: $(this).data('top'), left: $(this).data('left')};
         $('.glyph').removeClass('note');
@@ -207,7 +208,7 @@ var App = Class({
       var src = $(this).attr('src');
 
       if($(this).hasClass('note')){
-        // TODO add the glyph to the notes
+        $('.waypoint-note img.glyph-container.'+_this.glyphPlacementPosition).attr('src', src);
       } else {
         _this.roadbook.currentlyEditingWaypoint.tulip.addGlyph(_this.glyphPlacementPosition,src);
       }
