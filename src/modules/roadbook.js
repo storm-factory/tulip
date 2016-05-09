@@ -153,7 +153,6 @@ var Roadbook = Class({
     }
     points = app.mapEditor.routeMarkers
     // TODO fold waypoint into object instead of boolean so we aren't saving nulls
-    console.log('rb');
     for(i = 0; i < points.length; i++){
         var waypointJSON = {
           lat: points[i].getPosition().lat(),

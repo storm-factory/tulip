@@ -26,9 +26,10 @@ var Waypoint = Class({
     this.distFromPrev   = ko.computed(this.computedDistanceFromPrev, this);
     this.totalDistance  = ko.computed(this.computedTotalDistance, this);
     this.heading        = ko.computed(this.computedHeading, this);
-    // TODO
-    var noteText = opts.notes != undefined ? opts.notes.text : '';
+
+    var noteText = opts.notes != undefined ? opts.notes.text : ''; // TODO not sure if we need this
     this.noteText = ko.observable(noteText);
+    this.noteGlyphs = ko.observableArray([]);
 
     this.roadbook = roadbook;
 
@@ -41,6 +42,14 @@ var Waypoint = Class({
         _this.initWaypointListeners($(element).parents('.waypoint'));
       }
     };
+  },
+
+  addNoteGlyph: function(){
+
+  },
+
+  removeNoteGlyph: function(){
+
   },
 
   initTulip: function(element, angle, json){
