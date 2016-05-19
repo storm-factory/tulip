@@ -161,6 +161,10 @@ var Roadbook = Class({
           kmFromStart: points[i].waypoint ? points[i].waypoint.kmFromStart() : null,
           kmFromPrev: points[i].waypoint ? points[i].waypoint.kmFromPrev() : null,
           heading: points[i].waypoint ? points[i].waypoint.exactHeading() : null,
+          notes: {
+            text: points[i].waypoint ? points[i].waypoint.noteText() : null,
+            glyphs: points[i].waypoint ? points[i].waypoint.noteGlyphs() : null,
+          },
           tulipJson: points[i].waypoint ? points[i].waypoint.serializeTulip() : null,
         }
 

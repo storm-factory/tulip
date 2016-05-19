@@ -27,9 +27,12 @@ var Waypoint = Class({
     this.totalDistance  = ko.computed(this.computedTotalDistance, this);
     this.heading        = ko.computed(this.computedHeading, this);
 
-    var noteText = wptJson.notes != undefined ? wptJson.notes.text : ''; // TODO not sure if we need this
-    this.noteText = ko.observable(noteText);
-    this.noteGlyphs = ko.observableArray([]);
+    // waypoints don't get any note info when they are added via UI so intialize them to blank
+    console.log(wptJson.notes);
+    var text = wptJson.notes == undefined ? '' : wptJson.notes.text;
+    var glyphs = wptJson.notes == undefined ? [] : wptJson.notes.glyphs;
+    this.noteText = ko.observable(text);
+    this.noteGlyphs = ko.observableArray(glyphs);
 
     this.roadbook = roadbook;
 

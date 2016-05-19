@@ -88,6 +88,7 @@ var App = Class({
               var opts = _this.mapEditor.addWaypoint(routePoint); //this returns distance opts but if we already have that saved then why do we care?
               opts.tulipJson = point.tulipJson;
               opts.angles.heading = point.heading;
+              opts.notes = point.notes;
               routePoint.waypoint =  _this.roadbook.addWaypoint(opts);
             }
           }
@@ -96,7 +97,7 @@ var App = Class({
   },
 
   saveRoadBook: function(){
-    console.log('start');
+    console.log('saving');
     var _this = this
     // TODO determine users OS and derive where to save roadbooks by default (to documents or something defined at install or in preferences)
     // come up with a default directory in the preferences. this should be possible through Node IPC
@@ -177,6 +178,12 @@ var App = Class({
       $('#save-roadbook').removeClass('secondary');
       $(this).data('default', false)
       _this.roadbook.editingNameDesc = true;
+    });
+
+    $('#waypoint-palette h3 a').click(function(){
+      $('.waypoint.row').show();
+      $('#waypoint-palette').hide();
+      _this.roadbook.finishWaypointEdit();
     });
 
     $('.track-grid').click(function(){
