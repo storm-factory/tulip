@@ -44,12 +44,12 @@ var Waypoint = Class({
     };
   },
 
-  addNoteGlyph: function(position, src){
-    this.noteGlyphs.splice(position,0,{src: src});
+  addNoteGlyph: function(src){
+    this.noteGlyphs.push({src: src});
   },
 
-  removeNoteGlyph: function(){
-
+  removeLastNoteGlyph: function(){
+    this.noteGlyphs.pop();
   },
 
   initTulip: function(element, angle, json){

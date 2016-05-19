@@ -110,7 +110,7 @@
                     </span>
                   </div>
                   <div class="large-4 column selection-label">
-                    <span data-tooltip aria-haspopup="true" class="has-tip" title="Add glyphs and text to the notes section on the right">
+                    <span data-tooltip aria-haspopup="true" class="has-tip" title="Add up to 3 glyphs to the top of the note section. On the lower section up to 90 chars of text can be added">
                       Waypoint notes
                     </span>
                   </div>
@@ -146,9 +146,8 @@
                   <div class="left large-4 column">
                     <div class="row">
                       <div class="left large-12 column glyph-selection note-selection">
-                        <div class="tl glyph-grid note-grid" data-target="0"><i class="fi-plus"></i></div>
-                        <div class="tm glyph-grid note-grid" data-target="1"><i class="fi-plus"></i></div>
-                        <div class="tr glyph-grid note-grid" data-target="2"><i class="fi-plus"></i></div>
+                        <div class="tl glyph-grid note-grid" data-target="add"><i class="fi-plus"></i></div>
+                        <div class="tr glyph-grid note-grid undo" data-target="delete"><i class="fi-refresh"></i></div>
                       </div>
                     </div>
                     <div class="row">
@@ -235,7 +234,7 @@
     TODO change to accodian:tabs structure
   -->
   <div id="glyphs" class="reveal-modal glyph-modal" data-reveal aria-hidden="true" role="dialog">
-    <h3>Choose from the options below to place a glyph on the tulip: <a class="close-reveal-modal" aria-label="Close">&#215;</a></h3>
+    <h3>Choose from the options below to place a glyph: <a class="close-reveal-modal" aria-label="Close">&#215;</a></h3>
     <hr>
     <ul class="accordion" data-accordion>
       <li class="accordion-navigation">

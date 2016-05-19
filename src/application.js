@@ -190,25 +190,31 @@ var App = Class({
 
     //TODO fill out this todo, you know you wanna.
     $('.glyph-grid').click(function(){
-      if($(this).hasClass('undo')){
-        _this.roadbook.currentlyEditingWaypoint.tulip.removeLastGlyph();
-        return
-      }
       if($(this).hasClass('note-grid')){
+        if($(this).hasClass('undo')){
+          _this.roadbook.currentlyEditingWaypoint.removeLastNoteGlyph();
+          return
+        }
         $('.glyph').addClass('note');
-        _this.glyphPlacementPosition = $(this).data('target');
-      } else {
+        $('#glyphs').foundation('reveal', 'open');
+        return
+      } else{
+        if($(this).hasClass('undo')){
+          _this.roadbook.currentlyEditingWaypoint.tulip.removeLastGlyph();
+          return
+        }
         _this.glyphPlacementPosition = {top: $(this).data('top'), left: $(this).data('left')};
         $('.glyph').removeClass('note');
+        $('#glyphs').foundation('reveal', 'open');
+        return
       }
-      $('#glyphs').foundation('reveal', 'open');
     });
 
     $('.glyph').click(function(){
       var src = $(this).attr('src');
 
       if($(this).hasClass('note')){
-        _this.roadbook.currentlyEditingWaypoint.addNoteGlyph(_this.glyphPlacementPosition, src)
+        _this.roadbook.currentlyEditingWaypoint.addNoteGlyph(src)
       } else {
         _this.roadbook.currentlyEditingWaypoint.tulip.addGlyph(_this.glyphPlacementPosition,src);
       }

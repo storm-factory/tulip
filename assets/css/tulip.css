@@ -185,6 +185,15 @@ textarea.waypoint-palette{
   z-index: 0;
 }
 
+.tl.note-grid {
+  width: 60px !important;
+}
+
+.tr.note-grid {
+  width: 60px !important;
+  left: 75px !important;
+}
+
 .relative-distance {
   height: 28px;
   color: #000;
