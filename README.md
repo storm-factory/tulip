@@ -1,4 +1,4 @@
-<div style="text-align:center">
+<div align="center">
   <img src="https://github.com/SenorDrewMitchell/tulip/blob/master/assets/tulip-logo.png" width="100" height="100" />
 </div>
 ###  Tulip
