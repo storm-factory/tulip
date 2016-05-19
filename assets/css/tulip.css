@@ -185,6 +185,9 @@ textarea.waypoint-palette{
   z-index: 0;
 }
 
+.tab-title {
+  margin-right: 4px;
+}
 .tl.note-grid {
   width: 60px !important;
 }
