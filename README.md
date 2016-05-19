@@ -1,4 +1,4 @@
-# <img src="https://github.com/SenorDrewMitchell/tulip/blob/master/assets/tulip-logo2.png" width="200" height="200" /> Tulip
+# <img src="https://github.com/SenorDrewMitchell/tulip/blob/master/assets/tulip-logo2.png" width="50" height="50" /> Tulip
 -An editor for rally roadbooks built in the electron atom environment using web technologies
 
 ----
