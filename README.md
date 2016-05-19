@@ -1,6 +1,6 @@
-# tulipJS
--JS editor for rally roadbooks
-Built in the electron atom environment
+# Tulip
+![tulip logo](https://github.com/SenorDrewMitchell/tulip/blob/master/assets/tulip-logo2.png =100x100)
+-An editor for rally roadbooks built in the electron atom environment using web technologies
 
 ----
 
