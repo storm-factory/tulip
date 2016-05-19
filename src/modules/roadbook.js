@@ -115,8 +115,8 @@ var Roadbook = Class({
       this.finishWaypointEdit(); //clear any existing UI just to be sure
       this.currentlyEditingWaypoint = waypoint;
       this.currentlyEditingWaypointNoteText(waypoint.noteText());
+      return true;
     }
-    return true;
   },
 
   finishWaypointEdit: function(){
