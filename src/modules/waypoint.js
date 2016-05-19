@@ -1,7 +1,7 @@
 var Waypoint = Class({
   /*
 
-    opts: {
+    wptJson: {
             distances: {
               kmFromStart: FLOAT,
               kmFromPrev: FLOAT,
@@ -17,25 +17,25 @@ var Waypoint = Class({
             },
     }
   */
-  create: function(roadbook, opts){
+  create: function(roadbook, wptJson){
 
-    this.kmFromStart  = ko.observable(opts.distances.kmFromStart);
-    this.kmFromPrev   = ko.observable(opts.distances.kmFromPrev);
-    this.exactHeading = ko.observable(opts.angles.heading);
+    this.kmFromStart  = ko.observable(wptJson.distances.kmFromStart);
+    this.kmFromPrev   = ko.observable(wptJson.distances.kmFromPrev);
+    this.exactHeading = ko.observable(wptJson.angles.heading);
 
     this.distFromPrev   = ko.computed(this.computedDistanceFromPrev, this);
     this.totalDistance  = ko.computed(this.computedTotalDistance, this);
     this.heading        = ko.computed(this.computedHeading, this);
 
-    var noteText = opts.notes != undefined ? opts.notes.text : ''; // TODO not sure if we need this
+    var noteText = wptJson.notes != undefined ? wptJson.notes.text : ''; // TODO not sure if we need this
     this.noteText = ko.observable(noteText);
     this.noteGlyphs = ko.observableArray([]);
 
     this.roadbook = roadbook;
 
     var _this = this;
-    var angle = opts.angles.relativeAngle;
-    var json = opts.tulipJson
+    var angle = wptJson.angles.relativeAngle;
+    var json = wptJson.tulipJson
     ko.bindingHandlers.waypointCanvasRendered = {
       init: function(element){
         _this.initTulip(element, angle, json);
@@ -44,8 +44,8 @@ var Waypoint = Class({
     };
   },
 
-  addNoteGlyph: function(){
-
+  addNoteGlyph: function(position, src){
+    this.noteGlyphs.splice(position,0,{src: src});
   },
 
   removeNoteGlyph: function(){

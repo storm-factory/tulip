@@ -208,7 +208,7 @@ var App = Class({
       var src = $(this).attr('src');
 
       if($(this).hasClass('note')){
-        $('.waypoint-note img.glyph-container.'+_this.glyphPlacementPosition).attr('src', src);
+        _this.roadbook.currentlyEditingWaypoint.addNoteGlyph(_this.glyphPlacementPosition, src)
       } else {
         _this.roadbook.currentlyEditingWaypoint.tulip.addGlyph(_this.glyphPlacementPosition,src);
       }

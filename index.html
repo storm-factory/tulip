@@ -94,6 +94,7 @@
             </div>
             <!-- render waypoint templates here -->
             <div id="roadbook-waypoints" data-bind="template: { name: 'waypoint-template', foreach: app.roadbook.waypoints }"></div>
+            <!--  palette for editing waypoint content -->
             <div id="waypoint-palette">
               <h3>Editing Waypoint <a class="right">&#215;</a></h3>
               <div id="waypoint-tulip-controls" class="content active">
@@ -145,9 +146,9 @@
                   <div class="left large-4 column">
                     <div class="row">
                       <div class="left large-12 column glyph-selection note-selection">
-                        <div class="tl glyph-grid note-grid" data-target="top-left"><i class="fi-plus"></i></div>
-                        <div class="tm glyph-grid note-grid" data-target="top-middle"><i class="fi-plus"></i></div>
-                        <div class="tr glyph-grid note-grid" data-target="top-right"><i class="fi-plus"></i></div>
+                        <div class="tl glyph-grid note-grid" data-target="0"><i class="fi-plus"></i></div>
+                        <div class="tm glyph-grid note-grid" data-target="1"><i class="fi-plus"></i></div>
+                        <div class="tr glyph-grid note-grid" data-target="2"><i class="fi-plus"></i></div>
                       </div>
                     </div>
                     <div class="row">
@@ -198,6 +199,7 @@
   <!--
     Define templates
   -->
+  <!--  waypoint template-->
   <script type="text/html" id="waypoint-template">
     <div class='waypoint row'>
       <div class='waypoint-distance'>
@@ -215,9 +217,8 @@
         </canvas>
       </div>
       <div class='waypoint-note'>
-        <img class="glyph-container top-left" src =""></img>
-        <img class="glyph-container top-middle" src =""></img>
-        <img class="glyph-container top-right" src =""></img>
+        <!--  render note glyph template-->
+        <div class="glyph-container" data-bind="template: { name: 'note-glyph-template', foreach: noteGlyphs }"></div>
         <p data-bind="text: noteText"></p>
         <div class='heading' >
           <label>CAP </label><span data-bind="text: heading"></span>
@@ -225,7 +226,10 @@
       </div>
     </div>
   </script>
-
+  <!-- note glyph template-->
+  <script type="text/html" id="note-glyph-template">
+    <img data-bind="attr: { src: src}">
+  </script>
   <!--
     Glyph Modal
     TODO change to accodian:tabs structure

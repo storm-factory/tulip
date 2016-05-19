@@ -26,10 +26,7 @@ aside ul li a.main-menu{
 aside.right-off-canvas-menu {
   background: #787878;
 }
-img.glyph-container {
-  height: 55px;
-  width: 53px;
-}
+
 textarea {
   box-shadow: 3px 1px 13px -3px rgba(0,0,0,0.60) !important;
   padding: 0.2rem !important;
@@ -155,6 +152,15 @@ textarea.waypoint-palette{
 #zout:focus,
 #zin:focus {
   background-color: #008CBA;
+}
+
+.glyph-container {
+  height: 55px;
+}
+
+.glyph-container img {
+  height: 55px;
+  width: 53px;
 }
 
 .glyph-modal {
