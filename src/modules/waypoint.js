@@ -45,7 +45,9 @@ var Waypoint = Class({
   },
 
   addNoteGlyph: function(src){
-    this.noteGlyphs.push({src: src});
+    if(this.noteGlyphs().length < 3 ){
+      this.noteGlyphs.push({src: src});
+    }
   },
 
   removeLastNoteGlyph: function(){
