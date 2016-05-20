@@ -49,7 +49,7 @@
           <li><a href="#" class="main-menu button tiny radius disabled"><i class="fi-upload"></i> Export GPX</a></li>
           <li><a href="#" class="main-menu button tiny radius disabled"><i class="fi-upload"></i> Export Waypoints</a></li>
           <hr>
-          <li><a href="#" class="main-menu button tiny radius disabled"><i class="fi-print"></i> Print</a></li>
+          <li><a href="#" id="print-roadbook" class="main-menu button tiny radius info"><i class="fi-print"></i> Print</a></li>
         </ul>
     </aside>
     <!--  END ADVANCED MENU -->
@@ -412,4 +412,114 @@
       </li>
     </ul>
   </div>
+  <iframe id="ifmcontentstoprint" style="height: 0px; width: 0px; position: absolute">
+  </iframe>
+  <style id="print-content-style">
+    #roadbook {
+      padding-top: 1.2rem;
+      padding-bottom: 1.2rem;
+      height: 100%;
+      width: 500px;
+    }
+
+    #roadbook-name {border-left: 1px solid #000; min-height: 90px;}
+
+    #roadbook-name,
+    #roadbook-desc {
+      text-align: right;
+    }
+    #roadbook-total-distance{max-height: 90px;}
+
+    #waypoint-palette, #roadbook-name input, #roadbook-desc textarea {display: none}
+    #roadbook-total-distance p{
+      font-family: "Lucida Console", Monaco, monospace;
+      color: #000;
+      text-align: center;
+      font-size: 35px;
+    }
+
+    #roadbook-waypoints{
+      padding-bottom: 20px;
+    }
+
+    #roadbook-name a {font-size: 35px; text-align: right; width: 100%; font-family: bellybeans !important;}
+    #roadbook-desc a {font-size: 15px; text-align: left;}
+
+    #roadbook-name a,
+    #roadbook-desc a{
+      color: #000;
+      font-family: Tahoma, Geneva, sans-serif;
+    }
+    .glyph-container {
+      height: 55px;
+    }
+
+    .glyph-container img {
+      height: 55px;
+      width: 53px;
+    }
+
+    .heading {
+      font-family: Tahoma, Geneva, sans-serif;
+      color: #000;
+      font-size: 2em;
+    }
+    .heading label {
+      display: inline;
+    }
+
+    .total-distance {
+      height: 90px;
+      font-family: Tahoma, Geneva, sans-serif;
+      font-size: 2.45em;
+      color: #000;
+      text-align: center;
+    }
+
+    .total-distance div {
+      margin-top: 20px
+    }
+
+    .waypoint {
+      width:480px;
+      border: 2px solid #000;
+      height:182px;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      margin-top: 10px !important;
+    }
+
+    .waypoint-distance {
+      width:120px;
+    }
+
+    .waypoint-note {
+      width:175px;
+      padding: 3px;
+    }
+
+    .waypoint-note p {
+      width: 100%;
+      height: 80px;
+      margin: 0;
+      overflow: hidden;
+      word-wrap: break-word;
+      line-height: 1;
+    }
+
+    .waypoint-tulip {
+      width:180px;
+      border-left: 1px solid #000;
+      border-right: 1px solid #000;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+
+    .waypoint-distance,
+    .waypoint-note,
+    .waypoint-tulip {
+      height: 180px;
+      float: left
+    }
+  </style>
 </html>

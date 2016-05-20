@@ -28,7 +28,6 @@ var Waypoint = Class({
     this.heading        = ko.computed(this.computedHeading, this);
 
     // waypoints don't get any note info when they are added via UI so intialize them to blank
-    console.log(wptJson.notes);
     var text = wptJson.notes == undefined ? '' : wptJson.notes.text;
     var glyphs = wptJson.notes == undefined ? [] : wptJson.notes.glyphs;
     this.noteText = ko.observable(text);
