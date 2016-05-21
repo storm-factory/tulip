@@ -137,12 +137,21 @@ var Roadbook = Class({
     }
   },
 
+  updateTotalDistance: function(){
+    if(this.waypoints().length > 0 ){
+      this.totalDistance(this.waypoints()[this.waypoints().length - 1].totalDistance());
+    } else{
+      this.totalDistance(0);
+    }
+    console.log(this.totalDistance());
+  },
+
   /*
     ---------------------------------------------------------------------------
       Roadbook persistence
     ---------------------------------------------------------------------------
   */
-
+  // TODO rename to stateful JSON or something
   save:  function(){
     var roadbookJSON = {
       name: this.name(),
@@ -173,13 +182,6 @@ var Roadbook = Class({
     return roadbookJSON;
   },
 
-  updateTotalDistance: function(){
-    if(this.waypoints().length > 0 ){
-      this.totalDistance(this.waypoints()[this.waypoints().length - 1].totalDistance());
-    } else{
-      this.totalDistance(0);
-    }
-    console.log(this.totalDistance());
-  },
+  // TODO create to stateless JSON method which converts canvas to images
 
 });

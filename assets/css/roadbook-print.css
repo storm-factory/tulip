@@ -1,0 +1,192 @@
+@font-face{
+  font-family:bellybeans;
+  src:url(../fonts/bellybeans.ttf);
+}
+#roadbook {
+  padding-top: 1.2rem;
+  padding-bottom: 1.2rem;
+  height: 100%;
+}
+#roadbook-name {border-left: 1px solid #000; min-height: 90px;}
+
+#roadbook-name,
+#roadbook-desc {
+  text-align: right;
+}
+#roadbook-total-distance{max-height: 90px;  width: 125px !important}
+#roadbook-name input,
+#roadbook-desc textarea{
+  display:none;
+}
+#roadbook-name {font-size: 35px; text-align: left; width: 349px !important; font-family: bellybeans !important;}
+#roadbook-desc {font-size: 15px; text-align: left;}
+
+#roadbook-name,
+#roadbook-desc {
+  color: #000;
+  font-family: Tahoma, Geneva, sans-serif;
+}
+#roadbook-total-distance p{
+  font-family: "Lucida Console", Monaco, monospace;
+  color: #000;
+  text-align: center;
+  font-size: 35px;
+}
+
+#roadbook-waypoints{
+  padding-bottom: 20px;
+}
+.glyph-container {
+  height: 55px;
+}
+
+.glyph-container img {
+  height: 55px;
+  width: 53px;
+}
+.relative-distance {
+  height: 28px;
+  color: #000;
+  font-weight: bold;
+  border-top: 1px solid #000;
+  text-align: right;
+  margin-top: 45px;
+  padding-right: 3px;
+}
+.total-distance {
+  height: 90px;
+  font-family: Tahoma, Geneva, sans-serif;
+  font-size: 2.45em;
+  color: #000;
+  text-align: center;
+}
+
+.total-distance div {
+  margin-top: 20px
+}
+
+.waypoint {
+  width:480px;
+  border: 2px solid #000;
+  height:182px;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  margin-top: 10px !important;
+}
+
+.waypoint-distance {
+  width:120px;
+}
+
+.waypoint-note {
+  width:175px;
+  padding: 3px;
+}
+
+.waypoint-note p {
+  width: 100%;
+  height: 80px;
+  margin: 0;
+  overflow: hidden;
+  word-wrap: break-word;
+  line-height: 1;
+}
+
+.waypoint-tulip {
+  width:180px;
+  border-left: 1px solid #000;
+  border-right: 1px solid #000;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.waypoint-distance,
+.waypoint-note,
+.waypoint-tulip {
+  height: 180px;
+  float: left
+}
+/*
+  neccessary foundation stuff
+*/
+
+.left {
+  float: left !important; }
+
+.right {
+  float: right !important; }
+
+.clearfix:before, .clearfix:after {
+  content: " ";
+  display: table; }
+.clearfix:after {
+  clear: both; }
+.row {
+  margin: 0 auto;
+  max-width: 62.5rem;
+  width: 100%; }
+    .row:before, .row:after {
+      content: " ";
+      display: table; }
+    .row:after {
+      clear: both; }
+      .column,
+      .columns {
+        padding-left: 0.9375rem;
+        padding-right: 0.9375rem;
+        width: 100%;
+        float: left; }
+
+.column + .column:last-child,
+.columns + .column:last-child, .column +
+.columns:last-child,
+.columns +
+.columns:last-child {
+  float: right; }
+.column + .column.end,
+.columns + .column.end, .column +
+.columns.end,
+.columns +
+.columns.end {
+  float: left; }
+.column,
+.columns {
+  position: relative;
+  padding-left: 0.9375rem;
+  padding-right: 0.9375rem;
+  float: left; }
+.large-1 {
+  width: 8.33333%; }
+
+.large-2 {
+  width: 16.66667%; }
+
+.large-3 {
+  width: 25%; }
+
+.large-4 {
+  width: 33.33333%; }
+
+.large-5 {
+  width: 41.66667%; }
+
+.large-6 {
+  width: 50%; }
+
+.large-7 {
+  width: 58.33333%; }
+
+.large-8 {
+  width: 66.66667%; }
+
+.large-9 {
+  width: 75%; }
+
+.large-10 {
+  width: 83.33333%; }
+
+.large-11 {
+  width: 91.66667%; }
+
+.large-12 {
+  width: 100%; }

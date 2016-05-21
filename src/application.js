@@ -155,11 +155,12 @@ var App = Class({
 
     $('#print-roadbook').click(function(){
       //maybe not the best method, maybe needs styling
-      var content = $('<head>').append($('<link>',{href:"assets/css/tulip.css", rel:"stylesheet", type:"text/css"}))
-                                .append($('<link>',{href:"assets/libs/foundation-5.5.3/css/foundation.css", rel:"stylesheet", type:"text/css"}));
+      var content = $('<head>').append($('<link>',{href:"assets/css/roadbook-print.css", rel:"stylesheet", type:"text/css"}));
       var roadbook = $("#roadbook").clone()
-      roadbook.css({'padding-top': '1.2rem', 'padding-bottom': '1.2rem', height: '100%', width: '500px',});
-      content.append(roadbook[0].outerHTML);
+      roadbook.remove('#waypoint-palette, #roadbook-name input, #roadbook-desc textarea');
+      roadbook.find('#roadbook-name').html($('#roadbook-name a').text());
+      roadbook.find('#roadbook-desc').html($('#roadbook-desc a').text());
+      content.append($('<div>').attr('id', "roadbook").html(roadbook.html()));
       var pri = $("#ifmcontentstoprint")[0].contentWindow;
       pri.document.open();
       pri.document.write(content.html());
