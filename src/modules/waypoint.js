@@ -102,6 +102,10 @@ var Waypoint = Class({
   },
 
   serializeTulip: function() {
-    return this.tulip.serialize()
+    return this.tulip.serialize();
+  },
+
+  tulipPNG: function(){
+    return this.tulip.toPNG();
   },
 });

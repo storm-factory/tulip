@@ -1,7 +1,5 @@
 var Roadbook = Class({
   create: function(opts){
-    this.waypoints = ko.observableArray([]);
-
     /*
       declare some state instance variables
     */
@@ -19,6 +17,7 @@ var Roadbook = Class({
     this.name = ko.observable('Name your roadbook');
     this.desc = ko.observable('Describe your roadbook, click me!');
     this.totalDistance = ko.observable('0.00');
+    this.waypoints = ko.observableArray([]);
 
     /*
       Declare some internal variables
@@ -151,8 +150,9 @@ var Roadbook = Class({
       Roadbook persistence
     ---------------------------------------------------------------------------
   */
-  // TODO rename to stateful JSON or something
-  save:  function(){
+  // Returns a json representation of the roadbook with all geographic data and elements which capture the edited state of the roadbook.
+  // This can be reloaded into app for futher editing
+  statefulJSON:  function(){
     var roadbookJSON = {
       name: this.name(),
       desc: this.desc(),
@@ -182,6 +182,37 @@ var Roadbook = Class({
     return roadbookJSON;
   },
 
-  // TODO create to stateless JSON method which converts canvas to images
+  // Returns the roadbook with only neccessary information to display the roadbook
+  // as the rider will see it.
+  statelessJSON: function(){
+    var roadbookJSON = {
+      name: this.name(),
+      desc: this.desc(),
+      totalDistance: this.totalDistance(),
+      waypoints: [],
+    }
+    points = app.mapEditor.routeMarkers
+    // TODO fold waypoint into object instead of boolean so we aren't saving nulls
+    for(i = 0; i < points.length; i++){
+      if(points[i].waypoint){
+        var waypointJSON = {
+          lat: points[i].getPosition().lat(),
+          long: points[i].getPosition().lng(),
+          waypoint: points[i].waypoint ? true : false,
+          kmFromStart: points[i].waypoint.kmFromStart(),
+          kmFromPrev: points[i].waypoint.kmFromPrev(),
+          heading: points[i].waypoint.exactHeading(),
+          notes: {
+            text: points[i].waypoint.noteText(),
+            glyphs: points[i].waypoint.noteGlyphs(), //TODO need to convert paths into actual file contents
+          },
+          tulip: points[i].waypoint.tulipPNG(),
+        }
+        roadbookJSON.waypoints.push(waypointJSON);
+      }
+
+    }
+    return roadbookJSON;
+  },
 
 });

@@ -298,13 +298,6 @@ var Tulip = Class({
   },
 
   /*
-    Build the Canvas object from a json string
-  */
-  loadFromJson: function(json){
-
-  },
-
-  /*
     return the canvas object as JSON so it can be persisted
   */
   serialize: function(){
@@ -332,6 +325,10 @@ var Tulip = Class({
       glyphsJson.push(glyph.toJSON());
     }
     return glyphsJson;
+  },
+
+  toPNG: function(){
+    return this.canvas.toDataURL();
   },
 
 });

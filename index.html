@@ -166,36 +166,6 @@
     <!--  END CONTENT -->
     </main>
   </body>
-  <script>
-    //Jquery sees it is running in CommonJS env, and wants to be used as such.
-    window.$ = window.jQuery = require('./assets/libs/jquery-2.1.4.min.js');
-  </script>
-  <!--
-    Load the rest of our libraries
-  -->
-  <script src="assets/libs/jsclass/dist/browser/js.class.min.js"></script>
-  <script src="assets/libs/knockout-3.4.0.js"></script>
-  <script src='assets/libs/fabric.min.js'></script>
-  <script src='assets/libs/foundation-5.5.3/js/foundation.min.js'></script>
-  <script src='assets/libs/foundation-5.5.3/js/foundation/foundation.tooltip.js'></script>
-  <script src='assets/libs/foundation-5.5.3/js/vendor/modernizr.js'></script>
-  <!--
-    Load the application
-  -->
-  <script src='src/application.js'></script>
-  <!--
-    Load modules
-  -->
-  <script src='src/modules/map-editor.js'></script>
-  <script src='src/modules/map-controls.js'></script>
-  <script src='src/modules/tulip-editor.js'></script>
-  <script src='src/modules/tulip.js'></script>
-  <script src='src/modules/roadbook.js'></script>
-  <script src='src/modules/waypoint.js'></script>
-  <script src='src/modules/printer.js'></script>
-  <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBC3SLdbHfZGQKP3A_NRdAUewVFP9fwnYw&callback=initMap">
-  </script>
   <!--
     Define templates
   -->
@@ -239,7 +209,7 @@
     <hr>
     <ul class="accordion" data-accordion>
       <li class="accordion-navigation">
-        <a href="#detail-glyphs">Details</a>
+        <a href="#detail-glyphs">Route Details</a>
         <div id="detail-glyphs" class="content">
           <ul class="tabs" data-tab>
             <li class="tab-title active"><a href="#description-detail">Descriptions</a></li>
@@ -303,7 +273,7 @@
         </div>
       </li>
       <li class="accordion-navigation">
-        <a href="#track-glyphs">Tracks</a>
+        <a href="#track-glyphs">Track Descriptions</a>
         <div id="track-glyphs" class="content">
           <ul class="small-block-grid-5">
             <li><a class="th" href="#"><img class="glyph" src="./assets/svg/tracks/big.svg"></a><p>big</p></li>
@@ -320,7 +290,7 @@
         </div>
       </li>
       <li class="accordion-navigation">
-        <a href="#feature-glyphs">Features</a>
+        <a href="#feature-glyphs">Terrain Features</a>
         <div id="feature-glyphs" class="content">
           <ul class="tabs" data-tab>
             <li class="tab-title active"><a href="#man-made-feature">Man Made</a></li>
@@ -413,6 +383,38 @@
       </li>
     </ul>
   </div>
+  <!-- Roadbook printing target -->
   <iframe id="ifmcontentstoprint" style="height: 0px; width: 0px; position: absolute">
   </iframe>
+
+  <script>
+    //Jquery sees it is running in CommonJS env, and wants to be used as such.
+    window.$ = window.jQuery = require('./assets/libs/jquery-2.1.4.min.js');
+  </script>
+  <!--
+    Load the rest of our libraries
+  -->
+  <script src="assets/libs/jsclass/dist/browser/js.class.min.js"></script>
+  <script src="assets/libs/knockout-3.4.0.js"></script>
+  <script src='assets/libs/fabric.min.js'></script>
+  <script src='assets/libs/foundation-5.5.3/js/foundation.min.js'></script>
+  <script src='assets/libs/foundation-5.5.3/js/foundation/foundation.tooltip.js'></script>
+  <script src='assets/libs/foundation-5.5.3/js/vendor/modernizr.js'></script>
+  <!--
+    Load the application
+  -->
+  <script src='src/application.js'></script>
+  <!--
+    Load modules
+  -->
+  <script src='src/modules/map-editor.js'></script>
+  <script src='src/modules/map-controls.js'></script>
+  <script src='src/modules/tulip-editor.js'></script>
+  <script src='src/modules/tulip.js'></script>
+  <script src='src/modules/roadbook.js'></script>
+  <script src='src/modules/waypoint.js'></script>
+  <script src='src/modules/printer.js'></script>
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBC3SLdbHfZGQKP3A_NRdAUewVFP9fwnYw&callback=initMap">
+  </script>
 </html>

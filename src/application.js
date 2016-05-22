@@ -96,13 +96,17 @@ var App = Class({
     });
   },
 
+  printRoadbook: function(){
+    new Printer(this.roadbook.statelessJSON());
+  },
+
   saveRoadBook: function(){
     console.log('saving');
     var _this = this
     // TODO determine users OS and derive where to save roadbooks by default (to documents or something defined at install or in preferences)
     // come up with a default directory in the preferences. this should be possible through Node IPC
 
-    var tulipFile = this.roadbook.save();
+    var tulipFile = this.roadbook.statefulJSON();
     if(tulipFile.filePath == null){
       var title = this.roadbook.name() == 'Name your roadbook' ? 'Untitled' : this.roadbook.name().replace(' ', '-')
       this.dialog.showSaveDialog({
@@ -154,19 +158,7 @@ var App = Class({
     });
 
     $('#print-roadbook').click(function(){
-      //maybe not the best method, maybe needs styling
-      var content = $('<head>').append($('<link>',{href:"assets/css/roadbook-print.css", rel:"stylesheet", type:"text/css"}));
-      var roadbook = $("#roadbook").clone()
-      roadbook.remove('#waypoint-palette, #roadbook-name input, #roadbook-desc textarea');
-      roadbook.find('#roadbook-name').html($('#roadbook-name a').text());
-      roadbook.find('#roadbook-desc').html($('#roadbook-desc a').text());
-      content.append($('<div>').attr('id', "roadbook").html(roadbook.html()));
-      var pri = $("#ifmcontentstoprint")[0].contentWindow;
-      pri.document.open();
-      pri.document.write(content.html());
-      pri.document.close();
-      pri.focus();
-      pri.print();
+      _this.printRoadbook();
     });
 
     $('#save-roadbook').click(function(){
