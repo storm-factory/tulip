@@ -92,6 +92,8 @@ var App = Class({
               routePoint.waypoint =  _this.roadbook.addWaypoint(opts);
             }
           }
+          var latLng = new google.maps.LatLng(points[0].lat, points[0].long);
+          _this.mapEditor.map.setCenter(latLng);
         });
     });
   },

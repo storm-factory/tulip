@@ -14,13 +14,17 @@ var Printer = Class({
     roadbook.find('#waypoint-palette, #roadbook-name input, #roadbook-desc textarea').remove();
     roadbook.find('#roadbook-name').html($('#roadbook-name a').text());
     roadbook.find('#roadbook-desc').html($('#roadbook-desc a').text());
-
-    var waypoints = roadbook.find('.waypoint-tulip');
+    roadbook.find('#roadbook-desc').after($('<div>').attr('class', 'break'));
+    roadbook.prepend($('<div>').attr('align', 'center').append($('<img>').attr('src','./assets/tulip-logo3.png').attr('height', '300')))
+    var waypoints = roadbook.find('.waypoint');
     for(i=0;i<waypoints.length;i++){
-      var img = $('<img>').attr('src',this.waypoints[i].tulip)
-      $(waypoints[i]).html(img);
-    }
+      if((((i+1)%4) == 0) && (i > 0)){
+        $(waypoints[i]).after($('<div>').attr('class', 'break'));
+      }
 
+      var img = $('<img>').attr('src',this.waypoints[i].tulip)
+      $(waypoints[i]).find('.waypoint-tulip').html(img);
+    }
     content.append($('<div>').attr('id', "roadbook").html(roadbook.html()));
     this.print(content);
   },

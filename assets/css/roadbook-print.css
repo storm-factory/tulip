@@ -36,13 +36,26 @@
 #roadbook-waypoints{
   padding-bottom: 20px;
 }
+.break{
+ display: block;
+ clear: both;
+ page-break-after: always;
+}
 .glyph-container {
   height: 55px;
 }
-
 .glyph-container img {
   height: 55px;
   width: 53px;
+}
+.heading {
+  font-family: Tahoma, Geneva, sans-serif;
+  color: #000;
+  font-size: 2em;
+}
+.heading label {
+  display: inline;
+  font-size: 0.875rem;
 }
 .relative-distance {
   height: 28px;
@@ -66,20 +79,20 @@
 }
 
 .waypoint {
-  width:480px;
+  width:600px;
   border: 2px solid #000;
-  height:182px;
+  height:200px;
   margin-left: 0 !important;
   margin-right: 0 !important;
-  margin-top: 10px !important;
+  margin-top: 20px !important;
 }
 
 .waypoint-distance {
-  width:120px;
+  width:200px;
 }
 
 .waypoint-note {
-  width:175px;
+  width:200px;
   padding: 3px;
 }
 
@@ -93,7 +106,7 @@
 }
 
 .waypoint-tulip {
-  width:180px;
+  width:200px;
   border-left: 1px solid #000;
   border-right: 1px solid #000;
   padding-left: 0 !important;
@@ -103,7 +116,7 @@
 .waypoint-distance,
 .waypoint-note,
 .waypoint-tulip {
-  height: 180px;
+  height: 200px;
   float: left
 }
 /*
