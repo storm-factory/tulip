@@ -2,6 +2,12 @@
   font-family:bellybeans;
   src:url(../fonts/bellybeans.ttf);
 }
+
+body {
+    background: #fff;
+    font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+}
+
 #roadbook {
   padding-top: 1.2rem;
   padding-bottom: 1.2rem;
@@ -33,9 +39,6 @@
   font-size: 35px;
 }
 
-#roadbook-waypoints{
-  padding-bottom: 20px;
-}
 .break{
  display: block;
  clear: both;
@@ -61,6 +64,7 @@
   height: 28px;
   color: #000;
   font-weight: bold;
+  font-size: 25px;
   border-top: 1px solid #000;
   text-align: right;
   margin-top: 45px;
@@ -101,6 +105,7 @@
   height: 80px;
   margin: 0;
   overflow: hidden;
+  font-size: 1.2rem;
   word-wrap: break-word;
   line-height: 1;
 }

@@ -61,6 +61,29 @@ var Roadbook = Class({
     return waypoint;
   },
 
+  appendRouteFromJSON: function(json,fileName){
+    this.name(json.name);
+    this.desc(json.desc);
+    this.totalDistance(json.totalDistance);
+    this.filePath = fileName 
+    var points = json.waypoints;
+    var wpts = []
+    // NOTE: For some strange reason, due to canvas rendering, a for loop causes points and waypoints to be skipped, hence for...of in
+    for(point of points){
+      var latLng = new google.maps.LatLng(point.lat, point.long)
+      var routePoint = app.mapEditor.addRoutePoint(latLng, null, true); //this returns a point
+      if(point.waypoint){
+        var opts = app.mapEditor.addWaypoint(routePoint); //this returns distance opts but if we already have that saved then why do we care?
+        opts.tulipJson = point.tulipJson;
+        opts.angles.heading = point.heading;
+        opts.notes = point.notes;
+        routePoint.waypoint =  this.addWaypoint(opts);
+      }
+    }
+    var latLng = new google.maps.LatLng(points[0].lat, points[0].long);
+    app.mapEditor.map.setCenter(latLng);
+  },
+
   deleteWaypoint: function(wptId){
     this.waypoints.splice(wptId - 1,1);
     this.reindexWaypoints();

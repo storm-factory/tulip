@@ -41,6 +41,11 @@ var App = Class({
     this.initListeners();
     this.mapControls = MapControls.instance();
     /*
+      instantiate import/export
+    */
+    this.io = new Io();
+
+    /*
       file io
     */
     this.fs = require('fs');
@@ -68,33 +73,16 @@ var App = Class({
       ]},function (fileNames) {
       var fs = require('fs');
       if (fileNames === undefined) return;
+        //TODO this needs to be passed to create when choice is added
+        //we need to figure out how to watch a file while it's being edited so if it's moved it gets saved to the right place ***fs.watch***
         var fileName = fileNames[0];
         _this.fs.readFile(fileName, 'utf-8', function (err, data) {
           var json = JSON.parse(data);
-          /*
-            TODO Refactor this into a function in the roadbook module
-          */
-          _this.roadbook.name(json.name);
-          _this.roadbook.desc(json.desc);
-          _this.roadbook.totalDistance(json.totalDistance);
-          _this.roadbook.filePath = fileName //we need to figure out how to watch a file while it's being edited so if it's moved it gets saved to the right place ***fs.watch***
-          var points = json.waypoints;
-          var wpts = []
-          // NOTE: For some strange reason, due to canvas rendering, a for loop causes points and waypoints to be skipped, hence for...of in
-          for(point of points){
-            var latLng = new google.maps.LatLng(point.lat, point.long)
-            var routePoint = _this.mapEditor.addRoutePoint(latLng, null, true); //this returns a point
-            if(point.waypoint){
-              var opts = _this.mapEditor.addWaypoint(routePoint); //this returns distance opts but if we already have that saved then why do we care?
-              opts.tulipJson = point.tulipJson;
-              opts.angles.heading = point.heading;
-              opts.notes = point.notes;
-              routePoint.waypoint =  _this.roadbook.addWaypoint(opts);
-            }
-          }
-          var latLng = new google.maps.LatLng(points[0].lat, points[0].long);
-          _this.mapEditor.map.setCenter(latLng);
+          // We need to ask whether they want to open a new roadbook or append an existing one to the currently
+          // being edited RB
+          _this.roadbook.appendRouteFromJSON(json,fileName); //TODO this needs to only pass json once choice is added
         });
+        $('#toggle-roadbook').click();
     });
   },
 
@@ -138,7 +126,23 @@ var App = Class({
 
     var _this = this
     $('#draw-route').click(function(){
+      console.log('draw route not implimented');
+    });
 
+    $("#import-gpx").click(function(){
+      /*
+        TODO move to own function in app
+      */
+      _this.dialog.showOpenDialog({ filters: [
+         { name: 'import gpx', extensions: ['gpx'] }
+        ]},function (fileNames) {
+        var fs = require('fs');
+        if (fileNames === undefined) return;
+        var fileName = fileNames[0];
+        _this.fs.readFile(fileName, 'utf-8', function (err, data) {
+          _this.io.importGPX(data);
+        });
+      });
     });
 
     $('#toggle-roadbook').click(function(){
