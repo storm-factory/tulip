@@ -399,6 +399,35 @@ var MapEditor = Class({
     });
   },
 
+  insertPointOnEdge: function(latLng){
+    //it's easier to mess with the array
+    var points = this.routePoints.getArray();
+    /*
+      Iterate through the point pairs on the segment
+      determine which edge the latLng falls upon
+      and insert a new point into route at the index of the end point
+      then increment the mapVertexIndex of all the points after that index
+    */
+    var x0 = latLng.lat();
+    var y0 = latLng.lng();
+    var idx;
+    var done;
+    for(i = 1; i < points.length; i++ ){
+      var x1 = points[i-1].lat();
+      var y1 = points[i-1].lng();
+      var x2 = points[i].lat();
+      var y2 = points[i].lng();
+      // does the event point fit in the bounds of the two reference points
+      if(((x1 <= x0 && x0 <= x2) || (x1 >= x0 && x0 >= x2)) && ((y1 <= y0 && y0 <= y2) || (y1 >= y0 && y0 >= y2))) {
+          idx = i;
+          this.addRoutePoint(latLng, i);
+          break; //we found it, we're done here
+      }
+    }
+
+    return idx;
+  },
+
   initRouteListeners: function() {
     var _this = this;
     // Add a listener for the map's click event
@@ -445,31 +474,32 @@ var MapEditor = Class({
         */
         google.maps.event.addListener(handle, 'mousedown', function(evt){
           dragging = true;
-          //it's easier to mess with the array
-          var points = _this.routePoints.getArray();
-          /*
-            Iterate through the point pairs on the segment
-            determine which edge the click event falls upon
-            and insert a new point into route at the index of the end point
-            then increment the mapVertexIndex of all the points after that index
-          */
-          // TODO refactor this logic into it's own function exactly like the waypoint insertion method in the roadbook module
-          var x0 = evt.latLng.lat();
-          var y0 = evt.latLng.lng();
-          var idx;
-          var done;
-          for(i = 1; i < points.length; i++ ){
-            var x1 = points[i-1].lat();
-            var y1 = points[i-1].lng();
-            var x2 = points[i].lat();
-            var y2 = points[i].lng();
-            // does the event point fit in the bounds of the two reference points
-            if(((x1 <= x0 && x0 <= x2) || (x1 >= x0 && x0 >= x2)) && ((y1 <= y0 && y0 <= y2) || (y1 >= y0 && y0 >= y2))) {
-                idx = i;
-                _this.addRoutePoint(evt.latLng, i);
-                break; //we found it, we're done here
-            }
-          }
+
+          // //it's easier to mess with the array
+          // var points = _this.routePoints.getArray();
+          // /*
+          //   Iterate through the point pairs on the segment
+          //   determine which edge the click event falls upon
+          //   and insert a new point into route at the index of the end point
+          //   then increment the mapVertexIndex of all the points after that index
+          // */
+          // // TODO refactor this logic into it's own function exactly like the waypoint insertion method in the roadbook module
+          // var x0 = evt.latLng.lat();
+          // var y0 = evt.latLng.lng();
+          var idx = _this.insertPointOnEdge(evt.latLng);
+          // var done;
+          // for(i = 1; i < points.length; i++ ){
+          //   var x1 = points[i-1].lat();
+          //   var y1 = points[i-1].lng();
+          //   var x2 = points[i].lat();
+          //   var y2 = points[i].lng();
+          //   // does the event point fit in the bounds of the two reference points
+          //   if(((x1 <= x0 && x0 <= x2) || (x1 >= x0 && x0 >= x2)) && ((y1 <= y0 && y0 <= y2) || (y1 >= y0 && y0 >= y2))) {
+          //       idx = i;
+          //       _this.addRoutePoint(evt.latLng, i);
+          //       break; //we found it, we're done here
+          //   }
+          // }
           /*
             Add listeners to move the new route point and the route to the mouse drag position of the handle
           */
