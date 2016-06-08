@@ -108,7 +108,7 @@ var MapEditor = Class({
                       map: this.map,
                       position: latLng,
                       draggable: true,
-                      mapVertexIndex: this.routePoints.indexOf(latLng),
+                      mapVertexIndex: this.routePoints.length > 0 ? this.routePoints.indexOf(latLng) : 0,
                     });
 
     /*
@@ -424,7 +424,6 @@ var MapEditor = Class({
           break; //we found it, we're done here
       }
     }
-
     return idx;
   },
 
