@@ -22,9 +22,8 @@ var Waypoint = Class({
     this.kmFromStart  = ko.observable(wptJson.distances.kmFromStart);
     this.kmFromPrev   = ko.observable(wptJson.distances.kmFromPrev);
     this.exactHeading = ko.observable(wptJson.angles.heading);
-    // TODO grab this from the json
-    // this.lat
-    // this.lon
+    this.lat = ko.observable(wptJson.lat);
+    this.lng = ko.observable(wptJson.lng);
 
     this.distFromPrev   = ko.computed(this.computedDistanceFromPrev, this);
     this.totalDistance  = ko.computed(this.computedTotalDistance, this);
@@ -63,13 +62,17 @@ var Waypoint = Class({
     this.tulip = new Tulip(element, angle, json);
   },
 
-  updateWaypoint: function (distances, heading){
+  updateWaypoint: function (distances, heading, latLng){
     if(distances){
       this.kmFromStart(distances.kmFromStart);
       this.kmFromPrev(distances.kmFromPrev);
     }
     if(heading){
-      this.exactHeading(heading)
+      this.exactHeading(heading);
+    }
+    if(latLng){
+      this.lat(latLng.lat);
+      this.lng(latLng.lng);
     }
   },
 
@@ -97,7 +100,9 @@ var Waypoint = Class({
       if(_this.roadbook.requestWaypointEdit(_this)){
         _this.tulip.beginEdit(); //TODO we need to have some sort of event handling, maybe check if it is default track, track, or glyph, and assign the proper editor
       }
-      // app.mapEditor.map.setCenter(latLng); TODO center the map on the rwaypoints lat/long
+      var latLng = new google.maps.LatLng(_this.lat(), _this.lng());
+      app.mapEditor.map.setCenter(latLng);
+      app.mapEditor.map.setZoom(16);
       $('#roadbook-waypoints').children().hide();
       $(element).show();
       $('#waypoint-palette').show();

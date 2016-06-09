@@ -148,6 +148,8 @@ var MapEditor = Class({
       point.heading = angles.heading;
 
       opts = {
+          lat: point.getPosition().lat(),
+          lon: point.getPosition().lng(),
           distances: distances,
           angles: angles,
       }
@@ -534,7 +536,7 @@ var MapEditor = Class({
         } else {
           $.extend(distances,{kmFromPrev: 0});
         }
-        marker.waypoint.updateWaypoint(distances, angles.heading);
+        marker.waypoint.updateWaypoint(distances, angles.heading,{lat: marker.getPosition().lat(), lng: marker.getPosition().lng()} );
         previous = marker;
       }
     }
