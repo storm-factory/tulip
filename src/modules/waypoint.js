@@ -22,6 +22,9 @@ var Waypoint = Class({
     this.kmFromStart  = ko.observable(wptJson.distances.kmFromStart);
     this.kmFromPrev   = ko.observable(wptJson.distances.kmFromPrev);
     this.exactHeading = ko.observable(wptJson.angles.heading);
+    // TODO grab this from the json
+    // this.lat
+    // this.lon
 
     this.distFromPrev   = ko.computed(this.computedDistanceFromPrev, this);
     this.totalDistance  = ko.computed(this.computedTotalDistance, this);
@@ -94,7 +97,7 @@ var Waypoint = Class({
       if(_this.roadbook.requestWaypointEdit(_this)){
         _this.tulip.beginEdit(); //TODO we need to have some sort of event handling, maybe check if it is default track, track, or glyph, and assign the proper editor
       }
-
+      // app.mapEditor.map.setCenter(latLng); TODO center the map on the rwaypoints lat/long
       $('#roadbook-waypoints').children().hide();
       $(element).show();
       $('#waypoint-palette').show();

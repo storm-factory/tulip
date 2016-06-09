@@ -2,10 +2,10 @@ var Io = Class({
 
   importGPX: function(gpx){
     var gpxDoc = $.parseXML(gpx);
-    var gpx = $(gpxDoc);
+    this.gpx = $(gpxDoc);
 
-    this.importGPXTracks($.makeArray(gpx.find( "trkpt" )));
-    this.importGPXWaypoints($.makeArray(gpx.find( "wpt" )));
+    this.importGPXTracks($.makeArray(this.gpx.find( "trkpt" )));
+    this.importGPXWaypoints($.makeArray(this.gpx.find( "wpt" )));
   },
 
   importGPXTracks: function(tracks){
@@ -27,11 +27,11 @@ var Io = Class({
     var problems = false;
     if(waypoints.length > 0){
       for(waypoint of waypoints){
-        var latLng = new google.maps.LatLng($(waypoint).attr('lat'), $(waypoint).attr('lon'));
-        if(app.mapEditor.routePoints.indexOf(latLng) > 0){ //this doesn't work because it's not the same object though they may have the same lat/lon need to perform iteration to check
-            console.log("found one");
+        var index = this.waypointSharesTrackpoint(waypoint);
+        if(index == -1){
+          var latLng = new google.maps.LatLng($(waypoint).attr('lat'), $(waypoint).attr('lon'));
+          index = app.mapEditor.insertPointOnEdge(latLng);
         }
-        var index = app.mapEditor.insertPointOnEdge(latLng); //this returns a point
         if(index !== undefined){
           var routePoint = app.mapEditor.routeMarkers[index];
           var opts = app.mapEditor.addWaypoint(routePoint);
@@ -44,6 +44,22 @@ var Io = Class({
     if(problems){
       alert("Importing gpx waypoints into a roadbook is an imperfect science, please double check the route and roadbook and correct any issues which may have occured");
     }
+  },
+
+  /*
+    try to think of a more efficient way to do this
+  */
+  waypointSharesTrackpoint: function(waypoint){
+    var tracks = $.makeArray(this.gpx.find( "trkpt" ));
+    var index = -1;
+    for(i=0;i<tracks.length;i++){
+      if($(tracks[i]).attr('lat') == $(waypoint).attr('lat') && $(tracks[i]).attr('lon') == $(waypoint).attr('lon')){
+        index = i;
+        break;
+      }
+    }
+
+    return index;
   },
 
   printPDF: function(content){
