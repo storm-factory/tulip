@@ -146,10 +146,9 @@ var MapEditor = Class({
       var angles = this.computeHeading(point);
       point.kmFromStart = distances.kmFromStart;
       point.heading = angles.heading;
-
       opts = {
           lat: point.getPosition().lat(),
-          lon: point.getPosition().lng(),
+          lng: point.getPosition().lng(),
           distances: distances,
           angles: angles,
       }
@@ -327,8 +326,6 @@ var MapEditor = Class({
       _this.map.setCenter(pos);
       _this.map.setZoom(14);
     });
-
-    //TODO make the map enter on the latLng of the start of a route if one is loaded
   },
 
   /*
@@ -434,7 +431,9 @@ var MapEditor = Class({
     // Add a listener for the map's click event
     // TODO add a switch on this so it can be turned on and off by the app
     this.map.addListener('click', function(evt){
-      _this.addRoutePoint(evt.latLng)
+      if(app.canEditMap){
+        _this.addRoutePoint(evt.latLng)
+      }
     });
 
     /*

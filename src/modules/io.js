@@ -42,7 +42,7 @@ var Io = Class({
       }
     }
     if(problems){
-      alert("Importing gpx waypoints into a roadbook is an imperfect science, please double check the route and roadbook and correct any issues which may have occured");
+      alert("There were some problems placing all of the waypoints, please double check the route and roadbook and correct any issues which may have occured");
     }
   },
 
@@ -60,18 +60,5 @@ var Io = Class({
     }
 
     return index;
-  },
-
-  printPDF: function(content){
-
-    var pri = $("#ifmcontentstoprint")[0].contentWindow;
-    pri.document.open();
-    // var content = "data:text/html;charset=utf-8," + content.html();
-    // var pri = window.open(content, "print roadbook","status=1,width=500,height=700")
-
-    pri.document.write(content.html());
-    pri.document.close();
-    pri.focus();
-    pri.print();
   },
 });

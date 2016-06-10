@@ -65,7 +65,7 @@ var Roadbook = Class({
     this.name(json.name);
     this.desc(json.desc);
     this.totalDistance(json.totalDistance);
-    this.filePath = fileName 
+    this.filePath = fileName
     var points = json.waypoints;
     var wpts = []
     // NOTE: For some strange reason, due to canvas rendering, a for loop causes points and waypoints to be skipped, hence for...of in
@@ -143,6 +143,9 @@ var Roadbook = Class({
 
   finishWaypointEdit: function(){
     if(this.currentlyEditingWaypoint !== null){
+      console.log(this.currentlyEditingWaypoint.element.position());
+      console.log(this.currentlyEditingWaypoint.element.offset());
+      $('#roadbook').scrollTop(this.currentlyEditingWaypoint.element.position().top - 80)
       this.currentlyEditingWaypoint.tulip.finishEdit();
       this.currentlyEditingWaypoint = null;
       this.currentlyEditingWaypointNoteText('');

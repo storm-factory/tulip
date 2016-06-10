@@ -33,8 +33,6 @@ var Printer = Class({
 
     var pri = $("#ifmcontentstoprint")[0].contentWindow;
     pri.document.open();
-    // var content = "data:text/html;charset=utf-8," + content.html();
-    // var pri = window.open(content, "print roadbook","status=1,width=500,height=700")
 
     pri.document.write(content.html());
     pri.document.close();

@@ -44,6 +44,7 @@ var Waypoint = Class({
       init: function(element){
         _this.initTulip(element, angle, json);
         _this.initWaypointListeners($(element).parents('.waypoint'));
+        _this.element = $(element).parents('.waypoint');
       }
     };
   },
@@ -103,6 +104,7 @@ var Waypoint = Class({
       var latLng = new google.maps.LatLng(_this.lat(), _this.lng());
       app.mapEditor.map.setCenter(latLng);
       app.mapEditor.map.setZoom(16);
+
       $('#roadbook-waypoints').children().hide();
       $(element).show();
       $('#waypoint-palette').show();

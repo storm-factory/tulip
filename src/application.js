@@ -27,6 +27,7 @@ var App = Class({
       declare some state instance variables
     */
     this.glyphPlacementPosition = {top: 30,left: 30};
+    this.canEditMap = true;
     //persistence objects
     this.remote = require('remote');
     this.dialog = this.remote.require('dialog');
@@ -126,7 +127,8 @@ var App = Class({
 
     var _this = this
     $('#draw-route').click(function(){
-      console.log('draw route not implimented');
+      _this.canEditMap = !_this.canEditMap;
+      $(this).toggleClass('alert');
     });
 
     $("#import-gpx").click(function(){
