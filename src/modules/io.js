@@ -4,6 +4,10 @@ var Io = Class({
     var gpxDoc = $.parseXML(gpx);
     this.gpx = $(gpxDoc);
 
+    // need to look for trk objects and only import one.
+    // trailtech files with a million points really eff thigns up
+    // performance validated up to about 5000 points. if we could get 20k out of it that'd be rad
+    // but it seems like the google API is the bottleneck
     this.importGPXTracks($.makeArray(this.gpx.find( "trkpt" )));
     this.importGPXWaypoints($.makeArray(this.gpx.find( "wpt" )));
   },
