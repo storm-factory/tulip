@@ -143,8 +143,6 @@ var Roadbook = Class({
 
   finishWaypointEdit: function(){
     if(this.currentlyEditingWaypoint !== null){
-      console.log(this.currentlyEditingWaypoint.element.position());
-      console.log(this.currentlyEditingWaypoint.element.offset());
       $('#roadbook').scrollTop(this.currentlyEditingWaypoint.element.position().top - 80)
       this.currentlyEditingWaypoint.tulip.finishEdit();
       this.currentlyEditingWaypoint = null;
@@ -168,7 +166,6 @@ var Roadbook = Class({
     } else{
       this.totalDistance(0);
     }
-    console.log(this.totalDistance());
   },
 
   /*

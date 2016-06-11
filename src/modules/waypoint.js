@@ -99,11 +99,11 @@ var Waypoint = Class({
     var _this = this;
     $(element).click(function(e){
       if(_this.roadbook.requestWaypointEdit(_this)){
-        _this.tulip.beginEdit(); //TODO we need to have some sort of event handling, maybe check if it is default track, track, or glyph, and assign the proper editor
+        _this.tulip.beginEdit();
       }
       var latLng = new google.maps.LatLng(_this.lat(), _this.lng());
       app.mapEditor.map.setCenter(latLng);
-      app.mapEditor.map.setZoom(16);
+      app.mapEditor.map.setZoom(18);
 
       $('#roadbook-waypoints').children().hide();
       $(element).show();

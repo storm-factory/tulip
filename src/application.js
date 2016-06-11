@@ -84,11 +84,13 @@ var App = Class({
           _this.roadbook.appendRouteFromJSON(json,fileName); //TODO this needs to only pass json once choice is added
         });
         $('#toggle-roadbook').click();
+        $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
     });
   },
 
   printRoadbook: function(){
     new Printer(this.roadbook.statelessJSON());
+    $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
   },
 
   saveRoadBook: function(){
@@ -140,6 +142,7 @@ var App = Class({
         ]},function (fileNames) {
         var fs = require('fs');
         if (fileNames === undefined) return;
+        $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
         var fileName = fileNames[0];
         _this.fs.readFile(fileName, 'utf-8', function (err, data) {
           _this.io.importGPX(data);
