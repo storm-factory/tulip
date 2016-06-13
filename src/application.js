@@ -265,5 +265,5 @@ $(document).ready(function(){
 */
 function initMap() {
   app.mapEditor = MapEditor.instance();
-  app.mapControls.map = app.mapEditor.map;
+  app.map = app.mapEditor.map;
 }

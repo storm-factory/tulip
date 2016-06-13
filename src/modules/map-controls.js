@@ -7,15 +7,15 @@ var MapControls = Class({
   create: function() {
     this.rotation = 0;
     this.initListeners();
-    // this.map = app.mapEditor.map;
+    // app.map = app.mapEditor.map;
   },
 
   zin: function(){
-    this.map.setZoom(this.map.getZoom() + 1);
+    app.map.setZoom(app.map.getZoom() + 1);
   },
 
   zout: function(){
-    this.map.setZoom(this.map.getZoom() - 1);
+    app.map.setZoom(app.map.getZoom() - 1);
   },
 
   rotate: function(directionModifier){
