@@ -41,6 +41,20 @@ textarea.waypoint-palette{
 #content .content-container {
   height: 100%;
 }
+#loading {
+  display: none;
+  z-index: 9999;
+  position: absolute;
+  top: 40%;
+  left: 40%;
+  background: transparent;
+  -webkit-animation:rotateloader 4s linear infinite;
+}
+
+@-webkit-keyframes rotateloader {
+  to { -webkit-transform: rotate(360deg);}
+}
+
 #map {
   /*
   height: 151%;

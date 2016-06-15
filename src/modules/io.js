@@ -37,7 +37,6 @@ var Io = Class({
 
   importGPXWaypoints: function(waypoints){
     //logic to import into roadbook
-    var problems = false;
     if(waypoints.length > 0){
 
       for(waypoint of waypoints){
@@ -48,13 +47,8 @@ var Io = Class({
         }
         if(index !== undefined){
           this.addWaypoint(index);
-        }else {
-          problems = true;
         }
       }
-    }
-    if(problems){
-      alert("Please double check the route and roadbook and correct any issues which may have occured from importing");
     }
   },
 

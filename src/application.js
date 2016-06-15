@@ -120,6 +120,16 @@ var App = Class({
 
   },
 
+  startLoading: function(){
+    $('#loading').show();
+    google.maps.event.addListener(this.map, 'idle', this.stopLoading);
+  },
+
+  stopLoading: function(){
+    // google.maps.event.clearListeners(this.map, 'idle');
+    $('#loading').hide();
+  },
+
   /*
     ---------------------------------------------------------------------------
     Roadbook Listeners
@@ -142,11 +152,13 @@ var App = Class({
         ]},function (fileNames) {
         var fs = require('fs');
         if (fileNames === undefined) return;
+        _this.startLoading();
         $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
         var fileName = fileNames[0];
         _this.fs.readFile(fileName, 'utf-8', function (err, data) {
           _this.io.importGPX(data);
         });
+        // _this.stopLoading();
       });
     });
 
