@@ -4,7 +4,7 @@
 
   This class is the main IO interface between the user an the application
 
-  Logically the Heirarchy of Application logic is:
+  Logically the Heirarchy of Application structure is:
     -> Application
      Modules:
      -> Mapping
@@ -14,9 +14,10 @@
          -> TrackEditor
 
     The Application handles bootstrapping the user interface and any non Mapping
-    function. The UI is mainly composed to the UI Map which is managed by the
+    function. The UI is mainly composed of the UI Map which is managed by the
     MapEditor object. The Map Editor creates Waypoints based off interaction.
-    Each Waypoint has a Tulip which is edited by the TulipEditor.
+    Each Waypoint has a Tulip which is uses the TrackEditor class to handle the complexity
+    of editing tracks.
   ---------------------------------------------------------------------------
 */
 var App = Class({
@@ -89,7 +90,14 @@ var App = Class({
   },
 
   printRoadbook: function(){
-    new Printer(this.roadbook.statelessJSON());
+    // new Printer(this.roadbook.statelessJSON());
+    var printWindow = window.open("./print.html", "Print Roadbook");
+    // listen for printWindow to send a message that it's ready
+    window.addEventListener('message', function(e) {
+      if(e.data.ready){
+        printWindow.postMessage(app.roadbook.statelessJSON(), "file://")
+      }
+    });
     $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
   },
 

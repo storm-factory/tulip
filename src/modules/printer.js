@@ -1,3 +1,22 @@
+//
+// for this parent window
+// var myWindow = window.open("./print.html", "Print Roadbook");
+// myWindow.postMessage(app.roadbook.statelessJSON(), "file://")
+//
+
+
+//
+// for the created child window
+//window.addEventListener('message', function(e) {
+//   var message = e.data;
+//   console.log(message);
+//   //check message origin and if so populate a templated roadbook
+// });
+//
+// References
+// http://blog.teamtreehouse.com/cross-domain-messaging-with-postmessage
+// http://electron.atom.io/docs/api/web-contents/
+// https://github.com/electron/electron/blob/master/docs/api/window-open.md
 var Printer = Class({
   create: function(roadbookJSON){
 

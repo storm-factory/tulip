@@ -1,0 +1,77 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="assets/css/roadbook-print.css">
+  </head>
+  <body>
+    <div align='center'>
+      <img src='./assets/tulip-logo3.png' height='300'>
+    </div>
+    <div id="roadbook">
+      <hr>
+      <div class="row">
+        <div id="roadbook-total-distance" class="large-4 column">
+          Total Kilometers:
+          <p data-bind="text: printApp.totalDistance"></p>
+        </div>
+        <div id="roadbook-name" class="large-8 column">
+          <p href="#" data-bind="text: printApp.name" data-default="true"></p>
+        </div>
+      </div>
+      <div class="row">
+        <hr>
+        <div id="roadbook-desc" class="large-12 column">
+          <p href="#" data-bind="text: printApp.desc" data-default="true"></p>
+          <hr>
+        </div>
+      </div>
+      <!-- render waypoint templates here -->
+      <div id="roadbook-waypoints" data-bind="template: { name: 'waypoint-template', foreach: printApp.waypoints }"></div>
+    </div>
+    <!--
+      Define templates
+    -->
+    <!--  waypoint template-->
+    <script type="text/html" id="waypoint-template">
+      <div class='waypoint row'>
+        <div class='waypoint-distance'>
+          <div class='total-distance'>
+            <div data-bind="text: totalDistance">
+            </div>
+          </div>
+          <div class="relative-distance">
+            <div data-bind="text: distFromPrev">
+            </div>
+          </div>
+        </div>
+        <div class='waypoint-tulip'>
+          <img data-bind="attr: { src: src}">
+        </div>
+        <div class='waypoint-note'>
+          <!--  render note glyph template-->
+          <div class="glyph-container" data-bind="template: { name: 'note-glyph-template', foreach: noteGlyphs }"></div>
+          <p data-bind="text: noteText"></p>
+          <div class='heading' >
+            <label>CAP </label><span data-bind="text: heading"></span>
+          </div>
+        </div>
+      </div>
+    </script>
+    <!-- note glyph template-->
+    <script type="text/html" id="note-glyph-template">
+      <img data-bind="attr: { src: src}">
+    </script>
+  </body>
+  <script>
+    //Jquery sees it is running in CommonJS env, and wants to be used as such.
+    window.$ = window.jQuery = require('./assets/libs/jquery-2.1.4.min.js');
+  </script>
+  <!--
+    Load the rest of our libraries
+  -->
+  <script src="assets/libs/jsclass/dist/browser/js.class.min.js"></script>
+  <script src="assets/libs/knockout-3.4.0.js"></script>
+  <!--
+    Load the printApplication
+  -->
+  <script src='src/modules/printing/print-application.js'></script>
+</html>
