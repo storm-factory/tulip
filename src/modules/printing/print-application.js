@@ -4,7 +4,11 @@
 
   This class is the main IO interface between the user an the printing application
 
-
+  References:
+  http://blog.teamtreehouse.com/cross-domain-messaging-with-postmessage
+  http://electron.atom.io/docs/api/web-contents/
+  http://electron.atom.io/docs/api/web-contents/#webcontentsprinttopdfoptions-callback
+  https://github.com/electron/electron/blob/master/docs/api/window-open.md
   ---------------------------------------------------------------------------
 */
 var PrintApp = Class({

@@ -35,23 +35,23 @@
       <div class='waypoint row'>
         <div class='waypoint-distance'>
           <div class='total-distance'>
-            <div data-bind="text: totalDistance">
+            <div data-bind="text: kmFromStart.toFixed(2)">
             </div>
           </div>
           <div class="relative-distance">
-            <div data-bind="text: distFromPrev">
+            <div data-bind="text: kmFromPrev.toFixed(2)">
             </div>
           </div>
         </div>
         <div class='waypoint-tulip'>
-          <img data-bind="attr: { src: src}">
+          <img data-bind="attr: { src: tulip}">
         </div>
         <div class='waypoint-note'>
           <!--  render note glyph template-->
-          <div class="glyph-container" data-bind="template: { name: 'note-glyph-template', foreach: noteGlyphs }"></div>
-          <p data-bind="text: noteText"></p>
+          <div class="glyph-container" data-bind="template: { name: 'note-glyph-template', foreach: notes.glyphs }"></div>
+          <p data-bind="text: notes.text"></p>
           <div class='heading' >
-            <label>CAP </label><span data-bind="text: heading"></span>
+            <label>CAP </label><span data-bind="text: Array(Math.max(3 - String(Math.round(heading)).length + 1, 0)).join(0) + Math.round(heading) + '\xB0'"></span>
           </div>
         </div>
       </div>
