@@ -31,6 +31,16 @@ var PrintApp = Class({
     this.totalDistance(json.totalDistance);
     this.waypoints(json.waypoints);
     ko.applyBindings(this);
+    $('#roadbook').find('#roadbook-desc').after($('<div>').attr('class', 'break'));
+    var waypoints = $('#roadbook').find('.waypoint');
+    for(i=0;i<waypoints.length;i++){
+      if((((i+1)%4) == 0) && (i > 0)){
+        $(waypoints[i]).after($('<div>').attr('class', 'break'));
+      }
+    }
+    $(document).ready(function(){
+      window.print();
+    });
   }
 });
 
@@ -41,5 +51,4 @@ var PrintApp = Class({
 */
 $(document).ready(function(){
   printApp = PrintApp.instance();
-  // ko.applyBindings(printApp);
 });
