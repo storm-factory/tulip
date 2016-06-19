@@ -41,12 +41,16 @@ var Tulip = Class({
   initEntry: function(point, path){
     this.entryTrackOrigin = point;
     this.entryTrack = path;
+    this.entryTrack.hasBorders = false;
+    this.entryTrack.hasControls = false;
     this.entryTrackOrigin.track = this.entryTrack;
     this.entryTrack.origin = this.entryTrackOrigin;
   },
 
   initExit: function(point, path){
     this.exitTrack = path;
+    this.exitTrack.hasBorders = false;
+    this.exitTrack.hasControls = false;
     this.exitTrackEnd = point;
     this.exitTrackEnd.track = this.exitTrack
     this.exitTrack.end = this.exitTrackEnd;
@@ -55,9 +59,10 @@ var Tulip = Class({
   initTracks: function(trackArray){
     this.tracks = trackArray;
     for(i=0;i<this.tracks.length;i++){
-      trackArray[i].hasControls = false;
-      trackArray[i].lockMovementX = true;
-      trackArray[i].lockMovementY = true;
+      this.tracks[i].hasControls = false;
+      this.tracks[i].lockMovementX = true;
+      this.tracks[i].lockMovementY = true;
+      this.tracks[i].hasBorders = false;
     }
   },
 

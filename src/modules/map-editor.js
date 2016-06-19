@@ -503,20 +503,16 @@ var MapEditor = Class({
 
   updateRoute: function() {
     // TODO this guy is a little broken maybe, the last previous distance isn't being updated
-    console.log(this.routeMarkers.length);
     var previous;
     for(i = 0; i < this.routeMarkers.length; i++) {
-      console.log('index:' + i);
       var marker = this.routeMarkers[i];
       // var previous;
       if(marker.waypoint) {
-        console.log('index: ' + i + ' is wpt');
         var distances = this.computeDistanceFromStart(marker);
         var angles = this.computeHeading(marker);
         if(previous) {
           $.extend(distances,this.computeDistanceBetweenPoints(previous,marker));
         } else {
-          console.log('no prev:' + i);
           $.extend(distances,{kmFromPrev: 0});
         }
         previous = marker;
