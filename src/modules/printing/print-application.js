@@ -19,10 +19,12 @@ var PrintApp = Class({
     this.desc = ko.observable('');
     this.totalDistance = ko.observable('');
     this.waypoints = ko.observableArray([]);
-    window.addEventListener('message', function(e) {
-      _this.parseJson(e.data);
+
+    this.ipc = require('electron').ipcRenderer;
+    this.ipc.on('print-data', function(event, arg){
+      _this.parseJson(arg);
     });
-    window.opener.postMessage({ready: true});
+    this.ipc.send('print-launched', true);
   },
 
   parseJson: function(json){
@@ -30,7 +32,7 @@ var PrintApp = Class({
     this.desc(json.desc);
     this.totalDistance(json.totalDistance);
     this.waypoints(json.waypoints);
-    ko.applyBindings(this);
+    this.filePath = json.filePath;
     $('#roadbook').find('#roadbook-desc').after($('<div>').attr('class', 'break'));
     var waypoints = $('#roadbook').find('.waypoint');
     for(i=0;i<waypoints.length;i++){
@@ -38,10 +40,13 @@ var PrintApp = Class({
         $(waypoints[i]).after($('<div>').attr('class', 'break'));
       }
     }
-    $(document).ready(function(){
-      window.print();
-    });
-  }
+  },
+
+  requestPdfPrint: function(pagesize){
+    var data = {'filepath': this.filePath, 'pagesize': pagesize};
+    console.log(data);
+    this.ipc.send('print-pdf', data);
+  },
 });
 
 /*
@@ -49,6 +54,8 @@ var PrintApp = Class({
   Instantiate the application
   ---------------------------------------------------------------------------
 */
+var printApp;
 $(document).ready(function(){
   printApp = PrintApp.instance();
+  ko.applyBindings(printApp);
 });

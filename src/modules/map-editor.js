@@ -154,8 +154,6 @@ var MapEditor = Class({
       }
       //update the waypoint's icon
       point.setIcon(this.waypointIcon());
-      //recompute distances between waypoints
-      this.updateRoute();
       // return point distance options so a roadbook waypoint can be initialized
       return opts;
   },
@@ -191,6 +189,8 @@ var MapEditor = Class({
     //If the start waypoint is deleted assign it to the next point in the route
     if(point.mapVertexIndex == 0 && (this.routeMarkers.length > 2)){
       this.addWaypoint(this.routeMarkers[1]);
+      //recompute distances between waypoints
+      this.updateRoute();
     }
 
     //update the point's icon and remove its waypoint object
@@ -369,6 +369,8 @@ var MapEditor = Class({
         _this.deleteWaypoint(this);
       } else {
         this.waypoint = app.roadbook.addWaypoint(_this.addWaypoint(this));
+        //recompute distances between waypoints
+        _this.updateRoute();
       }
       app.roadbook.updateTotalDistance();
     });
@@ -501,19 +503,24 @@ var MapEditor = Class({
 
   updateRoute: function() {
     // TODO this guy is a little broken maybe, the last previous distance isn't being updated
+    console.log(this.routeMarkers.length);
+    var previous;
     for(i = 0; i < this.routeMarkers.length; i++) {
+      console.log('index:' + i);
       var marker = this.routeMarkers[i];
-      var previous;
+      // var previous;
       if(marker.waypoint) {
+        console.log('index: ' + i + ' is wpt');
         var distances = this.computeDistanceFromStart(marker);
         var angles = this.computeHeading(marker);
         if(previous) {
           $.extend(distances,this.computeDistanceBetweenPoints(previous,marker));
         } else {
+          console.log('no prev:' + i);
           $.extend(distances,{kmFromPrev: 0});
         }
-        marker.waypoint.updateWaypoint(distances, angles.heading,{lat: marker.getPosition().lat(), lng: marker.getPosition().lng()} );
         previous = marker;
+        marker.waypoint.updateWaypoint(distances, angles.heading,{lat: marker.getPosition().lat(), lng: marker.getPosition().lng()} );
       }
     }
   },

@@ -18,7 +18,6 @@ var Waypoint = Class({
     }
   */
   create: function(roadbook, wptJson){
-
     this.kmFromStart  = ko.observable(wptJson.distances.kmFromStart);
     this.kmFromPrev   = ko.observable(wptJson.distances.kmFromPrev);
     this.exactHeading = ko.observable(wptJson.angles.heading);

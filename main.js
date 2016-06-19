@@ -7,6 +7,7 @@ require('crash-reporter').start();
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 var mainWindow = null;
+var printWindow = null;
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function() {
@@ -32,5 +33,26 @@ app.on('ready', function() {
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     mainWindow = null;
+    printWindow = null;
+  });
+});
+
+const ipcMain = require('electron').ipcMain;
+
+ipcMain.on('ignite-print', (event, arg) => {
+  printWindow = new BrowserWindow({width: 700, height: 800, 'min-height': 700, 'alwaysOnTop': true, 'resizable': false});
+  printWindow.loadURL('file://' + __dirname + '/print.html');
+  var data = arg;
+  printWindow.on('closed', () => {
+    printWindow = null
+  })
+  //listens for the browser window to say it's ready to print
+  ipcMain.on('print-launched', (event, arg) => {
+    event.sender.send('print-data', data);
+  });
+
+  ipcMain.on('print-pdf', (event, arg) => {
+    console.log(arg);
+    // printWindow.webContents.printToPDF(arg);
   });
 });

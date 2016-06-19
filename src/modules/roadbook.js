@@ -80,6 +80,7 @@ var Roadbook = Class({
         routePoint.waypoint =  this.addWaypoint(opts);
       }
     }
+    app.mapEditor.updateRoute();
     var latLng = new google.maps.LatLng(points[0].lat, points[0].long);
     app.mapEditor.map.setCenter(latLng);
   },
@@ -212,6 +213,7 @@ var Roadbook = Class({
       name: this.name(),
       desc: this.desc(),
       totalDistance: this.totalDistance(),
+      filePath: this.filePath,
       waypoints: [],
     }
     points = app.mapEditor.routeMarkers

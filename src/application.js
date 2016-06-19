@@ -51,6 +51,10 @@ var App = Class({
       file io
     */
     this.fs = require('fs');
+    /*
+      IPC to Main process
+    */
+    this.ipcRenderer = require('electron').ipcRenderer; //TODO try require('ipcRenderer')
   },
 
   /*
@@ -89,16 +93,18 @@ var App = Class({
     });
   },
 
-  printRoadbook: function(){
+  printRoadbook: function(callback){
     // new Printer(this.roadbook.statelessJSON());
-    var printWindow = window.open("./print.html", "Print Roadbook");
-    // listen for printWindow to send a message that it's ready
-    window.addEventListener('message', function(e) {
-      if(e.data.ready){
-        printWindow.postMessage(app.roadbook.statelessJSON(), "file://")
-      }
-    });
-    $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
+    // var printWindow = window.open("./print.html", "Print Roadbook");
+    // // listen for printWindow to send a message that it's ready
+    // window.addEventListener('message', function(e) {
+    //   if(e.data.ready){
+    //     printWindow.postMessage(app.roadbook.statelessJSON(), "file://")
+    //   }
+    // });
+
+    this.ipcRenderer.send('ignite-print',app.roadbook.statelessJSON());
+    callback();
   },
 
   saveRoadBook: function(){
@@ -189,7 +195,9 @@ var App = Class({
     });
 
     $('#print-roadbook').click(function(){
-      _this.printRoadbook();
+      _this.printRoadbook(function(){
+        $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
+      });
     });
 
     $('#save-roadbook').click(function(){
