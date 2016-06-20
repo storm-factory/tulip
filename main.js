@@ -1,3 +1,6 @@
+const ipcMain = require('electron').ipcMain;
+const fs = require('fs');
+
 var app = require('app');  // Module to control application life.
 var BrowserWindow = require('browser-window');  // Module to create native browser window.
 
@@ -37,10 +40,8 @@ app.on('ready', function() {
   });
 });
 
-const ipcMain = require('electron').ipcMain;
-
 ipcMain.on('ignite-print', (event, arg) => {
-  printWindow = new BrowserWindow({width: 700, height: 800, 'min-height': 700, 'alwaysOnTop': true, 'resizable': false});
+  printWindow = new BrowserWindow({width: 650, height: 700, 'min-height': 700, 'alwaysOnTop': true, 'resizable': false});
   printWindow.loadURL('file://' + __dirname + '/print.html');
   var data = arg;
   printWindow.on('closed', () => {
@@ -50,9 +51,17 @@ ipcMain.on('ignite-print', (event, arg) => {
   ipcMain.on('print-launched', (event, arg) => {
     event.sender.send('print-data', data);
   });
-
+  // NOTE this is about as robust as a wet paper bag and fails just as gracefully
   ipcMain.on('print-pdf', (event, arg) => {
     console.log(arg);
-    // printWindow.webContents.printToPDF(arg);
+    var filename = arg.filepath.replace('tlp', 'pdf')
+    printWindow.webContents.printToPDF({pageSize: arg.pageSize}, (error, data) => {
+      if (error) throw error;
+      fs.writeFile(filename, data, (error) => {
+        if (error)
+          throw error;
+        console.log('Write PDF successfully.');
+      });
+    });
   });
 });

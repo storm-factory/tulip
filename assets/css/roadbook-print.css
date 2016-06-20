@@ -2,7 +2,12 @@
   font-family:bellybeans;
   src:url(../fonts/bellybeans.ttf);
 }
-
+/*
+  for native printing expirementation
+*/
+html {
+  width:600px;
+}
 body {
     background: #fff;
     font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
@@ -40,7 +45,7 @@ body {
 }
 
 .break{
- margin-top: 50px;
+ margin-top: 100px;
  display: block;
  clear: both;
  page-break-after: always;
@@ -49,8 +54,10 @@ body {
   height: 75px;
 }
 .glyph-container img {
-  height: 75px;
-  width: 75px;
+  /*height: 75px;
+  width: 75px;*/
+  height: 53px;
+  width: 53px;
 }
 .heading {
   font-family: Tahoma, Geneva, sans-serif;
@@ -93,11 +100,13 @@ body {
 }
 
 .waypoint-distance {
-  width: 230px;
+  /*width: 230px;*/
+  width: 195px;
 }
 
 .waypoint-note {
-  width: 225px;
+  /*width: 225px;*/
+  width: 160px;
   padding: 3px;
 }
 

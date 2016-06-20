@@ -63,12 +63,12 @@ var Tulip = Class({
       this.tracks[i].lockMovementX = true;
       this.tracks[i].lockMovementY = true;
       this.tracks[i].hasBorders = false;
+      this.tracks[i].selectable = false;
     }
   },
 
   /*
     Adds a track to tulip from UI interaction
-    NOTE if two tracks in a row are added and have overlapping handles the lower handle won't be able to be moved
   */
   addTrack: function(angle) {
 
@@ -79,11 +79,17 @@ var Tulip = Class({
                                               hasControls: false,
                                               lockMovementX: true,
                                               lockMovementY: true,
-                                              hasBorders: false
+                                              hasBorders: false,
+                                              selectable:false,
                                             });
     this.tracks.push(track);
     this.canvas.add(track);
     this.activeEditors.push(new TulipEditor(this.canvas, track, true, true, false));
+    //NOTE this solves the problem of having overlapping handles if a control is clicked twice or things get too close to one another.
+    //     an alternate solution that may solve any performance issues this might cause is to loop through the active editors and bring all the
+    //     hangles to the front.
+    this.finishEdit();
+    this.beginEdit();
   },
 
   addGlyph: function(position,uri){
@@ -213,15 +219,6 @@ var Tulip = Class({
     }
   },
 
-  finishEdit: function() {
-    for(i = 0; i < this.activeEditors.length; i++) {
-      this.activeEditors[i].destroy();
-    }
-    this.activeEditors = [];
-    // remove controls from glyphs and update the canvas' visual state
-    this.canvas.deactivateAll().renderAll();
-  },
-
   /*
     Creates an SVG string form the assumption that we are originating at the point (90,90) and vectoring out from there at a given angle
     the angles is provided from the mapping module.
@@ -248,6 +245,15 @@ var Tulip = Class({
                         + ' C '+ set3[0][0] +', '+ set3[0][1] +', '+ set3[1][0] +', '+ set3[1][1] +', '+ set3[2][0] +', '+ set3[2][1]
 
     return trackString;
+  },
+
+  finishEdit: function() {
+    for(i = 0; i < this.activeEditors.length; i++) {
+      this.activeEditors[i].destroy();
+    }
+    this.activeEditors = [];
+    // remove controls from glyphs and update the canvas' visual state
+    this.canvas.deactivateAll().renderAll();
   },
 
   removeLastGlyph: function(){
