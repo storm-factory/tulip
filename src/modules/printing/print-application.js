@@ -36,7 +36,7 @@ var PrintApp = Class({
     $('#roadbook').find('#roadbook-desc').after($('<div>').attr('class', 'break'));
     var waypoints = $('#roadbook').find('.waypoint');
     for(i=0;i<waypoints.length;i++){
-      if((((i+1)%4) == 0) && (i > 0)){
+      if((((i+1)%5) == 0) && (i > 0)){
         $(waypoints[i]).after($('<div>').attr('class', 'break'));
       }
     }
@@ -44,7 +44,6 @@ var PrintApp = Class({
 
   requestPdfPrint: function(pagesize){
     var data = {'filepath': this.filePath, 'pagesize': pagesize};
-    console.log(data);
     this.ipc.send('print-pdf', data);
   },
 });
@@ -58,4 +57,12 @@ var printApp;
 $(document).ready(function(){
   printApp = PrintApp.instance();
   ko.applyBindings(printApp);
+
+  $(window).scroll(function() {
+    if( $(this).scrollTop() > 0 ) {
+      $(".main-nav").addClass("main-nav-scrolled");
+    } else {
+      $(".main-nav").removeClass("main-nav-scrolled");
+    }
+  });
 });

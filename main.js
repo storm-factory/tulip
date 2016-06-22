@@ -41,7 +41,7 @@ app.on('ready', function() {
 });
 
 ipcMain.on('ignite-print', (event, arg) => {
-  printWindow = new BrowserWindow({width: 650, height: 700, 'min-height': 700, 'alwaysOnTop': true, 'resizable': false});
+  printWindow = new BrowserWindow({width: 650, height: 700, 'min-height': 700, 'resizable': false});
   printWindow.loadURL('file://' + __dirname + '/print.html');
   var data = arg;
   printWindow.on('closed', () => {

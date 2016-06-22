@@ -6,7 +6,8 @@
   for native printing expirementation
 */
 html {
-  width:600px;
+  width:616px;
+  margin:auto;
 }
 body {
     background: #fff;
@@ -18,25 +19,27 @@ body {
   padding-bottom: 1.2rem;
   height: 100%;
 }
-#roadbook-name {border-left: 1px solid #000; min-height: 90px;}
 
-#roadbook-name,
+#roadbook-name {
+  font-size: 35px;
+  text-align: left;
+  width: 349px !important;
+  font-family: bellybeans !important;
+  border-left: 1px solid #000; min-height: 90px;
+}
 #roadbook-desc {
-  text-align: right;
+  font-size: 15px;
+  text-align: left;
+  padding: 0;
 }
-#roadbook-total-distance{max-height: 90px;  width: 125px !important}
-#roadbook-name input,
-#roadbook-desc textarea{
-  display:none;
-}
-#roadbook-name {font-size: 35px; text-align: left; width: 349px !important; font-family: bellybeans !important;}
-#roadbook-desc {font-size: 15px; text-align: left;}
 
 #roadbook-name,
 #roadbook-desc {
   color: #000;
   font-family: Tahoma, Geneva, sans-serif;
 }
+
+#roadbook-total-distance{max-height: 90px;  width: 125px !important}
 #roadbook-total-distance p{
   font-family: "Lucida Console", Monaco, monospace;
   color: #000;
@@ -51,11 +54,9 @@ body {
  page-break-after: always;
 }
 .glyph-container {
-  height: 75px;
+  height: 53px;
 }
 .glyph-container img {
-  /*height: 75px;
-  width: 75px;*/
   height: 53px;
   width: 53px;
 }
@@ -68,6 +69,7 @@ body {
   display: inline;
   font-size: 0.875rem;
 }
+
 .relative-distance {
   height: 28px;
   color: #000;
@@ -91,28 +93,30 @@ body {
 }
 
 .waypoint {
-  width:600px;
+  width: 596px !important; /* works for letter */
   border: 2px solid #000;
-  height:200px;
+  height:190px;
   margin-left: 0 !important;
   margin-right: 0 !important;
   margin-top: 2px !important;
 }
 
+/* works for letter */
 .waypoint-distance {
   /*width: 230px;*/
-  width: 195px;
+  width: 193px;
 }
 
+/* works for letter */
 .waypoint-note {
-  /*width: 225px;*/
-  width: 160px;
-  padding: 3px;
+  width: 193px;
+  padding-left: 4px;
+  padding-right: 4px;
 }
 
 .waypoint-note p {
   width: 100%;
-  height: 80px;
+  height: 95px;
   margin: 0;
   overflow: hidden;
   font-size: 1.2rem;
@@ -120,19 +124,38 @@ body {
   line-height: 1;
 }
 
+/* works for letter */
 .waypoint-tulip {
-  width:200px;
+  width:190px;
   border-left: 1px solid #000;
   border-right: 1px solid #000;
-  padding-left: 10px !important;
-  padding-right: 10px !important;
 }
 
 .waypoint-distance,
 .waypoint-note,
 .waypoint-tulip {
-  height: 200px;
+  height: 190px;
   float: left
+}
+/*
+  Sticky nav
+*/
+.main-nav {
+  background: #fff;
+    height: 80px;
+    z-index: 150;
+    margin-bottom: 20px;
+    padding-top: 5px;
+    box-shadow: 0 2px 3px rgba(0,0,0,.4);
+    width: 650px;
+    margin-left: -25px;
+}
+
+.main-nav-scrolled {
+  padding-top: 5px;
+  position: fixed;
+  width: 100%;
+  top: 0;
 }
 /*
   neccessary foundation stuff
