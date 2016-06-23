@@ -29,9 +29,8 @@ var App = Class({
     */
     this.glyphPlacementPosition = {top: 30,left: 30};
     this.canEditMap = true;
-    //persistence objects
-    this.remote = require('remote');
-    this.dialog = this.remote.require('dialog');
+    //Dialogs for file IO
+    this.dialog = require('electron').remote.dialog;
     /*
       instantiate the roadbook
     */
@@ -94,15 +93,7 @@ var App = Class({
   },
 
   printRoadbook: function(callback){
-    // new Printer(this.roadbook.statelessJSON());
-    // var printWindow = window.open("./print.html", "Print Roadbook");
-    // // listen for printWindow to send a message that it's ready
-    // window.addEventListener('message', function(e) {
-    //   if(e.data.ready){
-    //     printWindow.postMessage(app.roadbook.statelessJSON(), "file://")
-    //   }
-    // });
-
+    // TODO don't let this happen until the roadbook has a filename!!!
     this.ipcRenderer.send('ignite-print',app.roadbook.statelessJSON());
     callback();
   },

@@ -24,6 +24,9 @@ var PrintApp = Class({
     this.ipc.on('print-data', function(event, arg){
       _this.parseJson(arg);
     });
+
+    this.pageSizes = ko.observableArray([{text: "Letter", value: "Letter"}, {text: 'A5', value: 'A5'}, {text: 'Roll', value: '{height:'+ ($(window).height()*265)+',width: '+($(window).width()*265)+'}'}]);
+    this.pageSize = ko.observable();
     this.ipc.send('print-launched', true);
   },
 
@@ -33,8 +36,17 @@ var PrintApp = Class({
     this.totalDistance(json.totalDistance);
     this.waypoints(json.waypoints);
     this.filePath = json.filePath;
+    /*
+      if letter use break after first page, then break every 5
+      if A5 use break after first page then break every 4 and maybe adjust height
+      if roll don't break
+
+      then hide nav
+    */
+    // Default to Letter Format
     $('#roadbook').find('#roadbook-desc').after($('<div>').attr('class', 'break'));
     var waypoints = $('#roadbook').find('.waypoint');
+    // Default to Letter Format
     for(i=0;i<waypoints.length;i++){
       if((((i+1)%5) == 0) && (i > 0)){
         $(waypoints[i]).after($('<div>').attr('class', 'break'));
@@ -42,8 +54,8 @@ var PrintApp = Class({
     }
   },
 
-  requestPdfPrint: function(pagesize){
-    var data = {'filepath': this.filePath, 'pagesize': pagesize};
+  requestPdfPrint: function(opts){
+    var data = {'filepath': this.filePath, 'opts': opts};
     this.ipc.send('print-pdf', data);
   },
 });

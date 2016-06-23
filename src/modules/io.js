@@ -13,6 +13,7 @@ var Io = Class({
     if(app.mapEditor.routeMarkers[(app.mapEditor.routeMarkers.length - 1)].waypoint == null){
       this.addWaypoint(app.mapEditor.routeMarkers.length - 1);
     }
+    app.mapEditor.updateRoute();
     app.roadbook.updateTotalDistance();
   },
 

@@ -4,14 +4,20 @@
   </head>
   <body>
     <nav class="main-nav">
-      <select id="print-size">
-        <option value="letter">Letter</option>
-        <option value="A5">A5</option>
-        <option value="roll">Roll</option>
-      </select>
-      <a href="#">
-        Print
-      </a>
+      <div class="row">
+        <div class="large-3 columns">
+          <select id="print-size" data-bind="options: pageSizes ,optionsText: 'text', optionsValue: 'value', value: pageSize">
+          </select>
+        </div>
+        <div class="large-3 columns logo">
+          Tulip
+        </div>
+        <div class="large-3 columns">
+          <a href="#" class="button small radius">
+            Save PDF
+          </a>
+        </div>
+      </div>
     </nav>
     <div align='center'>
       <img src='./assets/tulip-logo3.png' height='300'>

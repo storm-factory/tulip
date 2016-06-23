@@ -19,7 +19,7 @@ var MapControls = Class({
   },
 
   rotate: function(directionModifier){
-    rotation += 5*directionModifier;
+    this.rotation += 5*directionModifier;
     $('#map').css({'-webkit-transform' : 'rotate('+ this.rotation +'deg)'});
   },
 

@@ -1,11 +1,11 @@
 const ipcMain = require('electron').ipcMain;
 const fs = require('fs');
 
-var app = require('app');  // Module to control application life.
-var BrowserWindow = require('browser-window');  // Module to create native browser window.
-
-// Report crashes to our server.
-require('crash-reporter').start();
+const electron = require('electron');
+// Module to control application life.
+const {app} = electron;
+// Module to create native browser window.
+const {BrowserWindow} = electron;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -40,6 +40,27 @@ app.on('ready', function() {
   });
 });
 
+// Quit when all windows are closed.
+app.on('window-all-closed', () => {
+  // On macOS it is common for applications and their menu bar
+  // to stay active until the user quits explicitly with Cmd + Q
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
+});
+
+app.on('activate', () => {
+  // On macOS it's common to re-create a window in the app when the
+  // dock icon is clicked and there are no other windows open.
+  if (mainWindow === null) {
+    createWindow();
+  }
+});
+
+/*
+  the below should go in their own folders and be required
+*/
+
 ipcMain.on('ignite-print', (event, arg) => {
   printWindow = new BrowserWindow({width: 650, height: 700, 'min-height': 700, 'resizable': false});
   printWindow.loadURL('file://' + __dirname + '/print.html');
@@ -54,8 +75,9 @@ ipcMain.on('ignite-print', (event, arg) => {
   // NOTE this is about as robust as a wet paper bag and fails just as gracefully
   ipcMain.on('print-pdf', (event, arg) => {
     console.log(arg);
+    console.log(arg.opts);
     var filename = arg.filepath.replace('tlp', 'pdf')
-    printWindow.webContents.printToPDF({pageSize: arg.pageSize}, (error, data) => {
+    printWindow.webContents.printToPDF(arg.opts, (error, data) => {
       if (error) throw error;
       fs.writeFile(filename, data, (error) => {
         if (error)
