@@ -76,13 +76,18 @@ ipcMain.on('ignite-print', (event, arg) => {
   ipcMain.on('print-pdf', (event, arg) => {
     console.log(arg);
     console.log(arg.opts);
-    var filename = arg.filepath.replace('tlp', 'pdf')
+    var size = arg.opts.pageSize;
+    if(arg.opts.pageSize != 'Letter' && arg.opts.pageSize != 'A5'){
+      size = 'Roll'
+    }
+    var filename = arg.filepath.replace('.tlp', size + '.pdf')
     printWindow.webContents.printToPDF(arg.opts, (error, data) => {
       if (error) throw error;
       fs.writeFile(filename, data, (error) => {
         if (error)
           throw error;
         console.log('Write PDF successfully.');
+        printWindow.close();
       });
     });
   });

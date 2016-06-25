@@ -25,7 +25,7 @@ var PrintApp = Class({
       _this.parseJson(arg);
     });
 
-    this.pageSizes = ko.observableArray([{text: "Letter", value: "Letter"}, {text: 'A5', value: 'A5'}, {text: 'Roll', value: '{height:'+ ($(window).height()*265)+',width: '+($(window).width()*265)+'}'}]);
+    this.pageSizes = ko.observableArray([{text: "Letter", value: "Letter"}, {text: 'A5', value: 'A5'}, {text: 'Roll', value: 'Roll'}]);
     this.pageSize = ko.observable();
     this.ipc.send('print-launched', true);
   },
@@ -36,14 +36,32 @@ var PrintApp = Class({
     this.totalDistance(json.totalDistance);
     this.waypoints(json.waypoints);
     this.filePath = json.filePath;
-    /*
-      if letter use break after first page, then break every 5
-      if A5 use break after first page then break every 4 and maybe adjust height
-      if roll don't break
 
-      then hide nav
-    */
     // Default to Letter Format
+    this.addPageBreaks()
+  },
+
+  requestPdfPrint: function(){
+    $('nav').hide();
+    var size = this.pageSize();
+    if(size == "Roll"){
+      size = {height: $(document).height()*265, width: $(document).width()*265};
+    }
+    var data = {'filepath': this.filePath, 'opts': {'pageSize': size}};
+    this.ipc.send('print-pdf', data);
+  },
+
+  rerenderForPageSize: function(){
+    var pageSize = this.pageSize();
+    if((pageSize == "Letter" || pageSize == "A5")){
+      this.addPageBreaks();
+      //TODO adjust height for A5
+    } else {
+      $('.break').remove();
+    }
+  },
+
+  addPageBreaks(){
     $('#roadbook').find('#roadbook-desc').after($('<div>').attr('class', 'break'));
     var waypoints = $('#roadbook').find('.waypoint');
     // Default to Letter Format
@@ -52,11 +70,6 @@ var PrintApp = Class({
         $(waypoints[i]).after($('<div>').attr('class', 'break'));
       }
     }
-  },
-
-  requestPdfPrint: function(opts){
-    var data = {'filepath': this.filePath, 'opts': opts};
-    this.ipc.send('print-pdf', data);
   },
 });
 
@@ -76,5 +89,12 @@ $(document).ready(function(){
     } else {
       $(".main-nav").removeClass("main-nav-scrolled");
     }
+  });
+
+  $('#print-size').change(function(){
+    printApp.rerenderForPageSize();
+  });
+  $('.button').click(function(){
+    printApp.requestPdfPrint();
   });
 });
