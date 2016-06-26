@@ -97,7 +97,6 @@ body {
   height:190px;
   margin-left: 0 !important;
   margin-right: 0 !important;
-  margin-top: 2px !important;
 }
 
 /* works for letter */
@@ -136,6 +135,24 @@ body {
   height: 190px;
   float: left
 }
+/*
+  A5 sizing
+*/
+.waypoint.A5,
+.waypoint-distance.A5,
+.waypoint-tulip.A5,
+.waypoint-note.A5 {
+  height: 175px;
+}
+.waypoint-note.A5 p {
+  height: 88px;
+  font-size: 1.1rem;
+}
+
+.waypoint-distance.A5 .relative-distance {
+  margin-top: 35px;
+}
+
 /*
   Sticky nav
 */

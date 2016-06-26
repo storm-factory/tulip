@@ -53,15 +53,24 @@ var PrintApp = Class({
 
   rerenderForPageSize: function(){
     var pageSize = this.pageSize();
+    $('.waypoint, .waypoint-note, .waypoint-distance, .waypoint-tulip').removeClass('A5');
+    $('.break').remove();
     if((pageSize == "Letter" || pageSize == "A5")){
       this.addPageBreaks();
       //TODO adjust height for A5
-    } else {
-      $('.break').remove();
+      /*
+        .waypoint height -> 180px
+        .waypoint-distance height -> 180px
+        .waypoint-note p height -> 93px
+      */
+      if(pageSize == "A5"){
+        $('.waypoint, .waypoint-note, .waypoint-distance, .waypoint-tulip').addClass('A5');
+      }
     }
   },
 
   addPageBreaks(){
+    if( $('.break').length > 0) { return };
     $('#roadbook').find('#roadbook-desc').after($('<div>').attr('class', 'break'));
     var waypoints = $('#roadbook').find('.waypoint');
     // Default to Letter Format
