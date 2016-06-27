@@ -1,7 +1,7 @@
 /*
   Creates a tulip canvas object from either UI interaction or the loading of a saved file
 */
-
+// TODO create method which returns a path initialization json object based on an input of type, this will set the strokeDashArray and strokeWidth
 fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
 
 var Tulip = Class({
@@ -73,14 +73,20 @@ var Tulip = Class({
   addTrack: function(angle) {
 
     var track = new fabric.Path(this.buildTrackPathString(angle),
-                                              { fill: '',
+                                            {
+                                              fill: '',
                                               stroke: '#000',
                                               strokeWidth: 5,
+                                              strokeDashArray: [],
                                               hasControls: false,
                                               lockMovementX: true,
                                               lockMovementY: true,
                                               hasBorders: false,
                                               selectable:false,
+                                              // for HP
+                                              // strokeDashArray: [10, 5],
+                                              //for big track
+                                              // strokeWidth: 8,
                                             });
     this.tracks.push(track);
     this.canvas.add(track);

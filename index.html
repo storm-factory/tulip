@@ -50,7 +50,7 @@
           <li><a href="#" class="main-menu button tiny radius disabled"><i class="fi-upload"></i> Export GPX</a></li>
           <li><a href="#" class="main-menu button tiny radius disabled"><i class="fi-upload"></i> Export Waypoints</a></li>
           <hr>
-          <li><a href="#" id="print-roadbook" class="main-menu button tiny radius info"><i class="fi-print"></i> Print</a></li>
+          <li><a href="#" id="print-roadbook" class="main-menu button tiny radius info disabled"><i class="fi-print"></i> Export PDF</a></li>
         </ul>
     </aside>
     <!--  END ADVANCED MENU -->
@@ -97,7 +97,7 @@
             <div id="roadbook-waypoints" data-bind="template: { name: 'waypoint-template', foreach: app.roadbook.waypoints }"></div>
             <!--  palette for editing waypoint content -->
             <div id="waypoint-palette">
-              <h3>Waypoint palette <a class="right">&#215;</a></h3>
+              <h3>Palette <a class="right">&#215;</a></h3>
               <div id="waypoint-tulip-controls" class="content active">
                 <div class="row">
                   <div class="large-4 column selection-label">

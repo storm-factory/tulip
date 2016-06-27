@@ -89,6 +89,7 @@ var App = Class({
         });
         $('#toggle-roadbook').click();
         $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
+        $('#print-roadbook').removeClass('disabled')
     });
   },
 
@@ -118,11 +119,11 @@ var App = Class({
           tulipFile.filePath = fileName;
           tulipFile = JSON.stringify(tulipFile, null, 2);
           _this.fs.writeFile(fileName, tulipFile, function (err) {});
+          $('#print-roadbook').removeClass('disabled')
       });
     } else {
       this.fs.writeFile(tulipFile.filePath, JSON.stringify(tulipFile, null, 2), function (err) {});
     }
-
   },
 
   startLoading: function(){
@@ -186,9 +187,13 @@ var App = Class({
     });
 
     $('#print-roadbook').click(function(){
-      _this.printRoadbook(function(){
-        $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
-      });
+      if($(this).hasClass('disabled')){
+        alert('You must save your roadbook before you can export it as a PDF');
+      } else {
+        _this.printRoadbook(function(){
+          $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
+        });
+      }
     });
 
     $('#save-roadbook').click(function(){

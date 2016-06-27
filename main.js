@@ -60,35 +60,35 @@ app.on('activate', () => {
 /*
   the below should go in their own folders and be required
 */
-
+var data;
 ipcMain.on('ignite-print', (event, arg) => {
   printWindow = new BrowserWindow({width: 650, height: 700, 'min-height': 700, 'resizable': false});
   printWindow.loadURL('file://' + __dirname + '/print.html');
-  var data = arg;
+  data = arg;
   printWindow.on('closed', () => {
     printWindow = null
   })
-  //listens for the browser window to say it's ready to print
-  ipcMain.on('print-launched', (event, arg) => {
-    event.sender.send('print-data', data);
-  });
-  // NOTE this is about as robust as a wet paper bag and fails just as gracefully
-  ipcMain.on('print-pdf', (event, arg) => {
-    console.log(arg);
-    console.log(arg.opts);
-    var size = arg.opts.pageSize;
-    if(arg.opts.pageSize != 'Letter' && arg.opts.pageSize != 'A5'){
-      size = 'Roll'
-    }
-    var filename = arg.filepath.replace('.tlp', size + '.pdf')
-    printWindow.webContents.printToPDF(arg.opts, (error, data) => {
-      if (error) throw error;
-      fs.writeFile(filename, data, (error) => {
-        if (error)
-          throw error;
-        console.log('Write PDF successfully.');
-        printWindow.close();
-      });
+
+});
+
+//listens for the browser window to say it's ready to print
+ipcMain.on('print-launched', (event, arg) => {
+  event.sender.send('print-data', data);
+});
+
+// NOTE this is about as robust as a wet paper bag and fails just as gracefully
+ipcMain.on('print-pdf', (event, arg) => {
+  var size = arg.opts.pageSize;
+  if(arg.opts.pageSize != 'Letter' && arg.opts.pageSize != 'A5'){
+    size = 'Roll'
+  }
+  var filename = arg.filepath.replace('.tlp', size + '.pdf')
+  printWindow.webContents.printToPDF(arg.opts, (error, data) => {
+    if (error) throw error;
+    fs.writeFile(filename, data, (error) => {
+      if (error)
+        throw error;
+      printWindow.close();
     });
   });
 });

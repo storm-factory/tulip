@@ -57,12 +57,7 @@ var PrintApp = Class({
     $('.break').remove();
     if((pageSize == "Letter" || pageSize == "A5")){
       this.addPageBreaks();
-      //TODO adjust height for A5
-      /*
-        .waypoint height -> 180px
-        .waypoint-distance height -> 180px
-        .waypoint-note p height -> 93px
-      */
+      //adjust height for A5
       if(pageSize == "A5"){
         $('.waypoint, .waypoint-note, .waypoint-distance, .waypoint-tulip').addClass('A5');
       }
