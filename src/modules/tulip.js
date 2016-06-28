@@ -13,7 +13,10 @@ var Tulip = Class({
     this.tracks = [];
     this.glyphs = [];
     this.activeEditors = [];
+    this.trackTypes = {};
+    this.addedTrackType = 'track';
 
+    this.initTrackTypes();
     this.initTulip(angle,json);
   },
 
@@ -27,14 +30,13 @@ var Tulip = Class({
 
   /*
     Creates a tulip either from passed in json from a file load or from a angle provided by UI wpt creation
-    TODO test this doesn't break under UI wpt creation
   */
-  initTulip: function(angle,json){
+  initTulip: function(angle,json,type='track'){
     if(json !== undefined && angle == 0){ //the map point has been created from serialized json
       this.buildFromJson(json);
     } else if(angle !== undefined){
-      this.buildEntry();
-      this.buildExit(angle);
+      this.buildEntry(type);
+      this.buildExit(angle,type);
     }
   },
 
@@ -67,27 +69,47 @@ var Tulip = Class({
     }
   },
 
+  initTrackTypes: function(){
+
+    this.trackTypes.offPiste = {
+                                    fill: '',
+                                    stroke: '#000',
+                                    strokeWidth: 5,
+                                    strokeDashArray: [10, 5],
+                                    hasControls: false,
+                                    lockMovementX: true,
+                                    lockMovementY: true,
+                                    hasBorders: false,
+                                    selectable:false,
+                                  };
+    this.trackTypes.track = {
+                                    fill: '',
+                                    stroke: '#000',
+                                    strokeWidth: 5,
+                                    hasControls: false,
+                                    lockMovementX: true,
+                                    lockMovementY: true,
+                                    hasBorders: false,
+                                    selectable:false,
+                                  };
+    this.trackTypes.road = {
+                                    fill: '',
+                                    stroke: '#000',
+                                    strokeWidth: 8,
+                                    hasControls: false,
+                                    lockMovementX: true,
+                                    lockMovementY: true,
+                                    hasBorders: false,
+                                    selectable:false,
+                                  };
+  },
+
   /*
     Adds a track to tulip from UI interaction
   */
   addTrack: function(angle) {
 
-    var track = new fabric.Path(this.buildTrackPathString(angle),
-                                            {
-                                              fill: '',
-                                              stroke: '#000',
-                                              strokeWidth: 5,
-                                              strokeDashArray: [],
-                                              hasControls: false,
-                                              lockMovementX: true,
-                                              lockMovementY: true,
-                                              hasBorders: false,
-                                              selectable:false,
-                                              // for HP
-                                              // strokeDashArray: [10, 5],
-                                              //for big track
-                                              // strokeWidth: 8,
-                                            });
+    var track = new fabric.Path(this.buildTrackPathString(angle),this.trackTypes[this.addedTrackType]);
     this.tracks.push(track);
     this.canvas.add(track);
     this.activeEditors.push(new TulipEditor(this.canvas, track, true, true, false));
@@ -154,17 +176,9 @@ var Tulip = Class({
     }
   },
 
-  buildEntry: function() {
+  buildEntry: function(type='track') {
 
-    var entry = new fabric.Path('M 90 171 C 90, 165, 90, 159, 90, 150 C 90, 141, 90, 129, 90, 120 C 90, 111, 90, 99, 90, 90',
-                                              { fill: '',
-                                                stroke: '#000',
-                                                strokeWidth: 5,
-                                                hasControls: false,
-                                                lockMovementX: true,
-                                                lockMovementY: true,
-                                                hasBorders: false
-                                              });
+    var entry = new fabric.Path('M 90 171 C 90, 165, 90, 159, 90, 150 C 90, 141, 90, 129, 90, 120 C 90, 111, 90, 99, 90, 90',this.trackTypes['track']);
     var point = new fabric.Circle({
       left: entry.path[0][1],
       top: entry.path[0][2],
@@ -183,16 +197,8 @@ var Tulip = Class({
     this.canvas.add(this.entryTrackOrigin)
   },
 
-  buildExit: function(angle){
-    var exit = new fabric.Path(this.buildTrackPathString(angle),
-                                              { fill: '',
-                                              stroke: '#000',
-                                              strokeWidth: 5,
-                                              hasControls: false,
-                                              lockMovementX: true,
-                                              lockMovementY: true,
-                                              hasBorders: false
-                                            });
+  buildExit: function(angle,type='track'){
+    var exit = new fabric.Path(this.buildTrackPathString(angle),this.trackTypes['track']);
     var point = new fabric.Triangle({
       left: exit.path[3][5],
       top: exit.path[3][6],
@@ -251,6 +257,20 @@ var Tulip = Class({
                         + ' C '+ set3[0][0] +', '+ set3[0][1] +', '+ set3[1][0] +', '+ set3[1][1] +', '+ set3[2][0] +', '+ set3[2][1]
 
     return trackString;
+  },
+
+  changeAddedTrackType(type){
+    this.addedTrackType = type
+  },
+
+  changeEntryTrackType(type){
+    this.entryTrack.setOptions(this.trackTypes[type])
+    this.canvas.renderAll();
+  },
+
+  changeExitTrackType(type){
+    this.exitTrack.setOptions(this.trackTypes[type])
+    this.canvas.renderAll();
   },
 
   finishEdit: function() {

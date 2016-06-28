@@ -3,10 +3,7 @@ var Roadbook = Class({
     /*
       declare some state instance variables
     */
-    // TODO refactor this to be more waypoint centric
-    this.currentlyEditingCanvas = false; //TODO depricate this
-    this.currentlyEditingTulip = null; //TODO depricate this
-    this.currentlyEditingWaypoint = null; //TODO make this the hingepoint
+    this.currentlyEditingWaypoint = null;
 
     this.editingNameDesc = false;
     this.newWaypoints = false;
