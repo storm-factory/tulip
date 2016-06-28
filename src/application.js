@@ -223,7 +223,7 @@ var App = Class({
       _this.roadbook.editingNameDesc = true;
     });
 
-    $('#waypoint-palette h3 a').click(function(){
+    $('#hide-pallette').click(function(){
       $('.waypoint.row').show();
       $('#waypoint-palette').hide();
       _this.roadbook.finishWaypointEdit();

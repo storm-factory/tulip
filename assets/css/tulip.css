@@ -54,6 +54,9 @@ textarea.waypoint-palette{
 @-webkit-keyframes rotateloader {
   to { -webkit-transform: rotate(360deg);}
 }
+#hide-pallette {
+      margin-bottom: 0;
+}
 
 #map {
   /*
@@ -120,15 +123,19 @@ textarea.waypoint-palette{
   text-shadow: -3px 3px 2px rgba(0,0,0, 1);
   font-family: bellybeans;
 }
-#roadbook-total-distance p{
+#roadbook-total-distance p {
   font-family: "Lucida Console", Monaco, monospace;
   color: #000;
   text-align: center;
   font-size: 35px;
 }
 
-#roadbook-waypoints{
+#roadbook-waypoints {
   padding-bottom: 20px;
+}
+
+#track-selection {
+  padding: 0.40rem .55rem 0.40rem .55rem !important;
 }
 
 #track-glyphs li img,
@@ -154,7 +161,7 @@ textarea.waypoint-palette{
   padding: 10px 0;
 }
 
-#waypoint-palette h3{
+#waypoint-palette h3 {
   background: #787878;
   padding: 5px;
 }
@@ -242,9 +249,11 @@ textarea.waypoint-palette{
   transition:all 1s;
 }
 
-.row label {
+.heading label {
   height: 5px !important;
 }
+
+
 
 .track-selection, .glyph-selection {min-height: 130px;}
 .glyph-selection.note-selection {min-height: 40px;margin-bottom: 5px;}
