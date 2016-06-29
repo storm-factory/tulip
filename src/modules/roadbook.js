@@ -114,7 +114,7 @@ var Roadbook = Class({
     waypoint.changeExitTrackType(type);
     var waypointIndex = this.waypoints().indexOf(waypoint)
     //if it's the first waypoint we can't change the previous waypoint exit
-    if((waypointIndex < this.waypoints().length) && (waypointIndex != 0) ){
+    if((waypointIndex+1 < this.waypoints().length) && (waypointIndex != 0) ){
       this.waypoints()[waypointIndex+1].changeEntryTrackType(type);
     }
   },
