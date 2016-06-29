@@ -90,11 +90,22 @@ var App = Class({
         $('#toggle-roadbook').click();
         $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
         $('#print-roadbook').removeClass('disabled')
+        $('#export-gpx').removeClass('disabled')
     });
   },
 
+  exportGPX: function(callback){
+    var gpx = this.io.exportGPX();
+    var filename = this.roadbook.filePath.replace('tlp','gpx');
+    this.fs.writeFile(filename, gpx, function (err) {});
+    callback();
+  },
+
+  importGPX: function(callback){
+    console.log("import gpx function hasn't been written yet");
+  },
+
   printRoadbook: function(callback){
-    // TODO don't let this happen until the roadbook has a filename!!!
     this.ipcRenderer.send('ignite-print',app.roadbook.statelessJSON());
     callback();
   },
@@ -120,6 +131,7 @@ var App = Class({
           tulipFile = JSON.stringify(tulipFile, null, 2);
           _this.fs.writeFile(fileName, tulipFile, function (err) {});
           $('#print-roadbook').removeClass('disabled')
+          $('#export-gpx').removeClass('disabled')
       });
     } else {
       this.fs.writeFile(tulipFile.filePath, JSON.stringify(tulipFile, null, 2), function (err) {});
@@ -132,7 +144,6 @@ var App = Class({
   },
 
   stopLoading: function(){
-    // google.maps.event.clearListeners(this.map, 'idle');
     $('#loading').hide();
   },
 
@@ -164,7 +175,6 @@ var App = Class({
         _this.fs.readFile(fileName, 'utf-8', function (err, data) {
           _this.io.importGPX(data);
         });
-        // _this.stopLoading();
       });
     });
 
@@ -175,6 +185,16 @@ var App = Class({
       $('#toggle-roadbook i').toggleClass('fi-arrow-down');
       $('#toggle-roadbook i').toggleClass('fi-arrow-up');
       $(this).blur();
+    });
+
+    $('#export-gpx').click(function(){
+      if($(this).hasClass('disabled')){
+        alert('You must save your roadbook before you can export GPX tracks');
+      } else {
+        _this.exportGPX(function(){
+          $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
+        });
+      }
     });
 
     $('#new-roadbook').click(function(){

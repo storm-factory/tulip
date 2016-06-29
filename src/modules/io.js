@@ -23,6 +23,30 @@ var Io = Class({
     routePoint.waypoint =  app.roadbook.addWaypoint(opts);
   },
 
+  exportGPX: function(){
+    var gpxString = "<?xml version='1.0' encoding='UTF-8'?>";
+    gpxString += "<gpx xmlns='http://www.topografix.com/GPX/1/1' version='1.1' creator='Tulip' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd http://www.topografix.com/GPX/gpx_style/0/2 http://www.topografix.com/GPX/gpx_style/0/2/gpx_style.xsd http://www.topografix.com/GPX/gpx_overlay/0/3 http://www.topografix.com/GPX/gpx_overlay/0/3/gpx_overlay.xsd http://www.topografix.com/GPX/gpx_modified/0/1 http://www.topografix.com/GPX/gpx_modified/0/1/gpx_modified.xsd http://www.topografix.com/GPX/Private/TopoGrafix/0/4 http://www.topografix.com/GPX/Private/TopoGrafix/0/4/topografix.xsd'>";
+    var waypoints = "";
+    var trackPoints = "<trk><trkseg>";
+    var points = app.mapEditor.routeMarkers;
+    var wptCount = 0;
+    for(i=0;i<points.length;i++){
+      if(points[i].waypoint !== undefined){
+        var waypoint = "<wpt lat='" + points[i].getPosition().lat() + "' lon='" + points[i].getPosition().lng() + "'><name>" + wptCount + "</name></wpt>";
+        waypoints += waypoint;
+        wptCount++;
+      }
+      var trackPoint = "<trkpt lat='" + points[i].getPosition().lat() + "' lon='" + points[i].getPosition().lng() + "'></trkpt>"
+      trackPoints += trackPoint;
+    }
+    trackPoints += "</trkseg></trk>";
+    gpxString += waypoints;
+    gpxString += trackPoints;
+    gpxString += "</gpx>";
+
+    return gpxString;
+  },
+
   importGPXTracks: function(tracks){
     if(tracks.length > 0){
       var tracks = this.processGpxTracksForImport(tracks);
