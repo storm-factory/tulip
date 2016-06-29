@@ -209,55 +209,58 @@
   <!--
     Track Modal
   -->
-  <div id="track-selection-modal" class="reveal-modal glyph-modal" data-reveal aria-hidden="true" role="dialog">
-    <h3>Track Options <a class="close-reveal-modal" aria-label="Close">&#215;</a></h3>
+  <div id="track-selection-modal" class="reveal-modal" data-reveal aria-hidden="true" role="dialog">
+    <h3>
+      <span data-tooltip aria-haspopup="true" class="has-tip" title="Use the grid below to select the type of tracks added to the tulip, the track type the rider will enter the tulip on, and the track type the rider will exit the tulip on">
+        Track Options
+      </span>
+      <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+    </h3>
     <hr>
     <div class="row">
-      <div class="large-4 columns">
-        <h4>Track entering:</h4>
-        <div class="switch radius">
-          <input id="off-piste-entry" type="radio" name="entryTrackGroup">
-          <label for="off-piste-entry"></label> Off piste
-        </div>
-        <div class="switch radius">
-          <input id="track-entry" type="radio" name="entryTrackGroup" checked="true">
-          <label for="track-entry"></label> Track
-        </div>
-        <div class="switch radius">
-          <input id="road-entry" type="radio" name="entryTrackGroup">
-          <label for="road-entry"></label> Road
-        </div>
+      <div class="large-3 columns">
+        <br>
+        <h4>Off piste</h4>
+        <br>
+        <h4>Track</h4>
+        <br>
+        <h4>Road</h4>
       </div>
-      <div class="large-4 columns">
-        <h4>Track exiting:</h4>
-
-        <div class="switch radius">
-          <input id="off-piste-exiting" type="radio" name="exitingTrackGroup">
-          <label for="off-piste-exiting"></label> Off piste
-        </div>
-        <div class="switch radius">
-          <input id="track-exiting" type="radio" name="exitingTrackGroup" checked="true">
-          <label for="track-exiting"></label> Track
-        </div>
-        <div class="switch radius">
-          <input id="road-exiting" type="radio" name="exitingTrackGroup">
-          <label for="road-exiting"></label> Road
-        </div>
+      <div class="large-3 columns">
+        <h4>Enter on:</h4>
+          <a href="#" class="button tiny radius secondary track-selector" id="off-piste-entry">
+            <img src="assets/off-piste-entry.png">
+          </a>
+          <a href="#" class="button tiny radius secondary track-selector" id="track-entry">
+            <img src="assets/track-entry.png">
+          </a>
+          <a href="#" class="button tiny radius secondary track-selector" id="road-entry">
+            <img src="assets/road-entry.png">
+          </a>
       </div>
-      <div class="large-4 columns">
-        <h4>Add tracks as:</h4>
-        <div class="switch radius">
-          <input id="off-piste-added" type="radio" name="addedTrackGroup">
-          <label for="off-piste-added"></label> Off piste
-        </div>
-        <div class="switch radius">
-          <input id="track-added" type="radio" name="addedTrackGroup" checked="true">
-          <label for="track-added"></label> Track
-        </div>
-        <div class="switch radius">
-          <input id="road-added" type="radio" name="addedTrackGroup">
-          <label for="road-added"></label> Road
-        </div>
+      <div class="large-3 columns">
+        <h4>Exit on:</h4>
+          <a href="#" class="button tiny radius secondary track-selector" id="off-piste-exit">
+            <img src="assets/off-piste-exit.png">
+          </a>
+          <a href="#" class="button tiny radius secondary track-selector" id="track-exit">
+            <img src="assets/track-exit.png">
+          </a>
+          <a href="#" class="button tiny radius secondary track-selector" id="road-exit">
+            <img src="assets/road-exit.png">
+          </a>
+      </div>
+      <div class="large-3 columns">
+        <h4>Add as:</h4>
+          <a href="#" class="button tiny radius secondary track-selector" id="off-piste-added">
+            <img src="assets/off-piste-added.png">
+          </a>
+          <a href="#" class="button tiny radius secondary track-selector" id="track-added">
+            <img src="assets/track-added.png">
+          </a>
+          <a href="#" class="button tiny radius secondary track-selector" id="road-added">
+            <img src="assets/road-added.png">
+          </a>
       </div>
     </div>
   </div>
@@ -472,7 +475,6 @@
   <script src='src/modules/tulip.js'></script>
   <script src='src/modules/roadbook.js'></script>
   <script src='src/modules/waypoint.js'></script>
-  <script src='src/modules/printer.js'></script>
   <script src='src/modules/io.js'></script>
   <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBC3SLdbHfZGQKP3A_NRdAUewVFP9fwnYw&callback=initMap">

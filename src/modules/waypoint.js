@@ -28,6 +28,9 @@ var Waypoint = Class({
     this.totalDistance  = ko.computed(this.computedTotalDistance, this);
     this.heading        = ko.computed(this.computedHeading, this);
 
+    this.entryTrackType = wptJson.entryTrackType == undefined ? 'track' : wptJson.entryTrackType;
+    this.exitTrackType = wptJson.exitTrackType == undefined ? 'track' : wptJson.exitTrackType;
+
     // waypoints don't get any note info when they are added via UI so intialize them to blank
     var text = wptJson.notes == undefined ? '' : wptJson.notes.text;
     var glyphs = wptJson.notes == undefined ? [] : wptJson.notes.glyphs;
@@ -38,10 +41,11 @@ var Waypoint = Class({
 
     var _this = this;
     var angle = wptJson.angles.relativeAngle;
-    var json = wptJson.tulipJson
+    var json = wptJson.tulipJson;
+    var trackTypes = {entryTrackType: this.entryTrackType, exitTrackType: this.exitTrackType};
     ko.bindingHandlers.waypointCanvasRendered = {
       init: function(element){
-        _this.initTulip(element, angle, json);
+        _this.initTulip(element, angle, trackTypes, json);
         _this.initWaypointListeners($(element).parents('.waypoint'));
         _this.element = $(element).parents('.waypoint');
       }
@@ -54,12 +58,26 @@ var Waypoint = Class({
     }
   },
 
+  changeAddedTrackType(type){
+    this.tulip.changeAddedTrackType(type)
+  },
+
+  changeEntryTrackType(type){
+    this.entryTrackType = type;
+    this.tulip.changeEntryTrackType(type)
+  },
+
+  changeExitTrackType(type){
+    this.exitTrackType = type;
+    this.tulip.changeExitTrackType(type)
+  },
+
   removeLastNoteGlyph: function(){
     this.noteGlyphs.pop();
   },
 
-  initTulip: function(element, angle, json){
-    this.tulip = new Tulip(element, angle, json);
+  initTulip: function(element, angle, trackTypes, json){
+    this.tulip = new Tulip(element, angle, trackTypes, json);
   },
 
   updateWaypoint: function (distances, heading, latLng){

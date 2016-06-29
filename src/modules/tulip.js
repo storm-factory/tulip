@@ -6,7 +6,7 @@ fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
 
 var Tulip = Class({
 
-  create: function(el, angle, json){
+  create: function(el, angle, trackTypes, json){
     this.canvas = new fabric.Canvas(el);
     this.canvas.selection = false;
 
@@ -17,7 +17,7 @@ var Tulip = Class({
     this.addedTrackType = 'track';
 
     this.initTrackTypes();
-    this.initTulip(angle,json);
+    this.initTulip(angle, trackTypes, json);
   },
 
   clear: function(){
@@ -31,12 +31,12 @@ var Tulip = Class({
   /*
     Creates a tulip either from passed in json from a file load or from a angle provided by UI wpt creation
   */
-  initTulip: function(angle,json,type='track'){
+  initTulip: function(angle, trackTypes,json){
     if(json !== undefined && angle == 0){ //the map point has been created from serialized json
       this.buildFromJson(json);
-    } else if(angle !== undefined){
-      this.buildEntry(type);
-      this.buildExit(angle,type);
+    } else if(angle !== undefined && trackTypes !== undefined){
+      this.buildEntry(trackTypes.entryTrackType);
+      this.buildExit(angle,trackTypes.exitTrackType);
     }
   },
 
@@ -86,6 +86,7 @@ var Tulip = Class({
                                     fill: '',
                                     stroke: '#000',
                                     strokeWidth: 5,
+                                    strokeDashArray: [],
                                     hasControls: false,
                                     lockMovementX: true,
                                     lockMovementY: true,
@@ -96,6 +97,7 @@ var Tulip = Class({
                                     fill: '',
                                     stroke: '#000',
                                     strokeWidth: 8,
+                                    strokeDashArray: [],
                                     hasControls: false,
                                     lockMovementX: true,
                                     lockMovementY: true,
@@ -178,12 +180,12 @@ var Tulip = Class({
 
   buildEntry: function(type='track') {
 
-    var entry = new fabric.Path('M 90 171 C 90, 165, 90, 159, 90, 150 C 90, 141, 90, 129, 90, 120 C 90, 111, 90, 99, 90, 90',this.trackTypes['track']);
+    var entry = new fabric.Path('M 90 171 C 90, 165, 90, 159, 90, 150 C 90, 141, 90, 129, 90, 120 C 90, 111, 90, 99, 90, 90',this.trackTypes[type]);
     var point = new fabric.Circle({
       left: entry.path[0][1],
       top: entry.path[0][2],
       strokeWidth: 1,
-      radius: 5,
+      radius: 7,
       fill: '#000',
       stroke: '#666',
       hasControls: false,
@@ -198,13 +200,13 @@ var Tulip = Class({
   },
 
   buildExit: function(angle,type='track'){
-    var exit = new fabric.Path(this.buildTrackPathString(angle),this.trackTypes['track']);
+    var exit = new fabric.Path(this.buildTrackPathString(angle),this.trackTypes[type]);
     var point = new fabric.Triangle({
       left: exit.path[3][5],
       top: exit.path[3][6],
       strokeWidth: 1,
-      height: 12,
-      width: 12,
+      height: 15,
+      width: 15,
       fill: '#000',
       stroke: '#666',
       angle: angle,

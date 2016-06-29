@@ -270,6 +270,30 @@ var App = Class({
       }
       $('#glyphs').foundation('reveal', 'close');
     });
+
+    $('.track-selector').click(function() {
+      if('off-piste-added' == $(this).attr('id')){
+        _this.roadbook.changeEditingWaypointAdded('offPiste')
+      }else if('track-added' == $(this).attr('id')){
+        _this.roadbook.changeEditingWaypointAdded('track')
+      }else if('road-added' == $(this).attr('id')){
+        _this.roadbook.changeEditingWaypointAdded('road')
+      }else if('off-piste-entry' == $(this).attr('id')){
+        _this.roadbook.changeEditingWaypointEntry('offPiste')
+      }else if('track-entry' == $(this).attr('id')){
+        _this.roadbook.changeEditingWaypointEntry('track')
+      }else if('road-entry' == $(this).attr('id')){
+        _this.roadbook.changeEditingWaypointEntry('road')
+      }else if('off-piste-exit' == $(this).attr('id')){
+        _this.roadbook.changeEditingWaypointExit('offPiste')
+      }else if('track-exit' == $(this).attr('id')){
+        _this.roadbook.changeEditingWaypointExit('track')
+      }else if('road-exit' == $(this).attr('id')){
+        _this.roadbook.changeEditingWaypointExit('road')
+      }
+      $('#track-selection-modal').foundation('reveal', 'close');
+    });
+
   },
 });
 /*

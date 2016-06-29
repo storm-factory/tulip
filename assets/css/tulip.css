@@ -2,6 +2,9 @@
   font-family:bellybeans;
   src:url(../fonts/bellybeans.ttf);
 }
+a.track-selector {
+  height: 40px !important;
+}
 h2 {
   font-family: bellybeans;
   font-size: 1.5rem !important;

@@ -63,7 +63,7 @@ var TulipEditor = Class({
         left: left,
         top: top,
         strokeWidth: 1,
-        radius: 5,
+        radius: 7,
         fill: this.handleColor,
         stroke: '#787878'
       });
@@ -98,8 +98,8 @@ var TulipEditor = Class({
         left: left,
         top: top,
         strokeWidth: 1,
-        height: 12,
-        width: 12,
+        height: 15,
+        width: 15,
         fill: this.handleColor,
         stroke: '#787878'
       });

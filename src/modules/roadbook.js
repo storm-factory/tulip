@@ -46,6 +46,16 @@ var Roadbook = Class({
 
     //determine index of waypoint based on distance from start
     var index = this.determineWaypointInsertionIndex(wptData.distances.kmFromStart);
+    /*
+      if a waypoint is inserted in between two waypoints,
+       check the exit track of the one before it
+       and set this one's exit and entry to have the same track type
+    */
+    if(this.waypoints().length > 1) {
+      wptData.entryTrackType = this.waypoints()[index-1].exitTrackType;
+      wptData.exitTrackType = wptData.entryTrackType;
+    }
+    //create the waypoint
     var waypoint = new Waypoint(this, wptData);
 
     this.waypoints.splice(index,0,waypoint);
@@ -80,6 +90,33 @@ var Roadbook = Class({
     app.mapEditor.updateRoute();
     var latLng = new google.maps.LatLng(points[0].lat, points[0].long);
     app.mapEditor.map.setCenter(latLng);
+  },
+
+  changeEditingWaypointAdded: function(type){
+    console.log('added: ' + type);
+    this.currentlyEditingWaypoint.changeAddedTrackType(type);
+  },
+
+  changeEditingWaypointEntry: function(type){
+    console.log('entry: ' + type);
+    var waypoint = this.currentlyEditingWaypoint;
+    waypoint.changeEntryTrackType(type);
+    var waypointIndex = this.waypoints().indexOf(waypoint)
+    //if it's the first waypoint we can't change the previous waypoint exit
+    if(waypointIndex > 0){
+      this.waypoints()[waypointIndex-1].changeExitTrackType(type);
+    }
+  },
+
+  changeEditingWaypointExit: function(type){
+    console.log('exit: ' + type);
+    var waypoint = this.currentlyEditingWaypoint;
+    waypoint.changeExitTrackType(type);
+    var waypointIndex = this.waypoints().indexOf(waypoint)
+    //if it's the first waypoint we can't change the previous waypoint exit
+    if((waypointIndex < this.waypoints().length) && (waypointIndex != 0) ){
+      this.waypoints()[waypointIndex+1].changeEntryTrackType(type);
+    }
   },
 
   deleteWaypoint: function(wptId){
@@ -191,6 +228,8 @@ var Roadbook = Class({
           kmFromStart: points[i].waypoint ? points[i].waypoint.kmFromStart() : null,
           kmFromPrev: points[i].waypoint ? points[i].waypoint.kmFromPrev() : null,
           heading: points[i].waypoint ? points[i].waypoint.exactHeading() : null,
+          entryTrackType: points[i].waypoint ? points[i].waypoint.entryTrackType : null,
+          exitTrackType: points[i].waypoint ? points[i].waypoint.exitTrackType : null,
           notes: {
             text: points[i].waypoint ? points[i].waypoint.noteText() : null,
             glyphs: points[i].waypoint ? points[i].waypoint.noteGlyphs() : null,
