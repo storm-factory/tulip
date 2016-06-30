@@ -44,14 +44,26 @@ var MapControls = Class({
 
     $('#clockwise').click(function(){
       _this.rotate(1);
+      if(app.canEditMap){
+        $('#draw-route').click();
+        $('#draw-route').fadeTo('slow', 0.25).fadeTo('slow', 1.0);
+      }
     });
 
     $('#reorient').click(function(){
       _this.reorient();
+      _this.rotation = 0;
+      if(!app.canEditMap){
+        $('#draw-route').click();
+      }
     });
 
     $('#anti-clockwise').click(function(){
       _this.rotate(-1);
+      if(app.canEditMap){
+        $('#draw-route').click();
+        $('#draw-route').fadeTo('slow', 0.5).fadeTo('slow', 1.0);
+      }
     });
   },
 });

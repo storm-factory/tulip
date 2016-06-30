@@ -1,7 +1,6 @@
 /*
   Creates a tulip canvas object from either UI interaction or the loading of a saved file
 */
-// TODO create method which returns a path initialization json object based on an input of type, this will set the strokeDashArray and strokeWidth
 fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
 
 var Tulip = Class({
@@ -222,9 +221,6 @@ var Tulip = Class({
   },
 
 
-  /*
-    TODO have different handlers for default paths (entry and exit) and ad hoc created objects and glyphs
-  */
   beginEdit: function(event) {
     this.activeEditors.push(new TulipEditor(this.canvas, this.entryTrack,true, false, true));
     this.activeEditors.push(new TulipEditor(this.canvas, this.exitTrack,false, true, true));

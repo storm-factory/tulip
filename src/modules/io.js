@@ -91,14 +91,12 @@ var Io = Class({
   processGpxTracksForImport: function(tracks){
     this.tracks = this.parseGpxTracksToArray(tracks);
     var simplify = new Simplify();
-    this.tracks = simplify.simplifyDouglasPeucker(this.tracks, 0.000000007); //TODO make import accuracy user configurable
+    this.tracks = simplify.simplifyDouglasPeucker(this.tracks, 0.000000007);
     return this.tracks;
   },
 
   /*
     try to think of a more efficient way to do this
-
-    TODO we only care if it's close to a trackpoint, not shares it so if it doesn't share, see if it's within like 10 meters or something
   */
   waypointSharesTrackpoint: function(waypoint){
     var tracks = this.tracks;

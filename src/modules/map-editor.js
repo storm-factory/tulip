@@ -379,7 +379,7 @@ var MapEditor = Class({
       Dragging the point updates the latLng vertex position on the route Polyline
     */
     google.maps.event.addListener(point, 'drag', function(evt) {
-      _this.routePoints.setAt(this.mapVertexIndex, evt.latLng);
+        _this.routePoints.setAt(this.mapVertexIndex, evt.latLng);
     });
 
     google.maps.event.addListener(point, 'dragend', function(evt) {
@@ -419,7 +419,6 @@ var MapEditor = Class({
       var x2 = points[i].lat();
       var y2 = points[i].lng();
       // does the event point fit in the bounds of the two reference points
-      //TODO consider using bounds object and contains
       if(((x1 <= x0 && x0 <= x2) || (x1 >= x0 && x0 >= x2)) && ((y1 <= y0 && y0 <= y2) || (y1 >= y0 && y0 >= y2))) {
           idx = i;
           this.addRoutePoint(latLng, i);
@@ -432,7 +431,6 @@ var MapEditor = Class({
   initRouteListeners: function() {
     var _this = this;
     // Add a listener for the map's click event
-    // TODO add a switch on this so it can be turned on and off by the app
     this.map.addListener('click', function(evt){
       if(app.canEditMap){
         _this.addRoutePoint(evt.latLng)
@@ -444,7 +442,7 @@ var MapEditor = Class({
     */
     google.maps.event.addListener(this.route, 'mouseover', function(evt){
       /*
-        If we aren't over a point display a handle to add a new route point
+        If we aren't over a point display a handle to add a new route point if the map is editable
       */
       if(_this.displayEdge){
         var dragging = false;
@@ -457,7 +455,7 @@ var MapEditor = Class({
                                 zIndex: -1,
                               });
         google.maps.event.addListener(_this.route, 'mousemove', function(evt){
-          if(_this.displayEdge){
+          if(_this.displayEdge && app.canEditMap){
             handle.setPosition(evt.latLng);
           } else {
             handle.setMap(null);
@@ -502,7 +500,6 @@ var MapEditor = Class({
   },
 
   updateRoute: function() {
-    // TODO this guy is a little broken maybe, the last previous distance isn't being updated
     var previous;
     for(i = 0; i < this.routeMarkers.length; i++) {
       var marker = this.routeMarkers[i];

@@ -101,8 +101,20 @@ var App = Class({
     callback();
   },
 
-  importGPX: function(callback){
-    console.log("import gpx function hasn't been written yet");
+  importGPX: function(){
+    var _this = this;
+    this.dialog.showOpenDialog({ filters: [
+       { name: 'import gpx', extensions: ['gpx'] }
+      ]},function (fileNames) {
+      var fs = require('fs');
+      if (fileNames === undefined) return;
+      _this.startLoading();
+      $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
+      var fileName = fileNames[0];
+      _this.fs.readFile(fileName, 'utf-8', function (err, data) {
+        _this.io.importGPX(data);
+      });
+    });
   },
 
   printRoadbook: function(callback){
@@ -157,25 +169,20 @@ var App = Class({
     var _this = this
     $('#draw-route').click(function(){
       _this.canEditMap = !_this.canEditMap;
-      $(this).toggleClass('alert');
+      $(this).toggleClass('disabled');
+      $(this).toggleClass('secondary');
+      var markers = _this.mapEditor.routeMarkers;
+      for(i=0;i<markers.length;i++){
+        if(_this.canEditMap){
+          markers[i].setDraggable(true);
+        } else {
+          markers[i].setDraggable(false);
+        }
+      }
     });
 
     $("#import-gpx").click(function(){
-      /*
-        TODO move to own function in app
-      */
-      _this.dialog.showOpenDialog({ filters: [
-         { name: 'import gpx', extensions: ['gpx'] }
-        ]},function (fileNames) {
-        var fs = require('fs');
-        if (fileNames === undefined) return;
-        _this.startLoading();
-        $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
-        var fileName = fileNames[0];
-        _this.fs.readFile(fileName, 'utf-8', function (err, data) {
-          _this.io.importGPX(data);
-        });
-      });
+      _this.importGPX();
     });
 
     $('#toggle-roadbook').click(function(){

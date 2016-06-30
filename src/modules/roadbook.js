@@ -22,17 +22,8 @@ var Roadbook = Class({
     this.filePath = null;
     /*
       Extend the binding for the palette's note text input
-      TODO this should go to it's own function and be cleaned up
     */
-    var _this = this;
-    ko.extenders.paletteNoteChange = function(target, option) {
-        target.subscribe(function(newValue) {
-           if(_this.currentlyEditingWaypoint !== null) {
-             _this.currentlyEditingWaypoint.noteText(newValue);
-           }
-        });
-        return target;
-    };
+    this.extendPalletteBinding();
     this.currentlyEditingWaypointNoteText = ko.observable().extend({paletteNoteChange: ""});
   },
 
@@ -153,6 +144,18 @@ var Roadbook = Class({
     return Math.abs(~maxIndex);
   },
 
+  extendPalletteBinding: function(){
+    var _this = this;
+    ko.extenders.paletteNoteChange = function(target, option) {
+        target.subscribe(function(newValue) {
+           if(_this.currentlyEditingWaypoint !== null) {
+             _this.currentlyEditingWaypoint.noteText(newValue);
+           }
+        });
+        return target;
+    };
+  },
+
   reindexWaypoints: function(){
     for(i = 0; i < this.waypoints().length; i++){
       waypoint = this.waypoints()[i];
@@ -163,7 +166,6 @@ var Roadbook = Class({
   /*
     ---------------------------------------------------------------------------
       Roadbook edit control flow
-      // TODO this needs some major refactoring to move away from old paradigms
     ---------------------------------------------------------------------------
   */
 
