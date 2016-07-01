@@ -46,8 +46,10 @@ var MapControls = Class({
       _this.rotate(1);
       if(app.canEditMap){
         $('#draw-route').click();
+        $('#draw-route').hide();
+        $('#map-rotate-notice').show('fast');
         app.map.setOptions({draggable: false});
-        $('#draw-route').fadeTo('slow', 0.25).fadeTo('slow', 1.0);
+        $('#map-rotate-notice').fadeTo('slow', 0.25).fadeTo('slow', 1.0);
       }
     });
 
@@ -57,6 +59,8 @@ var MapControls = Class({
       if(!app.canEditMap){
         app.map.setOptions({draggable: true});
         $('#draw-route').click();
+        $('#draw-route').show('slow');
+        $('#map-rotate-notice').hide('slow');
       }
     });
 
@@ -64,8 +68,10 @@ var MapControls = Class({
       _this.rotate(-1);
       if(app.canEditMap){
         $('#draw-route').click();
+        $('#draw-route').hide();
+        $('#map-rotate-notice').show('fast');
         app.map.setOptions({draggable: false});
-        $('#draw-route').fadeTo('slow', 0.5).fadeTo('slow', 1.0);
+        $('#map-rotate-notice').fadeTo('slow', 0.5).fadeTo('slow', 1.0);
       }
     });
   },

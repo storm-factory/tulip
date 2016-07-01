@@ -92,3 +92,8 @@ ipcMain.on('print-pdf', (event, arg) => {
     });
   });
 });
+
+//listens for the browser window to ask for the documents folder
+ipcMain.on('get-documents-path', (event, arg) => {
+  event.sender.send('documents-path', app.getPath('documents'));
+});
