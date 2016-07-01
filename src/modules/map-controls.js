@@ -7,7 +7,6 @@ var MapControls = Class({
   create: function() {
     this.rotation = 0;
     this.initListeners();
-    // app.map = app.mapEditor.map;
   },
 
   zin: function(){
@@ -20,6 +19,7 @@ var MapControls = Class({
 
   rotate: function(directionModifier){
     this.rotation += 5*directionModifier;
+
     $('#map').css({'-webkit-transform' : 'rotate('+ this.rotation +'deg)'});
   },
 
@@ -46,6 +46,7 @@ var MapControls = Class({
       _this.rotate(1);
       if(app.canEditMap){
         $('#draw-route').click();
+        app.map.setOptions({draggable: false});
         $('#draw-route').fadeTo('slow', 0.25).fadeTo('slow', 1.0);
       }
     });
@@ -54,6 +55,7 @@ var MapControls = Class({
       _this.reorient();
       _this.rotation = 0;
       if(!app.canEditMap){
+        app.map.setOptions({draggable: true});
         $('#draw-route').click();
       }
     });
@@ -62,6 +64,7 @@ var MapControls = Class({
       _this.rotate(-1);
       if(app.canEditMap){
         $('#draw-route').click();
+        app.map.setOptions({draggable: false});
         $('#draw-route').fadeTo('slow', 0.5).fadeTo('slow', 1.0);
       }
     });

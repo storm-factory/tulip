@@ -341,4 +341,22 @@ $(document).ready(function(){
 function initMap() {
   app.mapEditor = MapEditor.instance();
   app.map = app.mapEditor.map;
+
+
+  /*
+    Get the Google Maps attribution elements and attaches them to the content container instead of the map container so that
+    we can rotate the map and still appropriately display attribution
+  */
+  var missingAttribution = true;
+  google.maps.event.addListener(app.map, 'tilesloaded', function() {
+    if(missingAttribution){
+      console.log('here');
+      var m = $('#map div.gm-style').children('div'); //get the contents of the map container
+      m = m.toArray();
+      m.shift(); //remove the map but keep the attribution elements
+      $('.content-container').append($(m));
+      missingAttribution = false;
+    }
+  });
+
 }

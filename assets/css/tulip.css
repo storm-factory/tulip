@@ -62,14 +62,14 @@ textarea.waypoint-palette{
 }
 
 #map {
-  /*
-  height: 151%;
-  width: 151%;
+
+  height: 200%;
+  width: 200%;
   position: absolute;
-  left: -25.5%;
-  top: -25.5%;*/
-  height: 100%;
-  width: 100%;
+  left: -46.66%;
+  top: -46.66%;
+  /*height: 100%;
+  width: 100%;*/
 }
 #roadbook {
   padding-top: 1.2rem;
