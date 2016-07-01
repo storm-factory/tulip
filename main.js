@@ -24,20 +24,7 @@ app.on('window-all-closed', function() {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 app.on('ready', function() {
-  // Create the browser window.
-  mainWindow = new BrowserWindow({width: 1500, height: 1000, 'min-height': 700});
-
-  // and load the index.html of the app.
-  mainWindow.loadURL('file://' + __dirname + '/index.html');
-
-  // Emitted when the window is closed.
-  mainWindow.on('closed', function() {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
-    mainWindow = null;
-    printWindow = null;
-  });
+  createWindow();
 });
 
 // Quit when all windows are closed.
@@ -56,6 +43,23 @@ app.on('activate', () => {
     createWindow();
   }
 });
+
+function createWindow () {
+  // Create the browser window.
+  mainWindow = new BrowserWindow({width: 1500, height: 1000, 'min-height': 700, icon: 'tulip-logo.ico'});
+
+  // and load the index.html of the app.
+  mainWindow.loadURL('file://' + __dirname + '/index.html')
+
+  // Emitted when the window is closed.
+  mainWindow.on('closed', function () {
+    // Dereference the window object, usually you would store windows
+    // in an array if your app supports multi windows, this is the time
+    // when you should delete the corresponding element.
+    mainWindow = null;
+    printWindow = null;
+  })
+}
 
 /*
   the below should go in their own folders and be required
