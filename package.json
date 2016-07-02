@@ -1,5 +1,28 @@
 {
-  "name"    : "tulip",
-  "version" : "0.0.9",
-  "main"    : "main.js"
+  "name": "tulip",
+  "version": "1.0.0",
+  "description": "A application for creating rally fun times",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SenorDrewMitchell/tulip.git"
+  },
+  "keywords": [
+    "Electron",
+    "roadbook",
+    "rally",
+    "tulip"
+  ],
+  "author": "Drew Mitchell",
+  "license": "GPL-2.0",
+  "bugs": {
+    "url": "https://github.com/SenorDrewMitchell/tulip/issues"
+  },
+  "homepage": "https://github.com/SenorDrewMitchell/tulip",
+  "devDependencies": {
+    "electron-prebuilt": "^1.2.0"
+  }
 }

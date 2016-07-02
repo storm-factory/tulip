@@ -46,7 +46,7 @@ app.on('activate', () => {
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 1500, height: 1000, 'min-height': 700, icon: 'tulip-logo.ico'});
+  mainWindow = new BrowserWindow({width: 1500, height: 1000, 'min-height': 700});
 
   // and load the index.html of the app.
   mainWindow.loadURL('file://' + __dirname + '/index.html')
@@ -66,7 +66,7 @@ function createWindow () {
 */
 var data;
 ipcMain.on('ignite-print', (event, arg) => {
-  printWindow = new BrowserWindow({width: 650, height: 700, 'min-height': 700, 'resizable': false});
+  printWindow = new BrowserWindow({width: 650, height: 700, 'min-height': 700, 'resizable': false, icon: 'tulip-logo.ico'});
   printWindow.loadURL('file://' + __dirname + '/print.html');
   data = arg;
   printWindow.on('closed', () => {
