@@ -66,7 +66,7 @@ function createWindow () {
 */
 var data;
 ipcMain.on('ignite-print', (event, arg) => {
-  printWindow = new BrowserWindow({width: 650, height: 700, 'min-height': 700, 'resizable': false, icon: 'tulip-logo.ico'});
+  printWindow = new BrowserWindow({width: 650, height: 700, 'min-height': 700, 'resizable': false});
   printWindow.loadURL('file://' + __dirname + '/print.html');
   data = arg;
   printWindow.on('closed', () => {
