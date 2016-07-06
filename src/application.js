@@ -123,7 +123,6 @@ var App = Class({
   },
 
   saveRoadBook: function(){
-    console.log('saving');
     var _this = this
     var tulipFile = this.roadbook.statefulJSON();
     if(tulipFile.filePath == null){
@@ -132,7 +131,6 @@ var App = Class({
       this.ipc.on('documents-path', function(event, arg){
         var path = arg+'/';
         path += _this.roadbook.name() == 'Name your roadbook' ? 'Untitled' : _this.roadbook.name().replace(' ', '-')
-        console.log(path);
         _this.dialog.showSaveDialog({
                                     title: 'Save your roadbook',
                                     defaultPath: path,
@@ -142,6 +140,7 @@ var App = Class({
             // assign the file path to the json for first time players
             // TODO figure out what to do if the user changes the name of the file
             tulipFile.filePath = fileName;
+            _this.roadbook.filePath = fileName;
             tulipFile = JSON.stringify(tulipFile, null, 2);
             _this.fs.writeFile(fileName, tulipFile, function (err) {});
             $('#print-roadbook').removeClass('disabled')
