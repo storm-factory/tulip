@@ -37,11 +37,6 @@ var App = Class({
     this.roadbook = new Roadbook();
 
     /*
-      initialize UI listeners
-    */
-    this.initListeners();
-    this.mapControls = MapControls.instance();
-    /*
       instantiate import/export
     */
     this.io = new Io();
@@ -54,6 +49,11 @@ var App = Class({
       IPC to Main process
     */
     this.ipc = require('electron').ipcRenderer; //TODO try require('ipcRenderer')
+    /*
+      initialize UI listeners
+    */
+    this.initListeners();
+    this.mapControls = MapControls.instance();
   },
 
   /*
@@ -123,35 +123,40 @@ var App = Class({
   },
 
   saveRoadBook: function(){
-    var _this = this
-    var tulipFile = this.roadbook.statefulJSON();
-    if(tulipFile.filePath == null){
-
-      // Listener to get path to documents directory from node for saving roadbooks
-      this.ipc.on('documents-path', function(event, arg){
-        var path = arg+'/';
-        path += _this.roadbook.name() == 'Name your roadbook' ? 'Untitled' : _this.roadbook.name().replace(' ', '-')
-        _this.dialog.showSaveDialog({
-                                    title: 'Save your roadbook',
-                                    defaultPath: path,
-                                    filters: [{ name: 'tulip', extensions: ['tlp'] }]
-          },function (fileName) {
-          if (fileName === undefined) return;
-            // assign the file path to the json for first time players
-            // TODO figure out what to do if the user changes the name of the file
-            tulipFile.filePath = fileName;
-            _this.roadbook.filePath = fileName;
-            tulipFile = JSON.stringify(tulipFile, null, 2);
-            _this.fs.writeFile(fileName, tulipFile, function (err) {});
-            $('#print-roadbook').removeClass('disabled')
-            $('#export-gpx').removeClass('disabled')
-        });
-      });
+    if(this.roadbook.filePath == null){
       // Request documents directory path from node
       this.ipc.send('get-documents-path');
     } else {
-      this.fs.writeFile(tulipFile.filePath, JSON.stringify(tulipFile, null, 2), function (err) {});
+      this.fs.writeFile(this.roadbook.filePath, JSON.stringify(this.roadbook.statefulJSON(), null, 2), function (err) {});
     }
+  },
+
+  saveRoadBookAs: function(){
+    if(this.roadbook.filePath == null){
+      // Request documents directory path from node
+      this.ipc.send('get-documents-path');
+    } else {
+      this.showSaveDialog('Save roadbook as',this.roadbook.filePath)
+    }
+  },
+
+  showSaveDialog: function(title,path) {
+    var _this = this;
+    this.dialog.showSaveDialog({
+                                title: title,
+                                defaultPath: path,
+                                filters: [{ name: 'tulip', extensions: ['tlp'] }]
+      },function (fileName) {
+      if (fileName === undefined) return;
+        // assign the file path to the json for first time players
+        // TODO figure out what to do if the user changes the name of the file
+        var tulipFile = _this.roadbook.statefulJSON();
+        tulipFile.filePath = fileName;
+        _this.roadbook.filePath = fileName;
+        tulipFile = JSON.stringify(tulipFile, null, 2);
+        _this.fs.writeFile(fileName, tulipFile, function (err) {});
+        return true
+    });
   },
 
   startLoading: function(){
@@ -226,7 +231,9 @@ var App = Class({
       }
     });
 
-    $('#save-roadbook').click(function(){
+    $('#save-roadbook').click(function(e){
+      e.preventDefault();
+      console.log('saving clicked');
       if(_this.canSave()){
         $(this).addClass('secondary');
         _this.saveRoadBook();
@@ -236,6 +243,12 @@ var App = Class({
         $('#roadbook-desc, #roadbook-name').find('a').show('fast');
       }
       $(this).blur();
+    });
+
+    $('#save-roadbook').contextmenu(function(e){
+      if(e.which == 3){
+        _this.saveRoadBookAs();
+      }
     });
 
     $('#roadbook-desc, #roadbook-name').find('a').click(function(){
@@ -324,6 +337,23 @@ var App = Class({
       $('#track-selection-modal').foundation('reveal', 'close');
     });
 
+    /*
+      We're adding IPC listeners in here I guess eh?
+
+      This super duper needs to be cleaned up
+    */
+    // Listener to get path to documents directory from node for saving roadbooks
+    // NOTE only use this for roadbooks which haven't been named
+    this.ipc.on('documents-path', function(event, arg){
+      console.log('getting path');
+      var path = arg+'/';
+      path += _this.roadbook.name() == 'Name your roadbook' ? 'Untitled' : _this.roadbook.name().replace(' ', '-')
+      // TODO add show save dialog method and pass in the path
+      if(_this.showSaveDialog('Save roadbook', path)){
+        $('#print-roadbook').removeClass('disabled');
+        $('#export-gpx').removeClass('disabled');
+      }
+    });
   },
 });
 /*

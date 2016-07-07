@@ -9,6 +9,21 @@ var MapControls = Class({
     this.initListeners();
   },
 
+  disableMapInteraction: function(){
+    app.map.setOptions({draggable: false});
+    $('#draw-route').click();
+    $('#draw-route').hide();
+    $('#map-rotate-notice').show('fast');
+    $('#map-rotate-notice').fadeTo('slow', 0.25).fadeTo('slow', 1.0);
+  },
+
+  enableMapInteraction: function(){
+    app.map.setOptions({draggable: true});
+    $('#draw-route').click();
+    $('#draw-route').show('slow');
+    $('#map-rotate-notice').hide('slow');
+  },
+
   zin: function(){
     app.map.setZoom(app.map.getZoom() + 1);
   },
@@ -21,6 +36,11 @@ var MapControls = Class({
     this.rotation += 5*directionModifier;
 
     $('#map').css({'-webkit-transform' : 'rotate('+ this.rotation +'deg)'});
+  },
+
+  rotateNumDegrees: function(degrees){
+    console.log('here: '+ degrees);
+    $('#map').css({'-webkit-transform' : 'rotate('+ degrees +'deg)'});
   },
 
   reorient: function(){
@@ -45,11 +65,7 @@ var MapControls = Class({
     $('#clockwise').click(function(){
       _this.rotate(1);
       if(app.canEditMap){
-        $('#draw-route').click();
-        $('#draw-route').hide();
-        $('#map-rotate-notice').show('fast');
-        app.map.setOptions({draggable: false});
-        $('#map-rotate-notice').fadeTo('slow', 0.25).fadeTo('slow', 1.0);
+        _this.disableMapInteraction();
       }
     });
 
@@ -57,10 +73,7 @@ var MapControls = Class({
       _this.reorient();
       _this.rotation = 0;
       if(!app.canEditMap){
-        app.map.setOptions({draggable: true});
-        $('#draw-route').click();
-        $('#draw-route').show('slow');
-        $('#map-rotate-notice').hide('slow');
+        _this.enableMapInteraction();
       }
     });
 

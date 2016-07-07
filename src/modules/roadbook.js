@@ -19,6 +19,7 @@ var Roadbook = Class({
     /*
       Declare some internal variables
     */
+    // TODO how do we handle file name changes
     this.filePath = null;
     /*
       Extend the binding for the palette's note text input

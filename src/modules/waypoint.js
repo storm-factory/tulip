@@ -119,8 +119,12 @@ var Waypoint = Class({
         _this.tulip.beginEdit();
       }
       var latLng = new google.maps.LatLng(_this.lat(), _this.lng());
+      // TODO this needs to be refactored to
+      //  app.setMapCenter ...
+      //  app.setMapZoom ...
       app.mapEditor.map.setCenter(latLng);
       app.mapEditor.map.setZoom(18);
+      // app.mapControls.rotateNumDegrees();
 
       $('#roadbook-waypoints').children().hide();
       $(element).show();
