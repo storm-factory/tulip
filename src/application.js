@@ -133,7 +133,7 @@ var App = Class({
 
   saveRoadBookAs: function(){
     if(this.roadbook.filePath == null){
-      // Request documents directory path from node
+      // Request documents directory path from node TODO we really only need to do this once...
       this.ipc.send('get-documents-path');
     } else {
       this.showSaveDialog('Save roadbook as',this.roadbook.filePath)
@@ -233,22 +233,20 @@ var App = Class({
 
     $('#save-roadbook').click(function(e){
       e.preventDefault();
-      console.log('saving clicked');
+      console.log(e);
       if(_this.canSave()){
         $(this).addClass('secondary');
-        _this.saveRoadBook();
+        if(e.shiftKey){
+          _this.saveRoadBookAs();
+        }else {
+          _this.saveRoadBook();
+        }
         $('.waypoint.row').show();
         $('#waypoint-palette').hide();
         $('#roadbook-desc, #roadbook-name').find(':input').hide('fast');
         $('#roadbook-desc, #roadbook-name').find('a').show('fast');
       }
       $(this).blur();
-    });
-
-    $('#save-roadbook').contextmenu(function(e){
-      if(e.which == 3){
-        _this.saveRoadBookAs();
-      }
     });
 
     $('#roadbook-desc, #roadbook-name').find('a').click(function(){
