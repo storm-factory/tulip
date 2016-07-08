@@ -54,6 +54,7 @@ var App = Class({
     */
     this.initListeners();
     this.mapControls = MapControls.instance();
+    this.glyphControls = GlyphControls.instance();
   },
 
   /*
