@@ -24,7 +24,7 @@ var Roadbook = Class({
     /*
       Extend the binding for the palette's note text input
     */
-    this.extendPalletteBinding();
+    this.extendPaletteBinding();
     this.currentlyEditingWaypointNoteText = ko.observable().extend({paletteNoteChange: ""});
   },
 
@@ -43,7 +43,7 @@ var Roadbook = Class({
        check the exit track of the one before it
        and set this one's exit and entry to have the same track type
     */
-    if(this.waypoints().length > 1) {
+    if(this.waypoints().length > 0) {
       wptData.entryTrackType = this.waypoints()[index-1].exitTrackType;
       wptData.exitTrackType = wptData.entryTrackType;
     }
@@ -80,7 +80,7 @@ var Roadbook = Class({
         for(i=0;i<point.notes.glyphs.length;i++){
           point.notes.glyphs[i].src = app.fixGlyphPaths(point.notes.glyphs[i].src);
         }
-        
+
         opts.notes = point.notes;
         routePoint.waypoint =  this.addWaypoint(opts);
       }
@@ -151,7 +151,7 @@ var Roadbook = Class({
     return Math.abs(~maxIndex);
   },
 
-  extendPalletteBinding: function(){
+  extendPaletteBinding: function(){
     var _this = this;
     ko.extenders.paletteNoteChange = function(target, option) {
         target.subscribe(function(newValue) {

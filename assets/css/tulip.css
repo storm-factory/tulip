@@ -62,7 +62,7 @@ textarea.waypoint-palette{
 @-webkit-keyframes rotateloader {
   to { -webkit-transform: rotate(360deg);}
 }
-#hide-pallette {
+#hide-palette {
       margin-bottom: 0;
 }
 

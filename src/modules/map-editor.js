@@ -149,6 +149,7 @@ var MapEditor = Class({
       opts = {
           lat: point.getPosition().lat(),
           lng: point.getPosition().lng(),
+          mapVertexIndex: point.mapVertexIndex,
           distances: distances,
           angles: angles,
       }
@@ -513,7 +514,8 @@ var MapEditor = Class({
           $.extend(distances,{kmFromPrev: 0});
         }
         previous = marker;
-        marker.waypoint.updateWaypoint(distances, angles.heading,{lat: marker.getPosition().lat(), lng: marker.getPosition().lng()} );
+        // TODO just needs to be an object
+        marker.waypoint.updateWaypoint(distances, angles.heading,{lat: marker.getPosition().lat(), lng: marker.getPosition().lng()}, marker.mapVertexIndex );
       }
     }
   },

@@ -10,6 +10,7 @@ var MapControls = Class({
   },
 
   disableMapInteraction: function(){
+    // app.canEditMap = false;
     app.map.setOptions({draggable: false});
     $('#draw-route').click();
     $('#draw-route').hide();
@@ -18,6 +19,7 @@ var MapControls = Class({
   },
 
   enableMapInteraction: function(){
+    // app.canEditMap = true;
     app.map.setOptions({draggable: true});
     $('#draw-route').click();
     $('#draw-route').show('slow');
@@ -32,18 +34,12 @@ var MapControls = Class({
     app.map.setZoom(app.map.getZoom() - 1);
   },
 
-  rotate: function(directionModifier){
-    this.rotation += 5*directionModifier;
-
-    $('#map').css({'-webkit-transform' : 'rotate('+ this.rotation +'deg)'});
-  },
-
   rotateNumDegrees: function(degrees){
-    console.log('here: '+ degrees);
     $('#map').css({'-webkit-transform' : 'rotate('+ degrees +'deg)'});
   },
 
   reorient: function(){
+    this.rotation = 0;
     $('#map').css({'-webkit-transform' : 'rotate(0deg)'});
   },
 
@@ -62,30 +58,29 @@ var MapControls = Class({
       $(this).blur();
     });
 
-    $('#clockwise').click(function(){
-      _this.rotate(1);
-      if(app.canEditMap){
-        _this.disableMapInteraction();
-      }
-    });
-
-    $('#reorient').click(function(){
-      _this.reorient();
-      _this.rotation = 0;
-      if(!app.canEditMap){
-        _this.enableMapInteraction();
-      }
-    });
-
-    $('#anti-clockwise').click(function(){
-      _this.rotate(-1);
-      if(app.canEditMap){
-        $('#draw-route').click();
-        $('#draw-route').hide();
-        $('#map-rotate-notice').show('fast');
-        app.map.setOptions({draggable: false});
-        $('#map-rotate-notice').fadeTo('slow', 0.5).fadeTo('slow', 1.0);
-      }
-    });
+    // $('#clockwise').click(function(){
+    //   _this.rotate(-1);
+    //   if(app.canEditMap){
+    //     _this.disableMapInteraction();
+    //   }
+    // });
+    //
+    // $('#reorient').click(function(){
+    //   _this.reorient();
+    //   if(!app.canEditMap){
+    //     _this.enableMapInteraction();
+    //   }
+    // });
+    //
+    // $('#anti-clockwise').click(function(){
+    //   _this.rotate(1);
+    //   if(app.canEditMap){
+    //     $('#draw-route').click();
+    //     $('#draw-route').hide();
+    //     $('#map-rotate-notice').show('fast');
+    //     app.map.setOptions({draggable: false});
+    //     $('#map-rotate-notice').fadeTo('slow', 0.5).fadeTo('slow', 1.0);
+    //   }
+    // });
   },
 });

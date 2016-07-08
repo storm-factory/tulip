@@ -271,10 +271,34 @@ var App = Class({
       _this.roadbook.editingNameDesc = true;
     });
 
-    $('#hide-pallette').click(function(){
+    /*
+      Waypoint palette
+    */
+    $('#hide-palette').click(function(){
       $('.waypoint.row').show();
       $('#waypoint-palette').hide();
       _this.roadbook.finishWaypointEdit();
+      if(!_this.canEditMap){
+        _this.mapControls.reorient();
+        _this.mapControls.enableMapInteraction();
+      }
+    });
+
+    $('#orient-map').click(function(){
+      var i = _this.roadbook.currentlyEditingWaypoint.mapVertexIndex;
+      if(i > 0){
+        var heading = google.maps.geometry.spherical.computeHeading(_this.mapEditor.routePoints.getAt(i-1), _this.mapEditor.routePoints.getAt(i));
+        if(_this.mapControls.rotation == 0){
+          _this.mapControls.disableMapInteraction();
+          _this.mapControls.rotation = 360-heading
+          _this.mapControls.rotateNumDegrees(_this.mapControls.rotation);
+        }else {
+          _this.mapControls.reorient();
+          _this.mapControls.enableMapInteraction();
+        }
+
+      }
+
     });
 
     $('.track-grid').click(function(){
@@ -317,7 +341,6 @@ var App = Class({
     // Listener to get path to documents directory from node for saving roadbooks
     // NOTE only use this for roadbooks which haven't been named
     this.ipc.on('documents-path', function(event, arg){
-      console.log('getting path');
       var path = arg+'/';
       path += _this.roadbook.name() == 'Name your roadbook' ? 'Untitled' : _this.roadbook.name().replace(' ', '-')
       // TODO add show save dialog method and pass in the path
@@ -355,7 +378,6 @@ function initMap() {
   var missingAttribution = true;
   google.maps.event.addListener(app.map, 'tilesloaded', function() {
     if(missingAttribution){
-      console.log('here');
       var m = $('#map div.gm-style').children('div'); //get the contents of the map container
       m = m.toArray();
       m.shift(); //remove the map but keep the attribution elements

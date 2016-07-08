@@ -38,6 +38,7 @@ var Waypoint = Class({
     this.noteGlyphs = ko.observableArray(glyphs);
 
     this.roadbook = roadbook;
+    this.mapVertexIndex = wptJson.mapVertexIndex == undefined ? null : wptJson.mapVertexIndex;
 
     var _this = this;
     var angle = wptJson.angles.relativeAngle;
@@ -80,7 +81,7 @@ var Waypoint = Class({
     this.tulip = new Tulip(element, angle, trackTypes, json);
   },
 
-  updateWaypoint: function (distances, heading, latLng){
+  updateWaypoint: function (distances, heading, latLng, mapVertexIndex){
     if(distances){
       this.kmFromStart(distances.kmFromStart);
       this.kmFromPrev(distances.kmFromPrev);
@@ -91,6 +92,9 @@ var Waypoint = Class({
     if(latLng){
       this.lat(latLng.lat);
       this.lng(latLng.lng);
+    }
+    if(mapVertexIndex) {
+      this.mapVertexIndex = mapVertexIndex
     }
   },
 
@@ -124,7 +128,6 @@ var Waypoint = Class({
       //  app.setMapZoom ...
       app.mapEditor.map.setCenter(latLng);
       app.mapEditor.map.setZoom(18);
-      // app.mapControls.rotateNumDegrees();
 
       $('#roadbook-waypoints').children().hide();
       $(element).show();
