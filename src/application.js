@@ -95,6 +95,11 @@ var App = Class({
     });
   },
 
+  // NOTE: this is just to avoid breaking changes for v1.2b, it should come out in the next release
+  fixGlyphPaths: function(path){
+    return path.replace(/features|orga|details|tracks/, 'glyphs')
+  },
+
   exportGPX: function(callback){
     var gpx = this.io.exportGPX();
     var filename = this.roadbook.filePath.replace('tlp','gpx');
@@ -209,6 +214,7 @@ var App = Class({
       } else {
         _this.exportGPX(function(){
           $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
+          alert('You gpx has been exported to the same directory you saved your roadbook')
         });
       }
     });

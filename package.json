@@ -1,6 +1,6 @@
 {
   "name": "tulip",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "A application for creating rally fun times",
   "main": "main.js",
   "scripts": {

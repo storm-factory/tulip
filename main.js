@@ -6,6 +6,7 @@ const electron = require('electron');
 const {app} = electron;
 // Module to create native browser window.
 const {BrowserWindow} = electron;
+const {dialog} = electron;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -93,6 +94,8 @@ ipcMain.on('print-pdf', (event, arg) => {
       if (error)
         throw error;
       printWindow.close();
+
+      dialog.showMessageBox(mainWindow, {message: "Your PDF has been exported to the same directory you saved your roadbook",buttons: ['ok']})
     });
   });
 });
