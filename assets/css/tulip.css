@@ -44,6 +44,11 @@ textarea.waypoint-palette{
 #content .content-container {
   height: 100%;
 }
+
+#glyph-search-results li a {
+  width: 100px;
+}
+
 #loading {
   display: none;
   z-index: 9999;

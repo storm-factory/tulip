@@ -5,18 +5,90 @@ var GlyphControls = Class({
     this.fs = require('fs');
     this.files = [];
     this.getGylphNames();
+    this.initListeners();
   },
 
+
   getGylphNames(){
-    var dirs = ['details', 'features', 'orga', 'tracks'];
-    var _this = this;
-    $.each(dirs, function(i,v){
-      _this.files = _this.files.concat(_this.fs.readdirSync('assets/svg/' + v));
-    });
+    this.files = this.fs.readdirSync('assets/svg/glyphs');
   },
 
   processFiles: function(){
 
   },
+
+  populateResults: function(results){
+    var _this = this;
+    $.each(results, function(i,result){
+      var img = $('<img>').addClass('glyph').attr('src', result.path)
+      var link = $('<a>').addClass('th').attr('title', result.name).append(img);
+      var showResult = $('<li>').append(link);
+      $(img).click(function(){_this.addGlyphToInstruction(this);})
+      $('#glyph-search-results').append(showResult);
+    });
+  },
+
+  searchGlyphNames: function(query){
+    results=[];
+    $.each(this.files, function(i,file){
+      if(file.indexOf(query) != -1){
+        results.push({name: file.replace('.svg', ''), path: 'assets/svg/glyphs/'+file})
+      }
+    });
+    return results;
+  },
+
+  initListeners: function(){
+    var _this = this;
+    $('#glyph-search').keyup(function(){
+      $('#glyph-search-results').html('');
+      if($(this).val() != ''){
+        var results = _this.searchGlyphNames($(this).val());
+        _this.populateResults(results);
+      }
+    });
+
+    $('.glyph').click(function(){
+      _this.addGlyphToInstruction(this);
+    });
+
+    //TODO fill out this todo, you know you wanna.
+    $('.glyph-grid').click(function(e){
+      e.preventDefault();
+      if($(this).hasClass('note-grid')){
+        if($(this).hasClass('undo')){
+          app.roadbook.currentlyEditingWaypoint.removeLastNoteGlyph(); //TODO make app level function for this
+          return
+        }
+        $('.glyph').addClass('note');
+        $('#glyphs').foundation('reveal', 'open');
+        setTimeout(function() { $('#glyph-search').focus(); }, 600); //we have to wait for the modal to be visible before we can assign focus
+        return false
+      } else{
+        if($(this).hasClass('undo')){
+          app.roadbook.currentlyEditingWaypoint.tulip.removeLastGlyph(); //TODO make app level function for this
+          return false
+        }
+        app.glyphPlacementPosition = {top: $(this).data('top'), left: $(this).data('left')};
+        $('.glyph').removeClass('note');
+        $('#glyphs').foundation('reveal', 'open');
+        setTimeout(function() { $('#glyph-search').focus(); }, 600); //we have to wait for the modal to be visible before we can assign focus
+        return false
+      }
+    });
+  },
+
+  addGlyphToInstruction: function(element){
+    var src = $(element).attr('src');
+
+    if($(element).hasClass('note')){
+      app.roadbook.currentlyEditingWaypoint.addNoteGlyph(src)
+    } else {
+      app.roadbook.currentlyEditingWaypoint.tulip.addGlyph(app.glyphPlacementPosition,src);
+    }
+    $('#glyphs').foundation('reveal', 'close');
+    $('#glyph-search').val('');
+    $('#glyph-search-results').html('');
+  }
 
 });

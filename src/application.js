@@ -280,39 +280,6 @@ var App = Class({
       _this.roadbook.currentlyEditingWaypoint.tulip.addTrack(angle);
     });
 
-    //TODO fill out this todo, you know you wanna.
-    $('.glyph-grid').click(function(){
-      if($(this).hasClass('note-grid')){
-        if($(this).hasClass('undo')){
-          _this.roadbook.currentlyEditingWaypoint.removeLastNoteGlyph();
-          return
-        }
-        $('.glyph').addClass('note');
-        $('#glyphs').foundation('reveal', 'open');
-        return
-      } else{
-        if($(this).hasClass('undo')){
-          _this.roadbook.currentlyEditingWaypoint.tulip.removeLastGlyph();
-          return
-        }
-        _this.glyphPlacementPosition = {top: $(this).data('top'), left: $(this).data('left')};
-        $('.glyph').removeClass('note');
-        $('#glyphs').foundation('reveal', 'open');
-        return
-      }
-    });
-
-    $('.glyph').click(function(){
-      var src = $(this).attr('src');
-
-      if($(this).hasClass('note')){
-        _this.roadbook.currentlyEditingWaypoint.addNoteGlyph(src)
-      } else {
-        _this.roadbook.currentlyEditingWaypoint.tulip.addGlyph(_this.glyphPlacementPosition,src);
-      }
-      $('#glyphs').foundation('reveal', 'close');
-    });
-
     $('.track-selector').click(function() {
       if('off-piste-added' == $(this).attr('id')){
         _this.roadbook.changeEditingWaypointAdded('offPiste')
