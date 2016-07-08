@@ -3,6 +3,7 @@ var GlyphControls = Class({
 
   create: function(){
     this.fs = require('fs');
+    this.process = require('electron').remote.process;
     this.files = [];
     this.getGylphNames();
     this.initListeners();
@@ -10,7 +11,12 @@ var GlyphControls = Class({
 
 
   getGylphNames(){
-    this.files = this.fs.readdirSync('assets/svg/glyphs');
+    try {
+      this.files = this.fs.readdirSync(this.process.resourcesPath + '/app/assets/svg/glyphs');
+    } catch (e) {
+      console.log("using unpackaged filesys");
+      this.files = this.fs.readdirSync('assets/svg/glyphs');
+    }
   },
 
   processFiles: function(){
