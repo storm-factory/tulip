@@ -24,8 +24,9 @@ var Roadbook = Class({
     /*
       Extend the binding for the palette's note text input
     */
-    this.extendPaletteBinding();
-    this.currentlyEditingWaypointNoteText = ko.observable().extend({paletteNoteChange: ""});
+    // this.extendPaletteBinding();
+    // this.currentlyEditingWaypointNoteHTML = ko.observable().extend({paletteNoteChange: ""});
+    this.noteInputListener();
   },
 
   /*
@@ -151,16 +152,33 @@ var Roadbook = Class({
     return Math.abs(~maxIndex);
   },
 
-  extendPaletteBinding: function(){
+  // extendPaletteBinding: function(){
+  //   var _this = this;
+  //   ko.extenders.paletteNoteChange = function(target, option) {
+  //       target.subscribe(function(newValue) {
+  //          if(_this.currentlyEditingWaypoint !== null) {
+  //            _this.currentlyEditingWaypoint.noteText(newValue);
+  //            _this.currentlyEditingWaypoint.noteHTML(newValue);
+  //          }
+  //       });
+  //       return target;
+  //   };
+  // },
+
+  // TODO this needs to be cleaned up and more modular
+  noteInputListener: function(){
     var _this = this;
-    ko.extenders.paletteNoteChange = function(target, option) {
-        target.subscribe(function(newValue) {
-           if(_this.currentlyEditingWaypoint !== null) {
-             _this.currentlyEditingWaypoint.noteText(newValue);
-           }
-        });
-        return target;
-    };
+    this.noteTextEditor = new Quill('#note-editor');
+    this.noteTextEditor.addModule('toolbar', {
+      container: '#note-toolbar'     // Selector for toolbar container
+    });
+    this.noteTextEditor.on('text-change', function(delta, source) {
+      newValue = _this.noteTextEditor.getHTML()
+      if(_this.currentlyEditingWaypoint !== null) {
+        _this.currentlyEditingWaypoint.noteHTML(newValue);
+      }
+    });
+
   },
 
   reindexWaypoints: function(){
@@ -180,7 +198,8 @@ var Roadbook = Class({
     if(waypoint != this.currentlyEditingWaypoint){ //we need this to discard click events fired from editing the waypoint tulip canvas
       this.finishWaypointEdit(); //clear any existing UI just to be sure
       this.currentlyEditingWaypoint = waypoint;
-      this.currentlyEditingWaypointNoteText(waypoint.noteText());
+      // TODO reinitialize the palette note instruction editor
+      this.noteTextEditor.setHTML(waypoint.noteHTML());
       return true;
     }
   },
@@ -190,7 +209,7 @@ var Roadbook = Class({
       $('#roadbook').scrollTop(this.currentlyEditingWaypoint.element.position().top - 80)
       this.currentlyEditingWaypoint.tulip.finishEdit();
       this.currentlyEditingWaypoint = null;
-      this.currentlyEditingWaypointNoteText('');
+      this.noteTextEditor.setHTML('');
     }
     return true;
   },

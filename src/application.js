@@ -64,6 +64,12 @@ var App = Class({
     ---------------------------------------------------------------------------
   */
 
+  canExport: function(){
+    var can;
+    can = this.roadbook.filePath != null;
+    return can
+  },
+
   canSave: function(){
     var can;
     can = this.roadbook.finishWaypointEdit();
@@ -209,13 +215,13 @@ var App = Class({
     });
 
     $('#export-gpx').click(function(){
-      if($(this).hasClass('disabled')){
-        alert('You must save your roadbook before you can export GPX tracks');
-      } else {
+      if(_this.canExport()){
         _this.exportGPX(function(){
           $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
           alert('You gpx has been exported to the same directory you saved your roadbook')
         });
+      } else {
+        alert('You must save your roadbook before you can export GPX tracks');
       }
     });
 
@@ -229,12 +235,12 @@ var App = Class({
     });
 
     $('#print-roadbook').click(function(){
-      if($(this).hasClass('disabled')){
-        alert('You must save your roadbook before you can export it as a PDF');
-      } else {
+      if(_this.canExport()){
         _this.printRoadbook(function(){
           $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
         });
+      } else {
+        alert('You must save your roadbook before you can export it as a PDF');
       }
     });
 
@@ -385,5 +391,11 @@ function initMap() {
       missingAttribution = false;
     }
   });
-
+  /*
+    Initialize rte
+  */
+  // app.textEditor = new Quill('#note-editor');
+  // app.textEditor.addModule('toolbar', {
+  //   container: '#note-toolbar'     // Selector for toolbar container
+  // });
 }

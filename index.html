@@ -49,9 +49,9 @@
           <li><a href="#" id="import-gpx" class="main-menu button tiny radius"><i class="fi-download"></i> Import GPX</a></li>
           <!-- <li><a href="#" class="main-menu button tiny radius disabled"><i class="fi-download"></i> Import Waypoints</a></li> -->
           <!-- <hr> -->
-          <li><a href="#" id="export-gpx" class="main-menu button tiny radius disabled"><i class="fi-map"></i> Export GPX</a></li>
+          <li><a href="#" id="export-gpx" class="main-menu button tiny radius"><i class="fi-map"></i> Export GPX</a></li>
           <!-- <li><a href="#" class="main-menu button tiny radius disabled"><i class="fi-upload"></i> Export Waypoints</a></li> -->
-          <li><a href="#" id="print-roadbook" class="main-menu button tiny radius disabled"><i class="fi-print"></i> Export PDF</a></li>
+          <li><a href="#" id="print-roadbook" class="main-menu button tiny radius"><i class="fi-print"></i> Export PDF</a></li>
           <hr>
         </ul>
     </aside>
@@ -163,8 +163,21 @@
                     </div>
                     <div class="row">
                       <div class="left large-12 column">
-                        <textarea class="waypoint-palette" data-bind="textInput: currentlyEditingWaypointNoteText" maxlength="90">
-                        </textarea>
+                        <!-- <textarea class="waypoint-palette" data-bind="textInput: currentlyEditingWaypointNoteText" maxlength="90">
+                        </textarea> -->
+
+                        <div id="note-toolbar" style="height:40px;">
+                          <!-- Add font size dropdown -->
+                          <select class="ql-size" style="width:55%;float: left;">
+                            <option value="10px">Small</option>
+                            <option value="13px" selected>Normal</option>
+                            <option value="18px">Large</option>
+                            <option value="32px">Huge</option>
+                          </select>
+                          <!-- Add a bold button -->
+                          <button class="ql-bold" style="padding:0.6rem;background:#fff;color:#000;"><i class="fi-bold"></i></button>
+                        </div>
+                        <div id="note-editor" style="width: 100%;height: 100px;box-shadow: 2px 3px 6px 1px rgba(0,0,0,0.60);"></div>
                       </div>
                     </div>
                   </div>
@@ -200,7 +213,7 @@
       <div class='waypoint-note'>
         <!--  render note glyph template-->
         <div class="glyph-container" data-bind="template: { name: 'note-glyph-template', foreach: noteGlyphs }"></div>
-        <p data-bind="text: noteText"></p>
+        <p data-bind="html: noteHTML"></p>
         <div class='heading' >
           <label>CAP </label><span data-bind="text: heading"></span>
         </div>
@@ -466,6 +479,7 @@
   <script src="assets/libs/knockout-3.4.0.js"></script>
   <script src='assets/libs/fabric.min.js'></script>
   <script src='assets/libs/simplify.js'></script>
+  <script src='assets/libs/quill/quill.min.js'></script>
   <script src='assets/libs/foundation-5.5.3/js/foundation.min.js'></script>
   <script src='assets/libs/foundation-5.5.3/js/foundation/foundation.tooltip.js'></script>
   <script src='assets/libs/foundation-5.5.3/js/vendor/modernizr.js'></script>

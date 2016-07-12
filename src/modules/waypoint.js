@@ -35,6 +35,7 @@ var Waypoint = Class({
     var text = wptJson.notes == undefined ? '' : wptJson.notes.text;
     var glyphs = wptJson.notes == undefined ? [] : wptJson.notes.glyphs;
     this.noteText = ko.observable(text);
+    this.noteHTML = ko.observable(text);
     this.noteGlyphs = ko.observableArray(glyphs);
 
     this.roadbook = roadbook;
