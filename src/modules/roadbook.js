@@ -12,7 +12,7 @@ var Roadbook = Class({
       declare some observable instance variables
     */
     this.name = ko.observable('Name your roadbook');
-    this.desc = ko.observable('Describe your roadbook, click me!');
+    this.desc = ko.observable('Describe your roadbook');
     this.totalDistance = ko.observable('0.00');
     this.waypoints = ko.observableArray([]);
 
@@ -22,11 +22,11 @@ var Roadbook = Class({
     // TODO how do we handle file name changes
     this.filePath = null;
     /*
-      Extend the binding for the palette's note text input
+      initialize rich text editors for waypoint note instructions
+      and also for the roadbook description
     */
-    // this.extendPaletteBinding();
-    // this.currentlyEditingWaypointNoteHTML = ko.observable().extend({paletteNoteChange: ""});
-    this.noteInputListener();
+    this.waypointNoteInputListener();
+    this.descriptionInputListener();
   },
 
   /*
@@ -86,6 +86,11 @@ var Roadbook = Class({
         routePoint.waypoint =  this.addWaypoint(opts);
       }
     }
+    // NOTE this is less than ideal
+    if(this.desc() !== null){
+      this.descriptionTextEditor.setHTML(this.desc());
+    }
+    // TODO this also needs to be abstracted to the app object
     app.mapEditor.updateRoute();
     var latLng = new google.maps.LatLng(points[0].lat, points[0].long);
     app.mapEditor.map.setCenter(latLng);
@@ -152,21 +157,27 @@ var Roadbook = Class({
     return Math.abs(~maxIndex);
   },
 
-  // extendPaletteBinding: function(){
-  //   var _this = this;
-  //   ko.extenders.paletteNoteChange = function(target, option) {
-  //       target.subscribe(function(newValue) {
-  //          if(_this.currentlyEditingWaypoint !== null) {
-  //            _this.currentlyEditingWaypoint.noteText(newValue);
-  //            _this.currentlyEditingWaypoint.noteHTML(newValue);
-  //          }
-  //       });
-  //       return target;
-  //   };
-  // },
+  /*
+    This function handles' listening to input on the roadbook description
+    and persisting it to the roadbook object
+  */
+  descriptionInputListener: function(){
+    var _this = this;
+    this.descriptionTextEditor = new Quill('#description-editor');
+    this.descriptionTextEditor.addModule('toolbar', {
+      container: '#description-toolbar'     // Selector for toolbar container
+    });
+    this.descriptionTextEditor.on('text-change', function(delta, source) {
+      newValue = _this.descriptionTextEditor.getHTML()
+      _this.desc(newValue);
+    });
+  },
 
-  // TODO this needs to be cleaned up and more modular
-  noteInputListener: function(){
+  /*
+    This function handles' listening to input on the waypoint palette
+    and persisting it to the waypoint object
+  */
+  waypointNoteInputListener: function(){
     var _this = this;
     this.noteTextEditor = new Quill('#note-editor');
     this.noteTextEditor.addModule('toolbar', {
@@ -198,7 +209,6 @@ var Roadbook = Class({
     if(waypoint != this.currentlyEditingWaypoint){ //we need this to discard click events fired from editing the waypoint tulip canvas
       this.finishWaypointEdit(); //clear any existing UI just to be sure
       this.currentlyEditingWaypoint = waypoint;
-      // TODO reinitialize the palette note instruction editor
       this.noteTextEditor.setHTML(waypoint.noteHTML());
       return true;
     }
@@ -259,7 +269,7 @@ var Roadbook = Class({
           entryTrackType: points[i].waypoint ? points[i].waypoint.entryTrackType : null,
           exitTrackType: points[i].waypoint ? points[i].waypoint.exitTrackType : null,
           notes: {
-            text: points[i].waypoint ? points[i].waypoint.noteText() : null,
+            text: points[i].waypoint ? points[i].waypoint.noteHTML() : null,
             glyphs: points[i].waypoint ? points[i].waypoint.noteGlyphs() : null,
           },
           tulipJson: points[i].waypoint ? points[i].waypoint.serializeTulip() : null,
@@ -292,7 +302,7 @@ var Roadbook = Class({
           kmFromPrev: points[i].waypoint.kmFromPrev(),
           heading: points[i].waypoint.exactHeading(),
           notes: {
-            text: points[i].waypoint.noteText(),
+            text: points[i].waypoint.noteHTML(),
             glyphs: points[i].waypoint.noteGlyphs(), //TODO need to convert paths into actual file contents
           },
           tulip: points[i].waypoint.tulipPNG(),

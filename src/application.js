@@ -254,27 +254,32 @@ var App = Class({
         }else {
           _this.saveRoadBook();
         }
-        $('.waypoint.row').show();
-        $('#waypoint-palette').hide();
-        $('#roadbook-desc, #roadbook-name').find(':input').hide('fast');
-        $('#roadbook-desc, #roadbook-name').find('a').show('fast');
       }
       $(this).blur();
     });
 
-    $('#roadbook-desc, #roadbook-name').find('a').click(function(){
+    $('#roadbook-desc, #roadbook-name').find('a.show-editor').click(function(){
       $(this).hide();
-      $(this).parent('div').find(':input').toggle('fast');
-      var text = $(this).parent('div').find(':input').val();
-      if($(this).data('default')){
-        $(this).parent('div').find(':input').val('');
-      } else {
-        $(this).parent('div').text();
+      $(this).siblings('.hide-editor').show();
+      $(this).siblings('.roadbook-header-input-container').slideDown('fast');
+      if($(this).hasClass('rb-name')){
+        $(this).parent('div').find(':input').focus();
       }
-      $(this).parent('div').find(':input').focus();
+      if($(this).hasClass('rb-desc')){
+        $('#roadbook-desc p').slideUp('fast');
+        _this.roadbook.descriptionTextEditor.focus();
+      }
       $('#save-roadbook').removeClass('secondary');
-      $(this).data('default', false)
       _this.roadbook.editingNameDesc = true;
+    });
+
+    $('#roadbook-desc, #roadbook-name').find('a.hide-editor').click(function(){
+      $(this).hide();
+      $(this).siblings('.show-editor').show();
+      $(this).siblings('.roadbook-header-input-container').slideUp('fast');
+      if($(this).hasClass('rb-desc')){
+        $('#roadbook-desc p').slideDown('fast');
+      }
     });
 
     /*
@@ -302,9 +307,7 @@ var App = Class({
           _this.mapControls.reorient();
           _this.mapControls.enableMapInteraction();
         }
-
       }
-
     });
 
     $('.track-grid').click(function(){
@@ -349,11 +352,7 @@ var App = Class({
     this.ipc.on('documents-path', function(event, arg){
       var path = arg+'/';
       path += _this.roadbook.name() == 'Name your roadbook' ? 'Untitled' : _this.roadbook.name().replace(' ', '-')
-      // TODO add show save dialog method and pass in the path
-      if(_this.showSaveDialog('Save roadbook', path)){
-        $('#print-roadbook').removeClass('disabled');
-        $('#export-gpx').removeClass('disabled');
-      }
+      _this.showSaveDialog('Save roadbook', path)
     });
   },
 });
@@ -391,11 +390,4 @@ function initMap() {
       missingAttribution = false;
     }
   });
-  /*
-    Initialize rte
-  */
-  // app.textEditor = new Quill('#note-editor');
-  // app.textEditor.addModule('toolbar', {
-  //   container: '#note-toolbar'     // Selector for toolbar container
-  // });
 }

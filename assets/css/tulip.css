@@ -110,30 +110,24 @@ textarea.waypoint-palette{
 
 #roadbook-name {border-left: 1px solid #000; min-height: 90px;}
 
-#roadbook-name,
-#roadbook-desc {
-  text-align: right;
+#roadbook-name a.hide-editor,
+#roadbook-desc a.hide-editor {
+  display: none;
 }
-#roadbook-total-distance{max-height: 90px;}
-#roadbook-name input,
-#roadbook-desc textarea{
-  display:none;
-}
-#roadbook-name a {font-size: 35px; text-align: right; width: 100%; font-family: bellybeans !important;}
-#roadbook-desc a {font-size: 15px; text-align: left;}
 
-#roadbook-name a,
-#roadbook-desc a{
-  color: #000;
-  font-family: Tahoma, Geneva, sans-serif;
+#roadbook-total-distance{max-height: 90px;}
+#roadbook-name .roadbook-header-input-container,
+#roadbook-desc .roadbook-header-input-container{
+  display:none;
+  width: 100%;
+  margin-top: 15px;
 }
-#roadbook-name a:hover {font-size: 35px;}
-#roadbook-desc a:hover{font-size: 25px;}
-#roadbook-name a:hover,
-#roadbook-desc a:hover{
-  color: rgba(255,144,0,1);
-  text-shadow: -3px 3px 2px rgba(0,0,0, 1);
-  font-family: bellybeans;
+#roadbook-name p {font-size: 30px; text-align: right; font-family: bellybeans !important;color: #000;}
+#roadbook-desc p {font-size: 15px; text-align: left;font-family: Tahoma, Geneva, sans-serif;color: #000; margin-left: 5px;width: 85%;}
+
+#roadbook-name p,
+#roadbook-desc p {
+  float: right;
 }
 #roadbook-total-distance p {
   font-family: "Lucida Console", Monaco, monospace;

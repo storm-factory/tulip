@@ -27,13 +27,6 @@
           </span>
         </li>
       </ul>
-      <!-- <ul class="left">
-        <li>
-          <a href="#" class="button tiny radius secondary" id="anti-clockwise" style="-webkit-transform: scaleX(-1)"><i class="fi-refresh"></i></a>
-          <a href="#" class="button tiny radius secondary" id="reorient"><i class="fi-compass"></i></a>
-          <a href="#" class="button tiny radius secondary" id="clockwise"><i class="fi-refresh"></i></a>
-        </li>
-      </ul> -->
     </nav>
     <!-- END NAV -->
     <!--  START ADVANCED MENU -->
@@ -84,16 +77,35 @@
                 <p data-bind="text: app.roadbook.totalDistance"></p>
               </div>
               <div id="roadbook-name" class="large-8 column">
-                <a href="#" data-bind="text: app.roadbook.name" data-default="true"></a>
-                 <input type="text" placeholder="Roadbook Name" data-bind="textInput: app.roadbook.name"/>
-
+                <a class="button tiny round alert hide-editor" title="Hide editor.">&#215;</a>
+                <a href=# class="button tiny radius secondary show-editor rb-name"><i class="fi-pencil"></i></a>
+                <p href="#" data-bind="text: app.roadbook.name"></p>
+                <div class="roadbook-header-input-container">
+                  <input type="text" placeholder="Roadbook Name" data-bind="textInput: app.roadbook.name"/>
+                </div>
               </div>
             </div>
             <div class="row">
               <hr>
               <div id="roadbook-desc" class="large-12 column">
-                <a href="#" data-bind="text: app.roadbook.desc" data-default="true"></a>
-                <textarea placeholder="Roadbook Description" data-bind="textInput: app.roadbook.desc"></textarea>
+                <a class="button tiny round alert hide-editor rb-desc" title="Hide editor.">&#215;</a>
+                <a href=# class="button tiny radius secondary show-editor rb-desc"><i class="fi-pencil"></i></a>
+                <p data-bind="html: app.roadbook.desc"></p>
+                <div class="roadbook-header-input-container">
+                  <div id="description-toolbar">
+                    <select class="ql-size" style="width:25%">
+                      <option value="10px">Small</option>
+                      <option value="13px" selected>Normal</option>
+                      <option value="18px">Large</option>
+                      <option value="32px">Huge</option>
+                    </select>
+                    <!-- Add a bold button -->
+                    <button class="ql-bold tiny secondary"><i class="fi-bold"></i></button>
+                    <button class="ql-italic tiny secondary "><i class="fi-italic"></i></button>
+                    <button class="ql-underline tiny secondary"><i class="fi-underline"></i></button>
+                  </div>
+                  <div id="description-editor"></div>
+                </div>
                 <hr>
               </div>
             </div>
@@ -157,7 +169,7 @@
                   <div class="left large-4 column">
                     <div class="row">
                       <div class="left large-12 column glyph-selection note-selection">
-                        <div class="tl glyph-grid note-grid" data-target="add"><i class="fi-plus"></i><i class="fi-arrow-right"></i></div>
+                        <div class="tl glyph-grid note-grid" data-target="add"><i class="fi-plus"></i></i></div>
                         <div class="tr glyph-grid note-grid undo" data-target="delete"><i class="fi-refresh"></i></div>
                       </div>
                     </div>
@@ -175,7 +187,7 @@
                             <option value="32px">Huge</option>
                           </select>
                           <!-- Add a bold button -->
-                          <button class="ql-bold" style="padding:0.6rem;background:#fff;color:#000;"><i class="fi-bold"></i></button>
+                          <button class="ql-bold tiny secondary" style="margin-top:2px"><i class="fi-bold"></i></button>
                         </div>
                         <div id="note-editor" style="width: 100%;height: 100px;box-shadow: 2px 3px 6px 1px rgba(0,0,0,0.60);"></div>
                       </div>
