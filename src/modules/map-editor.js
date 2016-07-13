@@ -33,7 +33,7 @@ var MapEditor = Class({
     this.route = new google.maps.Polyline({
       strokeColor: '#ffba29',
       strokeOpacity: 1.0,
-      strokeWeight: 4,
+      strokeWeight: 6,
       map: this.map,
       geodesic: true,
     });
@@ -407,23 +407,20 @@ var MapEditor = Class({
     /*
       Iterate through the point pairs on the segment
       determine which edge the latLng falls upon
-      and insert a new point into route at the index of the end point
+      and insert a new point into route at the index of the edge point
       then increment the mapVertexIndex of all the points after that index
     */
-    var x0 = latLng.lat();
-    var y0 = latLng.lng();
     var idx;
-    var done;
+
     for(i = 1; i < points.length; i++ ){
-      var x1 = points[i-1].lat();
-      var y1 = points[i-1].lng();
-      var x2 = points[i].lat();
-      var y2 = points[i].lng();
-      // does the event point fit in the bounds of the two reference points
-      if(((x1 <= x0 && x0 <= x2) || (x1 >= x0 && x0 >= x2)) && ((y1 <= y0 && y0 <= y2) || (y1 >= y0 && y0 >= y2))) {
-          idx = i;
-          this.addRoutePoint(latLng, i);
-          break; //we found it, we're done here
+      // does the event point fit in the bounds of the two reference points before and after the click
+      var path = [points[i-1],points[i]];
+      var line = new google.maps.Polyline({path: path});
+      var tolerance = Math.pow(this.map.getZoom(), -(this.map.getZoom()/4));
+      if(google.maps.geometry.poly.isLocationOnEdge(latLng, line, tolerance)) {
+        idx = i;
+        this.addRoutePoint(latLng, i);
+        break; //we found it, we're done here
       }
     }
     return idx;
@@ -482,9 +479,11 @@ var MapEditor = Class({
             Add listeners to move the new route point and the route to the mouse drag position of the handle
           */
           google.maps.event.addListener(handle, 'drag', function(evt){
-            var point = _this.routeMarkers[idx];
-            point.setPosition(evt.latLng);
-            _this.routePoints.setAt(point.mapVertexIndex, evt.latLng);
+            if(idx !== undefined){ //in rare instances this can happen and causes the map to glitch out
+              var point = _this.routeMarkers[idx];
+              point.setPosition(evt.latLng);
+              _this.routePoints.setAt(point.mapVertexIndex, evt.latLng);
+            }
           });
 
           /*

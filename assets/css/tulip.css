@@ -216,12 +216,12 @@ textarea.waypoint-palette{
   margin-right: 4px;
 }
 .tl.note-grid {
-  width: 60px !important;
+  width: 65px !important;
 }
 
 .tr.note-grid {
-  width: 60px !important;
-  left: 75px !important;
+  width: 65px !important;
+left: 85px !important;
 }
 
 .relative-distance {

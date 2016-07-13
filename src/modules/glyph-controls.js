@@ -7,6 +7,7 @@ var GlyphControls = Class({
     this.files = [];
     this.getGylphNames();
     this.initListeners();
+    this.addToNote = false;
   },
 
 
@@ -66,7 +67,7 @@ var GlyphControls = Class({
           app.roadbook.currentlyEditingWaypoint.removeLastNoteGlyph(); //TODO make app level function for this
           return
         }
-        $('.glyph').addClass('note');
+        _this.addToNote = true;
         $('#glyphs').foundation('reveal', 'open');
         setTimeout(function() { $('#glyph-search').focus(); }, 600); //we have to wait for the modal to be visible before we can assign focus
         return false
@@ -76,7 +77,7 @@ var GlyphControls = Class({
           return false
         }
         app.glyphPlacementPosition = {top: $(this).data('top'), left: $(this).data('left')};
-        $('.glyph').removeClass('note');
+        _this.addToNote = false;
         $('#glyphs').foundation('reveal', 'open');
         setTimeout(function() { $('#glyph-search').focus(); }, 600); //we have to wait for the modal to be visible before we can assign focus
         return false
@@ -87,7 +88,7 @@ var GlyphControls = Class({
   addGlyphToInstruction: function(element){
     var src = $(element).attr('src');
 
-    if($(element).hasClass('note')){
+    if(this.addToNote){
       app.roadbook.currentlyEditingWaypoint.addNoteGlyph(src)
     } else {
       app.roadbook.currentlyEditingWaypoint.tulip.addGlyph(app.glyphPlacementPosition,src);
