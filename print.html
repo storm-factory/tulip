@@ -36,7 +36,7 @@
       <div class="row">
         <hr>
         <div id="roadbook-desc" class="large-12 column">
-          <p href="#" data-bind="text: printApp.desc" data-default="true"></p>
+          <p href="#" data-bind="html: printApp.desc" data-default="true"></p>
           <hr>
         </div>
       </div>
@@ -65,7 +65,7 @@
         <div class='waypoint-note'>
           <!--  render note glyph template-->
           <div class="glyph-container" data-bind="template: { name: 'note-glyph-template', foreach: notes.glyphs }"></div>
-          <p data-bind="text: notes.text"></p>
+          <p data-bind="html: notes.text"></p>
           <div class='heading' >
             <label>CAP </label><span data-bind="text: Array(Math.max(3 - String(Math.round(heading)).length + 1, 0)).join(0) + Math.round(heading) + '\xB0'"></span>
           </div>
