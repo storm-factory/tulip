@@ -158,6 +158,39 @@ var MapEditor = Class({
       // return point distance options so a roadbook waypoint can be initialized
       return opts;
   },
+  /*
+    takes a response from google maps directions API and appends it to the route
+  */
+  appendGoogleDirectionsToMap: function(data){
+    var steps = data.routes[0].legs[0].steps
+    var waypoints = [];
+    for(var i=0;i<steps.length;i++){
+      var stepPoints = google.maps.geometry.encoding.decodePath(steps[i].polyline.points);
+
+      // NOTE if we change the simplified lib and also the io module to just use google maps LatLng objects instead of literals we could skip this.
+      var points = []
+      for(k=0;k<stepPoints.length;k++){
+        var point = {lat: stepPoints[k].lat(), lng: stepPoints[k].lng()}
+        points.push(point);
+      }
+      var simplify = new Simplify();
+      points = simplify.simplifyDouglasPeucker(points, 7e-9);
+
+      for (j=1;j<points.length;j++){
+        var latLng = new google.maps.LatLng(points[j].lat, points[j].lng);
+        var point = this.addRoutePoint(latLng);
+        //take the last point in the steps and add it to an array to turn into a waypoint later
+        // NOTE if we allow update route to redraw unedited tulips we can skip this.
+        if(j == points.length-1){
+          waypoints.push(point)
+        }
+      }
+    }
+    // add the waypoints in
+    for(i=0;i<waypoints.length;i++){
+        waypoints[i].waypoint = app.roadbook.addWaypoint(this.addWaypoint(waypoints[i]));
+    }
+  },
 
   /*
     Removes a point or waypoint from the route
@@ -436,7 +469,6 @@ var MapEditor = Class({
     });
 
     this.map.addListener('rightclick', function(evt){
-      console.log('rightclick');
       if(app.canEditMap){
         var startSnap = _this.routePoints.getArray().slice(-1).pop();
         var endSnap = evt.latLng;
@@ -448,11 +480,8 @@ var MapEditor = Class({
                     + "&key=" + api_keys.google_directions
         $.get(url,function(data){
           console.log(data);
-          var points = google.maps.geometry.encoding.decodePath(data.routes[0].overview_polyline.points);
-          //Ideally we can deconstruct the legs and create waypoints from them by adding the "leg_start" point object to a waypoints array
-          //and then looping through there and creating waypoints so the turns are correct
-          for (var i = 1; i < points.length-1; i++) {
-            _this.addRoutePoint(points[i]);
+          if(data.status == "OK"){
+            _this.appendGoogleDirectionsToMap(data);
           }
         });
       }
@@ -541,6 +570,4 @@ var MapEditor = Class({
       }
     }
   },
-
-
 });

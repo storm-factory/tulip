@@ -81,9 +81,8 @@ var Io = Class({
   parseGpxTracksToArray: function(gpxTracks){
     var tracks = []
     for(i=0;i<gpxTracks.length;i++){
-      var pointOne = {lat: parseFloat($(gpxTracks[i]).attr('lat')), lng: parseFloat($(gpxTracks[i]).attr('lon'))}
-      var pointTwo = {lat: parseFloat($(gpxTracks[i+1]).attr('lat')),lng: parseFloat($(gpxTracks[i+1]).attr('lon'))}
-      tracks.push(pointOne);
+      var point = {lat: parseFloat($(gpxTracks[i]).attr('lat')), lng: parseFloat($(gpxTracks[i]).attr('lon'))}
+      tracks.push(point);
     }
     return tracks;
   },
@@ -91,7 +90,7 @@ var Io = Class({
   processGpxTracksForImport: function(tracks){
     this.tracks = this.parseGpxTracksToArray(tracks);
     var simplify = new Simplify();
-    this.tracks = simplify.simplifyDouglasPeucker(this.tracks, 0.000000007);
+    this.tracks = simplify.simplifyDouglasPeucker(this.tracks, 7e-9);
     return this.tracks;
   },
 
