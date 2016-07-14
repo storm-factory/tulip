@@ -11,5 +11,6 @@
 2. Using npm install [electron-prebuilt](https://github.com/electron-userland/electron-prebuilt)
 3. Fork this repo
 4. Clone somewhere fancy on your local machine
-5. Navigate to local working directory `$ cd tulip`
-6. Launch electron `electron .`
+5. Add your mapping api keys to `api_keys.js.example`, then rename to `api_keys.js`
+6. Navigate to local working directory `$ cd tulip`
+7. Launch electron `electron .`

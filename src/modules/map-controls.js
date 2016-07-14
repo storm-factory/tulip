@@ -58,29 +58,5 @@ var MapControls = Class({
       $(this).blur();
     });
 
-    // $('#clockwise').click(function(){
-    //   _this.rotate(-1);
-    //   if(app.canEditMap){
-    //     _this.disableMapInteraction();
-    //   }
-    // });
-    //
-    // $('#reorient').click(function(){
-    //   _this.reorient();
-    //   if(!app.canEditMap){
-    //     _this.enableMapInteraction();
-    //   }
-    // });
-    //
-    // $('#anti-clockwise').click(function(){
-    //   _this.rotate(1);
-    //   if(app.canEditMap){
-    //     $('#draw-route').click();
-    //     $('#draw-route').hide();
-    //     $('#map-rotate-notice').show('fast');
-    //     app.map.setOptions({draggable: false});
-    //     $('#map-rotate-notice').fadeTo('slow', 0.5).fadeTo('slow', 1.0);
-    //   }
-    // });
   },
 });

@@ -500,6 +500,7 @@
     Load the application
   -->
   <script src='src/application.js'></script>
+  <script src='api_keys.js'></script>
   <!--
     Load modules
     TODO move to required calls in app?
@@ -512,7 +513,11 @@
   <script src='src/modules/roadbook.js'></script>
   <script src='src/modules/waypoint.js'></script>
   <script src='src/modules/io.js'></script>
-  <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBC3SLdbHfZGQKP3A_NRdAUewVFP9fwnYw&callback=initMap">
+  <script>
+  new function(){
+    var s = document.createElement( 'script' );
+    s.setAttribute( 'src', "https://maps.googleapis.com/maps/api/js?key=" + api_keys.google_maps + "&callback=initMap" );
+    document.body.appendChild( s );
+  }
   </script>
 </html>

@@ -435,6 +435,29 @@ var MapEditor = Class({
       }
     });
 
+    this.map.addListener('rightclick', function(evt){
+      console.log('rightclick');
+      if(app.canEditMap){
+        var startSnap = _this.routePoints.getArray().slice(-1).pop();
+        var endSnap = evt.latLng;
+        var url = "https://maps.googleapis.com/maps/api/directions/json?"
+                    + "origin="+startSnap.lat()+","
+                    + startSnap.lng()
+                    + "&destination=" + endSnap.lat()+","
+                    + endSnap.lng()
+                    + "&key=" + api_keys.google_directions
+        $.get(url,function(data){
+          console.log(data);
+          var points = google.maps.geometry.encoding.decodePath(data.routes[0].overview_polyline.points);
+          //Ideally we can deconstruct the legs and create waypoints from them by adding the "leg_start" point object to a waypoints array
+          //and then looping through there and creating waypoints so the turns are correct
+          for (var i = 1; i < points.length-1; i++) {
+            _this.addRoutePoint(points[i]);
+          }
+        });
+      }
+    });
+
     /*
       hovering over the route between verticies will display a handle, which if clicked on will add a point to the route
     */
