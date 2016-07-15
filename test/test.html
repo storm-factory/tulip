@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Tulip Unit Tests</title>
+  <!--
+    Load Libraries
+  -->
+  <link rel="stylesheet" href="../assets/libs/qunit-2.0.0.css">
+  <link rel="stylesheet" href="../assets/libs/foundation-5.5.3/css/foundation.css" />
+  <script>
+    //Jquery sees it is running in CommonJS env, and wants to be used as such.
+    window.$ = window.jQuery = require('../assets/libs/jquery-2.1.4.min.js');
+  </script>
+  <script src="../assets/libs/jsclass/dist/browser/js.class.min.js"></script>
+  <script src='../assets/libs/simplify.js'></script>
+  <script src="../assets/libs/knockout-3.4.0.js"></script>
+  <script src='../assets/libs/fabric.min.js'></script>
+  <script src='../assets/libs/quill/quill.min.js'></script>
+  <script src='../assets/libs/foundation-5.5.3/js/foundation.min.js'></script>
+  <script src='../assets/libs/foundation-5.5.3/js/foundation/foundation.tooltip.js'></script>
+  <script src='../assets/libs/foundation-5.5.3/js/vendor/modernizr.js'></script>
+  <!--
+    Load Modules
+  -->
+  <script src='../assets/libs/qunit-2.0.0.js'></script>
+  <script src='../src/modules/map-editor.js'></script>
+  <script src='../src/modules/map-controls.js'></script>
+  <script src='../src/modules/glyph-controls.js'></script>
+  <script src='../src/modules/tulip-editor.js'></script>
+  <script src='../src/modules/tulip.js'></script>
+  <script src='../src/modules/roadbook.js'></script>
+  <script src='../src/modules/waypoint.js'></script>
+  <script src='../src/modules/io.js'></script>
+
+  <!--
+    Load App
+  -->
+  <script src='../src/application.js'></script>
+  <script src='../api_keys.js'></script>
+  <!--
+    Load Tests
+  -->
+  <script src='./io_test.js'></script>
+
+  <!--
+    Foundation Corrections
+  -->
+  <style>
+    #qunit-modulefilter-search-container:after{top:30px;}
+    .qunit-filter button {padding: 0.625rem 1.25rem 0.6875rem 1.25rem;font-size: 0.6875rem; }
+  </style>
+</head>
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture">
+    <div id="map"></div>
+    <div id="description-toolbar"></div>
+    <div id="description-editor"></div>
+    <div id="note-toolbar"></div>
+    <div id="note-editor"></div>
+  </div>
+</body>
+<script>
+new function(){
+  var s = document.createElement( 'script' );
+  s.setAttribute( 'src', "https://maps.googleapis.com/maps/api/js?key=" + api_keys.google_maps + "&callback=initMap" );
+  document.body.appendChild( s );
+}
+</script>
+</html>

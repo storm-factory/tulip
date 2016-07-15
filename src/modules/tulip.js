@@ -360,7 +360,9 @@ var Tulip = Class({
     // NOTE not sure, but again here the for loop doesn't error out like the for each
     for(glyph of this.glyphs) {
       // TODO replace source with app relative path
-      glyphsJson.push(glyph.toJSON());
+      var json = glyph.toJSON()
+      json.src = this.truncateGlyphSource(json.src);
+      glyphsJson.push(json);
     }
     return glyphsJson;
   },
@@ -368,5 +370,10 @@ var Tulip = Class({
   toPNG: function(){
     return this.canvas.toDataURL();
   },
+
+  truncateGlyphSource: function(src){
+    var index = src.lastIndexOf("assets/svg/glyphs");
+    return "./" + src.slice(index);
+  }
 
 });

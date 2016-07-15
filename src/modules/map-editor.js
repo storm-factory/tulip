@@ -43,7 +43,7 @@ var MapEditor = Class({
 
       Adding a latLng object to this array will insert a new vertex onto the route Polyline.
 
-      UI interfacing is accomplished by the following two arrays routeMarkers and routeWaypoints
+      UI interfacing is accomplished by the following two arrays routeMarkers and routePoints
     */
     this.routePoints = this.route.getPath();
 
@@ -190,6 +190,7 @@ var MapEditor = Class({
     for(i=0;i<waypoints.length;i++){
         waypoints[i].waypoint = app.roadbook.addWaypoint(this.addWaypoint(waypoints[i]));
     }
+    this.updateRoute();
   },
 
   /*
@@ -479,7 +480,6 @@ var MapEditor = Class({
                     + endSnap.lng()
                     + "&key=" + api_keys.google_directions
         $.get(url,function(data){
-          console.log(data);
           if(data.status == "OK"){
             _this.appendGoogleDirectionsToMap(data);
           }
