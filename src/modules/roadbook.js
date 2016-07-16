@@ -1,5 +1,5 @@
 var Roadbook = Class({
-  create: function(opts){
+  create: function(){
     /*
       declare some state instance variables
     */
@@ -55,6 +55,7 @@ var Roadbook = Class({
     this.reindexWaypoints();
 
     //persistence tracking
+    // TODO how often is this used?
     this.newWaypoints = true;
     $('#save-roadbook').removeClass('secondary');
 

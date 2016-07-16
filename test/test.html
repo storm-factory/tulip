@@ -43,6 +43,7 @@
     Load Tests
   -->
   <script src='./io_test.js'></script>
+  <script src='./waypoint_test.js'></script>
 
   <!--
     Foundation Corrections
@@ -55,11 +56,194 @@
 <body>
   <div id="qunit"></div>
   <div id="qunit-fixture">
-    <div id="map"></div>
-    <div id="description-toolbar"></div>
-    <div id="description-editor"></div>
-    <div id="note-toolbar"></div>
-    <div id="note-editor"></div>
+    <div id="content">
+      <div class="content-container">
+        <!-- <div class='map-container column' > -->
+          <div id="map">
+          </div>
+        <!-- </div> -->
+        <div class='roadbook-container collapsed'>
+          <div class="row" id="roadbook-header">
+            <div class="large-3 column title">
+              Tulip
+            </div>
+            <div class="large-5 column menu">
+              <a href="#" class="button tiny radius secondary" id="save-roadbook" data-tooltip aria-haspopup="true" class="has-tip button tiny radius alert" title="Click to save. Shift+click to 'Save as'">
+                <i class="fi-save"></i>
+              </a>
+              <a href="#" class="button tiny radius secondary" id="toggle-roadbook"><i class="fi-arrow-down"></i></a>
+              <a href="#" class="button tiny radius secondary right-off-canvas-toggle" id="main-menu"><i class="fi-list"></i></a>
+            </div>
+          </div>
+          <div id="roadbook">
+            <hr>
+            <div class="row">
+              <div id="roadbook-total-distance" class="large-4 column">
+                Total Kilometers:
+                <p data-bind="text: app.roadbook.totalDistance"></p>
+              </div>
+              <div id="roadbook-name" class="large-8 column">
+                <a class="button tiny round alert hide-editor" title="Hide editor.">&#215;</a>
+                <a href=# class="button tiny radius secondary show-editor rb-name"><i class="fi-pencil"></i></a>
+                <p href="#" data-bind="text: app.roadbook.name"></p>
+                <div class="roadbook-header-input-container">
+                  <input type="text" placeholder="Roadbook Name" data-bind="textInput: app.roadbook.name"/>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <hr>
+              <div id="roadbook-desc" class="large-12 column">
+                <a class="button tiny round alert hide-editor rb-desc" title="Hide editor.">&#215;</a>
+                <a href=# class="button tiny radius secondary show-editor rb-desc"><i class="fi-pencil"></i></a>
+                <p data-bind="html: app.roadbook.desc"></p>
+                <div class="roadbook-header-input-container">
+                  <div id="description-toolbar">
+                    <select class="ql-size" style="width:25%">
+                      <option value="10px">Small</option>
+                      <option value="13px" selected>Normal</option>
+                      <option value="18px">Large</option>
+                      <option value="32px">Huge</option>
+                    </select>
+                    <!-- Add a bold button -->
+                    <button class="ql-bold tiny secondary"><i class="fi-bold"></i></button>
+                    <button class="ql-italic tiny secondary "><i class="fi-italic"></i></button>
+                    <button class="ql-underline tiny secondary"><i class="fi-underline"></i></button>
+                  </div>
+                  <div id="description-editor"></div>
+                </div>
+                <hr>
+              </div>
+            </div>
+            <!-- render waypoint templates here -->
+            <div id="roadbook-waypoints" data-bind="template: { name: 'waypoint-template', foreach: app.roadbook.waypoints }"></div>
+            <!--  palette for editing waypoint content -->
+            <div id="waypoint-palette">
+              <div class="row">
+                <div class="large-12 column text-right">
+                  <a id="orient-map" class="button tiny round success" title="Orient map with tulip"><i class="fi-compass"></i></a>
+                  <a id="hide-palette" class="button tiny round alert" title="Hide palette.">&#215;</a>
+                </div>
+              </div>
+              <div id="waypoint-tulip-controls" class="content active">
+                <div class="row">
+                  <div class="large-4 column selection-label">
+                    <span data-tooltip aria-haspopup="true" class="has-tip" title="Add tracks to the tulip radiating from the center in the selected direction. Change the drawn type using the track menu">
+                      Tulip tracks
+                    </span>
+                    <a href="#" class="button tiny radius secondary" id="track-selection" data-reveal-id="track-selection-modal"><i class="fi-list"></i></a>
+                  </div>
+                  <div class="large-4 column selection-label">
+                    <span data-tooltip aria-haspopup="true" class="has-tip" title="Add glyphs to the tulip in the selected position">
+                      Tulip glyphs
+                    </span>
+                  </div>
+                  <div class="large-4 column selection-label">
+                    <span data-tooltip aria-haspopup="true" class="has-tip" title="Add up to 3 glyphs to the top of the note section. On the lower section up to 90 chars of text can be added">
+                      Waypoint notes
+                    </span>
+                  </div>
+                  <hr>
+                </div>
+                <div class="row">
+                  <div class="large-4 column track-selection">
+                    <div class="tl track-grid" data-angle="-45"><div><i class="fi-arrow-up"></i></div></div>
+                    <div class="tm track-grid" data-angle="0"><i class="fi-arrow-up"></i></div>
+                    <div class="tr track-grid" data-angle="45"><div><i class="fi-arrow-up"></i></div></div>
+
+                    <div class="ml track-grid" data-angle="-90"><i class="fi-arrow-left"></i></div>
+                    <div class="mm track-grid undo"><i class="fi-refresh"></i></div>
+                    <div class="mr track-grid" data-angle="90"><i class="fi-arrow-right"></i></div>
+
+                    <div class="ll track-grid" data-angle="-135"><div><i class="fi-arrow-down"></i></div></div>
+                    <div class="lm track-grid"data-angle="180"><i class="fi-arrow-down"></i></div>
+                    <div class="lr track-grid" data-angle="135"><div><i class="fi-arrow-down"></i></div></div>
+                  </div>
+                  <div class="left large-4 column glyph-selection">
+                    <div class="tl glyph-grid" data-top="30" data-left="30"><i class="fi-plus"></i></div>
+                    <div class="tm glyph-grid" data-top="30" data-left="85"><i class="fi-plus"></i></div>
+                    <div class="tr glyph-grid" data-top="30" data-left="145"><i class="fi-plus"></i></div>
+
+                    <div class="ml glyph-grid" data-top="95" data-left="30"><i class="fi-plus"></i></div>
+                    <div class="mm glyph-grid undo"><i class="fi-refresh"></i></div>
+                    <div class="mr glyph-grid" data-top="95" data-left="145"><i class="fi-plus"></i></div>
+
+                    <div class="ll glyph-grid" data-top="140" data-left="30"><i class="fi-plus"></i></div>
+                    <div class="lm glyph-grid" data-top="140" data-left="85"><i class="fi-plus"></i></div>
+                    <div class="lr glyph-grid" data-top="140" data-left="145"><i class="fi-plus"></i></div>
+                  </div>
+                  <div class="left large-4 column">
+                    <div class="row">
+                      <div class="left large-12 column glyph-selection note-selection">
+                        <div class="tl glyph-grid note-grid" data-target="add"><i class="fi-plus"></i></i></div>
+                        <div class="tr glyph-grid note-grid undo" data-target="delete"><i class="fi-refresh"></i></div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="left large-12 column">
+                        <!-- <textarea class="waypoint-palette" data-bind="textInput: currentlyEditingWaypointNoteText" maxlength="90">
+                        </textarea> -->
+
+                        <div id="note-toolbar" style="height:40px;margin-top: 10px;
+">
+                          <!-- Add font size dropdown -->
+                          <select class="ql-size" style="width:55%;float: left;">
+                            <option value="10px">Small</option>
+                            <option value="13px" selected>Normal</option>
+                            <option value="18px">Large</option>
+                            <option value="32px">Huge</option>
+                          </select>
+                          <!-- Add a bold button -->
+                          <button class="ql-bold tiny secondary" style="margin-top:2px;margin-left:15px;"><i class="fi-bold"></i></button>
+                        </div>
+                        <div id="note-editor" style="width: 100%;height: 100px;box-shadow: 2px 3px 6px 1px rgba(0,0,0,0.60);"></div>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--  END CONTENT -->
+    <!-- HACK this should be handled by the knockout bindings -->
+    <canvas width='180' height='180'>
+    </canvas>
+    <!--
+      Define templates
+    -->
+    <!--  waypoint template-->
+    <script type="text/html" id="waypoint-template">
+      <div class='waypoint row'>
+        <div class='waypoint-distance'>
+          <div class='total-distance'>
+            <div data-bind="text: totalDistance">
+            </div>
+          </div>
+          <div class="relative-distance">
+            <div data-bind="text: distFromPrev">
+            </div>
+          </div>
+        </div>
+        <div class='waypoint-tulip'>
+          <canvas data-bind="waypointCanvasRendered" width='180' height='180'>
+          </canvas>
+        </div>
+        <div class='waypoint-note'>
+          <!--  render note glyph template-->
+          <div class="glyph-container" data-bind="template: { name: 'note-glyph-template', foreach: noteGlyphs }"></div>
+          <p data-bind="html: noteHTML"></p>
+          <div class='heading' >
+            <label>CAP </label><span data-bind="text: heading"></span>
+          </div>
+        </div>
+      </div>
+    </script>
+    <!-- note glyph template-->
+    <script type="text/html" id="note-glyph-template">
+      <img data-bind="attr: { src: src}">
+    </script>
   </div>
 </body>
 <script>

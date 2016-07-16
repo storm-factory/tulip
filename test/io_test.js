@@ -35,9 +35,10 @@ QUnit.test("IO WaypointSharesTrackpoint", function( assert ) {
 
 /*
   NOTE what this section shows is that we need a way to refresh the app
+  this should be able to be two seperate tests
 */
 
-QUnit.test("IO ImportGPX/ExportGPX", function( assert ) {
+QUnit.test("IO ImportGPX --> ExportGPX", function( assert ) {
   app.io.importGPX(gpx);
 
   assert.equal(app.roadbook.waypoints().length, 6, "It imports waypoints into roadbook")
