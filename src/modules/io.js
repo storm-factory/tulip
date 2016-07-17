@@ -7,7 +7,7 @@ var Io = Class({
     this.importGPXTracks($.makeArray(this.gpx.find( "trkpt" )));
     this.importGPXWaypoints($.makeArray(this.gpx.find( "wpt" )));
 
-    // TODO abstract this to the app
+    // TODO abstract this to the app as roadbookHasWaypoints
     if(app.mapEditor.routeMarkers[0].waypoint == null){
       this.addWaypoint(0);
     }
@@ -65,7 +65,7 @@ var Io = Class({
     }
     var latLng = new google.maps.LatLng(tracks[0].lat, tracks[0].lng);
     // TODO abstract this to the app
-    app.map.setCenter(latLng);
+    app.setMapCenter(latLng);
   },
 
 

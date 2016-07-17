@@ -152,6 +152,11 @@ var App = Class({
     }
   },
 
+  setMapCenter: function(latLng){
+    this.map.setCenter(latLng);
+    google.maps.event.trigger(this.map,'resize')
+  },
+
   showSaveDialog: function(title,path) {
     var _this = this;
     this.dialog.showSaveDialog({

@@ -44,10 +44,11 @@ var Roadbook = Class({
        check the exit track of the one before it
        and set this one's exit and entry to have the same track type
     */
-    if(this.waypoints().length > 0) {
+    if(index > 0) {
       wptData.entryTrackType = this.waypoints()[index-1].exitTrackType;
       wptData.exitTrackType = wptData.entryTrackType;
     }
+
     //create the waypoint
     var waypoint = new Waypoint(this, wptData);
 
@@ -118,8 +119,9 @@ var Roadbook = Class({
     var waypoint = this.currentlyEditingWaypoint;
     waypoint.changeExitTrackType(type);
     var waypointIndex = this.waypoints().indexOf(waypoint)
-    //if it's the first waypoint we can't change the previous waypoint exit
-    if((waypointIndex+1 < this.waypoints().length) && (waypointIndex != 0) ){
+    //if it's the last waypoint we can't change the next waypoint entry
+    console.log((waypointIndex+1 < this.waypoints().length));
+    if((waypointIndex+1 < this.waypoints().length)){
       this.waypoints()[waypointIndex+1].changeEntryTrackType(type);
     }
   },

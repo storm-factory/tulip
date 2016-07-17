@@ -58,7 +58,6 @@ QUnit.test("Waypoint Tulip", function( assert ) {
   var trackTypes = {entryTrackType: waypoint.entryTrackType, exitTrackType: waypoint.exitTrackType};
   waypoint.initTulip($('canvas')[0], angle, trackTypes, tulipJson);
   assert.ok(waypoint.tulip instanceof Tulip, "It can create a tulip");
-
   assert.equal(JSON.stringify(waypoint.serializeTulip()), tulipJSON, "It can export its tulip to JSON");
   assert.equal(waypoint.tulipPNG(), tulipPNG, "It can export its tulip to PNG");
 });
