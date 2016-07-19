@@ -24,6 +24,7 @@ var Io = Class({
   addWaypoint: function(index){
     // TODO abstract this to the app
     var routePoint = app.mapEditor.routeMarkers[index];
+
     var opts = app.mapEditor.addWaypoint(routePoint);
     // TODO abstract this to the app
     routePoint.waypoint =  app.roadbook.addWaypoint(opts);
@@ -58,6 +59,7 @@ var Io = Class({
     if(tracks.length > 0){
       var tracks = this.processGpxTracksForImport(tracks);
       for(i=0;i<tracks.length;i++){
+
         var latLng = new google.maps.LatLng(tracks[i].lat, tracks[i].lng);
         // TODO abstract this to the app
         app.mapEditor.addRoutePoint(latLng, null, true); //this returns a point
@@ -72,14 +74,15 @@ var Io = Class({
   importGPXWaypoints: function(waypoints){
     //logic to import into roadbook
     if(waypoints.length > 0){
-
       for(waypoint of waypoints){
         var index = this.waypointSharesTrackpoint(waypoint);
+
         if(index == -1){
           var latLng = new google.maps.LatLng($(waypoint).attr('lat'), $(waypoint).attr('lon'));
           // TODO abstract this to the app
           index = app.mapEditor.insertPointOnEdge(latLng);
         }
+
         if(index !== undefined){
           this.addWaypoint(index);
         }

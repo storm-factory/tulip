@@ -14,6 +14,7 @@ var Tulip = Class({
     this.activeEditors = [];
     this.trackTypes = {};
     this.addedTrackType = 'track';
+    this.exitTrackUneditedPath = true;
 
     this.initTrackTypes();
     this.initTulip(angle, trackTypes, json);
@@ -53,7 +54,7 @@ var Tulip = Class({
     this.exitTrack.hasBorders = false;
     this.exitTrack.hasControls = false;
     this.exitTrackEnd = point;
-    this.exitTrackEnd.track = this.exitTrack
+    this.exitTrackEnd.track = this.exitTrack;
     this.exitTrack.end = this.exitTrackEnd;
   },
 
@@ -141,6 +142,8 @@ var Tulip = Class({
   */
   buildFromJson: function(json){
 
+
+    this.exitTrackUneditedPath = json.exitTrackUneditedPath !== undefined ? json.exitTrackUneditedPath : true;
     var _this = this;
     var numTracks = json.tracks.length;
     // build a propperly formatted json string to import
@@ -203,6 +206,7 @@ var Tulip = Class({
   },
 
   buildExit: function(angle,type='track'){
+    // console.log(this.buildTrackPathString(angle),this.trackTypes[type]);
     var exit = new fabric.Path(this.buildTrackPathString(angle),this.trackTypes[type]);
     var point = new fabric.Triangle({
       left: exit.path[3][5],
@@ -227,7 +231,8 @@ var Tulip = Class({
 
   beginEdit: function(event) {
     this.activeEditors.push(new TulipEditor(this.canvas, this.entryTrack,true, false, true));
-    this.activeEditors.push(new TulipEditor(this.canvas, this.exitTrack,false, true, true));
+    this.uneditedPath = $(this.exitTrack.toSVG()).attr('d');
+    this.activeEditors.push(new TulipEditor(this.canvas, this.exitTrack ,false, true, true));
     for(i=0;i<this.tracks.length;i++){
       this.activeEditors.push(new TulipEditor(this.canvas, this.tracks[i],true, true, false));
     }
@@ -235,7 +240,7 @@ var Tulip = Class({
 
   /*
     Creates an SVG string form the assumption that we are originating at the point (90,90) and vectoring out from there at a given angle
-    the angles is provided from the mapping module.
+    The angle is provided from the mapping module.
   */
   buildTrackPathString: function(angle) {
 
@@ -243,17 +248,17 @@ var Tulip = Class({
     var xy2 =  this.rotatePoint(18,angle);
     var xy3 =  this.rotatePoint(27,angle);
     var set1 = [[xy1[0], xy1[1]],[xy2[0], xy2[1]],[xy3[0], xy3[1]]];
-
+    // console.log(set1);
     xy1 =  this.rotatePoint(36,angle);
     xy2 =  this.rotatePoint(45,angle);
     xy3 =  this.rotatePoint(54,angle);
     var set2 = [[xy1[0], xy1[1]],[xy2[0], xy2[1]],[xy3[0], xy3[1]]];
-
+    // console.log(set2);
     xy1 =  this.rotatePoint(63,angle);
     xy2 =  this.rotatePoint(72,angle);
     xy3 =  this.rotatePoint(81,angle);
     var set3 = [[xy1[0], xy1[1]],[xy2[0], xy2[1]],[xy3[0], xy3[1]]];
-
+    // console.log(set3);
     var trackString = 'M 90 90 C '+ set1[0][0] +', '+ set1[0][1] +', '+ set1[1][0] +', '+ set1[1][1] +', '+ set1[2][0] +', '+ set1[2][1]
                         + ' C '+ set2[0][0] +', '+ set2[0][1] +', '+ set2[1][0] +', '+ set2[1][1] +', '+ set2[2][0] +', '+ set2[2][1]
                         + ' C '+ set3[0][0] +', '+ set3[0][1] +', '+ set3[1][0] +', '+ set3[1][1] +', '+ set3[2][0] +', '+ set3[2][1]
@@ -275,11 +280,24 @@ var Tulip = Class({
     this.canvas.renderAll();
   },
 
+  changeExitAngle(angle){
+    if(!this.exitTrackChanged){
+      this.canvas.remove(this.exitTrack);
+      this.canvas.remove(this.exitTrackEnd);
+
+      this.buildExit(angle);
+    }
+  },
+
   finishEdit: function() {
     for(i = 0; i < this.activeEditors.length; i++) {
       this.activeEditors[i].destroy();
     }
     this.activeEditors = [];
+
+    if(this.uneditedPath != $(this.exitTrack.toSVG()).attr('d')){
+      this.exitTrackUneditedPath = false
+    }
     // remove controls from glyphs and update the canvas' visual state
     this.canvas.deactivateAll().renderAll();
   },
@@ -305,33 +323,16 @@ var Tulip = Class({
     The mapping module returns the angle of the turn with a positive value if it's a right turn and a negative value if it's a left turn
 
     This function takes a magnitude of a vector from a typical cartesian system with an origin of (0,0) and rotates that by the specified angle.
-    (In other words, the y component of a vector which originates at the origin and parallels the y axis.)
+    (In other words, the y component of a vector which originates at the origin and parallels the y axis tending to infinity.)
     It then transforms the (x,y) components of the vector back to the weird (90,90) origin system and returns them as an array.
   */
   rotatePoint: function(magnitude,angle){
 
-    var a = angle;
-    angle = angle * (Math.PI / 180); //convert to radians
-    //q1
-    if(0 > a && a >= -90){
-      var x = Math.round(magnitude * (Math.sin(angle)));
-      var y = -Math.round(magnitude * (Math.cos(angle)));
-    }
-    //q2
-    if(-90 > a && a >= -180){
-      var x = Math.round(magnitude * (Math.sin(angle)));
-      var y = -Math.round(magnitude * (Math.cos(angle)));
-    }
-    //q3
-    if(90 < a && a <= 180){
-      var x = Math.round(magnitude * (Math.sin(angle)));
-      var y = -Math.round(magnitude * (Math.cos(angle)));
-    }
-    //q4
-    if(0 <= a && a <= 90) {
-      var x = Math.round(magnitude * (Math.sin(angle)));
-      var y = -Math.round(magnitude * (Math.cos(angle)));
-    }
+    //convert to radians
+    angle = angle * (Math.PI / 180);
+
+    var x = Math.round(magnitude * (Math.sin(angle)));
+    var y = -Math.round(magnitude * (Math.cos(angle)));
 
     return [x + 90, y + 90]
   },
@@ -345,6 +346,7 @@ var Tulip = Class({
         point: this.entryTrackOrigin,
         path: this.entryTrack
       },
+      exitTrackUneditedPath: this.exitTrackUneditedPath,
       exit: {
         point: this.exitTrackEnd,
         path: this.exitTrack
@@ -359,7 +361,6 @@ var Tulip = Class({
     var glyphsJson = [];
     // NOTE not sure, but again here the for loop doesn't error out like the for each
     for(glyph of this.glyphs) {
-      // TODO replace source with app relative path
       var json = glyph.toJSON()
       json.src = this.truncateGlyphSource(json.src);
       glyphsJson.push(json);

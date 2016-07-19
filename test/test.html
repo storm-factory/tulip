@@ -13,26 +13,26 @@
     //Jquery sees it is running in CommonJS env, and wants to be used as such.
     window.$ = window.jQuery = require('../assets/libs/jquery-2.1.4.min.js');
   </script>
-  <script src="../assets/libs/jsclass/dist/browser/js.class.min.js"></script>
-  <script src='../assets/libs/simplify.js'></script>
-  <script src="../assets/libs/knockout-3.4.0.js"></script>
   <script src='../assets/libs/fabric.min.js'></script>
-  <script src='../assets/libs/quill/quill.min.js'></script>
   <script src='../assets/libs/foundation-5.5.3/js/foundation.min.js'></script>
   <script src='../assets/libs/foundation-5.5.3/js/foundation/foundation.tooltip.js'></script>
   <script src='../assets/libs/foundation-5.5.3/js/vendor/modernizr.js'></script>
+  <script src="../assets/libs/jsclass/dist/browser/js.class.min.js"></script>
+  <script src="../assets/libs/knockout-3.4.0.js"></script>
+  <script src='../assets/libs/quill/quill.min.js'></script>
+  <script src='../assets/libs/qunit-2.0.0.js'></script>
+  <script src='../assets/libs/simplify.js'></script>
   <!--
     Load Modules
   -->
-  <script src='../assets/libs/qunit-2.0.0.js'></script>
+  <script src='../src/modules/glyph-controls.js'></script>
+  <script src='../src/modules/io.js'></script>
   <script src='../src/modules/map-editor.js'></script>
   <script src='../src/modules/map-controls.js'></script>
-  <script src='../src/modules/glyph-controls.js'></script>
+  <script src='../src/modules/roadbook.js'></script>
   <script src='../src/modules/tulip-editor.js'></script>
   <script src='../src/modules/tulip.js'></script>
-  <script src='../src/modules/roadbook.js'></script>
   <script src='../src/modules/waypoint.js'></script>
-  <script src='../src/modules/io.js'></script>
 
   <!--
     Load App
@@ -43,9 +43,10 @@
     Load Tests
   -->
   <script src='./io_test.js'></script>
-  <script src='./waypoint_test.js'></script>
   <script src='./roadbook_test.js'></script>
-  
+  <script src='./tulip_test.js'></script>
+  <script src='./waypoint_test.js'></script>
+
   <!--
     Foundation Corrections
   -->

@@ -104,7 +104,6 @@ var Roadbook = Class({
   },
 
   changeEditingWaypointEntry: function(type){
-    console.log('entry: ' + type);
     var waypoint = this.currentlyEditingWaypoint;
     waypoint.changeEntryTrackType(type);
     var waypointIndex = this.waypoints().indexOf(waypoint)
@@ -115,12 +114,10 @@ var Roadbook = Class({
   },
 
   changeEditingWaypointExit: function(type){
-    console.log('exit: ' + type);
     var waypoint = this.currentlyEditingWaypoint;
     waypoint.changeExitTrackType(type);
     var waypointIndex = this.waypoints().indexOf(waypoint)
     //if it's the last waypoint we can't change the next waypoint entry
-    console.log((waypointIndex+1 < this.waypoints().length));
     if((waypointIndex+1 < this.waypoints().length)){
       this.waypoints()[waypointIndex+1].changeEntryTrackType(type);
     }

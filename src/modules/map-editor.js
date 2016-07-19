@@ -393,6 +393,7 @@ var MapEditor = Class({
       _this.deletePoint(this);
       _this.displayEdge = true;
       app.roadbook.updateTotalDistance();
+      _this.updateRoute();
     });
 
     /*
@@ -466,6 +467,7 @@ var MapEditor = Class({
     this.map.addListener('click', function(evt){
       if(app.canEditMap){
         _this.addRoutePoint(evt.latLng)
+        _this.updateRoute();
       }
     });
 
@@ -566,7 +568,7 @@ var MapEditor = Class({
         }
         previous = marker;
         // TODO just needs to be an object
-        marker.waypoint.updateWaypoint(distances, angles.heading,{lat: marker.getPosition().lat(), lng: marker.getPosition().lng()}, marker.mapVertexIndex );
+        marker.waypoint.updateWaypoint(distances, angles,{lat: marker.getPosition().lat(), lng: marker.getPosition().lng()}, marker.mapVertexIndex );
       }
     }
   },

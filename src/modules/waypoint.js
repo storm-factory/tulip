@@ -81,13 +81,14 @@ var Waypoint = Class({
     this.tulip = new Tulip(element, angle, trackTypes, json);
   },
 
-  updateWaypoint: function (distances, heading, latLng, mapVertexIndex){
+  updateWaypoint: function (distances, angles, latLng, mapVertexIndex){
     if(distances){
       this.kmFromStart(distances.kmFromStart);
       this.kmFromPrev(distances.kmFromPrev);
     }
-    if(heading){
-      this.exactHeading(heading);
+    if(angles){
+      this.exactHeading(angles.heading);
+      this.tulip.changeExitAngle(angles.relativeAngle);
     }
     if(latLng){
       this.lat(latLng.lat);
