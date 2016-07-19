@@ -4,7 +4,6 @@
   TODO make this a module for map route path and maybe also points, make seperate module for listeners, and a final module for waypoints(roadbook module), potentially with observer implimentation
 */
 var MapEditor = Class({
-  singleton: true,
 
   create: function(){
     this.initMap();

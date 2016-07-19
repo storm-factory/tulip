@@ -78,6 +78,7 @@ var Roadbook = Class({
         var opts = app.mapEditor.addWaypoint(routePoint); //this returns distance opts but if we already have that saved then why do we care?
         opts.tulipJson = point.tulipJson;
         opts.angles.heading = point.heading;
+        opts.angles.relativeAngle = undefined;
 
         // NOTE: this is just to avoid breaking changes for v1.2b, it should come out in the next release
         for(i=0;i<point.notes.glyphs.length;i++){

@@ -42,6 +42,7 @@ var Waypoint = Class({
 
     var _this = this;
     var angle = wptJson.angles.relativeAngle;
+    console.log(wptJson);
     var json = wptJson.tulipJson;
     var trackTypes = {entryTrackType: this.entryTrackType, exitTrackType: this.exitTrackType};
     ko.bindingHandlers.waypointCanvasRendered = {

@@ -21,7 +21,7 @@
   ---------------------------------------------------------------------------
 */
 var App = Class({
-  singleton: true,
+  // singleton: true,
 
   create: function(){
     /*
@@ -93,6 +93,7 @@ var App = Class({
           // We need to ask whether they want to open a new roadbook or append an existing one to the currently
           // being edited RB
           _this.roadbook.appendRouteFromJSON(json,fileName); //TODO this needs to only pass json once choice is added
+          console.log(json);
         });
         $('#toggle-roadbook').click();
         $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
@@ -363,21 +364,11 @@ var App = Class({
 });
 /*
   ---------------------------------------------------------------------------
-  Instantiate the application
-  ---------------------------------------------------------------------------
-*/
-$(document).ready(function(){
-  app = App.instance();
-  ko.applyBindings(app.roadbook);
-  $(document).foundation();
-});
-/*
-  ---------------------------------------------------------------------------
   Instantiate the google map
   ---------------------------------------------------------------------------
 */
 function initMap() {
-  app.mapEditor = MapEditor.instance();
+  app.mapEditor = new MapEditor();
   app.map = app.mapEditor.map;
 
 

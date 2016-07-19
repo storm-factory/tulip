@@ -15,7 +15,6 @@ var Tulip = Class({
     this.trackTypes = {};
     this.addedTrackType = 'track';
     this.exitTrackUneditedPath = true;
-
     this.initTrackTypes();
     this.initTulip(angle, trackTypes, json);
   },
@@ -32,7 +31,7 @@ var Tulip = Class({
     Creates a tulip either from passed in json from a file load or from a angle provided by UI wpt creation
   */
   initTulip: function(angle, trackTypes,json){
-    if(json !== undefined && angle == 0){ //the map point has been created from serialized json
+    if(json !== undefined && angle == undefined){ //the map point has been created from serialized json
       this.buildFromJson(json);
     } else if(angle !== undefined && trackTypes !== undefined){
       this.buildEntry(trackTypes.entryTrackType);

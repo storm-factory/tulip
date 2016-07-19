@@ -515,10 +515,21 @@
   <script src='src/modules/waypoint.js'></script>
   <script src='src/modules/io.js'></script>
   <script>
-  new function(){
-    var s = document.createElement( 'script' );
-    s.setAttribute( 'src', "https://maps.googleapis.com/maps/api/js?key=" + api_keys.google_maps + "&callback=initMap" );
-    document.body.appendChild( s );
-  }
+  /*
+    ---------------------------------------------------------------------------
+    Instantiate the application
+    ---------------------------------------------------------------------------
+  */
+  $(document).ready(function(){
+    app = new App();
+    ko.applyBindings(app.roadbook);
+    $(document).foundation();
+
+    new function(){
+      var s = document.createElement( 'script' );
+      s.setAttribute( 'src', "https://maps.googleapis.com/maps/api/js?key=" + api_keys.google_maps + "&callback=initMap" );
+      document.body.appendChild( s );
+    }
+  });
   </script>
 </html>
