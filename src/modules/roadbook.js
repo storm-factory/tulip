@@ -36,7 +36,7 @@ var Roadbook = Class({
   */
 
   addWaypoint: function(wptData){
-
+    this.finishWaypointEdit();
     //determine index of waypoint based on distance from start
     var index = this.determineWaypointInsertionIndex(wptData.distances.kmFromStart);
     /*
@@ -125,6 +125,7 @@ var Roadbook = Class({
   },
 
   deleteWaypoint: function(wptId){
+    this.finishWaypointEdit();
     this.waypoints.splice(wptId - 1,1);
     this.reindexWaypoints();
   },
@@ -217,10 +218,16 @@ var Roadbook = Class({
 
   finishWaypointEdit: function(){
     if(this.currentlyEditingWaypoint !== null){
+      $('.waypoint.row').show();
+      $('#waypoint-palette').slideUp('slow');
       $('#roadbook').scrollTop(this.currentlyEditingWaypoint.element.position().top - 80)
       this.currentlyEditingWaypoint.tulip.finishEdit();
       this.currentlyEditingWaypoint = null;
       this.noteTextEditor.setHTML('');
+      if(!app.canEditMap){
+        app.mapControls.reorient();
+        app.mapControls.enableMapInteraction();
+      }
     }
     return true;
   },
@@ -235,6 +242,7 @@ var Roadbook = Class({
   },
 
   updateTotalDistance: function(){
+    this.finishWaypointEdit();
     if(this.waypoints().length > 0 ){
       this.totalDistance(this.waypoints()[this.waypoints().length - 1].totalDistance());
     } else{

@@ -407,7 +407,6 @@ var MapEditor = Class({
         //recompute distances between waypoints
         _this.updateRoute();
       }
-      app.roadbook.updateTotalDistance();
     });
 
     /*

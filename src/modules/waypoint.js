@@ -42,7 +42,6 @@ var Waypoint = Class({
 
     var _this = this;
     var angle = wptJson.angles.relativeAngle;
-    console.log(wptJson);
     var json = wptJson.tulipJson;
     var trackTypes = {entryTrackType: this.entryTrackType, exitTrackType: this.exitTrackType};
     ko.bindingHandlers.waypointCanvasRendered = {
@@ -125,15 +124,13 @@ var Waypoint = Class({
         _this.tulip.beginEdit();
       }
       var latLng = new google.maps.LatLng(_this.lat(), _this.lng());
-      // TODO this needs to be refactored to
-      //  app.setMapCenter ...
-      //  app.setMapZoom ...
-      app.mapEditor.map.setCenter(latLng);
-      app.mapEditor.map.setZoom(18);
+      
+      app.setMapCenter(latLng);
+      app.setMapZoom(18);
 
       $('#roadbook-waypoints').children().hide();
       $(element).show();
-      $('#waypoint-palette').show();
+      $('#waypoint-palette').slideDown('slow');
     });
   },
 

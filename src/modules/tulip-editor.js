@@ -218,7 +218,6 @@ var TulipEditor = Class({
   },
 
   pointMoving: function(point, _this){
-
     if (point.name == "origin") {
       //Move this point on the path
       point.track.path[0][1] = point.left;

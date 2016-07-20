@@ -228,9 +228,9 @@ var Tulip = Class({
   },
 
 
-  beginEdit: function(event) {
-    this.activeEditors.push(new TulipEditor(this.canvas, this.entryTrack,true, false, true));
+  beginEdit: function() {
     this.uneditedPath = $(this.exitTrack.toSVG()).attr('d');
+    this.activeEditors.push(new TulipEditor(this.canvas, this.entryTrack,true, false, true));
     this.activeEditors.push(new TulipEditor(this.canvas, this.exitTrack ,false, true, true));
     for(i=0;i<this.tracks.length;i++){
       this.activeEditors.push(new TulipEditor(this.canvas, this.tracks[i],true, true, false));
@@ -280,11 +280,12 @@ var Tulip = Class({
   },
 
   changeExitAngle(angle){
-    if(!this.exitTrackChanged){
-      this.canvas.remove(this.exitTrack);
-      this.canvas.remove(this.exitTrackEnd);
-
-      this.buildExit(angle);
+    if(this.exitTrackUneditedPath){
+      if((this.uneditedPath == $(this.exitTrack.toSVG()).attr('d')) && (app.roadbook.currentlyEditingWaypoint != null)){
+        this.redrawExitAndEditor(angle);
+      }else if(this.uneditedPath == $(this.exitTrack.toSVG()).attr('d') || this.uneditedPath == null) {
+        this.redrawExit(angle)
+      }
     }
   },
 
@@ -295,10 +296,25 @@ var Tulip = Class({
     this.activeEditors = [];
 
     if(this.uneditedPath != $(this.exitTrack.toSVG()).attr('d')){
-      this.exitTrackUneditedPath = false
+      this.exitTrackUneditedPath = false;
     }
     // remove controls from glyphs and update the canvas' visual state
     this.canvas.deactivateAll().renderAll();
+  },
+
+  redrawExit(angle){
+    this.canvas.remove(this.exitTrack);
+    this.canvas.remove(this.exitTrackEnd);
+    this.buildExit(angle);
+    if(this.uneditedPath != null){
+      this.uneditedPath = $(this.exitTrack.toSVG()).attr('d');
+    }
+  },
+
+  redrawExitAndEditor(angle){
+    this.activeEditors[1].destroy();
+    this.redrawExit(angle)
+    this.activeEditors.splice(1,0,(new TulipEditor(this.canvas, this.exitTrack ,false, true, true)));
   },
 
   removeLastGlyph: function(){

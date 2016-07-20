@@ -63,6 +63,9 @@ var App = Class({
     TODO create a persistence module and move this into it.
     ---------------------------------------------------------------------------
   */
+  canEditMapPoints: function(){
+    return this.roadbook.currentlyEditingWaypoint == null;
+  },
 
   canExport: function(){
     var can;
@@ -158,6 +161,11 @@ var App = Class({
     google.maps.event.trigger(this.map,'resize')
   },
 
+  setMapZoom: function(zoom){
+    this.map.setZoom(zoom);
+    google.maps.event.trigger(this.map,'resize')
+  },
+
   showSaveDialog: function(title,path) {
     var _this = this;
     this.dialog.showSaveDialog({
@@ -184,6 +192,30 @@ var App = Class({
 
   stopLoading: function(){
     $('#loading').hide();
+  },
+
+  initMap: function(){
+    this.mapEditor = new MapEditor();
+    this.map = this.mapEditor.map;
+    this.placeMapAttribution();
+  },
+
+  /*
+    Get the Google Maps attribution elements and attaches them to the content container instead of the map container so that
+    we can rotate the map and still appropriately display attribution
+  */
+  placeMapAttribution: function(){
+    var _this = this;
+    this.missingAttribution = true;
+    google.maps.event.addListener(this.map, 'tilesloaded', function() {
+      if(this.missingAttribution){
+        var m = $('#map div.gm-style').children('div'); //get the contents of the map container
+        m = m.toArray();
+        m.shift(); //remove the map but keep the attribution elements
+        $('.content-container').append($(m));
+        _this.missingAttribution = false;
+      }
+    });
   },
 
   /*
@@ -292,13 +324,7 @@ var App = Class({
       Waypoint palette
     */
     $('#hide-palette').click(function(){
-      $('.waypoint.row').show();
-      $('#waypoint-palette').hide();
       _this.roadbook.finishWaypointEdit();
-      if(!_this.canEditMap){
-        _this.mapControls.reorient();
-        _this.mapControls.enableMapInteraction();
-      }
     });
 
     $('#orient-map').click(function(){
@@ -362,28 +388,3 @@ var App = Class({
     });
   },
 });
-/*
-  ---------------------------------------------------------------------------
-  Instantiate the google map
-  ---------------------------------------------------------------------------
-*/
-function initMap() {
-  app.mapEditor = new MapEditor();
-  app.map = app.mapEditor.map;
-
-
-  /*
-    Get the Google Maps attribution elements and attaches them to the content container instead of the map container so that
-    we can rotate the map and still appropriately display attribution
-  */
-  var missingAttribution = true;
-  google.maps.event.addListener(app.map, 'tilesloaded', function() {
-    if(missingAttribution){
-      var m = $('#map div.gm-style').children('div'); //get the contents of the map container
-      m = m.toArray();
-      m.shift(); //remove the map but keep the attribution elements
-      $('.content-container').append($(m));
-      missingAttribution = false;
-    }
-  });
-}
