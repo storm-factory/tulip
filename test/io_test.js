@@ -7,10 +7,7 @@ QUnit.module( "IO", {
       this.io = new Io()
     },
     afterEach: function() {
-      ko.cleanNode($('#content')[0]);
-      this.app = null;
-      app = null;
-      $(document).unbind();
+      this.io = null;
     },
     after: function(){
       this.gpx = null;

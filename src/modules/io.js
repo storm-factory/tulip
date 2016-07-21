@@ -38,7 +38,7 @@ var Io = Class({
     // TODO abstract this to the app
     var points = app.mapEditor.routeMarkers;
     var wptCount = 0;
-    for(i=0;i<points.length;i++){
+    for(var i=0;i<points.length;i++){
       if(points[i].waypoint !== undefined){
         var waypoint = "<wpt lat='" + points[i].getPosition().lat() + "' lon='" + points[i].getPosition().lng() + "'><name>" + wptCount + "</name></wpt>";
         waypoints += waypoint;
@@ -93,7 +93,7 @@ var Io = Class({
 
   parseGpxTracksToArray: function(gpxTracks){
     var tracks = []
-    for(i=0;i<gpxTracks.length;i++){
+    for(var i=0;i<gpxTracks.length;i++){
       var point = {lat: parseFloat($(gpxTracks[i]).attr('lat')), lng: parseFloat($(gpxTracks[i]).attr('lon'))}
       tracks.push(point);
     }
@@ -113,7 +113,7 @@ var Io = Class({
   waypointSharesTrackpoint: function(waypoint){
     var tracks = this.tracks;
     var index = -1;
-    for(i=0;i<tracks.length;i++){
+    for(var i=0;i<tracks.length;i++){
       if(tracks[i].lat == parseFloat($(waypoint).attr('lat')) && tracks[i].lng == parseFloat($(waypoint).attr('lon'))){
         index = i;
         break;

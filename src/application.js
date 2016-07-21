@@ -96,7 +96,6 @@ var App = Class({
           // We need to ask whether they want to open a new roadbook or append an existing one to the currently
           // being edited RB
           _this.roadbook.appendRouteFromJSON(json,fileName); //TODO this needs to only pass json once choice is added
-          console.log(json);
         });
         $('#toggle-roadbook').click();
         $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');

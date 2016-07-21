@@ -141,15 +141,11 @@ var Tulip = Class({
   */
   buildFromJson: function(json){
 
-
     this.exitTrackUneditedPath = json.exitTrackUneditedPath !== undefined ? json.exitTrackUneditedPath : true;
     var _this = this;
     var numTracks = json.tracks.length;
     // build a propperly formatted json string to import
-    // NOTE: this is just to avoid breaking changes for v1.2b, it should come out in the next release
-    for(i=0;i<json.glyphs.length;i++){
-      json.glyphs[i].src = app.fixGlyphPaths(json.glyphs[i].src);
-    }
+
     var json = {
       "objects": [json.entry.point, json.entry.path, json.exit.path, json.exit.point].concat(json.tracks).concat(json.glyphs),
     };

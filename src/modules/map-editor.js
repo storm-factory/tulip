@@ -449,7 +449,7 @@ var MapEditor = Class({
       // does the event point fit in the bounds of the two reference points before and after the click
       var path = [points[i-1],points[i]];
       var line = new google.maps.Polyline({path: path});
-      var tolerance = Math.pow(this.map.getZoom(), -(this.map.getZoom()/4));
+      var tolerance = Math.pow(this.map.getZoom(), -(this.map.getZoom()/5.1));
       if(google.maps.geometry.poly.isLocationOnEdge(latLng, line, tolerance)) {
         idx = i;
         this.addRoutePoint(latLng, i);
