@@ -42,29 +42,43 @@ var Tulip = Class({
   initEntry: function(point, path){
     this.entryTrackOrigin = point;
     this.entryTrack = path;
-    this.entryTrack.hasBorders = false;
-    this.entryTrack.hasControls = false;
+
+    this.disablePointDefaults(this.entryTrackOrigin);
+    this.disablePathDefaults(this.entryTrack);
+
     this.entryTrackOrigin.track = this.entryTrack;
     this.entryTrack.origin = this.entryTrackOrigin;
   },
 
   initExit: function(point, path){
-    this.exitTrack = path;
-    this.exitTrack.hasBorders = false;
-    this.exitTrack.hasControls = false;
     this.exitTrackEnd = point;
+    this.exitTrack = path;
+
+    this.disablePointDefaults(this.exitTrackEnd);
+    this.disablePathDefaults(this.exitTrack);
+
     this.exitTrackEnd.track = this.exitTrack;
     this.exitTrack.end = this.exitTrackEnd;
+  },
+
+  disablePointDefaults: function(point){
+    point.hasControls   = false;
+    point.lockMovementX = true;
+    point.lockMovementY = true;
+  },
+
+  disablePathDefaults: function(path){
+    path.hasBorders    = false;
+    path.hasControls   = false;
+    path.selectable    = false;
+    path.lockMovementX = true;
+    path.lockMovementY = true;
   },
 
   initTracks: function(trackArray){
     this.tracks = trackArray;
     for(i=0;i<this.tracks.length;i++){
-      this.tracks[i].hasControls = false;
-      this.tracks[i].lockMovementX = true;
-      this.tracks[i].lockMovementY = true;
-      this.tracks[i].hasBorders = false;
-      this.tracks[i].selectable = false;
+      this.disablePathDefaults(this.tracks[i]);
     }
   },
 
@@ -165,9 +179,6 @@ var Tulip = Class({
     this.initEntry(obs[0], obs[1]);
     this.initExit(obs[3], obs[2]);
 
-    this.exitTrack.hasControls = this.entryTrack.hasControls = this.entryTrackOrigin.hasControls = this.exitTrackEnd.hasControls = false;
-    this.exitTrack.lockMovementX = this.entryTrack.lockMovementX = this.entryTrackOrigin.lockMovementX = this.exitTrackEnd.lockMovementX = true;
-    this.exitTrack.lockMovementY = this.entryTrack.lockMovementY = this.entryTrackOrigin.lockMovementY = this.exitTrackEnd.lockMovementY = true;
     /*
       Aux tracks
     */
@@ -188,10 +199,6 @@ var Tulip = Class({
       radius: 7,
       fill: '#000',
       stroke: '#666',
-      hasControls: false,
-      lockMovementX: true,
-      lockMovementY: true,
-      hasBorders: false
     });
 
     this.initEntry(point, entry);
@@ -200,7 +207,7 @@ var Tulip = Class({
   },
 
   buildExit: function(angle,type='track'){
-    // console.log(this.buildTrackPathString(angle),this.trackTypes[type]);
+
     var exit = new fabric.Path(this.buildTrackPathString(angle),this.trackTypes[type]);
     var point = new fabric.Triangle({
       left: exit.path[3][5],
@@ -211,10 +218,6 @@ var Tulip = Class({
       fill: '#000',
       stroke: '#666',
       angle: angle,
-      hasControls: false,
-      lockMovementX: true,
-      lockMovementY: true,
-      hasBorders: false
     });
 
     this.initExit(point, exit);
@@ -238,26 +241,27 @@ var Tulip = Class({
   */
   buildTrackPathString: function(angle) {
 
-    var xy1 =  this.rotatePoint(9,angle);
-    var xy2 =  this.rotatePoint(18,angle);
-    var xy3 =  this.rotatePoint(27,angle);
-    var set1 = [[xy1[0], xy1[1]],[xy2[0], xy2[1]],[xy3[0], xy3[1]]];
-    // console.log(set1);
-    xy1 =  this.rotatePoint(36,angle);
-    xy2 =  this.rotatePoint(45,angle);
-    xy3 =  this.rotatePoint(54,angle);
-    var set2 = [[xy1[0], xy1[1]],[xy2[0], xy2[1]],[xy3[0], xy3[1]]];
-    // console.log(set2);
-    xy1 =  this.rotatePoint(63,angle);
-    xy2 =  this.rotatePoint(72,angle);
-    xy3 =  this.rotatePoint(81,angle);
-    var set3 = [[xy1[0], xy1[1]],[xy2[0], xy2[1]],[xy3[0], xy3[1]]];
-    // console.log(set3);
+    var set1 = this.buildPathSet([9,18,27],angle)
+    var set2 = this.buildPathSet([36,45,54],angle)
+    var set3 = this.buildPathSet([63,72,81],angle)
     var trackString = 'M 90 90 C '+ set1[0][0] +', '+ set1[0][1] +', '+ set1[1][0] +', '+ set1[1][1] +', '+ set1[2][0] +', '+ set1[2][1]
                         + ' C '+ set2[0][0] +', '+ set2[0][1] +', '+ set2[1][0] +', '+ set2[1][1] +', '+ set2[2][0] +', '+ set2[2][1]
                         + ' C '+ set3[0][0] +', '+ set3[0][1] +', '+ set3[1][0] +', '+ set3[1][1] +', '+ set3[2][0] +', '+ set3[2][1]
 
     return trackString;
+  },
+
+  /*
+    creates a 2D array of point pairs which describe where a set of points in the track path string should be
+    given an angle and a set of 3 maginitudes describing the desired location of key points in the path
+  */
+  buildPathSet: function(magnitudes, angle){
+    var set = [];
+    for(var i=0;i<magnitudes.length;i++){
+      var xy = this.rotatePoint(magnitudes[i],angle);
+      set.push(xy);
+    }
+    return set;
   },
 
   changeAddedTrackType(type){

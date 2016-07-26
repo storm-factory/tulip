@@ -78,6 +78,11 @@ QUnit.module( "Tulip", {
     assert.equal(string, "M 90 90 C 96, 84, 103, 77, 109, 71 C 115, 65, 122, 58, 128, 52 C 135, 45, 141, 39, 147, 33", "It can create an SVG string when given an angle")
   });
 
+  QUnit.test("Describe build path set", function( assert ) {
+    var set = this.tulip.buildPathSet([9,18,27], 45);
+    assert.deepEqual(set, [[96,84],[103,77],[109,71]], "It creates a 2D array of point pairs given an array of magnitudes and an angle")
+  });
+
   QUnit.test("Describe Change entry track type", function( assert ) {
     var stroke = this.tulip.entryTrack.get('strokeWidth');
     this.tulip.changeEntryTrackType('road');
