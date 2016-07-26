@@ -65,17 +65,34 @@ QUnit.module( "Tulip", {
     assert.ok(this.tulip.tracks[0].hasControls == false && this.tulip.tracks[0].lockMovementX == true && this.tulip.tracks[0].lockMovementY == true && this.tulip.tracks[0].hasBorders == false && this.tulip.tracks[0].selectable == false, 'It configures an array of tracks')
   });
 
-  QUnit.test("Describe add track", function( assert ) { assert.expect(0)});
-  QUnit.test("Describe add glyph", function( assert ) { assert.expect(0)});
+  QUnit.test("Describe add track", function( assert ) {
+    var len = this.tulip.tracks.length;
+    var string = "M 90 90 C 96 84 103 77 109 71 C 115 65 122 58 128 52 C 135 45 141 39 147 33";
+    this.tulip.addTrack(45);
+    assert.equal(len + 1, this.tulip.tracks.length, "it adds the track to the tracks array");
+    assert.equal($(this.tulip.tracks[this.tulip.tracks.length-1].toSVG()).attr('d'), string, "it creates the correct SVG for the canvas");
+  });
 
   QUnit.test("Describe build track path string", function( assert ) {
     var string = this.tulip.buildTrackPathString(45);
     assert.equal(string, "M 90 90 C 96, 84, 103, 77, 109, 71 C 115, 65, 122, 58, 128, 52 C 135, 45, 141, 39, 147, 33", "It can create an SVG string when given an angle")
   });
 
-  QUnit.test("Describe Change entry track type", function( assert ) { assert.expect(0)});
-  QUnit.test("Describe Change exit track type", function( assert ) { assert.expect(0)});
-  QUnit.test("Describe Change added track type", function( assert ) { assert.expect(0)});
+  QUnit.test("Describe Change entry track type", function( assert ) {
+    var stroke = this.tulip.entryTrack.get('strokeWidth');
+    this.tulip.changeEntryTrackType('road');
+    assert.notEqual(stroke, this.tulip.entryTrack.get('strokeWidth'), "it changes the track width to road" )
+  });
+  QUnit.test("Describe Change exit track type", function( assert ) {
+    var stroke = this.tulip.entryTrack.get('strokeDashArray');
+    this.tulip.changeEntryTrackType('offPiste');
+    assert.notEqual(stroke, this.tulip.entryTrack.get('strokeDashArray'), "it changes the track dash array to off piste" )
+  });
+  QUnit.test("Describe Change added track type", function( assert ) {
+    var trackType = this.tulip.addedTrackType;
+    this.tulip.changeAddedTrackType('road');
+    assert.notEqual(trackType, this.tulip.addedTrackType, "it changes the added track type in memory" )
+  });
 
   QUnit.test("Describe Change Exit Angle", function( assert ) {
 
@@ -92,15 +109,26 @@ QUnit.module( "Tulip", {
     assert.equal($(this.tulip.exitTrack.toSVG()).attr('d'), "M 90 90 C 96 84 103 77 109 71 C 115 65 122 58 128 52 C 135 45 141 39 147 33", "It won't change the angle if the exitTrack has been changed");
   });
 
+  QUnit.test("Describe remove last track", function( assert ) {
+    this.tulip.addTrack(45);
+    this.tulip.addTrack(135);
+    var len = this.tulip.tracks.length
+    this.tulip.removeLastTrack();
+    assert.equal(len - 1, this.tulip.tracks.length, "it removes the last track" )
+  });
 
-  QUnit.test("Describe remove last glyph", function( assert ) { assert.expect(0)});
-  QUnit.test("Describe remove last track", function( assert ) { assert.expect(0)});
+  QUnit.test("Describe rotate point", function( assert ) {
 
-  QUnit.test("Describe rotate point", function( assert ) { assert.expect(0)});
+    var position = this.tulip.rotatePoint(1,90);
+    assert.deepEqual([91,90], position, "it returns canvas coordinates given an angle and magnitude from the center of the canvas correctly for a right turn" )
 
-  QUnit.test("Describe serialize", function( assert ) { assert.expect(0)});
-  QUnit.test("Describe serialize glyphs", function( assert ) { assert.expect(0)});
+    var position = this.tulip.rotatePoint(1,-90);
+    assert.deepEqual([89,90], position, "it returns canvas coordinates given an angle and magnitude from the center of the canvas correctly for a right turn" )
+  });
 
-  QUnit.test("Describe to PNG", function( assert ) { assert.expect(0)});
-
-  QUnit.test("Describe truncate glyph source", function( assert ) { assert.expect(0)});
+  QUnit.test("Describe truncate glyph source", function( assert ) {
+    var src = "some/path/that/is/not/project/relative/assets/svg/glyphs/buildings.svg"
+    var truncatedSrc = this.tulip.truncateGlyphSource(src);
+    assert.notEqual(src, truncatedSrc, "it creates a truncated glyph source")
+    assert.equal('./assets/svg/glyphs/buildings.svg', truncatedSrc, "the truncated src is app relative")
+  });

@@ -124,7 +124,6 @@ var Tulip = Class({
   addGlyph: function(position,uri){
     var _this = this;
     var position = position;
-
     var imgObj = new Image();
     imgObj.src = uri;
     imgObj.onload = function () {
