@@ -24,20 +24,22 @@
     </div>
     <div id="roadbook">
       <hr>
-      <div class="row">
-        <div id="roadbook-total-distance" class="large-4 column">
-          Total Kilometers:
-          <p data-bind="text: printApp.totalDistance"></p>
+      <div id="roadbook-header">
+        <div class="row">
+          <div id="roadbook-total-distance" class="large-4 column">
+            Total Kilometers:
+            <p data-bind="text: printApp.totalDistance"></p>
+          </div>
+          <div id="roadbook-name" class="large-8 column">
+            <p href="#" data-bind="text: printApp.name" data-default="true"></p>
+          </div>
         </div>
-        <div id="roadbook-name" class="large-8 column">
-          <p href="#" data-bind="text: printApp.name" data-default="true"></p>
-        </div>
-      </div>
-      <div class="row">
-        <hr>
-        <div id="roadbook-desc" class="large-12 column">
-          <p href="#" data-bind="html: printApp.desc" data-default="true"></p>
+        <div class="row">
           <hr>
+          <div id="roadbook-desc" class="large-12 column">
+            <p href="#" data-bind="html: printApp.desc" data-default="true"></p>
+            <hr>
+          </div>
         </div>
       </div>
       <!-- render waypoint templates here -->
