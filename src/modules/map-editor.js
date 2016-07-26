@@ -184,6 +184,8 @@ var MapEditor = Class({
           waypoints.push(point)
         }
       }
+      // TODO make roadbook total Distance function
+      // app.roadbook.updateTotalDistance();
     }
     // add the waypoints in
     for(i=0;i<waypoints.length;i++){
@@ -214,6 +216,8 @@ var MapEditor = Class({
         this.routePoints.removeAt(vertexIndex)
     }
     this.updateRoute();
+    // TODO make roadbook total Distance function
+    // app.roadbook.updateTotalDistance();
   },
 
   deleteWaypoint: function(point){
@@ -230,6 +234,8 @@ var MapEditor = Class({
     //update the point's icon and remove its waypoint object
     point.setIcon(this.pointIcon());
     point.waypoint = null;
+    // TODO make roadbook total Distance function
+    // app.roadbook.updateTotalDistance();
   },
 
   /*
@@ -351,6 +357,7 @@ var MapEditor = Class({
     figure out where the user is in the world and center the map there
   */
   attemptGeolocation: function(){
+
     var _this = this;
     navigator.geolocation.getCurrentPosition(function(position) {
       var pos = {
@@ -391,7 +398,6 @@ var MapEditor = Class({
     google.maps.event.addListener(point, 'rightclick', function(evt) {
       _this.deletePoint(this);
       _this.displayEdge = true;
-      app.roadbook.updateTotalDistance();
       _this.updateRoute();
     });
 
@@ -418,6 +424,7 @@ var MapEditor = Class({
 
     google.maps.event.addListener(point, 'dragend', function(evt) {
       _this.updateRoute();
+      // app.roadbook.updateTotalDistance();
     });
 
     /*
@@ -569,5 +576,6 @@ var MapEditor = Class({
         marker.waypoint.updateWaypoint(distances, angles,{lat: marker.getPosition().lat(), lng: marker.getPosition().lng()}, marker.mapVertexIndex );
       }
     }
+    app.roadbook.updateTotalDistance();
   },
 });

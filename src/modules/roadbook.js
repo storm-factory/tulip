@@ -97,6 +97,7 @@ var Roadbook = Class({
     app.mapEditor.updateRoute();
     var latLng = new google.maps.LatLng(points[0].lat, points[0].long);
     app.mapEditor.map.setCenter(latLng);
+    app.mapEditor.map.setZoom(14);
   },
 
   changeEditingWaypointAdded: function(type){
@@ -242,7 +243,7 @@ var Roadbook = Class({
   },
 
   updateTotalDistance: function(){
-    this.finishWaypointEdit();
+    // this.finishWaypointEdit();
     if(this.waypoints().length > 0 ){
       this.totalDistance(this.waypoints()[this.waypoints().length - 1].totalDistance());
     } else{
