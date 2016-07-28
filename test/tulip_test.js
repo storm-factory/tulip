@@ -29,11 +29,10 @@ QUnit.module( "Tulip", {
   },
   afterEach:  function(){
     this.tulip = null;
-    this.path = null;
-    this.circle = null;
   },
   after:  function(){
-
+    this.track = null;
+    this.circle = null;
   }
 });
   QUnit.test("Describe Create", function( assert ) {

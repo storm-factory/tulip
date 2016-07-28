@@ -223,6 +223,7 @@ var Roadbook = Class({
       $('#waypoint-palette').slideUp('slow');
       $('#roadbook').scrollTop(this.currentlyEditingWaypoint.element.position().top - 80)
       this.currentlyEditingWaypoint.tulip.finishEdit();
+      this.currentlyEditingWaypoint.tulip.finishTrackRemove();
       this.currentlyEditingWaypoint = null;
       this.noteTextEditor.setHTML('');
       if(!app.canEditMap){

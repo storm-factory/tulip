@@ -12,6 +12,7 @@ var Tulip = Class({
     this.tracks = [];
     this.glyphs = [];
     this.activeEditors = [];
+    this.activeRemovers = [];
     this.trackTypes = {};
     this.addedTrackType = 'track';
     this.exitTrackUneditedPath = true;
@@ -127,7 +128,7 @@ var Tulip = Class({
     var track = new fabric.Path(this.buildTrackPathString(angle),this.trackTypes[this.addedTrackType]);
     this.tracks.push(track);
     this.canvas.add(track);
-    this.activeEditors.push(new TulipEditor(this.canvas, track, true, true, false));
+    this.activeEditors.push(new TrackEditor(this.canvas, track, true, true, false));
     //NOTE this solves the problem of having overlapping handles if a control is clicked twice or things get too close to one another.
     //     an alternate solution that may solve any performance issues this might cause is to loop through the active editors and bring all the
     //     hangles to the front.
@@ -228,10 +229,17 @@ var Tulip = Class({
 
   beginEdit: function() {
     this.uneditedPath = $(this.exitTrack.toSVG()).attr('d');
-    this.activeEditors.push(new TulipEditor(this.canvas, this.entryTrack,true, false, true));
-    this.activeEditors.push(new TulipEditor(this.canvas, this.exitTrack ,false, true, true));
+    this.activeEditors.push(new TrackEditor(this.canvas, this.entryTrack,true, false, true));
+    this.activeEditors.push(new TrackEditor(this.canvas, this.exitTrack ,false, true, true));
     for(i=0;i<this.tracks.length;i++){
-      this.activeEditors.push(new TulipEditor(this.canvas, this.tracks[i],true, true, false));
+      this.activeEditors.push(new TrackEditor(this.canvas, this.tracks[i],true, true, false));
+    }
+  },
+
+  beginRemoveTrack: function(){
+    this.finishEdit();
+    for(i=0;i<this.tracks.length;i++){
+      this.activeRemovers.push(new TrackRemover(this, this.tracks[i],i));
     }
   },
 
@@ -289,13 +297,22 @@ var Tulip = Class({
   },
 
   finishEdit: function() {
-    for(i = 0; i < this.activeEditors.length; i++) {
+    for(var i = 0; i < this.activeEditors.length; i++) {
       this.activeEditors[i].destroy();
     }
     this.activeEditors = [];
 
+    //TODO move this to it's own function
     if(this.uneditedPath != $(this.exitTrack.toSVG()).attr('d')){
       this.exitTrackUneditedPath = false;
+    }
+    // remove controls from glyphs and update the canvas' visual state
+    this.canvas.deactivateAll().renderAll();
+  },
+
+  finishTrackRemove: function(){
+    for(var i = 0;i <this.activeRemovers.length;i++){
+      this.activeRemovers[i].destroy();
     }
     // remove controls from glyphs and update the canvas' visual state
     this.canvas.deactivateAll().renderAll();
@@ -313,7 +330,7 @@ var Tulip = Class({
   redrawExitAndEditor(angle){
     this.activeEditors[1].destroy();
     this.redrawExit(angle)
-    this.activeEditors.splice(1,0,(new TulipEditor(this.canvas, this.exitTrack ,false, true, true)));
+    this.activeEditors.splice(1,0,(new TrackEditor(this.canvas, this.exitTrack ,false, true, true)));
   },
 
   removeLastGlyph: function(){

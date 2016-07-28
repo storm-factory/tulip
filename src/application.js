@@ -342,9 +342,13 @@ var App = Class({
       }
     });
 
-    $('.track-grid').click(function(){
+    $('.track-grid').click(function(e){
       if($(this).hasClass('undo')){
-        _this.roadbook.currentlyEditingWaypoint.tulip.removeLastTrack();
+        if(e.shiftKey){
+          _this.roadbook.currentlyEditingWaypoint.tulip.beginRemoveTrack();
+        }else{
+          _this.roadbook.currentlyEditingWaypoint.tulip.removeLastTrack();
+        }
         return
       }
       var angle = $(this).data('angle');
