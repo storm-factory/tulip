@@ -1,19 +1,20 @@
-var TrackRemover = Class({
-  create: function(tulip,track,index){
+var GlyphRemover = Class({
+
+  create: function(tulip,glyph,index){
       fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
       this.tulip = tulip;
-      this.track = track;
-      this.trackIndex = index;
+      this.glyph = glyph;
+      this.glyphIndex = index;
 
       this.makeRemoveHandle();
       var _this = this;
       this.tulip.canvas.on('mouse:down',function(e){
         if(e.target == _this.removeHandle){
           _this.removeFromTulip();
-          if(e.e.shiftKey && _this.tulip.tracks.length > 0){
-            // we have to finish, then rebegin because the tulip.tracks indicies change when we remove this.track
+          if(e.e.shiftKey && _this.tulip.glyphs.length > 0){
+            // we have to finish, then rebegin because the tulip.glyphs indicies change when we remove this.glyph
             _this.tulip.finishRemove();
-            _this.tulip.beginRemoveTrack();
+            _this.tulip.beginRemoveGlyph();
           } else {
             _this.tulip.finishRemove();
             _this.tulip.beginEdit();
@@ -25,8 +26,8 @@ var TrackRemover = Class({
   makeRemoveHandle: function(){
     this.removeHandle = new fabric.Text('\u00D7', {
       fontSize: 30,
-      left: this.track.path[3][5],
-      top: this.track.path[3][6],
+      left: this.glyph.getLeft(),
+      top: this.glyph.getTop(),
       fontFamily: 'Helvetica',
       fontWeight: 'bold',
       fill: '#ff4200',
@@ -40,8 +41,8 @@ var TrackRemover = Class({
   },
 
   removeFromTulip: function(){
-    this.tulip.canvas.remove(this.track);
-    this.tulip.tracks.splice(this.trackIndex,1);
+    this.tulip.canvas.remove(this.glyph);
+    this.tulip.glyphs.splice(this.glyphIndex,1);
   },
 
   destroy: function(){

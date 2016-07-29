@@ -73,7 +73,11 @@ var GlyphControls = Class({
         return false
       } else{
         if($(this).hasClass('undo')){
-          app.roadbook.currentlyEditingWaypoint.tulip.removeLastGlyph(); //TODO make app level function for this
+          if(e.shiftKey){
+            app.roadbook.currentlyEditingWaypoint.tulip.beginRemoveGlyph();
+          }else{
+            app.roadbook.currentlyEditingWaypoint.removeLastNoteGlyph();
+          }
           return false
         }
         app.glyphPlacementPosition = {top: $(this).data('top'), left: $(this).data('left')};

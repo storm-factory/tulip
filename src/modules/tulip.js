@@ -9,7 +9,7 @@ var Tulip = Class({
     this.canvas = new fabric.Canvas(el);
     this.canvas.selection = false;
     this.canvas.hoverCursor = 'pointer';
-    
+
     this.tracks = [];
     this.glyphs = [];
     this.activeEditors = [];
@@ -127,7 +127,7 @@ var Tulip = Class({
     Adds a track to tulip from UI interaction
   */
   addTrack: function(angle) {
-    this.finishTrackRemove();
+    this.finishRemove();
     var track = new fabric.Path(this.buildTrackPathString(angle),this.trackTypes[this.addedTrackType]);
     this.tracks.push(track);
     this.canvas.add(track);
@@ -140,7 +140,7 @@ var Tulip = Class({
   },
 
   addGlyph: function(position,uri){
-    this.finishTrackRemove();
+    this.finishRemove();
     var _this = this;
     var position = position;
     var imgObj = new Image();
@@ -240,6 +240,13 @@ var Tulip = Class({
     }
   },
 
+  beginRemoveGlyph: function(){
+    this.finishEdit();
+    for(i=0;i<this.glyphs.length;i++){
+      this.activeRemovers.push(new GlyphRemover(this, this.glyphs[i],i));
+    }
+  },
+
   beginRemoveTrack: function(){
     this.finishEdit();
     for(i=0;i<this.tracks.length;i++){
@@ -314,7 +321,7 @@ var Tulip = Class({
     this.canvas.deactivateAll().renderAll();
   },
 
-  finishTrackRemove: function(){
+  finishRemove: function(){
     for(var i = 0;i <this.activeRemovers.length;i++){
       this.activeRemovers[i].destroy();
     }
