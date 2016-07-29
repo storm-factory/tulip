@@ -8,7 +8,8 @@ var Tulip = Class({
   create: function(el, angle, trackTypes, json){
     this.canvas = new fabric.Canvas(el);
     this.canvas.selection = false;
-
+    this.canvas.hoverCursor = 'pointer';
+    
     this.tracks = [];
     this.glyphs = [];
     this.activeEditors = [];
@@ -63,6 +64,8 @@ var Tulip = Class({
   },
 
   disablePointDefaults: function(point){
+    point.hasBorders    = false;
+    point.selectable    = false;
     point.hasControls   = false;
     point.lockMovementX = true;
     point.lockMovementY = true;
@@ -124,7 +127,7 @@ var Tulip = Class({
     Adds a track to tulip from UI interaction
   */
   addTrack: function(angle) {
-
+    this.finishTrackRemove();
     var track = new fabric.Path(this.buildTrackPathString(angle),this.trackTypes[this.addedTrackType]);
     this.tracks.push(track);
     this.canvas.add(track);
@@ -137,6 +140,7 @@ var Tulip = Class({
   },
 
   addGlyph: function(position,uri){
+    this.finishTrackRemove();
     var _this = this;
     var position = position;
     var imgObj = new Image();

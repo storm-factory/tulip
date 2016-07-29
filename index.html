@@ -22,7 +22,7 @@
       <ul class="left">
         <li>
           <a href="#" class="button tiny radius secondary" id="draw-route"><i class="fi-pencil"></i></a>
-          <span id="map-rotate-notice" data-tooltip aria-haspopup="true" class="has-tip button tiny radius alert" title="Map interaction other than zoom is disabled when map is rotated.">
+          <span data-tooltip aria-haspopup="true" class="map-rotate-notice has-tip button tiny radius alert" style="display: none;" title="Map interaction other than zoom is disabled when map is rotated.">
             <i class="fi-alert"></i>
           </span>
         </li>
@@ -116,6 +116,9 @@
             <div id="waypoint-palette">
               <div class="row">
                 <div class="large-12 column text-right">
+                  <span data-tooltip aria-haspopup="true" class="map-rotate-notice has-tip button tiny radius alert" style="display: none;" title="Map interaction other than zoom is disabled when map is rotated.">
+                    <i class="fi-alert"></i>
+                  </span>
                   <a id="orient-map" class="button tiny round success" title="Orient map with tulip"><i class="fi-compass"></i></a>
                   <a id="hide-palette" class="button tiny round alert" title="Hide palette.">&#215;</a>
                 </div>

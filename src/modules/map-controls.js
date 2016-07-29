@@ -14,8 +14,8 @@ var MapControls = Class({
     app.map.setOptions({draggable: false});
     $('#draw-route').click();
     $('#draw-route').hide();
-    $('#map-rotate-notice').show('fast');
-    $('#map-rotate-notice').fadeTo('slow', 0.25).fadeTo('slow', 1.0);
+    $('.map-rotate-notice').show();
+    $('.map-rotate-notice').fadeTo('slow', 0.25).fadeTo('slow', 1.0);
   },
 
   enableMapInteraction: function(){
@@ -23,7 +23,7 @@ var MapControls = Class({
     app.map.setOptions({draggable: true});
     $('#draw-route').click();
     $('#draw-route').show('slow');
-    $('#map-rotate-notice').hide('slow');
+    $('.map-rotate-notice').hide();
   },
 
   zin: function(){
