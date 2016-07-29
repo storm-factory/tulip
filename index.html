@@ -17,6 +17,15 @@
         <li>
           <a href="#" class="button tiny radius secondary" id="zin"><i class="fi-plus"></i></a>
           <a href="#" class="button tiny radius secondary" id="zout"><i class="fi-minus"></i></a>
+          <a href="#" class="button dropdown tiny radius secondary" data-dropdown="layers-dropdown" aria-controls="drop1" aria-expanded="false" id="map-layers">
+            <i class="fi-map"></i>
+          </a>
+          <ul id="layers-dropdown" data-dropdown-content class="f-dropdown" aria-hidden="true">
+            <li><a href="#" id="map-hybrid-layer" >Hybrid <i class="fi-check"></i></a></li>
+            <li><a href="#" id="map-satellite-layer">Satellite <i class="fi-check hide"></i></a></li>
+            <li><a href="#" id="map-roadmap-layer">Roadmap <i class="fi-check hide"></i></a></li>
+            <li><a href="#" id="map-terrain-layer">Terrain <i class="fi-check hide"></i></a></li>
+          </ul>
         </li>
       </ul>
       <ul class="left">

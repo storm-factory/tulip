@@ -55,7 +55,13 @@ var GlyphControls = Class({
       }
     });
 
-    $('.glyph').click(function(){
+    $('.glyph').click(function(e){
+      e.preventDefault();
+      if(!e.shiftKey){
+        $('#glyphs').foundation('reveal', 'close');
+        $('#glyph-search').val('');
+        $('#glyph-search-results').html('');
+      }
       _this.addGlyphToInstruction(this);
     });
 
@@ -76,7 +82,7 @@ var GlyphControls = Class({
           if(e.shiftKey){
             app.roadbook.currentlyEditingWaypoint.tulip.beginRemoveGlyph();
           }else{
-            app.roadbook.currentlyEditingWaypoint.removeLastNoteGlyph();
+            app.roadbook.currentlyEditingWaypoint.tulip.removeLastGlyph();
           }
           return false
         }
@@ -97,9 +103,6 @@ var GlyphControls = Class({
     } else {
       app.roadbook.currentlyEditingWaypoint.tulip.addGlyph(app.glyphPlacementPosition,src);
     }
-    $('#glyphs').foundation('reveal', 'close');
-    $('#glyph-search').val('');
-    $('#glyph-search-results').html('');
   }
 
 });

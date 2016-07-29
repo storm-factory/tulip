@@ -21,7 +21,7 @@ var MapEditor = Class({
        center: {lat: 36.068209, lng: -105.629669},
        zoom: 4,
        disableDefaultUI: true,
-       mapTypeId: google.maps.MapTypeId.SATELLITE
+       mapTypeId: google.maps.MapTypeId.HYBRID,
     });
   },
 

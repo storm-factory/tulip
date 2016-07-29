@@ -58,5 +58,29 @@ var MapControls = Class({
       $(this).blur();
     });
 
+    $('#map-hybrid-layer').click(function(){
+      app.map.setMapTypeId(google.maps.MapTypeId.HYBRID);
+      $('#layers-dropdown').find('i').hide();
+      $(this).find('i').show();
+    });
+
+    $('#map-satellite-layer').click(function(){
+      app.map.setMapTypeId(google.maps.MapTypeId.SATELLITE);
+      $('#layers-dropdown').find('i').hide();
+      $(this).find('i').show();
+    });
+
+    $('#map-roadmap-layer').click(function(){
+      app.map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+      $('#layers-dropdown').find('i').hide();
+      $(this).find('i').show();
+    });
+
+    $('#map-terrain-layer').click(function(){
+      app.map.setMapTypeId(google.maps.MapTypeId.TERRAIN);
+      $('#layers-dropdown').find('i').hide();
+      $(this).find('i').show();
+    });
+
   },
 });
