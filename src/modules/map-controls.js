@@ -14,6 +14,7 @@ var MapControls = Class({
     app.map.setOptions({draggable: false});
     $('#draw-route').click();
     $('#draw-route').hide();
+    $('#remove-route').hide();
     $('.map-rotate-notice').show();
     $('.map-rotate-notice').fadeTo('slow', 0.25).fadeTo('slow', 1.0);
   },
@@ -23,6 +24,7 @@ var MapControls = Class({
     app.map.setOptions({draggable: true});
     $('#draw-route').click();
     $('#draw-route').show('slow');
+    $('#remove-route').show('slow');
     $('.map-rotate-notice').hide();
   },
 
@@ -80,6 +82,24 @@ var MapControls = Class({
       app.map.setMapTypeId(google.maps.MapTypeId.TERRAIN);
       $('#layers-dropdown').find('i').hide();
       $(this).find('i').show();
+    });
+
+    $('#draw-route').click(function(){
+      app.canEditMap = !app.canEditMap;
+      $(this).toggleClass('secondary');
+      var markers = app.mapEditor.routeMarkers;
+      for(i=0;i<markers.length;i++){
+        if(app.canEditMap){
+          markers[i].setDraggable(true);
+        } else {
+          markers[i].setDraggable(false);
+        }
+      }
+    });
+
+    $('#remove-route').click(function(){
+      $(this).toggleClass('secondary');
+      app.pointDeleteMode = !app.pointDeleteMode;
     });
 
   },

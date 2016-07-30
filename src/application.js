@@ -29,6 +29,7 @@ var App = Class({
     */
     this.glyphPlacementPosition = {top: 30,left: 30};
     this.canEditMap = true;
+    this.pointDeleteMode = false;
     //Dialogs for file IO
     this.dialog = require('electron').remote.dialog;
     /*
@@ -63,9 +64,10 @@ var App = Class({
     TODO create a persistence module and move this into it.
     ---------------------------------------------------------------------------
   */
-  canEditMapPoints: function(){
-    return this.roadbook.currentlyEditingWaypoint == null;
-  },
+  // NOTE: Remove me
+  // canEditMapPoints: function(){
+  //   return this.roadbook.currentlyEditingWaypoint == null;
+  // },
 
   canExport: function(){
     var can;
@@ -226,18 +228,31 @@ var App = Class({
   initListeners: function(){
 
     var _this = this
-    $('#draw-route').click(function(){
-      _this.canEditMap = !_this.canEditMap;
-      $(this).toggleClass('secondary');
-      var markers = _this.mapEditor.routeMarkers;
-      for(i=0;i<markers.length;i++){
-        if(_this.canEditMap){
-          markers[i].setDraggable(true);
-        } else {
-          markers[i].setDraggable(false);
-        }
-      }
-    });
+    // $('#draw-route').click(function(){
+    //   _this.canEditMap = !_this.canEditMap;
+    //   $(this).toggleClass('secondary');
+    //   var markers = _this.mapEditor.routeMarkers;
+    //   for(i=0;i<markers.length;i++){
+    //     if(_this.canEditMap){
+    //       markers[i].setDraggable(true);
+    //     } else {
+    //       markers[i].setDraggable(false);
+    //     }
+    //   }
+    // });
+    //
+    // $('#remove-route').click(function(){
+    //   $(this).toggleClass('secondary');
+    //   _this.pointDeleteMode
+    //   var markers = _this.mapEditor.routeMarkers;
+    //   // for(i=0;i<markers.length;i++){
+    //   //   if(_this.canEditMap){
+    //   //     markers[i].setDraggable(true);
+    //   //   } else {
+    //   //     markers[i].setDraggable(false);
+    //   //   }
+    //   // }
+    // });
 
     $("#import-gpx").click(function(){
       _this.importGPX();

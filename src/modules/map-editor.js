@@ -13,6 +13,7 @@ var MapEditor = Class({
       displayEdge is a instance variable which tracks whether a handle should be shown when the user hovers the mouse over the route.
     */
     this.displayEdge = true;
+    this.pointDeleteQueue = [];
     this.attemptGeolocation();
   },
 
@@ -194,6 +195,26 @@ var MapEditor = Class({
     this.updateRoute();
   },
 
+  addToPointDeleteQueue: function(index){
+    if(this.pointDeleteQueue.length == 0){
+      this.pointDeleteQueue.push(index);
+    } else {
+      this.pointDeleteQueue.push(index);
+      this.clearPointDeleteQueue();
+    }
+  },
+
+  clearPointDeleteQueue: function(){
+    this.pointDeleteQueue.sort();
+    var start = this.pointDeleteQueue[0];
+    var end = this.pointDeleteQueue[1];
+    for(var i = end;i >= start;i--){
+      this.deletePoint(this.routeMarkers[i]);
+    }
+    this.updateRoute();
+    this.pointDeleteQueue = [];
+  },
+
   /*
     Removes a point or waypoint from the route
   */
@@ -215,9 +236,6 @@ var MapEditor = Class({
         //remove the point from our points array
         this.routePoints.removeAt(vertexIndex)
     }
-    this.updateRoute();
-    // TODO make roadbook total Distance function
-    // app.roadbook.updateTotalDistance();
   },
 
   deleteWaypoint: function(point){
@@ -392,6 +410,17 @@ var MapEditor = Class({
 
   initPointListeners: function(point){
     var _this = this;
+
+    /*
+      clicking on a route point adds it to app delete queue.
+      When two items are in the queue, all points in between are deleted.
+    */
+    google.maps.event.addListener(point, 'click', function(evt) {
+      if(app.pointDeleteMode){
+        _this.addToPointDeleteQueue(point.mapVertexIndex);
+      }
+    });
+
     /*
       right clicking on a route point removes it from the route
     */

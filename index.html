@@ -17,6 +17,10 @@
         <li>
           <a href="#" class="button tiny radius secondary" id="zin"><i class="fi-plus"></i></a>
           <a href="#" class="button tiny radius secondary" id="zout"><i class="fi-minus"></i></a>
+        </li>
+      </ul>
+      <ul class="left">
+        <li>
           <a href="#" class="button dropdown tiny radius secondary" data-dropdown="layers-dropdown" aria-controls="drop1" aria-expanded="false" id="map-layers">
             <i class="fi-map"></i>
           </a>
@@ -30,10 +34,15 @@
       </ul>
       <ul class="left">
         <li>
-          <a href="#" class="button tiny radius secondary" id="draw-route"><i class="fi-pencil"></i></a>
           <span data-tooltip aria-haspopup="true" class="map-rotate-notice has-tip button tiny radius alert" style="display: none;" title="Map interaction other than zoom is disabled when map is rotated.">
             <i class="fi-alert"></i>
           </span>
+          <a href="#" class="button tiny radius secondary" id="draw-route" data-tooltip aria-haspopup="true" title="When enabled prevents adding points on map click">
+            <i class="fi-lock"></i>
+          </a>
+          <a href="#" class="button tiny radius secondary" id="remove-route" data-tooltip aria-haspopup="true" title="When enabled clicking on one point then another removes all points in between.">
+            <i class="fi-x-circle"></i>
+          </a>
         </li>
       </ul>
     </nav>
