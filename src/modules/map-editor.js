@@ -85,6 +85,20 @@ var MapEditor = Class({
   },
 
   /*
+    an icon which marks a waypoint (vertex) on the route Polyline
+  */
+  deleteQueueIcon: function(){
+    return {
+              path: 'M-1.25,-1.25 1.25,-1.25 1.25,1.25 -1.25,1.25z',
+              scale: 7,
+              strokeWeight: 2,
+              strokeColor: '#ff4200',
+              fillColor: '#ff9000',
+              fillOpacity: 1
+            };
+  },
+
+  /*
     Adds a point to the route path points array for manangement
     Since route path points is an MVCArray bound to the route path
     the new point will show up on the route Polyline automagically.
@@ -198,6 +212,7 @@ var MapEditor = Class({
   addToPointDeleteQueue: function(index){
     if(this.pointDeleteQueue.length == 0){
       this.pointDeleteQueue.push(index);
+      this.routeMarkers[index].setIcon(this.deleteQueueIcon());
     } else {
       this.pointDeleteQueue.push(index);
       this.clearPointDeleteQueue();
@@ -212,7 +227,16 @@ var MapEditor = Class({
       this.deletePoint(this.routeMarkers[i]);
     }
     this.updateRoute();
+    this.displayEdge = true; //we have to set this because the mouse out handler that usually handles this gets nuked in the delete
     this.pointDeleteQueue = [];
+  },
+
+  returnPointToNaturalColor: function(point){
+    if(point.waypoint){
+      point.setIcon(app.mapEditor.waypointIcon());
+    }else {
+      point.setIcon(app.mapEditor.pointIcon());
+    }
   },
 
   /*
@@ -461,12 +485,18 @@ var MapEditor = Class({
     */
     google.maps.event.addListener(point, 'mouseover', function(evt) {
       _this.displayEdge = false;
+      if(app.pointDeleteMode){
+        point.setIcon(_this.deleteQueueIcon())
+      }
     });
     /*
       turns display of the potential point marker on the route path back on.
     */
     google.maps.event.addListener(point, 'mouseout', function(evt) {
       _this.displayEdge = true;
+      if(app.pointDeleteMode && (point.mapVertexIndex != _this.pointDeleteQueue[0])){
+        _this.returnPointToNaturalColor(point);
+      }
     });
   },
 

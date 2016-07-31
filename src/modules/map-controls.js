@@ -100,6 +100,11 @@ var MapControls = Class({
     $('#remove-route').click(function(){
       $(this).toggleClass('secondary');
       app.pointDeleteMode = !app.pointDeleteMode;
+      if(app.mapEditor.pointDeleteQueue.length){
+        var point = app.mapEditor.routeMarkers[app.mapEditor.pointDeleteQueue[0]];
+        app.mapEditor.returnPointToNaturalColor(point);
+        app.mapEditor.pointDeleteQueue = [];
+      }
     });
 
   },
