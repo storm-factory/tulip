@@ -93,8 +93,7 @@ var Roadbook = Class({
     if(this.desc() !== null){
       this.descriptionTextEditor.setHTML(this.desc());
     }
-    // TODO this also needs to be abstracted to the app object
-    app.mapEditor.updateRoute();
+
     var latLng = new google.maps.LatLng(points[0].lat, points[0].long);
     app.mapEditor.map.setCenter(latLng);
     app.mapEditor.map.setZoom(14);

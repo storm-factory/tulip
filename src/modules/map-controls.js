@@ -37,11 +37,13 @@ var MapControls = Class({
   },
 
   rotateNumDegrees: function(degrees){
+    $('#map').addClass('rotated');
     $('#map').css({'-webkit-transform' : 'rotate('+ degrees +'deg)'});
   },
 
   reorient: function(){
     this.rotation = 0;
+    $('#map').removeClass('rotated');
     $('#map').css({'-webkit-transform' : 'rotate(0deg)'});
   },
 

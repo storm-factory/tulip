@@ -66,8 +66,8 @@ var Io = Class({
       }
     }
     var latLng = new google.maps.LatLng(tracks[0].lat, tracks[0].lng);
-    // TODO abstract this to the app
     app.setMapCenter(latLng);
+    app.setMapZoom(14);
   },
 
 

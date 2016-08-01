@@ -35,7 +35,6 @@ var MapEditor = Class({
       strokeOpacity: 1.0,
       strokeWeight: 6,
       map: this.map,
-      geodesic: true,
     });
 
     /*
@@ -270,7 +269,7 @@ var MapEditor = Class({
     if(point.mapVertexIndex == 0 && (this.routeMarkers.length > 2)){
       this.addWaypoint(this.routeMarkers[1]);
       //recompute distances between waypoints
-      this.updateRoute();
+      // this.updateRoute();
     }
 
     //update the point's icon and remove its waypoint object
@@ -408,6 +407,8 @@ var MapEditor = Class({
       };
       _this.map.setCenter(pos);
       _this.map.setZoom(14);
+    }, function(err) {
+        console.log(err);
     });
   },
 
@@ -477,7 +478,6 @@ var MapEditor = Class({
 
     google.maps.event.addListener(point, 'dragend', function(evt) {
       _this.updateRoute();
-      // app.roadbook.updateTotalDistance();
     });
 
     /*
@@ -510,18 +510,26 @@ var MapEditor = Class({
       then increment the mapVertexIndex of all the points after that index
     */
     var idx;
-
+    var x0 = latLng.lat();
+    var y0 = latLng.lng();
+    var prev = 360;
+    
     for(i = 1; i < points.length; i++ ){
-      // does the event point fit in the bounds of the two reference points before and after the click
-      var path = [points[i-1],points[i]];
-      var line = new google.maps.Polyline({path: path});
-      var tolerance = Math.pow(this.map.getZoom(), -(this.map.getZoom()/5.1));
-      if(google.maps.geometry.poly.isLocationOnEdge(latLng, line, tolerance)) {
+      var x1 = points[i-1].lat();
+      var y1 = points[i-1].lng();
+      var x2 = points[i].lat();
+      var y2 = points[i].lng();
+
+      var h1 = google.maps.geometry.spherical.computeHeading(points[i-1], latLng)
+      var h2 = google.maps.geometry.spherical.computeHeading(latLng, points[i])
+
+      var headingTolerance = (Math.abs(h1-h2))
+      if(headingTolerance < prev) {
+        prev = Math.abs(h1-h2);
         idx = i;
-        this.addRoutePoint(latLng, i);
-        break; //we found it, we're done here
       }
     }
+    this.addRoutePoint(latLng, idx);
     return idx;
   },
 
@@ -591,7 +599,6 @@ var MapEditor = Class({
         */
         google.maps.event.addListener(handle, 'mousedown', function(evt){
           dragging = true;
-
           var idx = _this.insertPointOnEdge(evt.latLng);
           /*
             Add listeners to move the new route point and the route to the mouse drag position of the handle

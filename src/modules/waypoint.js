@@ -124,7 +124,7 @@ var Waypoint = Class({
         _this.tulip.beginEdit();
       }
       var latLng = new google.maps.LatLng(_this.lat(), _this.lng());
-      
+
       app.setMapCenter(latLng);
       app.setMapZoom(18);
 
