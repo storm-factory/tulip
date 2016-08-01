@@ -63,24 +63,32 @@ var MapControls = Class({
     $('#map-hybrid-layer').click(function(){
       app.map.setMapTypeId(google.maps.MapTypeId.HYBRID);
       $('#layers-dropdown').find('i').hide();
+      $(this).parent('li').siblings('li').find('a').removeClass('selected');
+      $(this).addClass('selected');
       $(this).find('i').show();
     });
 
     $('#map-satellite-layer').click(function(){
       app.map.setMapTypeId(google.maps.MapTypeId.SATELLITE);
       $('#layers-dropdown').find('i').hide();
+      $(this).parent('li').siblings('li').find('a').removeClass('selected');
+      $(this).addClass('selected')
       $(this).find('i').show();
     });
 
     $('#map-roadmap-layer').click(function(){
       app.map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
       $('#layers-dropdown').find('i').hide();
+      $(this).parent('li').siblings('li').find('a').removeClass('selected');
+      $(this).addClass('selected')
       $(this).find('i').show();
     });
 
     $('#map-terrain-layer').click(function(){
       app.map.setMapTypeId(google.maps.MapTypeId.TERRAIN);
       $('#layers-dropdown').find('i').hide();
+      $(this).parent('li').siblings('li').find('a').removeClass('selected');
+      $(this).addClass('selected')
       $(this).find('i').show();
     });
 

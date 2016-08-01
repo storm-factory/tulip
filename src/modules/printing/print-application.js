@@ -43,11 +43,13 @@ var PrintApp = Class({
 
   requestPdfPrint: function(){
     $('nav').hide();
+    this.rerenderForPageSize()
     var size = this.pageSize();
     if(size == "Roll"){
       size = {height: $(document).height()*265, width: $(document).width()*265};
     }
-    var data = {'filepath': this.filePath, 'opts': {'pageSize': size}};
+    var data = {'filepath': this.filePath, 'opts': {'pageSize': size, 'marginsType' : '1'}};
+    console.log($('body').css('margin-left'));
     this.ipc.send('print-pdf', data);
   },
 
@@ -58,8 +60,12 @@ var PrintApp = Class({
     if((pageSize == "Letter" || pageSize == "A5")){
       this.addPageBreaks();
       //adjust height for A5
+
       if(pageSize == "A5"){
         $('.waypoint, .waypoint-note, .waypoint-distance, .waypoint-tulip').addClass('A5');
+      }else {
+
+        $('body').css('margin-left', '-60px');
       }
     }
   },

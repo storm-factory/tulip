@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/SenorDrewMitchell/tulip.git"
+    "url": "git+https://github.com/storm-factory/tulip.git"
   },
   "keywords": [
     "Electron",
@@ -19,9 +19,9 @@
   "author": "Drew Mitchell",
   "license": "GPL-2.0",
   "bugs": {
-    "url": "https://github.com/SenorDrewMitchell/tulip/issues"
+    "url": "https://github.com/storm-factory/tulip/issues"
   },
-  "homepage": "https://github.com/SenorDrewMitchell/tulip",
+  "homepage": "https://github.com/storm-factory/tulip",
   "devDependencies": {
     "electron-prebuilt": "^1.2.0"
   }

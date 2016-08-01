@@ -255,7 +255,9 @@ left: 85px !important;
   height: 5px !important;
 }
 
-
+.selected {
+  background-color: rgba(255,144,0,1);
+}
 
 .track-selection, .glyph-selection {min-height: 130px;}
 .glyph-selection.note-selection {min-height: 40px;margin-bottom: 5px;}

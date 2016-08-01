@@ -88,6 +88,7 @@ ipcMain.on('print-pdf', (event, arg) => {
     size = 'Roll'
   }
   var filename = arg.filepath.replace('.tlp', size + '.pdf')
+  console.log(arg.opts);
   printWindow.webContents.printToPDF(arg.opts, (error, data) => {
     if (error) throw error;
     fs.writeFile(filename, data, (error) => {

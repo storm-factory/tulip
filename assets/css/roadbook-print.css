@@ -2,6 +2,7 @@
   font-family:bellybeans;
   src:url(../fonts/bellybeans.ttf);
 }
+
 /*
   for native printing expirementation
 */
@@ -82,74 +83,91 @@ body {
 .total-distance {
   height: 90px;
   font-family: Tahoma, Geneva, sans-serif;
-  font-size: 3.45em;
+  font-size: 3em;
   color: #000;
   text-align: center;
+}
+
+.total-distance.A5 {
+  font-size: 3.45em;
 }
 
 .total-distance div {
   margin-top: 20px
 }
 
+.waypoint.A5{
+  width: 580px !important; /* works for letter */
+}
+
 .waypoint {
-  width: 596px !important; /* works for letter */
+  width: 528px !important; /* works for letter */
   border: 2px solid #000;
-  height:190px;
+  /*height:190px;*/
   margin-left: 0 !important;
   margin-right: 0 !important;
 }
 
 /* works for letter */
 .waypoint-distance {
+  width: 150px;
+}
+
+.waypoint-distance.A5 {
   /*width: 230px;*/
   width: 193px;
 }
 
 /* works for letter */
 .waypoint-note {
-  width: 193px;
+  width: 185px;
   padding-left: 4px;
   padding-right: 4px;
 }
 
 .waypoint-note p {
   width: 100%;
-  height: 95px;
+  /*height: 95px;*/
   margin: 0;
   overflow: hidden;
-  font-size: 1.2rem;
+  /*font-size: 1.2rem;*/
   word-wrap: break-word;
   line-height: 1;
 }
 
 /* works for letter */
 .waypoint-tulip {
-  width:190px;
+  width:180px;
   border-left: 1px solid #000;
   border-right: 1px solid #000;
 }
 
-.waypoint-distance,
+.waypoint-tulip.A5 {
+  width:190px;
+}
+
+/*.waypoint-distance,
 .waypoint-note,
 .waypoint-tulip {
   height: 190px;
   float: left
-}
+}*/
 /*
-  A5 sizing
+  --- A5 sizing
 */
-.waypoint.A5,
-.waypoint-distance.A5,
-.waypoint-tulip.A5,
-.waypoint-note.A5 {
+.waypoint,
+.waypoint-distance,
+.waypoint-tulip,
+.waypoint-note {
   height: 175px;
+  float: left
 }
-.waypoint-note.A5 p {
+.waypoint-note p {
   height: 88px;
   font-size: 1.1rem;
 }
 
-.waypoint-distance.A5 .relative-distance {
+.waypoint-distance .relative-distance {
   margin-top: 35px;
 }
 
