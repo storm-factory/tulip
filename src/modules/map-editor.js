@@ -408,7 +408,12 @@ var MapEditor = Class({
       _this.map.setCenter(pos);
       _this.map.setZoom(14);
     }, function(err) {
-        console.log(err);
+      var url = "https://www.googleapis.com/geolocation/v1/geolocate?key="+ api_keys.google_maps;
+      console.log('Geolocation failed, using fallback');
+      $.post(url,function(data){
+        app.setMapCenter(data.location);
+        app.setMapZoom(14);
+      });
     });
   },
 

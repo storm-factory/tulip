@@ -109,6 +109,7 @@ var Roadbook = Class({
     waypoint.changeEntryTrackType(type);
     var waypointIndex = this.waypoints().indexOf(waypoint)
     //if it's the first waypoint we can't change the previous waypoint exit
+    // TODO loop until the track type changes
     if(waypointIndex > 0){
       this.waypoints()[waypointIndex-1].changeExitTrackType(type);
     }
@@ -119,6 +120,7 @@ var Roadbook = Class({
     waypoint.changeExitTrackType(type);
     var waypointIndex = this.waypoints().indexOf(waypoint)
     //if it's the last waypoint we can't change the next waypoint entry
+    // TODO loop until the track type changes
     if((waypointIndex+1 < this.waypoints().length)){
       this.waypoints()[waypointIndex+1].changeEntryTrackType(type);
     }

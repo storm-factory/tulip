@@ -289,11 +289,13 @@ var Tulip = Class({
 
   changeEntryTrackType(type){
     this.entryTrack.setOptions(this.trackTypes[type])
+    this.entryTrackType = type;
     this.canvas.renderAll();
   },
 
   changeExitTrackType(type){
     this.exitTrack.setOptions(this.trackTypes[type])
+    this.exitTrackType = type
     this.canvas.renderAll();
   },
 
@@ -332,7 +334,7 @@ var Tulip = Class({
   redrawExit(angle){
     this.canvas.remove(this.exitTrack);
     this.canvas.remove(this.exitTrackEnd);
-    this.buildExit(angle);
+    this.buildExit(angle,this.exitTrackType);
     if(this.uneditedPath != null){
       this.uneditedPath = $(this.exitTrack.toSVG()).attr('d');
     }
