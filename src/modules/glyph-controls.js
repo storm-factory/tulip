@@ -20,8 +20,13 @@ var GlyphControls = Class({
     }
   },
 
-  processFiles: function(){
-
+  handleGlyphSelectUI: function(e){
+    e.preventDefault();
+    if(!e.shiftKey){
+      $('#glyphs').foundation('reveal', 'close');
+      $('#glyph-search').val('');
+      $('#glyph-search-results').html('');
+    }
   },
 
   populateResults: function(results){
@@ -30,7 +35,10 @@ var GlyphControls = Class({
       var img = $('<img>').addClass('glyph').attr('src', result.path)
       var link = $('<a>').addClass('th').attr('title', result.name).append(img);
       var showResult = $('<li>').append(link);
-      $(img).click(function(){_this.addGlyphToInstruction(this);})
+      $(img).click(function(e){
+        _this.handleGlyphSelectUI(e);
+        _this.addGlyphToInstruction(this);
+      })
       $('#glyph-search-results').append(showResult);
     });
   },
@@ -56,12 +64,7 @@ var GlyphControls = Class({
     });
 
     $('.glyph').click(function(e){
-      e.preventDefault();
-      if(!e.shiftKey){
-        $('#glyphs').foundation('reveal', 'close');
-        $('#glyph-search').val('');
-        $('#glyph-search-results').html('');
-      }
+      _this.handleGlyphSelectUI(e);
       _this.addGlyphToInstruction(this);
     });
 
