@@ -510,26 +510,25 @@ var MapEditor = Class({
       then increment the mapVertexIndex of all the points after that index
     */
     var idx;
-    var x0 = latLng.lat();
-    var y0 = latLng.lng();
-    var prev = 360;
-    
+
+    var tolerance = Math.pow(this.map.getZoom(), -(this.map.getZoom()/5));
     for(i = 1; i < points.length; i++ ){
-      var x1 = points[i-1].lat();
-      var y1 = points[i-1].lng();
-      var x2 = points[i].lat();
-      var y2 = points[i].lng();
+      // does the event point fit in the bounds of the two reference points before and after the click
+      var path = [points[i-1],points[i]];
+      var line = new google.maps.Polyline({path: path});
 
-      var h1 = google.maps.geometry.spherical.computeHeading(points[i-1], latLng)
-      var h2 = google.maps.geometry.spherical.computeHeading(latLng, points[i])
-
-      var headingTolerance = (Math.abs(h1-h2))
-      if(headingTolerance < prev) {
-        prev = Math.abs(h1-h2);
+      if(google.maps.geometry.poly.isLocationOnEdge(latLng, line, tolerance)) {
         idx = i;
+        this.addRoutePoint(latLng, i);
+        break; //we found it, we're done here
+      }
+      //we haven't found it, increse the tolerance
+      //and start over
+      if(i == points.length - 1 ){
+        tolerance = tolerance*2;
+        i = 0;
       }
     }
-    this.addRoutePoint(latLng, idx);
     return idx;
   },
 
@@ -585,6 +584,7 @@ var MapEditor = Class({
             handle.setMap(null);
           }
         });
+
         /*
           make the point go away if the mouse leaves the route, but not if it's being dragged
         */
