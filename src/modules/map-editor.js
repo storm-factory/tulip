@@ -14,7 +14,7 @@ var MapEditor = Class({
     */
     this.displayEdge = true;
     this.pointDeleteQueue = [];
-    this.attemptGeolocation();
+    // this.attemptGeolocation();
   },
 
   initMap: function(){
@@ -115,8 +115,9 @@ var MapEditor = Class({
     }
     /*
       Creates a google maps marker to denote a vertex or point on the route polyline and
+      TODO should we make marker literals
     */
-    var point = new google.maps.Marker({
+    var marker = new google.maps.Marker({
                       icon: this.pointIcon(),
                       map: this.map,
                       position: latLng,
@@ -127,24 +128,25 @@ var MapEditor = Class({
     /*
       Bind the listeners for this point
     */
-    this.initPointListeners(point);
+    this.initMarkerListeners(marker);
 
     /*
       Add this point to the marker management array
     */
     if(index){
-      this.routeMarkers.splice(index,0,point);
+      this.routeMarkers.splice(index,0,marker);
       this.incrementRouteVertexIndecies(index);
     } else {
-      this.routeMarkers.push(point);
+      this.routeMarkers.push(marker);
       // this is the first point and thus the start of the route, make it a waypoint, but not if the roadbook is being loaded from js
       if(this.routeMarkers.length == 1 && this.routePoints.length == 1 && !supressWpt) {
-        point.kmFromStart = 0;
-        point.kmFromPrev = 0;
-        point.waypoint = app.roadbook.addWaypoint(this.addWaypoint(point));
+        marker.kmFromStart = 0;
+        marker.kmFromPrev = 0;
+        // TODO how to refactor this? perhaps this should be two methods?s
+        marker.waypoint = app.roadbook.addWaypoint(this.addWaypoint(marker));
       }
     }
-    return point;
+    return marker;
   },
   /*
     Add a waypoint to the route waypoints array in the proper spot with accurate distance measurements
@@ -154,20 +156,20 @@ var MapEditor = Class({
     The reason we don't just do that here is that it allows the waypoint generation
     workflow to be more generalized
   */
-  addWaypoint: function(point) {
-      var distances = this.computeDistanceFromStart(point);
-      var angles = this.computeHeading(point);
-      point.kmFromStart = distances.kmFromStart;
-      point.heading = angles.heading;
+  addWaypoint: function(marker) {
+      var distances = this.computeDistanceFromStart(marker);
+      var angles = this.computeHeading(marker);
+      marker.kmFromStart = distances.kmFromStart;
+      marker.heading = angles.heading;
       opts = {
-          lat: point.getPosition().lat(),
-          lng: point.getPosition().lng(),
-          mapVertexIndex: point.mapVertexIndex,
+          lat: marker.getPosition().lat(),
+          lng: marker.getPosition().lng(),
+          mapVertexIndex: marker.mapVertexIndex,
           distances: distances,
           angles: angles,
       }
-      //update the waypoint's icon
-      point.setIcon(this.waypointIcon());
+      //update the waypoint marker's icon
+      marker.setIcon(this.waypointIcon());
       // return point distance options so a roadbook waypoint can be initialized
       return opts;
   },
@@ -198,8 +200,6 @@ var MapEditor = Class({
           waypoints.push(point)
         }
       }
-      // TODO make roadbook total Distance function
-      // app.roadbook.updateTotalDistance();
     }
     // add the waypoints in
     for(i=0;i<waypoints.length;i++){
@@ -219,7 +219,7 @@ var MapEditor = Class({
   },
 
   clearPointDeleteQueue: function(){
-    this.pointDeleteQueue.sort();
+    this.pointDeleteQueue.sort(function(a,b){return a - b});
     var start = this.pointDeleteQueue[0];
     var end = this.pointDeleteQueue[1];
     for(var i = end;i >= start;i--){
@@ -228,6 +228,7 @@ var MapEditor = Class({
     this.updateRoute();
     this.displayEdge = true; //we have to set this because the mouse out handler that usually handles this gets nuked in the delete
     this.pointDeleteQueue = [];
+    app.pointDeleteMode = false
   },
 
   returnPointToNaturalColor: function(point){
@@ -396,26 +397,27 @@ var MapEditor = Class({
 
   /*
     figure out where the user is in the world and center the map there
+    NOTE moved to app
   */
-  attemptGeolocation: function(){
-
-    var _this = this;
-    navigator.geolocation.getCurrentPosition(function(position) {
-      var pos = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
-      };
-      _this.map.setCenter(pos);
-      _this.map.setZoom(14);
-    }, function(err) {
-      var url = "https://www.googleapis.com/geolocation/v1/geolocate?key="+ api_keys.google_maps;
-      console.log('Geolocation failed, using fallback');
-      $.post(url,function(data){
-        app.setMapCenter(data.location);
-        app.setMapZoom(14);
-      });
-    });
-  },
+  // attemptGeolocation: function(){
+  //
+  //   var _this = this;
+  //   navigator.geolocation.getCurrentPosition(function(position) {
+  //     var pos = {
+  //       lat: position.coords.latitude,
+  //       lng: position.coords.longitude
+  //     };
+  //     _this.map.setCenter(pos);
+  //     _this.map.setZoom(14);
+  //   }, function(err) {
+  //     var url = "https://www.googleapis.com/geolocation/v1/geolocate?key="+ api_keys.google_maps;
+  //     console.log('Geolocation failed, using fallback');
+  //     $.post(url,function(data){
+  //       app.setMapCenter(data.location);
+  //       app.setMapZoom(14);
+  //     });
+  //   });
+  // },
 
   /*
     increments the route vertex index of each point along the route after the passed in index
@@ -438,69 +440,75 @@ var MapEditor = Class({
     }
   },
 
-  initPointListeners: function(point){
+  initMarkerListeners: function(marker){
     var _this = this;
 
     /*
-      clicking on a route point adds it to app delete queue.
       When two items are in the queue, all points in between are deleted.
     */
-    google.maps.event.addListener(point, 'click', function(evt) {
-      if(app.pointDeleteMode){
-        _this.addToPointDeleteQueue(point.mapVertexIndex);
+    google.maps.event.addListener(marker, 'click', function(evt) {
+      if(this.waypoint && !app.pointDeleteMode){
+        // TODO make into waypoint function
+        $('#roadbook').scrollTop(0);
+        $('#roadbook').scrollTop(($(this.waypoint.element).offset().top-100));
       }
     });
 
     /*
-      right clicking on a route point removes it from the route
+      right clicking on a route point adds it to delete queue.
     */
-    google.maps.event.addListener(point, 'rightclick', function(evt) {
-      _this.deletePoint(this);
-      _this.displayEdge = true;
-      _this.updateRoute();
+    google.maps.event.addListener(marker, 'rightclick', function(evt) {
+      app.pointDeleteMode = true;
+      _this.addToPointDeleteQueue(this.mapVertexIndex);
     });
 
     /*
       double clicking on a route point toggles whether the point is a waypoint or not
     */
-    google.maps.event.addListener(point, 'dblclick', function(evt) {
+    google.maps.event.addListener(marker, 'dblclick', function(evt) {
       //If the point has a waypoint remove it, otherwise add one
-      if(this.waypoint){
-        _this.deleteWaypoint(this);
-      } else {
-        this.waypoint = app.roadbook.addWaypoint(_this.addWaypoint(this));
-        //recompute distances between waypoints
-        _this.updateRoute();
+      if(!app.pointDeleteMode){
+        if(this.waypoint){
+          _this.deleteWaypoint(this);
+        } else {
+          this.waypoint = app.roadbook.addWaypoint(_this.addWaypoint(this));
+          $('#roadbook').scrollTop(0);
+          $('#roadbook').scrollTop(($(this.waypoint.element).offset().top-100));
+          //recompute distances between waypoints
+          _this.updateRoute();
+        }
       }
     });
 
     /*
       Dragging the point updates the latLng vertex position on the route Polyline
     */
-    google.maps.event.addListener(point, 'drag', function(evt) {
+    google.maps.event.addListener(marker, 'drag', function(evt) {
+      if(!app.pointDeleteMode){
         _this.routePoints.setAt(this.mapVertexIndex, evt.latLng);
+      }
     });
 
-    google.maps.event.addListener(point, 'dragend', function(evt) {
+    google.maps.event.addListener(marker, 'dragend', function(evt) {
       _this.updateRoute();
     });
 
     /*
       turns off display of the potential point marker on the route path so UI functions over a point are not impeeded.
     */
-    google.maps.event.addListener(point, 'mouseover', function(evt) {
+    google.maps.event.addListener(marker, 'mouseover', function(evt) {
       _this.displayEdge = false;
       if(app.pointDeleteMode){
-        point.setIcon(_this.deleteQueueIcon())
+        marker.setIcon(_this.deleteQueueIcon())
       }
     });
     /*
       turns display of the potential point marker on the route path back on.
     */
-    google.maps.event.addListener(point, 'mouseout', function(evt) {
+    google.maps.event.addListener(marker, 'mouseout', function(evt) {
       _this.displayEdge = true;
-      if(app.pointDeleteMode && (point.mapVertexIndex != _this.pointDeleteQueue[0])){
-        _this.returnPointToNaturalColor(point);
+      if(app.pointDeleteMode && (marker.mapVertexIndex != _this.pointDeleteQueue[0])){
+        _this.returnPointToNaturalColor(marker);
       }
     });
   },
@@ -541,27 +549,33 @@ var MapEditor = Class({
     var _this = this;
     // Add a listener for the map's click event
     this.map.addListener('click', function(evt){
-      if(app.canEditMap){
+      if(app.canEditMap && !app.pointDeleteMode){
         _this.addRoutePoint(evt.latLng)
         _this.updateRoute();
       }
     });
 
     this.map.addListener('rightclick', function(evt){
-      if(app.canEditMap){
-        var startSnap = _this.routePoints.getArray().slice(-1).pop();
-        var endSnap = evt.latLng;
-        var url = "https://maps.googleapis.com/maps/api/directions/json?"
-                    + "origin="+startSnap.lat()+","
-                    + startSnap.lng()
-                    + "&destination=" + endSnap.lat()+","
-                    + endSnap.lng()
-                    + "&key=" + api_keys.google_directions
-        $.get(url,function(data){
-          if(data.status == "OK"){
-            _this.appendGoogleDirectionsToMap(data);
-          }
-        });
+      if(app.canEditMap && !app.pointDeleteMode){
+        if(_this.routePoints.length >0){
+          var startSnap = _this.routePoints.getArray().slice(-1).pop();
+          var endSnap = evt.latLng;
+          var url = "https://maps.googleapis.com/maps/api/directions/json?"
+                      + "origin="+startSnap.lat()+","
+                      + startSnap.lng()
+                      + "&destination=" + endSnap.lat()+","
+                      + endSnap.lng()
+                      + "&key=" + api_keys.google_directions
+          $.get(url,function(data){
+            if(data.status == "OK"){
+              _this.appendGoogleDirectionsToMap(data);
+            }
+          });
+        }else {
+          _this.addRoutePoint(evt.latLng)
+          _this.updateRoute();
+        }
+
       }
     });
 
@@ -572,7 +586,7 @@ var MapEditor = Class({
       /*
         If we aren't over a point display a handle to add a new route point if the map is editable
       */
-      if(_this.displayEdge){
+      if(_this.displayEdge && !app.pointDeleteMode){
         var dragging = false;
         var loc;
         var handle = new google.maps.Marker({

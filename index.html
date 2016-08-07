@@ -40,9 +40,10 @@
           <a href="#" class="button tiny radius secondary" id="draw-route" data-tooltip aria-haspopup="true" title="When enabled prevents adding points on map click">
             <i class="fi-lock"></i>
           </a>
-          <a href="#" class="button tiny radius secondary" id="remove-route" data-tooltip aria-haspopup="true" title="When enabled clicking on one point then another removes all points in between.">
+          <!-- maybe reourpose for snap to -->
+          <!-- <a href="#" class="button tiny radius secondary" id="remove-route" data-tooltip aria-haspopup="true" title="When enabled clicking on one point then another removes all points in between.">
             <i class="fi-x-circle"></i>
-          </a>
+          </a> -->
         </li>
       </ul>
     </nav>
@@ -90,7 +91,7 @@
           </div>
           <div id="roadbook">
             <hr>
-            <div class="row">
+            <div class="row roadbook-info">
               <div id="roadbook-total-distance" class="large-4 column">
                 Total Kilometers:
                 <p data-bind="text: app.roadbook.totalDistance"></p>
@@ -104,7 +105,7 @@
                 </div>
               </div>
             </div>
-            <div class="row">
+            <div class="row roadbook-info">
               <hr>
               <div id="roadbook-desc" class="large-12 column">
                 <a class="button tiny round alert hide-editor rb-desc" title="Hide editor.">&#215;</a>

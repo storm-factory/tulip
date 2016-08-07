@@ -214,6 +214,8 @@ var Roadbook = Class({
       this.finishWaypointEdit(); //clear any existing UI just to be sure
       this.currentlyEditingWaypoint = waypoint;
       this.noteTextEditor.setHTML(waypoint.noteHTML());
+      $('#roadbook').css('padding-bottom', '0');
+      $('#roadbook').find('.roadbook-info').hide();
       return true;
     }
   },
@@ -222,6 +224,9 @@ var Roadbook = Class({
     if(this.currentlyEditingWaypoint !== null){
       $('.waypoint.row').show();
       $('#waypoint-palette').slideUp('slow');
+      // TODO make into waypoint function
+      $('#roadbook').css('padding-bottom', '150%');
+      $('#roadbook').find('.roadbook-info').show();
       $('#roadbook').scrollTop(this.currentlyEditingWaypoint.element.position().top - 80)
       this.currentlyEditingWaypoint.tulip.finishEdit();
       this.currentlyEditingWaypoint.tulip.finishRemove();

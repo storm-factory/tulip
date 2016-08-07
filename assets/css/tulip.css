@@ -78,7 +78,7 @@ textarea.waypoint-palette{
 
 #roadbook {
   padding-top: 1.2rem;
-  padding-bottom: 1.2rem;
+  padding-bottom: 150%;
   height: 90%;
   overflow: auto;
 }

@@ -130,7 +130,9 @@ var Waypoint = Class({
 
       $('#roadbook-waypoints').children().hide();
       $(element).show();
+      $('#roadbook').scrollTop(element.position().top - 80)
       $('#waypoint-palette').slideDown('slow');
+
     });
   },
 

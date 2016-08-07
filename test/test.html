@@ -50,6 +50,7 @@
   <script src='./waypoint-test.js'></script>
   <script src='./track-remover-test.js'></script>
   <script src='./glyph-remover-test.js'></script>
+  <script src='./map-editor-test.js'></script>
 
   <!--
     Foundation Corrections
@@ -252,10 +253,19 @@
   </div>
 </body>
 <script>
-new function(){
-  // var s = document.createElement( 'script' );
-  // s.setAttribute( 'src', "https://maps.googleapis.com/maps/api/js?key=" + api_keys.google_maps + "&callback=app.initMap" );
-  // document.body.appendChild( s );
-}
+var map;
+function initMap(){
+  map = new google.maps.Map(document.getElementById('map'), {
+     center: {lat: 36.068209, lng: -105.629669},
+     zoom: 4,
+     disableDefaultUI: true,
+     mapTypeId: google.maps.MapTypeId.HYBRID,
+  });
+};
+  $(document).ready(function(){
+    var s = document.createElement( 'script' );
+    s.setAttribute( 'src', "https://maps.googleapis.com/maps/api/js?key=" + api_keys.google_maps + "&callback=initMap" );
+    document.body.appendChild( s );
+  });
 </script>
 </html>

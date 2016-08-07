@@ -195,6 +195,27 @@ var App = Class({
     this.mapEditor = new MapEditor();
     this.map = this.mapEditor.map;
     this.placeMapAttribution();
+    this.attemptGeolocation();
+  },
+
+  attemptGeolocation: function(){
+
+    var _this = this;
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var pos = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+      _this.setMapCenter(pos);
+      _this.setMapZoom(14);
+    }, function(err) {
+      var url = "https://www.googleapis.com/geolocation/v1/geolocate?key="+ api_keys.google_maps;
+      console.log('Geolocation failed, using fallback');
+      $.post(url,function(data){
+        _this.setMapCenter(data.location);
+        _this.setMapZoom(14);
+      });
+    });
   },
 
   /*
@@ -341,6 +362,7 @@ var App = Class({
       _this.roadbook.currentlyEditingWaypoint.tulip.addTrack(angle);
     });
 
+    // TODO change to object literal lookup
     $('.track-selector').click(function() {
       if('off-piste-added' == $(this).attr('id')){
         _this.roadbook.changeEditingWaypointAdded('offPiste')
