@@ -73,7 +73,7 @@ var Roadbook = Class({
     // NOTE: For some strange reason, due to canvas rendering, a for loop causes points and waypoints to be skipped, hence for...of in
     for(point of points){
       var latLng = new google.maps.LatLng(point.lat, point.long)
-      var routePoint = app.mapEditor.addRoutePoint(latLng, null, true); //this returns a point
+      var routePoint = app.mapEditor.pushRoutePoint(latLng); //this returns a point
       if(point.waypoint){
         var opts = app.mapEditor.addWaypoint(routePoint); //this returns distance opts but if we already have that saved then why do we care?
         opts.tulipJson = point.tulipJson;

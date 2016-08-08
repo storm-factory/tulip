@@ -83,6 +83,16 @@ var MapEditor = Class({
             };
   },
 
+  routeMarker: function(latLng){
+    return new google.maps.Marker({
+                      icon: this.pointIcon(),
+                      map: this.map,
+                      position: latLng,
+                      draggable: true,
+                      mapVertexIndex: this.routePoints.length > 0 ? this.routePoints.indexOf(latLng) : 0,
+                    });
+  },
+
   /*
     an icon which marks a waypoint (vertex) on the route Polyline
   */
@@ -104,50 +114,62 @@ var MapEditor = Class({
 
     Listeners are bound to the point to allow it to be toggled as a waypoint or to be removed entirely
   */
-  addRoutePoint: function(latLng, index, supressWpt){
+  pushRoutePoint: function(latLng,supressWpt){
     /*
       add this point to the route Polyline path MVC array
     */
-    if(index){
-      this.routePoints.insertAt(index,latLng)
-    } else {
-      this.routePoints.push(latLng);
-    }
+    this.routePoints.push(latLng);
     /*
       Creates a google maps marker to denote a vertex or point on the route polyline and
-      TODO should we make marker literals
     */
-    var marker = new google.maps.Marker({
-                      icon: this.pointIcon(),
-                      map: this.map,
-                      position: latLng,
-                      draggable: true,
-                      mapVertexIndex: this.routePoints.length > 0 ? this.routePoints.indexOf(latLng) : 0,
-                    });
+    var index = this.routePoints.length > 0 ? this.routePoints.indexOf(latLng) : 0 //if it's the first point it won't be in the routePoints array
+    var marker = this.routeMarker(latLng, index);
 
     /*
       Bind the listeners for this point
+      NOTE this could probably even get moved out to the caller
     */
     this.initMarkerListeners(marker);
 
     /*
       Add this point to the marker management array
     */
-    if(index){
-      this.routeMarkers.splice(index,0,marker);
-      this.incrementRouteVertexIndecies(index);
-    } else {
-      this.routeMarkers.push(marker);
-      // this is the first point and thus the start of the route, make it a waypoint, but not if the roadbook is being loaded from js
-      if(this.routeMarkers.length == 1 && this.routePoints.length == 1 && !supressWpt) {
-        marker.kmFromStart = 0;
-        marker.kmFromPrev = 0;
-        // TODO how to refactor this? perhaps this should be two methods?s
-        marker.waypoint = app.roadbook.addWaypoint(this.addWaypoint(marker));
-      }
-    }
+    this.routeMarkers.push(marker);
+    // this is the first point and thus the start of the route, make it a waypoint, but not if the roadbook is being loaded from js
     return marker;
   },
+
+  /*
+    splices point into route
+  */
+  insertRoutePointAt: function(latLng, index){
+    /*
+      add this point to the route Polyline path MVC array
+    */
+    this.routePoints.insertAt(index,latLng)
+    /*
+      Creates a google maps marker to denote a vertex or point on the route polyline and
+    */
+    var marker = this.routeMarker(latLng, index);
+
+    /*
+      Bind the listeners for this point
+      NOTE this could probably even get moved out to the caller
+    */
+    this.initMarkerListeners(marker);
+
+    /*
+      Add this point to the marker management array
+      at the specified index
+    */
+      this.routeMarkers.splice(index,0,marker);
+    /*
+      update the indexes after the route marker since they are now inaccurate
+    */
+    this.incrementRouteVertexIndecies(index);
+    return marker;
+  },
+
   /*
     Add a waypoint to the route waypoints array in the proper spot with accurate distance measurements
     and notify the roadbook observer that there is a new waypoint to render
@@ -155,6 +177,7 @@ var MapEditor = Class({
     Returns distance options so a new roadbook waypoint can be built from it.
     The reason we don't just do that here is that it allows the waypoint generation
     workflow to be more generalized
+    NOTE this function does too many things, it should just change the icon, and the opts part should be another function
   */
   addWaypoint: function(marker) {
       var distances = this.computeDistanceFromStart(marker);
@@ -175,6 +198,7 @@ var MapEditor = Class({
   },
   /*
     takes a response from google maps directions API and appends it to the route
+    NOTE needs refactored to be more SOLID and testable
   */
   appendGoogleDirectionsToMap: function(data){
     var steps = data.routes[0].legs[0].steps
@@ -193,11 +217,11 @@ var MapEditor = Class({
 
       for (j=1;j<points.length;j++){
         var latLng = new google.maps.LatLng(points[j].lat, points[j].lng);
-        var point = this.addRoutePoint(latLng);
+        var marker = this.pushRoutePoint(latLng);
         //take the last point in the steps and add it to an array to turn into a waypoint later
         // NOTE if we allow update route to redraw unedited tulips we can skip this.
         if(j == points.length-1){
-          waypoints.push(point)
+          waypoints.push(marker)
         }
       }
     }
@@ -252,7 +276,7 @@ var MapEditor = Class({
       Decrement the vertexIndex of each point on the route after the point being
       removed by one.
     */
-    if(vertexIndex >= 0){
+    if(vertexIndex >= 0){ //NOTE else what? why is this here?
         //remove the marker from our markers array
         this.routeMarkers.splice(vertexIndex,1);
         //decriment the remaining point's vertex indecies
@@ -262,22 +286,18 @@ var MapEditor = Class({
     }
   },
 
-  deleteWaypoint: function(point){
+  deleteWaypoint: function(marker){
     //remove the waypoint from the roadbook
-    app.roadbook.deleteWaypoint(point.waypoint.id);
+    app.roadbook.deleteWaypoint(marker.waypoint.id);
 
     //If the start waypoint is deleted assign it to the next point in the route
-    if(point.mapVertexIndex == 0 && (this.routeMarkers.length > 2)){
+    if(marker.mapVertexIndex == 0 && (this.routeMarkers.length > 2)){
       this.addWaypoint(this.routeMarkers[1]);
-      //recompute distances between waypoints
-      // this.updateRoute();
     }
 
     //update the point's icon and remove its waypoint object
-    point.setIcon(this.pointIcon());
-    point.waypoint = null;
-    // TODO make roadbook total Distance function
-    // app.roadbook.updateTotalDistance();
+    marker.setIcon(this.pointIcon());
+    marker.waypoint = null;
   },
 
   /*
@@ -287,7 +307,7 @@ var MapEditor = Class({
   */
   computeDistanceFromStart: function(point){
     var pointIndex = point.mapVertexIndex;
-    var routePoints = this.routePoints.getArray();
+    var routePoints = this.routePoints.getArray(); //should get passed in
     var points = [];
     switch(pointIndex) {
       case 0:
@@ -341,6 +361,7 @@ var MapEditor = Class({
 
   /*
     Compute the cap heading of this waypoint
+    // TODO Seperate descisions from actions
   */
   computeHeading: function(point){
     // google.maps.geometry.spherical.computeHeading(from:LatLng, to:LatLng)
@@ -394,31 +415,6 @@ var MapEditor = Class({
     return heading;
   },
 
-
-  /*
-    figure out where the user is in the world and center the map there
-    NOTE moved to app
-  */
-  // attemptGeolocation: function(){
-  //
-  //   var _this = this;
-  //   navigator.geolocation.getCurrentPosition(function(position) {
-  //     var pos = {
-  //       lat: position.coords.latitude,
-  //       lng: position.coords.longitude
-  //     };
-  //     _this.map.setCenter(pos);
-  //     _this.map.setZoom(14);
-  //   }, function(err) {
-  //     var url = "https://www.googleapis.com/geolocation/v1/geolocate?key="+ api_keys.google_maps;
-  //     console.log('Geolocation failed, using fallback');
-  //     $.post(url,function(data){
-  //       app.setMapCenter(data.location);
-  //       app.setMapZoom(14);
-  //     });
-  //   });
-  // },
-
   /*
     increments the route vertex index of each point along the route after the passed in index
   */
@@ -438,6 +434,64 @@ var MapEditor = Class({
       var point = this.routeMarkers[i];
       point.mapVertexIndex = point.mapVertexIndex - 1;
     }
+  },
+
+  insertPointOnEdge: function(latLng, points){
+    /*
+      Iterate through the point pairs on the segment
+      determine which edge the latLng falls upon
+      and insert a new point into route at the index of the edge point
+      then increment the mapVertexIndex of all the points after that index
+    */
+    var idx;
+
+    var tolerance = this.getEdgeTolerance();
+    for(i = 1; i < points.length; i++ ){
+      // does the event point fit in the bounds of the two reference points before and after the click
+      var path = [points[i-1],points[i]];
+      var line = new google.maps.Polyline({path: path});
+
+      if(google.maps.geometry.poly.isLocationOnEdge(latLng, line, tolerance)) {
+        idx = i;
+        this.insertRoutePointAt(latLng, i);
+        break; //we found it, we're done here
+      }
+      //we haven't found it, increse the tolerance
+      //and start over
+      if(i == points.length - 1 ){
+        tolerance = tolerance*2;
+        i = 0;
+      }
+    }
+    return idx;
+  },
+
+  /*
+    calculates a tolerance for determining if a location falls on an edge based on map zoom level
+  */
+  getEdgeTolerance: function(){
+    return Math.pow(this.map.getZoom(), -(this.map.getZoom()/5));
+  },
+
+  updateRoute: function() {
+    var previous;
+    for(i = 0; i < this.routeMarkers.length; i++) {
+      var marker = this.routeMarkers[i];
+      // var previous;
+      if(marker.waypoint) {
+        var distances = this.computeDistanceFromStart(marker);
+        var angles = this.computeHeading(marker);
+        if(previous) {
+          $.extend(distances,this.computeDistanceBetweenPoints(previous,marker));
+        } else {
+          $.extend(distances,{kmFromPrev: 0});
+        }
+        previous = marker;
+        // TODO just needs to be an object
+        marker.waypoint.updateWaypoint(distances, angles,{lat: marker.getPosition().lat(), lng: marker.getPosition().lng()}, marker.mapVertexIndex );
+      }
+    }
+    app.roadbook.updateTotalDistance();
   },
 
   initMarkerListeners: function(marker){
@@ -513,44 +567,21 @@ var MapEditor = Class({
     });
   },
 
-  insertPointOnEdge: function(latLng){
-    //it's easier to mess with the array
-    var points = this.routePoints.getArray();
-    /*
-      Iterate through the point pairs on the segment
-      determine which edge the latLng falls upon
-      and insert a new point into route at the index of the edge point
-      then increment the mapVertexIndex of all the points after that index
-    */
-    var idx;
-
-    var tolerance = Math.pow(this.map.getZoom(), -(this.map.getZoom()/5));
-    for(i = 1; i < points.length; i++ ){
-      // does the event point fit in the bounds of the two reference points before and after the click
-      var path = [points[i-1],points[i]];
-      var line = new google.maps.Polyline({path: path});
-
-      if(google.maps.geometry.poly.isLocationOnEdge(latLng, line, tolerance)) {
-        idx = i;
-        this.addRoutePoint(latLng, i);
-        break; //we found it, we're done here
-      }
-      //we haven't found it, increse the tolerance
-      //and start over
-      if(i == points.length - 1 ){
-        tolerance = tolerance*2;
-        i = 0;
-      }
-    }
-    return idx;
-  },
-
   initRouteListeners: function() {
     var _this = this;
     // Add a listener for the map's click event
     this.map.addListener('click', function(evt){
       if(app.canEditMap && !app.pointDeleteMode){
-        _this.addRoutePoint(evt.latLng)
+        var marker = _this.pushRoutePoint(evt.latLng)
+
+        //if this is the first point on the route make it a waypoint
+        if(_this.routeMarkers.length == 1 && _this.routePoints.length == 1) {
+          marker.kmFromStart = 0;
+          marker.kmFromPrev = 0;
+          // TODO how to refactor this? perhaps this should be two methods?s
+          marker.waypoint = app.roadbook.addWaypoint(_this.addWaypoint(marker));
+        }
+
         _this.updateRoute();
       }
     });
@@ -572,7 +603,7 @@ var MapEditor = Class({
             }
           });
         }else {
-          _this.addRoutePoint(evt.latLng)
+          _this.pushRoutePoint(evt.latLng)
           _this.updateRoute();
         }
 
@@ -618,7 +649,7 @@ var MapEditor = Class({
         */
         google.maps.event.addListener(handle, 'mousedown', function(evt){
           dragging = true;
-          var idx = _this.insertPointOnEdge(evt.latLng);
+          var idx = _this.insertPointOnEdge(evt.latLng, _this.routePoints.getArray());
           /*
             Add listeners to move the new route point and the route to the mouse drag position of the handle
           */
@@ -641,26 +672,5 @@ var MapEditor = Class({
         });
       }
     });
-  },
-
-  updateRoute: function() {
-    var previous;
-    for(i = 0; i < this.routeMarkers.length; i++) {
-      var marker = this.routeMarkers[i];
-      // var previous;
-      if(marker.waypoint) {
-        var distances = this.computeDistanceFromStart(marker);
-        var angles = this.computeHeading(marker);
-        if(previous) {
-          $.extend(distances,this.computeDistanceBetweenPoints(previous,marker));
-        } else {
-          $.extend(distances,{kmFromPrev: 0});
-        }
-        previous = marker;
-        // TODO just needs to be an object
-        marker.waypoint.updateWaypoint(distances, angles,{lat: marker.getPosition().lat(), lng: marker.getPosition().lng()}, marker.mapVertexIndex );
-      }
-    }
-    app.roadbook.updateTotalDistance();
   },
 });

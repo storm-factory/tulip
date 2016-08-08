@@ -62,7 +62,7 @@ var Io = Class({
 
         var latLng = new google.maps.LatLng(tracks[i].lat, tracks[i].lng);
         // TODO abstract this to the app
-        app.mapEditor.addRoutePoint(latLng, null, true); //this returns a point
+        app.mapEditor.pushRoutePoint(latLng); //this returns a point
       }
     }
     var latLng = new google.maps.LatLng(tracks[0].lat, tracks[0].lng);
@@ -80,7 +80,7 @@ var Io = Class({
         if(index == -1){
           var latLng = new google.maps.LatLng($(waypoint).attr('lat'), $(waypoint).attr('lon'));
           // TODO abstract this to the app
-          index = app.mapEditor.insertPointOnEdge(latLng);
+          index = app.mapEditor.insertPointOnEdge(latLng, app.mapEditor.routePoints.getArray());
         }
 
         if(index !== undefined){
