@@ -177,24 +177,25 @@ var MapEditor = Class({
     Returns distance options so a new roadbook waypoint can be built from it.
     The reason we don't just do that here is that it allows the waypoint generation
     workflow to be more generalized
-    NOTE this function does too many things, it should just change the icon, and the opts part should be another function
+    NOTE this function does too many things, it should just change the icon, and the opts part should be another function (if that is even needed as updateRoute basically handles it)
   */
   addWaypoint: function(marker) {
-      var distances = this.computeDistanceFromStart(marker);
-      var angles = this.computeHeading(marker);
-      marker.kmFromStart = distances.kmFromStart;
-      marker.heading = angles.heading;
-      opts = {
-          lat: marker.getPosition().lat(),
-          lng: marker.getPosition().lng(),
-          mapVertexIndex: marker.mapVertexIndex,
-          distances: distances,
-          angles: angles,
-      }
-      //update the waypoint marker's icon
-      marker.setIcon(this.waypointIcon());
-      // return point distance options so a roadbook waypoint can be initialized
-      return opts;
+    //update the waypoint marker's icon
+    marker.setIcon(this.waypointIcon());
+    // return point geoData so a roadbook waypoint can be created
+    return this.getWaypointGeodata(marker);
+  },
+
+  getWaypointGeodata: function(marker){
+    var distances = this.computeDistanceFromStart(marker);
+    var angles = this.computeHeading(marker);
+    return {
+        lat: marker.getPosition().lat(),
+        lng: marker.getPosition().lng(),
+        mapVertexIndex: marker.mapVertexIndex,
+        distances: distances,
+        angles: angles,
+    }
   },
   /*
     takes a response from google maps directions API and appends it to the route

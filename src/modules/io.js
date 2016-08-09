@@ -9,11 +9,11 @@ var Io = Class({
 
     // TODO abstract this to the app as roadbookHasWaypoints
     if(app.mapEditor.routeMarkers[0].waypoint == null){
-      this.addWaypoint(0);
+      this.addWaypoint(app.mapEditor.routeMarkers[0]);
     }
     // TODO abstract this to the app
     if(app.mapEditor.routeMarkers[(app.mapEditor.routeMarkers.length - 1)].waypoint == null){
-      this.addWaypoint(app.mapEditor.routeMarkers.length - 1);
+      this.addWaypoint(app.mapEditor.routeMarkers[(app.mapEditor.routeMarkers.length - 1)]);
     }
     // TODO abstract this to the app
     app.mapEditor.updateRoute();
@@ -21,13 +21,10 @@ var Io = Class({
     app.roadbook.updateTotalDistance();
   },
 
-  addWaypoint: function(index){
-    // TODO abstract this to the app
-    var routePoint = app.mapEditor.routeMarkers[index];
-
-    var opts = app.mapEditor.addWaypoint(routePoint);
-    // TODO abstract this to the app
-    routePoint.waypoint =  app.roadbook.addWaypoint(opts);
+  addWaypoint: function(marker){
+    var geoData = app.mapEditor.addWaypoint(marker);
+    // TODO pass in roadbook
+    marker.waypoint =  app.roadbook.addWaypoint(geoData);
   },
 
   exportGPX: function(){
@@ -84,7 +81,7 @@ var Io = Class({
         }
 
         if(index !== undefined){
-          this.addWaypoint(index);
+          this.addWaypoint(app.mapEditor.routeMarkers[index]);
         }
       }
     }
