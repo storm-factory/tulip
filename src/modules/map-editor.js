@@ -1,7 +1,7 @@
 /*
-  PROBLEM: This class is no longer cohesive, there are too many interclass dependencies, lack of DRYness , and too many LOC.
-  SOLUTIONS:
-  TODO make this a module for map route path and maybe also points, make seperate module for listeners, and a final module for waypoints(roadbook module), potentially with observer implimentation
+  PROBLEM: This class does map stuff... It should be broken into more specific classes
+  SOLUTIONS: map-util, map route object, map waypoint object.. something along those lines
+
 */
 var MapEditor = Class({
 
@@ -58,7 +58,7 @@ var MapEditor = Class({
   /*
     an icon which marks a normal point (vertex) on the route Polyline
   */
-  pointIcon: function(){
+  vertexIcon: function(){
     return {
               path: 'M-1,-1 1,-1 1,1 -1,1z',
               scale: 7,
@@ -85,7 +85,7 @@ var MapEditor = Class({
 
   routeMarker: function(latLng){
     return new google.maps.Marker({
-                      icon: this.pointIcon(),
+                      icon: this.vertexIcon(),
                       map: this.map,
                       position: latLng,
                       draggable: true,
@@ -243,11 +243,17 @@ var MapEditor = Class({
     }
   },
 
+  /*
+    determines which points to delete between the user defined delete points
+  */
   clearPointDeleteQueue: function(){
     this.pointDeleteQueue.sort(function(a,b){return a - b});
     var start = this.pointDeleteQueue[0];
     var end = this.pointDeleteQueue[1];
     for(var i = end;i >= start;i--){
+      if(this.routeMarkers[i].waypoint){
+        this.deleteWaypoint(this.routeMarkers[i]);
+      }
       this.deletePoint(this.routeMarkers[i]);
     }
     this.updateRoute();
@@ -256,35 +262,30 @@ var MapEditor = Class({
     app.pointDeleteMode = false
   },
 
-  returnPointToNaturalColor: function(point){
-    if(point.waypoint){
-      point.setIcon(app.mapEditor.waypointIcon());
+  returnPointToNaturalColor: function(marker){
+    if(marker.waypoint){
+      marker.setIcon(app.mapEditor.waypointIcon());
     }else {
-      point.setIcon(app.mapEditor.pointIcon());
+      marker.setIcon(app.mapEditor.vertexIcon());
     }
   },
 
   /*
     Removes a point or waypoint from the route
   */
-  deletePoint: function(point){
-    var vertexIndex = point.mapVertexIndex;
-    if(point.waypoint){
-      this.deleteWaypoint(point);
-    }
-    point.setMap(null);
+  deletePoint: function(marker){
+    var vertexIndex = marker.mapVertexIndex;
+    marker.setMap(null);
+    //remove the point from our points array
+    this.routePoints.removeAt(vertexIndex)
+    //remove the marker from our markers array
+    this.routeMarkers.splice(vertexIndex,1);
     /*
       Decrement the vertexIndex of each point on the route after the point being
       removed by one.
     */
-    if(vertexIndex >= 0){ //NOTE else what? why is this here?
-        //remove the marker from our markers array
-        this.routeMarkers.splice(vertexIndex,1);
-        //decriment the remaining point's vertex indecies
-        this.decrementRouteVertexIndecies(vertexIndex);
-        //remove the point from our points array
-        this.routePoints.removeAt(vertexIndex)
-    }
+    this.decrementRouteVertexIndecies(vertexIndex);
+
   },
 
   deleteWaypoint: function(marker){
@@ -297,7 +298,7 @@ var MapEditor = Class({
     }
 
     //update the point's icon and remove its waypoint object
-    marker.setIcon(this.pointIcon());
+    marker.setIcon(this.vertexIcon());
     marker.waypoint = null;
   },
 
@@ -422,8 +423,8 @@ var MapEditor = Class({
   incrementRouteVertexIndecies: function(startIndex) {
     startIndex++;
     for(i = startIndex; i < this.routeMarkers.length; i++){
-      var point = this.routeMarkers[i];
-      point.mapVertexIndex = point.mapVertexIndex + 1;
+      var marker = this.routeMarkers[i];
+      marker.mapVertexIndex = marker.mapVertexIndex + 1;
     }
   },
 
@@ -622,7 +623,7 @@ var MapEditor = Class({
         var dragging = false;
         var loc;
         var handle = new google.maps.Marker({
-                                icon: _this.pointIcon(),
+                                icon: _this.vertexIcon(),
                                 map: this.map,
                                 position: evt.latLng,
                                 draggable: true,
