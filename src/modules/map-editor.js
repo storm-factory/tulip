@@ -13,7 +13,7 @@ var MapEditor = Class({
       displayEdge is a instance variable which tracks whether a handle should be shown when the user hovers the mouse over the route.
     */
     this.displayEdge = true;
-    this.pointDeleteQueue = [];
+    this.deleteQueue = [];
     // this.attemptGeolocation();
   },
 
@@ -233,33 +233,19 @@ var MapEditor = Class({
     this.updateRoute();
   },
 
-  addToPointDeleteQueue: function(index){
-    if(this.pointDeleteQueue.length == 0){
-      this.pointDeleteQueue.push(index);
-      this.routeMarkers[index].setIcon(this.deleteQueueIcon());
-    } else {
-      this.pointDeleteQueue.push(index);
-      this.clearPointDeleteQueue();
-    }
-  },
-
   /*
     determines which points to delete between the user defined delete points
   */
-  clearPointDeleteQueue: function(){
-    this.pointDeleteQueue.sort(function(a,b){return a - b});
-    var start = this.pointDeleteQueue[0];
-    var end = this.pointDeleteQueue[1];
+  clearPointDeleteQueue: function(deleteQueue){
+    deleteQueue.sort(function(a,b){return a - b});
+    var start = deleteQueue[0];
+    var end = deleteQueue[1];
     for(var i = end;i >= start;i--){
       if(this.routeMarkers[i].waypoint){
         this.deleteWaypoint(this.routeMarkers[i]);
       }
       this.deletePoint(this.routeMarkers[i]);
     }
-    this.updateRoute();
-    this.displayEdge = true; //we have to set this because the mouse out handler that usually handles this gets nuked in the delete
-    this.pointDeleteQueue = [];
-    app.pointDeleteMode = false
   },
 
   returnPointToNaturalColor: function(marker){
@@ -291,12 +277,6 @@ var MapEditor = Class({
   deleteWaypoint: function(marker){
     //remove the waypoint from the roadbook
     app.roadbook.deleteWaypoint(marker.waypoint.id);
-
-    //If the start waypoint is deleted assign it to the next point in the route
-    if(marker.mapVertexIndex == 0 && (this.routeMarkers.length > 2)){
-      this.addWaypoint(this.routeMarkers[1]);
-    }
-
     //update the point's icon and remove its waypoint object
     marker.setIcon(this.vertexIcon());
     marker.waypoint = null;
@@ -479,7 +459,6 @@ var MapEditor = Class({
     var previous;
     for(i = 0; i < this.routeMarkers.length; i++) {
       var marker = this.routeMarkers[i];
-      // var previous;
       if(marker.waypoint) {
         var distances = this.computeDistanceFromStart(marker);
         var angles = this.computeHeading(marker);
@@ -515,7 +494,17 @@ var MapEditor = Class({
     */
     google.maps.event.addListener(marker, 'rightclick', function(evt) {
       app.pointDeleteMode = true;
-      _this.addToPointDeleteQueue(this.mapVertexIndex);
+      if(_this.deleteQueue.length == 0){
+        _this.deleteQueue.push(marker.mapVertexIndex);
+        marker.setIcon(_this.deleteQueueIcon());
+      } else {
+        _this.deleteQueue.push(marker.mapVertexIndex);
+        _this.clearPointDeleteQueue(_this.deleteQueue);
+        _this.updateRoute();
+        _this.displayEdge = true; //we have to set this because the mouse out handler that usually handles this gets nuked in the delete
+        _this.deleteQueue = [];
+        app.pointDeleteMode = false
+      }
     });
 
     /*
@@ -563,7 +552,7 @@ var MapEditor = Class({
     */
     google.maps.event.addListener(marker, 'mouseout', function(evt) {
       _this.displayEdge = true;
-      if(app.pointDeleteMode && (marker.mapVertexIndex != _this.pointDeleteQueue[0])){
+      if(app.pointDeleteMode && (marker.mapVertexIndex != _this.deleteQueue[0])){
         _this.returnPointToNaturalColor(marker);
       }
     });
