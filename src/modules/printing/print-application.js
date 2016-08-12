@@ -11,6 +11,7 @@
   https://github.com/electron/electron/blob/master/docs/api/window-open.md
   ---------------------------------------------------------------------------
 */
+// TODO get rid of singleton badness
 var PrintApp = Class({
   singleton: true,
   create: function(){

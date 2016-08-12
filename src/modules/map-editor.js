@@ -236,15 +236,15 @@ var MapEditor = Class({
   /*
     determines which points to delete between the user defined delete points
   */
-  clearPointDeleteQueue: function(deleteQueue){
+  clearPointDeleteQueue: function(deleteQueue, routeMarkers){
     deleteQueue.sort(function(a,b){return a - b});
     var start = deleteQueue[0];
     var end = deleteQueue[1];
     for(var i = end;i >= start;i--){
-      if(this.routeMarkers[i].waypoint){
-        this.deleteWaypoint(this.routeMarkers[i]);
+      if(routeMarkers[i].waypoint){
+        this.deleteWaypoint(routeMarkers[i]);
       }
-      this.deletePoint(this.routeMarkers[i]);
+      this.deletePoint(routeMarkers[i]);
     }
   },
 
@@ -287,57 +287,33 @@ var MapEditor = Class({
 
     return an array of these measurements in both impertial and metric
   */
-  computeDistanceFromStart: function(point){
-    var pointIndex = point.mapVertexIndex;
+  computeDistanceFromStart: function(marker){
+    var markerIndex = marker.mapVertexIndex;
     var routePoints = this.routePoints.getArray(); //should get passed in
     var points = [];
-    switch(pointIndex) {
-      case 0:
-        // the first point in the route has a distance of 0
-        return {kmFromStart: 0};
-        break;
-      case 1:
-        // slicing an array with length 2 causes problems
-        points.push(routePoints[0]);
-        points.push(routePoints[1]);
-        break;
-      default:
-        // slice and dice (we add one to the point index because slice is not inclusive)
-        points = routePoints.slice(0, pointIndex+1)
-    }
-    var metersFromStart = google.maps.geometry.spherical.computeLength(points);
 
-    //do some conversions and return the results
+    for(var i=0;i<markerIndex+1;i++){
+      points.push(routePoints[i]);
+    }
+    //convert from meters and return results
     return {
-            kmFromStart: (metersFromStart/1000),
+            kmFromStart: (google.maps.geometry.spherical.computeLength(points)/1000),
           };
 
   },
 
-  computeDistanceBetweenPoints: function(previousPoint, point){
-    var previousPointIndex = previousPoint.mapVertexIndex;
-    var pointIndex = point.mapVertexIndex;
+  computeDistanceBetweenPoints: function(beginMarker, endMarker){
+    var beginIndex = beginMarker.mapVertexIndex;
+    var endIndex = endMarker.mapVertexIndex;
     var routePoints = this.routePoints.getArray();
     var points = [];
-    switch(pointIndex) {
-      case 0:
-        // the first point in the route has a distance of 0
-        return {kmFromPrev: 0};;
-        break;
-      case 1:
-        // slicing an array with length 2 causes problems
-        points.push(routePoints[0]);
-        points.push(routePoints[1]);
-        break;
-      default:
-        // slice and dice (we add one to the pointIndex because slice is not inclusive)
-        points = routePoints.slice(previousPointIndex , pointIndex+1)
+    for(var i=beginIndex;i<endIndex+1;i++){
+      points.push(routePoints[i]);
     }
-    var metersFromPrev = google.maps.geometry.spherical.computeLength(points);
 
     //do some conversions and return the results
     return {
-            kmFromPrev: (metersFromPrev/1000),
+            kmFromPrev: (google.maps.geometry.spherical.computeLength(points)/1000),
           };
   },
 
@@ -499,7 +475,7 @@ var MapEditor = Class({
         marker.setIcon(_this.deleteQueueIcon());
       } else {
         _this.deleteQueue.push(marker.mapVertexIndex);
-        _this.clearPointDeleteQueue(_this.deleteQueue);
+        _this.clearPointDeleteQueue(_this.deleteQueue, _this.routeMarkers);
         _this.updateRoute();
         _this.displayEdge = true; //we have to set this because the mouse out handler that usually handles this gets nuked in the delete
         _this.deleteQueue = [];
