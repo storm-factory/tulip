@@ -505,9 +505,7 @@ var MapEditor = Class({
       Dragging the point updates the latLng vertex position on the route Polyline
     */
     google.maps.event.addListener(marker, 'drag', function(evt) {
-      if(!app.pointDeleteMode){
-        _this.routePoints.setAt(this.mapVertexIndex, evt.latLng);
-      }
+      _this.routePoints.setAt(this.mapVertexIndex, evt.latLng);
     });
 
     google.maps.event.addListener(marker, 'dragend', function(evt) {
