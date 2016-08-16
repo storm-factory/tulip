@@ -105,9 +105,9 @@ QUnit.test("Describe addWaypoint", function( assert ) {
           };
 
   var marker = this.mapEditor.routeMarker(new google.maps.LatLng(36.068209, -105.629669),0)
-
+  this.mapEditor.computeDistanceBetweenPoints = function() {return 0}
   var returnedOpts = this.mapEditor.addWaypoint(marker);
-  var opts = {"lat":36.068209,"lng":-105.62966900000004,"mapVertexIndex":0,"distances":{"kmFromStart":0},"angles":{"heading":0,"relativeAngle":0}}
+  var opts = {"lat":36.068209,"lng":-105.62966900000004,"routePointIndex":0,"distances":{"kmFromStart":0, kmFromPrev: 0},"angles":{"heading":0,"relativeAngle":0}}
   assert.deepEqual(returnedOpts, opts, '?')
 
 });

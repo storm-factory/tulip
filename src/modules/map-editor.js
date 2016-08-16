@@ -14,7 +14,6 @@ var MapEditor = Class({
     */
     this.displayEdge = true;
     this.deleteQueue = [];
-    // this.attemptGeolocation();
   },
 
   initMap: function(){
@@ -89,7 +88,7 @@ var MapEditor = Class({
                       map: this.map,
                       position: latLng,
                       draggable: true,
-                      mapVertexIndex: this.routePoints.length > 0 ? this.routePoints.indexOf(latLng) : 0,
+                      routePointIndex: this.routePoints.length > 0 ? this.routePoints.indexOf(latLng) : 0,
                     });
   },
 
@@ -187,15 +186,28 @@ var MapEditor = Class({
   },
 
   getWaypointGeodata: function(marker){
-    var distances = this.computeDistanceFromStart(marker);
-    var angles = this.computeHeading(marker);
+    var previndex = this.getPrevWaypointRoutePointIndex(marker.routePointIndex);
     return {
-        lat: marker.getPosition().lat(),
-        lng: marker.getPosition().lng(),
-        mapVertexIndex: marker.mapVertexIndex,
-        distances: distances,
-        angles: angles,
+      lat: marker.getPosition().lat(),
+      lng: marker.getPosition().lng(),
+      routePointIndex: marker.routePointIndex,
+      distances: {
+                    kmFromStart: this.computeDistanceBetweenPoints(0,marker.routePointIndex),
+                    kmFromPrev: this.computeDistanceBetweenPoints(previndex,marker.routePointIndex)
+                  },
+      angles: this.computeHeading(marker),
     }
+  },
+
+  getPrevWaypointRoutePointIndex: function(routePointIndex){
+    var index = 0;
+    for(var i=routePointIndex;i>0;i--){
+      if(this.routeMarkers[i].waypoint){
+        index = i;
+        break;
+      }
+    }
+    return index;
   },
   /*
     takes a response from google maps directions API and appends it to the route
@@ -260,7 +272,7 @@ var MapEditor = Class({
     Removes a point or waypoint from the route
   */
   deletePoint: function(marker){
-    var vertexIndex = marker.mapVertexIndex;
+    var vertexIndex = marker.routePointIndex;
     marker.setMap(null);
     //remove the point from our points array
     this.routePoints.removeAt(vertexIndex)
@@ -282,39 +294,15 @@ var MapEditor = Class({
     marker.waypoint = null;
   },
 
-  /*
-    Determine the distance of a passed in waypoint from the start and from the previous waypoint.
-
-    return an array of these measurements in both impertial and metric
-  */
-  computeDistanceFromStart: function(marker){
-    var markerIndex = marker.mapVertexIndex;
-    var routePoints = this.routePoints.getArray(); //should get passed in
-    var points = [];
-
-    for(var i=0;i<markerIndex+1;i++){
-      points.push(routePoints[i]);
-    }
-    //convert from meters and return results
-    return {
-            kmFromStart: (google.maps.geometry.spherical.computeLength(points)/1000),
-          };
-
-  },
-
-  computeDistanceBetweenPoints: function(beginMarker, endMarker){
-    var beginIndex = beginMarker.mapVertexIndex;
-    var endIndex = endMarker.mapVertexIndex;
+  computeDistanceBetweenPoints: function(beginMarkerRoutePointIndex, endMarkerRoutePointIndex){
     var routePoints = this.routePoints.getArray();
     var points = [];
-    for(var i=beginIndex;i<endIndex+1;i++){
+    for(var i=beginMarkerRoutePointIndex;i<endMarkerRoutePointIndex+1;i++){
       points.push(routePoints[i]);
     }
 
     //do some conversions and return the results
-    return {
-            kmFromPrev: (google.maps.geometry.spherical.computeLength(points)/1000),
-          };
+    return google.maps.geometry.spherical.computeLength(points)/1000;
   },
 
   /*
@@ -324,7 +312,7 @@ var MapEditor = Class({
   computeHeading: function(point){
     // google.maps.geometry.spherical.computeHeading(from:LatLng, to:LatLng)
     //not the first or last
-    var pointIndex = point.mapVertexIndex;
+    var pointIndex = point.routePointIndex;
     var heading = 0;
     var relativeAngle = 0;
 
@@ -380,7 +368,7 @@ var MapEditor = Class({
     startIndex++;
     for(i = startIndex; i < this.routeMarkers.length; i++){
       var marker = this.routeMarkers[i];
-      marker.mapVertexIndex = marker.mapVertexIndex + 1;
+      marker.routePointIndex = marker.routePointIndex + 1;
     }
   },
 
@@ -390,7 +378,7 @@ var MapEditor = Class({
   decrementRouteVertexIndecies: function(startIndex) {
     for(i = startIndex; i < this.routeMarkers.length; i++){
       var point = this.routeMarkers[i];
-      point.mapVertexIndex = point.mapVertexIndex - 1;
+      point.routePointIndex = point.routePointIndex - 1;
     }
   },
 
@@ -399,7 +387,7 @@ var MapEditor = Class({
       Iterate through the point pairs on the segment
       determine which edge the latLng falls upon
       and insert a new point into route at the index of the edge point
-      then increment the mapVertexIndex of all the points after that index
+      then increment the routePointIndex of all the points after that index
     */
     var idx;
 
@@ -432,20 +420,11 @@ var MapEditor = Class({
   },
 
   updateRoute: function() {
-    var previous;
-    for(i = 0; i < this.routeMarkers.length; i++) {
+    for(var i = 0; i < this.routeMarkers.length; i++) {
       var marker = this.routeMarkers[i];
-      if(marker.waypoint) {
-        var distances = this.computeDistanceFromStart(marker);
-        var angles = this.computeHeading(marker);
-        if(previous) {
-          $.extend(distances,this.computeDistanceBetweenPoints(previous,marker));
-        } else {
-          $.extend(distances,{kmFromPrev: 0});
-        }
-        previous = marker;
-        // TODO just needs to be an object
-        marker.waypoint.updateWaypoint(distances, angles,{lat: marker.getPosition().lat(), lng: marker.getPosition().lng()}, marker.mapVertexIndex );
+      if(this.routeMarkers[i].waypoint) {
+        var geoData = this.getWaypointGeodata(marker);
+        marker.waypoint.updateWaypoint(geoData, marker.routePointIndex);
       }
     }
     app.roadbook.updateTotalDistance();
@@ -471,10 +450,10 @@ var MapEditor = Class({
     google.maps.event.addListener(marker, 'rightclick', function(evt) {
       app.pointDeleteMode = true;
       if(_this.deleteQueue.length == 0){
-        _this.deleteQueue.push(marker.mapVertexIndex);
+        _this.deleteQueue.push(marker.routePointIndex);
         marker.setIcon(_this.deleteQueueIcon());
       } else {
-        _this.deleteQueue.push(marker.mapVertexIndex);
+        _this.deleteQueue.push(marker.routePointIndex);
         _this.clearPointDeleteQueue(_this.deleteQueue, _this.routeMarkers);
         _this.updateRoute();
         _this.displayEdge = true; //we have to set this because the mouse out handler that usually handles this gets nuked in the delete
@@ -505,7 +484,7 @@ var MapEditor = Class({
       Dragging the point updates the latLng vertex position on the route Polyline
     */
     google.maps.event.addListener(marker, 'drag', function(evt) {
-      _this.routePoints.setAt(this.mapVertexIndex, evt.latLng);
+      _this.routePoints.setAt(this.routePointIndex, evt.latLng);
     });
 
     google.maps.event.addListener(marker, 'dragend', function(evt) {
@@ -526,7 +505,7 @@ var MapEditor = Class({
     */
     google.maps.event.addListener(marker, 'mouseout', function(evt) {
       _this.displayEdge = true;
-      if(app.pointDeleteMode && (marker.mapVertexIndex != _this.deleteQueue[0])){
+      if(app.pointDeleteMode && (marker.routePointIndex != _this.deleteQueue[0])){
         _this.returnPointToNaturalColor(marker);
       }
     });
@@ -622,7 +601,7 @@ var MapEditor = Class({
             if(idx !== undefined){ //in rare instances this can happen and causes the map to glitch out
               var point = _this.routeMarkers[idx];
               point.setPosition(evt.latLng);
-              _this.routePoints.setAt(point.mapVertexIndex, evt.latLng);
+              _this.routePoints.setAt(point.routePointIndex, evt.latLng);
             }
           });
 

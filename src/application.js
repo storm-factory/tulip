@@ -335,7 +335,7 @@ var App = Class({
     });
 
     $('#orient-map').click(function(){
-      var i = _this.roadbook.currentlyEditingWaypoint.mapVertexIndex;
+      var i = _this.roadbook.currentlyEditingWaypoint.routePointIndex;
       if(i > 0){
         var heading = google.maps.geometry.spherical.computeHeading(_this.mapEditor.routePoints.getAt(i-1), _this.mapEditor.routePoints.getAt(i));
         if(_this.mapControls.rotation == 0){

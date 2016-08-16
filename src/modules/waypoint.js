@@ -38,7 +38,7 @@ var Waypoint = Class({
     this.noteGlyphs = ko.observableArray(glyphs);
 
     this.roadbook = roadbook;
-    this.mapVertexIndex = wptJson.mapVertexIndex == undefined ? null : wptJson.mapVertexIndex;
+    this.routePointIndex = wptJson.routePointIndex == undefined ? null : wptJson.routePointIndex;
 
     var _this = this;
     var angle = wptJson.angles.relativeAngle;
@@ -81,21 +81,22 @@ var Waypoint = Class({
     this.tulip = new Tulip(element, angle, trackTypes, json);
   },
 
-  updateWaypoint: function (distances, angles, latLng, mapVertexIndex){
-    if(distances){
-      this.kmFromStart(distances.kmFromStart);
-      this.kmFromPrev(distances.kmFromPrev);
+  updateWaypoint: function (geoData,routePointIndex){
+  // updateWaypoint: function (distances, angles, latLng, routePointIndex){
+    if(geoData.distances){
+      this.kmFromStart(geoData.distances.kmFromStart);
+      this.kmFromPrev(geoData.distances.kmFromPrev);
     }
-    if(angles){
-      this.exactHeading(angles.heading);
-      this.tulip.changeExitAngle(angles.relativeAngle);
+    if(geoData.angles){
+      this.exactHeading(geoData.angles.heading);
+      this.tulip.changeExitAngle(geoData.angles.relativeAngle);
     }
-    if(latLng){
-      this.lat(latLng.lat);
-      this.lng(latLng.lng);
+    if(geoData.latLng){
+      this.lat(geoData.latLng.lat);
+      this.lng(geoData.latLng.lng);
     }
-    if(mapVertexIndex) {
-      this.mapVertexIndex = mapVertexIndex
+    if(routePointIndex) {
+      this.routePointIndex = routePointIndex
     }
   },
 

@@ -49,9 +49,14 @@ QUnit.test("Describe Update", function( assert ) {
 
   var distances = {kmFromStart: 123, kmFromPrev: 456};
   var angles = {heading: 123, relativeAngle: 45};
-  var mapVertexIndex = 2;
+  var routePointIndex = 2;
   var latLng = {lat: 37.123, lng: -107.456};
-  this.waypoint.updateWaypoint(distances, angles, latLng, mapVertexIndex);
+  var geoData = {
+    distances: distances,
+    angles: angles,
+    latLng: latLng,
+  }
+  this.waypoint.updateWaypoint(geoData, routePointIndex);
 
   assert.equal(this.waypoint.kmFromPrev(), distances.kmFromPrev, "It can update kmFromPrev")
   assert.equal(this.waypoint.kmFromStart(), distances.kmFromStart, "It can update kmFromStart")
