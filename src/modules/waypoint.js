@@ -82,7 +82,6 @@ var Waypoint = Class({
   },
 
   updateWaypoint: function (geoData,routePointIndex){
-  // updateWaypoint: function (distances, angles, latLng, routePointIndex){
     if(geoData.distances){
       this.kmFromStart(geoData.distances.kmFromStart);
       this.kmFromPrev(geoData.distances.kmFromPrev);
@@ -101,7 +100,7 @@ var Waypoint = Class({
   },
 
   computedDistanceFromPrev: function(){
-    if(this.kmFromPrev() && this.kmFromPrev()){
+    if(this.kmFromPrev() && this.kmFromPrev() > 0){
       return this.kmFromPrev().toFixed(2);
     } else {
       return '0.00'

@@ -201,7 +201,7 @@ var MapEditor = Class({
 
   getPrevWaypointRoutePointIndex: function(routePointIndex){
     var index = 0;
-    for(var i=routePointIndex;i>0;i--){
+    for(var i=routePointIndex-1;i>0;i--){
       if(this.routeMarkers[i].waypoint){
         index = i;
         break;
