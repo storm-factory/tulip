@@ -186,23 +186,28 @@ var MapEditor = Class({
   },
 
   getWaypointGeodata: function(marker){
-    var previndex = this.getPrevWaypointRoutePointIndex(marker.routePointIndex);
+    var prevWaypointIndex = this.getPrevWaypointRoutePointIndex(marker.routePointIndex,this.routeMarkers);
+    var heading = this.computeHeading(marker, this.routePoints);
     return {
       lat: marker.getPosition().lat(),
       lng: marker.getPosition().lng(),
       routePointIndex: marker.routePointIndex,
       distances: {
                     kmFromStart: this.computeDistanceBetweenPoints(0,marker.routePointIndex),
-                    kmFromPrev: this.computeDistanceBetweenPoints(previndex,marker.routePointIndex)
+                    kmFromPrev: this.computeDistanceBetweenPoints(prevWaypointIndex,marker.routePointIndex)
                   },
-      angles: this.computeHeading(marker),
+      angles: {
+        heading: heading,
+        relativeAngle: this.computeRelativeAngle(marker,this.routePoints,heading)
+      }
+
     }
   },
 
-  getPrevWaypointRoutePointIndex: function(routePointIndex){
+  getPrevWaypointRoutePointIndex: function(routePointIndex,markersArray){
     var index = 0;
     for(var i=routePointIndex-1;i>0;i--){
-      if(this.routeMarkers[i].waypoint){
+      if(markersArray[i].waypoint){
         index = i;
         break;
       }
@@ -307,58 +312,34 @@ var MapEditor = Class({
 
   /*
     Compute the cap heading of this waypoint
-    // TODO Seperate descisions from actions
   */
-  computeHeading: function(point){
-    // google.maps.geometry.spherical.computeHeading(from:LatLng, to:LatLng)
-    //not the first or last
-    var pointIndex = point.routePointIndex;
-    var heading = 0;
-    var relativeAngle = 0;
+  computeHeading: function(marker, routePoints){
+    var pointIndex = marker.routePointIndex;
+    var nextPointIndex = pointIndex+1 < routePoints.getLength() ? pointIndex + 1 : pointIndex;
 
-    //the heading is from this point to the last one
-    //the relative angle is the heading minus the heading from the last point to this one
-    if(pointIndex != 0 && pointIndex != (this.routePoints.getLength()-1)){
-      heading = google.maps.geometry.spherical.computeHeading(point.getPosition(), this.routePoints.getAt(pointIndex+1));
-
-      relativeAngle = heading - google.maps.geometry.spherical.computeHeading(this.routePoints.getAt(pointIndex-1), point.getPosition());
-      // we want to limit what we return to being 0 < angle < 180 for right turns and 0 > angle > -180 for left turns
-      if(relativeAngle > 180) {
-        //left turn
-        relativeAngle = -(360 - relativeAngle);
-      } else if ( relativeAngle < -180) {
-        //right turn
-        relativeAngle = (360 + relativeAngle);
-      }
-    } else if(pointIndex == 0){
-      // the first point in the route has a heading to the next point
-      if(this.routePoints.getLength() > 1) {
-        heading = google.maps.geometry.spherical.computeHeading(point.getPosition(), this.routePoints.getAt(1));
-        relativeAngle = 0;
-      } else{
-        heading = 0;
-        relativeAngle = 0;
-      }
-
-    } else if(pointIndex == (this.routePoints.getLength()-1)){
-      // the last point in the route has a heading to the previous point
-      heading = google.maps.geometry.spherical.computeHeading(this.routePoints.getAt(pointIndex-1), point.getPosition());
-      relativeAngle = 0;
-    }
-    return {
-      heading: this.convertHeadingToBearing(heading),
-      relativeAngle: relativeAngle
-    };
-  },
-
-  /*
-    google maps headings are between [-180,180] so convert them to a compass bearing
-  */
-  convertHeadingToBearing(heading){
+    //the heading is from this point to the next one
+    var heading = google.maps.geometry.spherical.computeHeading(routePoints.getAt(pointIndex), routePoints.getAt(nextPointIndex));
+    //google maps headings are between [-180,180] so convert them to a compass bearing
     if(heading < 0){
       heading = 360 + heading;
     }
     return heading;
+  },
+
+  /*
+    Compute the angle of the turn from the previous heading to this one
+  */
+  computeRelativeAngle: function(marker,routePoints,heading){
+    var pointIndex = marker.routePointIndex;
+    var prevPointIndex = pointIndex-1 > 0 ? pointIndex - 1 : 0;
+    var relativeAngle = ((0 == pointIndex) || (routePoints.getLength()-1 == pointIndex)) ? 0 : heading - google.maps.geometry.spherical.computeHeading(routePoints.getAt(prevPointIndex), routePoints.getAt(pointIndex));
+    // we want to limit what we return to being 0 < angle < 180 for right turns and 0 > angle > -180 for left turns
+    if(relativeAngle > 180) {
+      relativeAngle = -(360 - relativeAngle); //left turn
+    } else if ( relativeAngle < -180) {
+      relativeAngle = (360 + relativeAngle); //right turn
+    }
+    return relativeAngle;
   },
 
   /*
@@ -387,7 +368,6 @@ var MapEditor = Class({
       Iterate through the point pairs on the segment
       determine which edge the latLng falls upon
       and insert a new point into route at the index of the edge point
-      then increment the routePointIndex of all the points after that index
     */
     var idx;
 
@@ -402,8 +382,7 @@ var MapEditor = Class({
         this.insertRoutePointAt(latLng, i);
         break; //we found it, we're done here
       }
-      //we haven't found it, increse the tolerance
-      //and start over
+      //we haven't found it, increse the tolerance and start over
       if(i == points.length - 1 ){
         tolerance = tolerance*2;
         i = 0;
@@ -500,6 +479,7 @@ var MapEditor = Class({
         marker.setIcon(_this.deleteQueueIcon())
       }
     });
+
     /*
       turns display of the potential point marker on the route path back on.
     */

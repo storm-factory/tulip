@@ -140,3 +140,23 @@ QUnit.test("Describe clearPointDeleteQueue", function( assert ) {
   assert.deepEqual(pointsDeleted, [5,4,3,2],"It sends the right index numbers to deletePoint");
   assert.deepEqual(waypointsDeleted, [5,4],"It sends the right index numbers to deleteWaypoint");
 });
+
+QUnit.test("Describe getPrevWaypointRoutePointIndex", function( assert ) {
+  var markersArray = [
+        {index: 0, waypoint: true},
+        {index: 1, waypoint: false},
+        {index: 2, waypoint: false},
+        {index: 3, waypoint: false},
+        {index: 4, waypoint: true},
+        {index: 5, waypoint: true},
+        {index: 6, waypoint: false},
+        {index: 7, waypoint: false},
+        {index: 8, waypoint: true},
+        {index: 9, waypoint: true},
+    ];
+
+  var index = this.mapEditor.getPrevWaypointRoutePointIndex(4,markersArray);
+  assert.equal(index, 0, "It can find the previous waypoint index");
+  index = this.mapEditor.getPrevWaypointRoutePointIndex(0,markersArray);
+  assert.equal(index, 0, "It returns 0 for the first waypoint index");
+});
