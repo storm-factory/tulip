@@ -14,10 +14,10 @@ var Tulip = Class({
     this.glyphs = [];
     this.activeEditors = [];
     this.activeRemovers = [];
-    this.trackTypes = {};
+    this.trackTypesObject = {};
     this.addedTrackType = 'track';
     this.exitTrackUneditedPath = true;
-    this.initTrackTypes();
+    this.initTrackTypesObject();
     this.initTulip(angle, trackTypes, json);
   },
 
@@ -86,9 +86,9 @@ var Tulip = Class({
     }
   },
 
-  initTrackTypes: function(){
+  initTrackTypesObject: function(){
 
-    this.trackTypes.offPiste = {
+    this.trackTypesObject.offPiste = {
                                     fill: '',
                                     stroke: '#000',
                                     strokeWidth: 5,
@@ -99,7 +99,7 @@ var Tulip = Class({
                                     hasBorders: false,
                                     selectable:false,
                                   };
-    this.trackTypes.track = {
+    this.trackTypesObject.track = {
                                     fill: '',
                                     stroke: '#000',
                                     strokeWidth: 5,
@@ -110,7 +110,7 @@ var Tulip = Class({
                                     hasBorders: false,
                                     selectable:false,
                                   };
-    this.trackTypes.road = {
+    this.trackTypesObject.road = {
                                     fill: '',
                                     stroke: '#000',
                                     strokeWidth: 8,
@@ -128,7 +128,7 @@ var Tulip = Class({
   */
   addTrack: function(angle) {
     this.finishRemove();
-    var track = new fabric.Path(this.buildTrackPathString(angle),this.trackTypes[this.addedTrackType]);
+    var track = new fabric.Path(this.buildTrackPathString(angle),this.trackTypesObject[this.addedTrackType]);
     this.tracks.push(track);
     this.canvas.add(track);
     this.activeEditors.push(new TrackEditor(this.canvas, track, true, true, false));
@@ -196,7 +196,7 @@ var Tulip = Class({
 
   buildEntry: function(type='track') {
 
-    var entry = new fabric.Path('M 90 171 C 90, 165, 90, 159, 90, 150 C 90, 141, 90, 129, 90, 120 C 90, 111, 90, 99, 90, 90',this.trackTypes[type]);
+    var entry = new fabric.Path('M 90 171 C 90, 165, 90, 159, 90, 150 C 90, 141, 90, 129, 90, 120 C 90, 111, 90, 99, 90, 90',this.trackTypesObject[type]);
     var point = new fabric.Circle({
       left: entry.path[0][1],
       top: entry.path[0][2],
@@ -212,8 +212,8 @@ var Tulip = Class({
   },
 
   buildExit: function(angle,type='track'){
-
-    var exit = new fabric.Path(this.buildTrackPathString(angle),this.trackTypes[type]);
+    console.log(type + " " + angle);
+    var exit = new fabric.Path(this.buildTrackPathString(angle),this.trackTypesObject[type]);
     var point = new fabric.Triangle({
       left: exit.path[3][5],
       top: exit.path[3][6],
@@ -288,23 +288,23 @@ var Tulip = Class({
   },
 
   changeEntryTrackType(type){
-    this.entryTrack.setOptions(this.trackTypes[type])
+    this.entryTrack.setOptions(this.trackTypesObject[type])
     this.entryTrackType = type;
     this.canvas.renderAll();
   },
 
   changeExitTrackType(type){
-    this.exitTrack.setOptions(this.trackTypes[type])
+    this.exitTrack.setOptions(this.trackTypesObject[type])
     this.exitTrackType = type
     this.canvas.renderAll();
   },
 
-  changeExitAngle(angle){
+  changeExitAngle(angle,exitTrackType){
     if(this.exitTrackUneditedPath){
       if((this.uneditedPath == $(this.exitTrack.toSVG()).attr('d')) && (app.roadbook.currentlyEditingWaypoint != null)){
-        this.redrawExitAndEditor(angle);
+        this.redrawExitAndEditor(angle,exitTrackType);
       }else if(this.uneditedPath == $(this.exitTrack.toSVG()).attr('d') || this.uneditedPath == null) {
-        this.redrawExit(angle)
+        this.redrawExit(angle,exitTrackType)
       }
     }
   },
@@ -331,18 +331,19 @@ var Tulip = Class({
     this.canvas.deactivateAll().renderAll();
   },
 
-  redrawExit(angle){
+  redrawExit(angle,exitTrackType){
+    console.log("i did it");
     this.canvas.remove(this.exitTrack);
     this.canvas.remove(this.exitTrackEnd);
-    this.buildExit(angle,this.exitTrackType);
+    this.buildExit(angle,exitTrackType);
     if(this.uneditedPath != null){
       this.uneditedPath = $(this.exitTrack.toSVG()).attr('d');
     }
   },
 
-  redrawExitAndEditor(angle){
+  redrawExitAndEditor(angle,exitTrackType){
     this.activeEditors[1].destroy();
-    this.redrawExit(angle)
+    this.redrawExit(angle,exitTrackType)
     this.activeEditors.splice(1,0,(new TrackEditor(this.canvas, this.exitTrack ,false, true, true)));
   },
 

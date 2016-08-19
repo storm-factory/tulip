@@ -88,7 +88,7 @@ var Waypoint = Class({
     }
     if(geoData.angles){
       this.exactHeading(geoData.angles.heading);
-      this.tulip.changeExitAngle(geoData.angles.relativeAngle);
+      this.tulip.changeExitAngle(geoData.angles.relativeAngle, this.exitTrackType);
     }
     if(geoData.latLng){
       this.lat(geoData.latLng.lat);
@@ -123,16 +123,6 @@ var Waypoint = Class({
       if(_this.roadbook.requestWaypointEdit(_this)){
         _this.tulip.beginEdit();
       }
-      var latLng = new google.maps.LatLng(_this.lat(), _this.lng());
-
-      app.setMapCenter(latLng);
-      app.setMapZoom(18);
-
-      $('#roadbook-waypoints').children().hide();
-      $(element).show();
-      $('#roadbook').scrollTop(element.position().top - 80)
-      $('#waypoint-palette').slideDown('slow');
-
     });
   },
 
