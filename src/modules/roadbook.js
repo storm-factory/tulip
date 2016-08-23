@@ -48,7 +48,7 @@ var Roadbook = Class({
       wptData.entryTrackType = this.waypoints()[index-1].exitTrackType;
       wptData.exitTrackType = wptData.entryTrackType;
     }
-    
+
     //create the waypoint
     var waypoint = new Waypoint(this, wptData);
 
@@ -216,7 +216,9 @@ var Roadbook = Class({
       this.noteTextEditor.setHTML(waypoint.noteHTML());
       var latLng = new google.maps.LatLng(waypoint.lat(), waypoint.lng());
       app.setMapCenter(latLng);
-      app.setMapZoom(18);
+      if(app.getMapZoom() < 18){
+        app.setMapZoom(18);
+      }
 
       $('#roadbook-waypoints').children().hide();
       $(waypoint.element).show();

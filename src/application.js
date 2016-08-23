@@ -104,7 +104,7 @@ var App = Class({
 
   // NOTE: this is just to avoid breaking changes for v1.2b, it should come out in the next release
   fixGlyphPaths: function(path){
-    return path.replace(/features|orga|details|tracks/, 'glyphs')
+    return path.replace(/\/features|orga|details|tracks\//, 'glyphs')
   },
 
   exportGPX: function(callback){
@@ -155,12 +155,16 @@ var App = Class({
 
   setMapCenter: function(latLng){
     this.map.setCenter(latLng);
-    google.maps.event.trigger(this.map,'resize')
+    // google.maps.event.trigger(this.map,'resize')
   },
 
   setMapZoom: function(zoom){
     this.map.setZoom(zoom);
-    google.maps.event.trigger(this.map,'resize')
+    // google.maps.event.trigger(this.map,'resize')
+  },
+
+  getMapZoom: function(){
+    return this.map.getZoom();
   },
 
   showSaveDialog: function(title,path) {
