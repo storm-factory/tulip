@@ -212,6 +212,7 @@ var Roadbook = Class({
   requestWaypointEdit: function(waypoint){
     if(waypoint != this.currentlyEditingWaypoint){ //we need this to discard click events fired from editing the waypoint tulip canvas
       this.finishWaypointEdit(); //clear any existing UI just to be sure
+      $('#save-roadbook').removeClass('secondary');
       this.currentlyEditingWaypoint = waypoint;
       this.noteTextEditor.setHTML(waypoint.noteHTML());
       var latLng = new google.maps.LatLng(waypoint.lat(), waypoint.lng());
