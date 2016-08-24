@@ -212,7 +212,6 @@ var Tulip = Class({
   },
 
   buildExit: function(angle,type='track'){
-    console.log(type + " " + angle);
     var exit = new fabric.Path(this.buildTrackPathString(angle),this.trackTypesObject[type]);
     var point = new fabric.Triangle({
       left: exit.path[3][5],
@@ -332,7 +331,6 @@ var Tulip = Class({
   },
 
   redrawExit(angle,exitTrackType){
-    console.log("i did it");
     this.canvas.remove(this.exitTrack);
     this.canvas.remove(this.exitTrackEnd);
     this.buildExit(angle,exitTrackType);

@@ -63,18 +63,13 @@ textarea.waypoint-palette{
   to { -webkit-transform: rotate(360deg);}
 }
 #hide-palette {
-      margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 #map {
-  height: 200%;
-  width: 200%;
-  position: absolute;
-  left: -46.66%;
-  top: -46.66%;
-  /*height: 100%;
-  width: 100%;*/
+  position: absolute !important;
 }
+
 
 #roadbook {
   padding-top: 1.2rem;

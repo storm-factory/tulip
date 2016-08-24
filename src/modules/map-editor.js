@@ -82,16 +82,6 @@ var MapEditor = Class({
             };
   },
 
-  routeMarker: function(latLng){
-    return new google.maps.Marker({
-                      icon: this.vertexIcon(),
-                      map: this.map,
-                      position: latLng,
-                      draggable: true,
-                      routePointIndex: this.routePoints.length > 0 ? this.routePoints.indexOf(latLng) : 0,
-                    });
-  },
-
   /*
     an icon which marks a waypoint (vertex) on the route Polyline
   */
@@ -104,6 +94,16 @@ var MapEditor = Class({
               fillColor: '#ff9000',
               fillOpacity: 1
             };
+  },
+
+  routeMarker: function(latLng){
+    return new google.maps.Marker({
+                      icon: this.vertexIcon(),
+                      map: this.map,
+                      position: latLng,
+                      draggable: true,
+                      routePointIndex: this.routePoints.length > 0 ? this.routePoints.indexOf(latLng) : 0,
+                    });
   },
 
   /*

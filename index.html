@@ -555,6 +555,16 @@
       s.setAttribute( 'src', "https://maps.googleapis.com/maps/api/js?key=" + api_keys.google_maps + "&callback=app.initMap" );
       document.body.appendChild( s );
     }
+
+    // TODO put in window resizing listener
+    var width = window.innerWidth;
+    var height = window.innerHeight;
+    var hypotenuse = Math.sqrt(Math.pow(width,2)+Math.pow(height,2));
+
+    $('#map').css('height', hypotenuse);
+    $('#map').css('width', hypotenuse);
+    $('#map').css('left', (width/2)-(hypotenuse/2));
+    $('#map').css('top', (height/2)-(hypotenuse/2));
   });
   </script>
 </html>

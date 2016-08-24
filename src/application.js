@@ -86,6 +86,7 @@ var App = Class({
       ]},function (fileNames) {
       var fs = require('fs');
       if (fileNames === undefined) return;
+        _this.startLoading();
         //TODO this needs to be passed to create when choice is added
         //we need to figure out how to watch a file while it's being edited so if it's moved it gets saved to the right place ***fs.watch***
         var fileName = fileNames[0];
