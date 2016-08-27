@@ -48,7 +48,7 @@ body {
 }
 
 .break{
- margin-top: 100px;
+ margin-top: 1px;
  display: block;
  clear: both;
  page-break-after: always;
@@ -140,6 +140,11 @@ body {
   width:180px;
   border-left: 1px solid #000;
   border-right: 1px solid #000;
+}
+
+.waypoint-tulip img {
+  height: 99%;
+  margin-left: 1%;
 }
 
 .waypoint-tulip.A5 {

@@ -165,7 +165,7 @@ var Tulip = Class({
     // build a propperly formatted json string to import
 
     var json = {
-      "objects": [json.entry.point, json.entry.path, json.exit.path, json.exit.point].concat(json.tracks).concat(json.glyphs),
+      "objects": [json.entry.point, json.entry.path, json.exit.path, json.exit.point].concat(json.tracks).concat(json.glyphs.reverse()),
     };
     var obs = [];
 
@@ -412,7 +412,7 @@ var Tulip = Class({
   },
 
   toPNG: function(){
-    return this.canvas.toDataURL();
+    return this.canvas.toDataURL('image/png',1);
   },
 
   truncateGlyphSource: function(src){
