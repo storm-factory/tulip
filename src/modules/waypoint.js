@@ -33,9 +33,7 @@ var Waypoint = Class({
 
     // waypoints don't get any note info when they are added via UI so intialize them to blank
     var text = wptJson.notes == undefined ? '' : wptJson.notes.text;
-    var glyphs = wptJson.notes == undefined ? [] : wptJson.notes.glyphs;
     this.noteHTML = ko.observable(text);
-    this.noteGlyphs = ko.observableArray(glyphs);
 
     this.roadbook = roadbook;
     this.routePointIndex = wptJson.routePointIndex == undefined ? null : wptJson.routePointIndex;
@@ -53,12 +51,6 @@ var Waypoint = Class({
     };
   },
 
-  addNoteGlyph: function(src){
-    if(this.noteGlyphs().length < 3 ){
-      this.noteGlyphs.push({src: src});
-    }
-  },
-
   changeAddedTrackType(type){
     this.tulip.changeAddedTrackType(type)
   },
@@ -71,10 +63,6 @@ var Waypoint = Class({
   changeExitTrackType(type){
     this.exitTrackType = type;
     this.tulip.changeExitTrackType(type)
-  },
-
-  removeLastNoteGlyph: function(){
-    this.noteGlyphs.pop();
   },
 
   initTulip: function(element, angle, trackTypes, json){

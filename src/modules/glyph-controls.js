@@ -68,33 +68,37 @@ var GlyphControls = Class({
       _this.addGlyphToInstruction(this);
     });
 
+    $('.note-grid').click(function(e){
+      e.preventDefault();
+      _this.addToNote = true;
+      $('#glyphs').foundation('reveal', 'open');
+      setTimeout(function() { $('#glyph-search').focus(); }, 600); //we have to wait for the modal to be visible before we can assign focus
+    });
+
     //TODO fill out this todo, you know you wanna.
     $('.glyph-grid').click(function(e){
       e.preventDefault();
-      if($(this).hasClass('note-grid')){
-        if($(this).hasClass('undo')){
-          app.roadbook.currentlyEditingWaypoint.removeLastNoteGlyph(); //TODO make app level function for this
-          return
+      if($(this).hasClass('undo')){
+        if(e.shiftKey){
+          app.roadbook.currentlyEditingWaypoint.tulip.beginRemoveGlyph();
+        }else{
+          app.roadbook.currentlyEditingWaypoint.tulip.removeLastGlyph();
         }
-        _this.addToNote = true;
-        $('#glyphs').foundation('reveal', 'open');
-        setTimeout(function() { $('#glyph-search').focus(); }, 600); //we have to wait for the modal to be visible before we can assign focus
-        return false
-      } else{
-        if($(this).hasClass('undo')){
-          if(e.shiftKey){
-            app.roadbook.currentlyEditingWaypoint.tulip.beginRemoveGlyph();
-          }else{
-            app.roadbook.currentlyEditingWaypoint.tulip.removeLastGlyph();
-          }
-          return false
-        }
-        app.glyphPlacementPosition = {top: $(this).data('top'), left: $(this).data('left')};
-        _this.addToNote = false;
-        $('#glyphs').foundation('reveal', 'open');
-        setTimeout(function() { $('#glyph-search').focus(); }, 600); //we have to wait for the modal to be visible before we can assign focus
         return false
       }
+      app.glyphPlacementPosition = {top: $(this).data('top'), left: $(this).data('left')};
+      _this.addToNote = false;
+      $('#glyphs').foundation('reveal', 'open');
+      setTimeout(function() { $('#glyph-search').focus(); }, 600); //we have to wait for the modal to be visible before we can assign focus
+      return false
+    });
+
+    $('select.note-glyph-size').change(function(e){
+      var size = $("option:selected", this).data('image-size')
+      var images = $('#note-editor div.ql-editor img.resizable')
+      images.removeClass();
+      images.addClass('resizable');
+      images.addClass(size);
     });
   },
 
@@ -102,7 +106,11 @@ var GlyphControls = Class({
     var src = $(element).attr('src');
 
     if(this.addToNote){
-      app.roadbook.currentlyEditingWaypoint.addNoteGlyph(src)
+      app.roadbook.noteTextEditor.insertEmbed(app.roadbook.noteTextEditor.getLength(),'image',src);
+      $('#note-editor div.ql-editor img').unbind();
+      $('#note-editor div.ql-editor img').click(function(){
+        $(this).toggleClass("resizable");
+      });
     } else {
       app.roadbook.currentlyEditingWaypoint.tulip.addGlyph(app.glyphPlacementPosition,src);
     }

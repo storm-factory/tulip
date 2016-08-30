@@ -70,6 +70,43 @@ textarea.waypoint-palette{
   position: absolute !important;
 }
 
+#note-editor {
+  width: 100%;
+  height: 135px;
+  box-shadow: 0px 2px 6px 1px rgba(255,144,0,0.60);
+  position: relative;
+  top: -185px;
+  background: #fff;
+  padding:0;
+}
+#note-editor.ql-container {
+  font-size: 1rem;
+}
+
+#note-editor div.ql-editor img.resizable {
+  border: 3px solid #ff4200;
+}
+
+.waypoint-note p div img.small,
+#note-editor div.ql-editor img.small {
+  width: 20%;
+}
+
+.waypoint-note p div img,
+#note-editor div.ql-editor img,
+#note-editor div.ql-editor img.normal {
+  width: 30%;
+}
+
+.waypoint-note p div img.large,
+#note-editor div.ql-editor img.large {
+  width: 40%;
+}
+
+.waypoint-note p div img.huge,
+#note-editor div.ql-editor img.huge {
+  width: 50%;
+}
 
 #roadbook {
   padding-top: 1.2rem;
@@ -114,10 +151,17 @@ textarea.waypoint-palette{
   margin-top: 15px;
 }
 #roadbook-name p {font-size: 30px; text-align: right; font-family: bellybeans !important;color: #000;}
-#roadbook-desc p {font-size: 15px; text-align: left;font-family: Tahoma, Geneva, sans-serif;color: #000; margin-left: 5px;width: 85%;}
-
-#roadbook-name p,
 #roadbook-desc p {
+  font-size: 15px;
+  text-align: left;
+  font-family: Tahoma, Geneva, sans-serif;
+  color: #000;
+  margin-left: 5px;
+  width: 85%;
+  margin-bottom: 0;
+}
+
+#roadbook-name p {
   float: right;
 }
 #roadbook-total-distance p {
@@ -172,15 +216,6 @@ textarea.waypoint-palette{
   background-color: #008CBA;
 }
 
-.glyph-container {
-  height: 55px;
-}
-
-.glyph-container img {
-  height: 55px;
-  width: 53px;
-}
-
 .glyph-modal {
   width: 700px !important;
   height: 75%;
@@ -206,13 +241,30 @@ textarea.waypoint-palette{
 .tab-title {
   margin-right: 4px;
 }
-.tl.note-grid {
-  width: 65px !important;
+.note-grid {
+  width: 35px !important;
+  height: 35px;
+  float: right;
+  border-radius: 10px;
+  box-shadow: 2px 3px 6px 1px rgba(0,0,0,0.60);
+  text-align: center;
+  font-size: 25px;
+  color: #ffba29;
+  text-shadow: -1px 1px 4px rgba(0,0,0, 1);
+  background-color: #efefef;
+  margin-right: 10px;
+}
+.note-grid i {
+  display: none;
+}
+.note-grid:hover i {
+  display: block;
 }
 
-.tr.note-grid {
-  width: 65px !important;
-left: 85px !important;
+.note-grid:hover {
+  background-color: rgba(255,144,0,1);
+  cursor: pointer;
+  box-shadow: 5px 5px 22px -2px rgba(0,0,0,0.60);
 }
 
 .relative-distance {
@@ -284,8 +336,7 @@ left: 85px !important;
 .glyph-grid.undo i  {
   display:block;
 }
-.note-grid.tl {border-bottom-left-radius: 10px;}
-.note-grid.tr {border-bottom-right-radius: 10px;}
+
 .tl {left: 15; top: 0; border-top-left-radius: 10px;}
 .tm {left: 54px; top: 0;}
 .tr {left: 93px; top: 0; border-top-right-radius: 10px;}
@@ -340,13 +391,13 @@ nav.top-bar {
 }
 
 .waypoint-note {
-  width:175px;
+  width:195px;
   padding: 3px;
 }
 
 .waypoint-note p {
   width: 100%;
-  height: 80px;
+  height: 135px;
   margin: 0;
   overflow: hidden;
   word-wrap: break-word;

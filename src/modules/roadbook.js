@@ -25,7 +25,7 @@ var Roadbook = Class({
       initialize rich text editors for waypoint note instructions
       and also for the roadbook description
     */
-    this.waypointNoteInputListener();
+    this.initWaypointNoteEditor();
     this.descriptionInputListener();
   },
 
@@ -181,19 +181,11 @@ var Roadbook = Class({
     This function handles' listening to input on the waypoint palette
     and persisting it to the waypoint object
   */
-  waypointNoteInputListener: function(){
-    var _this = this;
+  initWaypointNoteEditor: function(){
     this.noteTextEditor = new Quill('#note-editor');
     this.noteTextEditor.addModule('toolbar', {
       container: '#note-toolbar'     // Selector for toolbar container
     });
-    this.noteTextEditor.on('text-change', function(delta, source) {
-      newValue = _this.noteTextEditor.getHTML()
-      if(_this.currentlyEditingWaypoint !== null) {
-        _this.currentlyEditingWaypoint.noteHTML(newValue);
-      }
-    });
-
   },
 
   reindexWaypoints: function(){
@@ -225,6 +217,7 @@ var Roadbook = Class({
       $(waypoint.element).show();
       $('#roadbook').scrollTop(waypoint.element.position().top - 80)
       $('#waypoint-palette').slideDown('slow');
+      $(waypoint.element).find('.waypoint-note').append($('#note-editor'));
       $('#roadbook').css('padding-bottom', '0');
       $('#roadbook').find('.roadbook-info').hide();
       return true;
@@ -234,11 +227,13 @@ var Roadbook = Class({
   finishWaypointEdit: function(){
     if(this.currentlyEditingWaypoint !== null){
       $('.waypoint.row').show();
+      $('#waypoint-palette').find('.note-tools').append($('#note-editor'));
       $('#waypoint-palette').slideUp('slow');
       // TODO make into waypoint function
       $('#roadbook').css('padding-bottom', '150%');
       $('#roadbook').find('.roadbook-info').show();
       $('#roadbook').scrollTop(this.currentlyEditingWaypoint.element.position().top - 80)
+      this.currentlyEditingWaypoint.noteHTML(this.noteTextEditor.getHTML());
       this.currentlyEditingWaypoint.tulip.finishEdit();
       this.currentlyEditingWaypoint.tulip.finishRemove();
       this.currentlyEditingWaypoint = null;

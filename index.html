@@ -191,29 +191,32 @@
                   </div>
                   <div class="left large-4 column">
                     <div class="row">
-                      <div class="left large-12 column glyph-selection note-selection">
-                        <div class="tl glyph-grid note-grid" data-target="add"><i class="fi-plus"></i></i></div>
-                        <div class="tr glyph-grid note-grid undo" data-target="delete"><i class="fi-refresh"></i></div>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="left large-12 column">
-                        <!-- <textarea class="waypoint-palette" data-bind="textInput: currentlyEditingWaypointNoteText" maxlength="90">
-                        </textarea> -->
-
-                        <div id="note-toolbar" style="height:40px;margin-top: 10px;
-">
+                      <div class="left large-12 column note-tools">
+                        <label>text:</label>
+                        <div id="note-toolbar" style="height:40px;margin-top: 10px;">
                           <!-- Add font size dropdown -->
                           <select class="ql-size" style="width:55%;float: left;">
-                            <option value="10px">Small</option>
-                            <option value="13px" selected>Normal</option>
-                            <option value="18px">Large</option>
-                            <option value="32px">Huge</option>
+                            <option value="0.6rem">Small</option>
+                            <option value="1rem" selected>Normal</option>
+                            <option value="1.4rem">Large</option>
+                            <option value="1.8rem">Huge</option>
                           </select>
                           <!-- Add a bold button -->
                           <button class="ql-bold tiny secondary" style="margin-top:2px;margin-left:12px;"><i class="fi-bold"></i></button>
                         </div>
-                        <div id="note-editor" style="width: 100%;height: 100px;box-shadow: 2px 3px 6px 1px rgba(0,0,0,0.60);"></div>
+                        <div id="note-editor"></div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="left large-12 column glyph-selection note-selection">
+                        <label>glyphs:</label>
+                        <select class="note-glyph-size" style="width:55%;float: left;">
+                          <option data-image-size="small">Small</option>
+                          <option data-image-size="normal" selected>Normal</option>
+                          <option data-image-size="large">Large</option>
+                          <option data-image-size="huge">Huge</option>
+                        </select>
+                        <div class="note-grid" data-target="add"><i class="fi-plus"></i></i></div>
                       </div>
                     </div>
                   </div>
@@ -247,18 +250,12 @@
         </canvas>
       </div>
       <div class='waypoint-note'>
-        <!--  render note glyph template-->
-        <div class="glyph-container" data-bind="template: { name: 'note-glyph-template', foreach: noteGlyphs }"></div>
         <p data-bind="html: noteHTML"></p>
         <div class='heading' >
           <label>CAP </label><span data-bind="text: heading"></span>
         </div>
       </div>
     </div>
-  </script>
-  <!-- note glyph template-->
-  <script type="text/html" id="note-glyph-template">
-    <img data-bind="attr: { src: src}">
   </script>
   <!--
     Track Modal
