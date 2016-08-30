@@ -90,8 +90,8 @@
             </div>
           </div>
           <div id="roadbook">
-            <hr>
             <div class="row roadbook-info">
+              <hr>
               <div id="roadbook-total-distance" class="large-4 column">
                 Total Kilometers:
                 <p data-bind="text: app.roadbook.totalDistance"></p>
@@ -189,24 +189,27 @@
                     <div class="lm glyph-grid" data-top="140" data-left="85"><i class="fi-plus"></i></div>
                     <div class="lr glyph-grid" data-top="140" data-left="145"><i class="fi-plus"></i></div>
                   </div>
-                  <div class="left large-4 column">
-                    <div class="row">
-                      <div class="left large-12 column note-tools">
-                        <label>text:</label>
-                        <div id="note-toolbar" style="height:40px;margin-top: 10px;">
-                          <!-- Add font size dropdown -->
-                          <select class="ql-size" style="width:55%;float: left;">
-                            <option value="0.6rem">Small</option>
-                            <option value="1rem" selected>Normal</option>
-                            <option value="1.4rem">Large</option>
-                            <option value="1.8rem">Huge</option>
-                          </select>
-                          <!-- Add a bold button -->
-                          <button class="ql-bold tiny secondary" style="margin-top:2px;margin-left:12px;"><i class="fi-bold"></i></button>
-                        </div>
-                        <div id="note-editor"></div>
+                  <div class="left large-4 column note-tools">
+                    <!--
+                      START This gets repositioned over the waypoint note in edit mode
+                    -->
+                    <div id="note-editor-container">
+                      <div id="note-toolbar" style="height:40px;margin-top: 10px;">
+                        <!-- Add font size dropdown -->
+                        <select class="ql-size" style="width:55%;float: left;">
+                          <option value="10px">Small</option>
+                          <option value="13px" selected>Normal</option>
+                          <option value="18px">Large</option>
+                          <option value="24px">Huge</option>
+                        </select>
+                        <!-- Add a bold button -->
+                        <button class="ql-bold tiny secondary" style="margin-top:2px;margin-left:12px;"><i class="fi-bold"></i></button>
                       </div>
+                      <div id="note-editor"></div>
                     </div>
+                    <!--
+                       END This gets repositioned over the waypoint note in edit mode
+                    -->
                     <div class="row">
                       <div class="left large-12 column glyph-selection note-selection">
                         <label>glyphs:</label>
