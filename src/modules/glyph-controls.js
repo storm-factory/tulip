@@ -24,9 +24,9 @@ var GlyphControls = Class({
     e.preventDefault();
     if(!e.shiftKey){
       $('#glyphs').foundation('reveal', 'close');
-      $('#glyph-search').val('');
-      $('#glyph-search-results').html('');
     }
+    $('#glyph-search').val('');
+    $('#glyph-search-results').html('');
   },
 
   populateResults: function(results){
@@ -102,15 +102,19 @@ var GlyphControls = Class({
     });
   },
 
+  bindNoteGlypheResizable: function(){
+    $('#note-editor div.ql-editor img').unbind();
+    $('#note-editor div.ql-editor img').click(function(){
+      $(this).toggleClass("resizable");
+    });
+  },
+
   addGlyphToInstruction: function(element){
     var src = $(element).attr('src');
 
     if(this.addToNote){
       app.roadbook.noteTextEditor.insertEmbed(app.roadbook.noteTextEditor.getLength(),'image',src);
-      $('#note-editor div.ql-editor img').unbind();
-      $('#note-editor div.ql-editor img').click(function(){
-        $(this).toggleClass("resizable");
-      });
+      this.bindNoteGlypheResizable();
     } else {
       app.roadbook.currentlyEditingWaypoint.tulip.addGlyph(app.glyphPlacementPosition,src);
     }

@@ -82,7 +82,6 @@ textarea.waypoint-palette{
   padding:0;
 }
 #note-editor.ql-container {
-  /*font-size: 1rem;*/
   line-height: 1;
 }
 
@@ -93,6 +92,14 @@ textarea.waypoint-palette{
 .waypoint-note p div img.small,
 #note-editor div.ql-editor img.small {
   width: 20%;
+}
+
+#note-editor div.ql-editor img:active {
+  cursor: -webkit-grabbing;
+}
+
+#note-editor div.ql-editor img {
+  cursor: -webkit-grab;
 }
 
 .waypoint-note p div img,
@@ -406,6 +413,7 @@ nav.top-bar {
   overflow: hidden;
   word-wrap: break-word;
   line-height: 1;
+  font-size: 13px;
 }
 
 .waypoint-tulip {
