@@ -156,7 +156,7 @@
                     </span>
                   </div>
                   <div class="large-4 column selection-label">
-                    <span data-tooltip aria-haspopup="true" class="has-tip" title="Add up to 3 glyphs to the top of the note section. On the lower section up to 90 chars of text can be added">
+                    <span data-tooltip aria-haspopup="true" class="has-tip" title="Add glyphs to the the note section using the button below. Click on glyphs to resize them using the slider below. Note text can be edited by typing directly into the note section and modified with the controls above">
                       Waypoint notes
                     </span>
                   </div>
@@ -212,14 +212,20 @@
                     -->
                     <div class="row">
                       <div class="left large-12 column glyph-selection note-selection">
-                        <label>glyphs:</label>
-                        <select class="note-glyph-size" style="width:55%;float: left;">
+                        <!-- <select class="note-glyph-size" style="width:55%;float: left;">
                           <option data-image-size="small">Small</option>
                           <option data-image-size="normal" selected>Normal</option>
                           <option data-image-size="large">Large</option>
                           <option data-image-size="huge">Huge</option>
-                        </select>
+                        </select> -->
                         <div class="note-grid" data-target="add"><i class="fi-plus"></i></i></div>
+                        <input type="range" min="0" max="3" value="1" id="note-glyph-range" style="margin-top:10px;width:60%;float: right;" list="note-glyph-sizes">
+                        <datalist id="note-glyph-sizes">
+                        	<option>0</option>
+                        	<option>1</option>
+                        	<option>2</option>
+                        	<option>3</option>
+                        </datalist>
                       </div>
                     </div>
                   </div>

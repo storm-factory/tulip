@@ -93,8 +93,9 @@ var GlyphControls = Class({
       return false
     });
 
-    $('select.note-glyph-size').change(function(e){
-      var size = $("option:selected", this).data('image-size')
+    $('#note-glyph-range').change(function(e){
+      var sizes = {0: 'small', 1: 'normal', 2: 'large', 3: 'huge'}
+      var size = sizes[$(this).val()];
       var images = $('#note-editor div.ql-editor img.resizable')
       images.removeClass();
       images.addClass('resizable');
@@ -105,6 +106,12 @@ var GlyphControls = Class({
   bindNoteGlypheResizable: function(){
     $('#note-editor div.ql-editor img').unbind();
     $('#note-editor div.ql-editor img').click(function(){
+      //if image has class, set range to that value
+
+      //if multiple of same size are selected set range to that value
+
+      //if multiple of different sizes are selected set it to default
+
       $(this).toggleClass("resizable");
     });
   },

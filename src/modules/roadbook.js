@@ -188,6 +188,8 @@ var Roadbook = Class({
     });
 
     this.noteTextEditor.on('text-change', function() {
+      $('#note-editor div.ql-editor img').removeClass('resizable');
+      $('#note-glyph-range').val(1);
       app.glyphControls.bindNoteGlypheResizable();
     });
   },

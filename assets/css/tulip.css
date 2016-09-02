@@ -255,7 +255,7 @@ textarea.waypoint-palette{
 .note-grid {
   width: 35px !important;
   height: 35px;
-  float: right;
+  float: left;
   border-radius: 10px;
   box-shadow: 2px 3px 6px 1px rgba(0,0,0,0.60);
   text-align: center;
