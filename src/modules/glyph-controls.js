@@ -98,20 +98,23 @@ var GlyphControls = Class({
       var size = sizes[$(this).val()];
       var images = $('#note-editor div.ql-editor img.resizable')
       images.removeClass();
-      images.addClass('resizable');
       images.addClass(size);
+      images.addClass('resizable');
     });
   },
 
   bindNoteGlypheResizable: function(){
     $('#note-editor div.ql-editor img').unbind();
     $('#note-editor div.ql-editor img').click(function(){
-      //if image has class, set range to that value
-
-      //if multiple of same size are selected set range to that value
-
-      //if multiple of different sizes are selected set it to default
-
+      var size = $(this).attr('class');
+      size = ((size !== undefined) ? size.replace('resizable', '').trim() : 'normal');
+      size = ((size == '') ? 'normal' : size);
+      if($('#note-editor div.ql-editor img.resizable').length != $('#note-editor div.ql-editor img.resizable.'+size).length){
+        $('#note-glyph-range').val(1);
+      }else {
+        var sizes = {'small':0, 'normal':1, 'large':2, 'huge':3}
+        $('#note-glyph-range').val(sizes[size]);
+      }
       $(this).toggleClass("resizable");
     });
   },
