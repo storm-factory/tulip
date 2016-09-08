@@ -1,5 +1,5 @@
 /*
-  This object handles all the drag and drop editing of tracks on the this.canvas
+  This object handles all the drag and drop editing of tracks whose visual representation is a single path on the this.canvas
   I've attempted to make it as simple as possible using what I could learn about bezier curve interpolation
   and also some basic linear algebra I picked up along the way.
 
@@ -43,12 +43,15 @@ var TrackEditor = Class({
     this.canvas.add(this.joinTwo);
 
     //TODO move to listeners function
+    // NOTE could overload (have to)
     var _this = this;
     this.canvas.on('object:moving',function(e){
-         _this.pointMoving(e.target, _this);
+        if(e.target.track.paths == undefined){
+          _this.pointMoving(e.target, _this);
+        }
     });
   },
-
+  // NOTE could overload
   destroy: function(){
     this.canvas.remove(this.origin);
     this.canvas.remove(this.joinOne);
@@ -56,7 +59,7 @@ var TrackEditor = Class({
     this.canvas.remove(this.end);
     delete this;
   },
-
+  // NOTE could overload
   makeEntryOrigin: function(left, top){
     if (this.editOrigin) {
       var origin = new fabric.Circle({
@@ -75,7 +78,7 @@ var TrackEditor = Class({
       return origin
     }
   },
-
+  // NOTE could overload
   makeMidPoint: function(left, top){
     var r = new fabric.Rect({
       left: left,
@@ -91,7 +94,7 @@ var TrackEditor = Class({
     r.track = this.track;
     return r;
   },
-
+  // NOTE could overload
   makeExitEnd: function(left, top){
     if(this.editEnd){
       var end = new fabric.Triangle({
@@ -114,7 +117,7 @@ var TrackEditor = Class({
     }
 
   },
-
+  // NOTE could overload
   getControlPoints: function(x1,y1,x2,y2,x3,y3,t){
       //Thanks Rob
       var delta1=Math.sqrt(Math.pow(x2-x1,2)+Math.pow(y2-y1,2));
@@ -216,45 +219,36 @@ var TrackEditor = Class({
       this.end.angle = theta;
     }
   },
-
+  // TODO this could be an object literal
   pointMoving: function(point, _this){
     if (point.name == "origin") {
       //Move this point on the path
       point.track.path[0][1] = point.left;
       point.track.path[0][2] = point.top;
-
+      // NOTE could overload
       if(point.track.origin){
         point.track.origin.left = point.left;
         point.track.origin.top = point.top;
       }
-
-      _this.interpolatePath(point);
-
     }else if(point.name == "end"){
       //Move this point on the path
       point.track.path[3][5] = point.left;
       point.track.path[3][6] = point.top;
-
+      // NOTE could overload
       if(point.track.end){
         point.track.end.left = point.left;
         point.track.end.top = point.top;
       }
-
-      _this.interpolatePath(point);
-
     } else if(point.name == "joinOne") {
       //Move this point on the path
       point.track.path[1][5] = point.left;
       point.track.path[1][6] = point.top;
-      _this.interpolatePath(point);
-
     } else if(point.name == "joinTwo") {
       //Move this point on the path
       point.track.path[2][5] = point.left;
       point.track.path[2][6] = point.top;
-      _this.interpolatePath(point);
 
     }
-
+    _this.interpolatePath(point);
   },
 });

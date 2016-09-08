@@ -36,12 +36,12 @@ QUnit.module( "Tulip", {
   }
 });
   QUnit.test("Describe Create", function( assert ) {
-    assert.ok(this.tulip.entryTrack !== null && this.tulip.entryTrackOrigin !== null && this.tulip.trackTypes instanceof Object, "It can be created from params")
+    assert.ok(this.tulip.entryTrack !== null && this.tulip.entryTrackOrigin !== null, "It can be created from params")
   });
 
   QUnit.test("Describe Create From JSON", function( assert ) {
     var tulip = new Tulip($('canvas')[0], null, null, this.json);
-    assert.ok(tulip.entryTrack !== null && tulip.entryTrackOrigin !== null && tulip.trackTypes instanceof Object && tulip.tracks.length == 2 && tulip != this.tulip, "It can be created from json")
+    assert.ok(tulip.entryTrack !== null && tulip.entryTrackOrigin !== null && tulip.tracks.length == 2 && tulip != this.tulip, "It can be created from json")
   });
 
   QUnit.test("Describe init entry", function( assert ) {

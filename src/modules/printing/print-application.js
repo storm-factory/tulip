@@ -50,8 +50,8 @@ var PrintApp = Class({
       size = {height: $(document).height()*265, width: $(document).width()*265};
     }
     var data = {'filepath': this.filePath, 'opts': {'pageSize': size, 'marginsType' : '1'}};
-    console.log($('body').css('margin-left'));
-    this.ipc.send('print-pdf', data);
+    
+    // this.ipc.send('print-pdf', data);
   },
 
   rerenderForPageSize: function(){

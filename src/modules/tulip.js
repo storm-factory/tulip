@@ -121,6 +121,29 @@ var Tulip = Class({
                                     hasBorders: false,
                                     selectable:false,
                                   };
+
+    this.trackTypesObject.mainRoad = [{
+                                    fill: '',
+                                    stroke: '#000',
+                                    strokeWidth: 8,
+                                    strokeDashArray: [],
+                                    hasControls: false,
+                                    lockMovementX: true,
+                                    lockMovementY: true,
+                                    hasBorders: false,
+                                    selectable:false,
+                                  },
+                                  {
+                                    fill: '',
+                                    stroke: '#fff',
+                                    strokeWidth: 6,
+                                    strokeDashArray: [],
+                                    hasControls: false,
+                                    lockMovementX: true,
+                                    lockMovementY: true,
+                                    hasBorders: false,
+                                    selectable:false,
+                                  }];
   },
 
   /*
@@ -128,10 +151,24 @@ var Tulip = Class({
   */
   addTrack: function(angle) {
     this.finishRemove();
-    var track = new fabric.Path(this.buildTrackPathString(angle),this.trackTypesObject[this.addedTrackType]);
-    this.tracks.push(track);
-    this.canvas.add(track);
-    this.activeEditors.push(new TrackEditor(this.canvas, track, true, true, false));
+    var trackPath;
+    var trackObject = this.trackTypesObject[this.addedTrackType]
+    if(trackObject instanceof Array){
+      var paths = []
+      for(var i=0;i<trackObject.length;i++){
+        paths.push(new fabric.Path(this.buildTrackPathString(angle),trackObject[i]));
+      }
+      trackPath = new fabric.PathGroup(paths);
+      // this.activeEditors.push(new ComplexTrackEditor(this.canvas, trackPath,true, true, false));
+    }else{
+      trackPath = new fabric.Path(this.buildTrackPathString(angle),trackObject);
+      // this.activeEditors.push(new TrackEditor(this.canvas, trackPath, true, true, false));
+    }
+
+    this.canvas.add(trackPath);
+    this.tracks.push(trackPath);
+
+
     //NOTE this solves the problem of having overlapping handles if a control is clicked twice or things get too close to one another.
     //     an alternate solution that may solve any performance issues this might cause is to loop through the active editors and bring all the
     //     hangles to the front.
@@ -235,7 +272,14 @@ var Tulip = Class({
     this.activeEditors.push(new TrackEditor(this.canvas, this.entryTrack,true, false, true));
     this.activeEditors.push(new TrackEditor(this.canvas, this.exitTrack ,false, true, true));
     for(i=0;i<this.tracks.length;i++){
-      this.activeEditors.push(new TrackEditor(this.canvas, this.tracks[i],true, true, false));
+      this.tracks[i]
+      if(this.tracks[i].paths == undefined){
+        this.activeEditors.push(new TrackEditor(this.canvas, this.tracks[i],true, true, false));
+      } else{
+        console.log("complex path");
+        this.activeEditors.push(new ComplexTrackEditor(this.canvas, this.tracks[i],true, true, false));
+      }
+
     }
   },
 

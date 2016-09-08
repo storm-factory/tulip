@@ -42,7 +42,6 @@ QUnit.test("Describe Create from JSON", function( assert ) {
     assert.equal(this.waypoint.exitTrackType, this.json.exitTrackType, "It take an exit track type");
 
     assert.equal(this.waypoint.noteHTML(), this.json.notes.text, "It adds notes from json");
-    assert.equal(this.waypoint.noteGlyphs().length, 1, "It adds glyphs from json");
 });
 
 QUnit.test("Describe Update", function( assert ) {
@@ -73,20 +72,6 @@ QUnit.test("Describe Tulip", function( assert ) {
   assert.ok(this.waypoint.tulip instanceof Tulip, "It can create a tulip");
   assert.equal(JSON.stringify(this.waypoint.serializeTulip()), this.tulipJSON, "It can export its tulip to JSON");
   assert.equal(this.waypoint.tulipPNG(), this.tulipPNG, "It can export its tulip to PNG");
-});
-
-QUnit.test("Describe Note Glyph", function( assert ) {
-  var src = '../assets/svg/glyphs/always.svg'
-
-  var numGlyphs = this.waypoint.noteGlyphs().length;
-  this.waypoint.addNoteGlyph(src);
-  assert.equal(this.waypoint.noteGlyphs().length, numGlyphs + 1, "It can add a glyph");
-
-  var numGlyphs = this.waypoint.noteGlyphs().length;
-  var secondToLastGylph = this.waypoint.noteGlyphs()[this.waypoint.noteGlyphs().length - 2]
-  this.waypoint.removeLastNoteGlyph();
-  assert.equal(this.waypoint.noteGlyphs().length, numGlyphs - 1, "It can remove a glyph");
-  assert.equal(this.waypoint.noteGlyphs()[this.waypoint.noteGlyphs().length - 1], secondToLastGylph, "It removes the last glyph");
 });
 
 QUnit.test("Describe Track Type", function( assert ) {

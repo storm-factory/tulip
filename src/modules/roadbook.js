@@ -80,11 +80,6 @@ var Roadbook = Class({
         opts.angles.heading = point.heading;
         opts.angles.relativeAngle = undefined;
 
-        // NOTE: this is just to avoid breaking changes for v1.2b, it should come out in the next release
-        for(i=0;i<point.notes.glyphs.length;i++){
-          point.notes.glyphs[i].src = app.fixGlyphPaths(point.notes.glyphs[i].src);
-        }
-
         opts.notes = point.notes;
         routePoint.waypoint =  this.addWaypoint(opts);
       }
@@ -301,7 +296,6 @@ var Roadbook = Class({
           exitTrackType: points[i].waypoint ? points[i].waypoint.exitTrackType : null,
           notes: {
             text: points[i].waypoint ? points[i].waypoint.noteHTML() : null,
-            glyphs: points[i].waypoint ? points[i].waypoint.noteGlyphs() : null,
           },
           tulipJson: points[i].waypoint ? points[i].waypoint.serializeTulip() : null,
         }
@@ -334,7 +328,6 @@ var Roadbook = Class({
           heading: points[i].waypoint.exactHeading(),
           notes: {
             text: points[i].waypoint.noteHTML(),
-            glyphs: points[i].waypoint.noteGlyphs(), //TODO need to convert paths into actual file contents
           },
           tulip: points[i].waypoint.tulipPNG(),
         }
