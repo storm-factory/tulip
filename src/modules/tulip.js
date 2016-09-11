@@ -42,6 +42,7 @@ var Tulip = Class({
   },
 
   initEntry: function(point, path){
+    // TODO move functionality to track object
     this.entryTrackOrigin = point;
     this.entryTrack = path;
 
@@ -53,6 +54,7 @@ var Tulip = Class({
   },
 
   initExit: function(point, path){
+    // TODO move functionality to track object
     this.exitTrackEnd = point;
     this.exitTrack = path;
 
@@ -64,6 +66,7 @@ var Tulip = Class({
   },
 
   disablePointDefaults: function(point){
+    // TODO move functionality to track object
     point.hasBorders    = false;
     point.selectable    = false;
     point.hasControls   = false;
@@ -72,6 +75,7 @@ var Tulip = Class({
   },
 
   disablePathDefaults: function(path){
+    // TODO move functionality to track object
     path.hasBorders    = false;
     path.hasControls   = false;
     path.selectable    = false;
@@ -86,71 +90,72 @@ var Tulip = Class({
     }
   },
 
-  initTrackTypesObject: function(){
-
-    this.trackTypesObject.offPiste = {
-                                    fill: '',
-                                    stroke: '#000',
-                                    strokeWidth: 5,
-                                    strokeDashArray: [10, 5],
-                                    hasControls: false,
-                                    lockMovementX: true,
-                                    lockMovementY: true,
-                                    hasBorders: false,
-                                    selectable:false,
-                                  };
-    this.trackTypesObject.track = {
-                                    fill: '',
-                                    stroke: '#000',
-                                    strokeWidth: 5,
-                                    strokeDashArray: [],
-                                    hasControls: false,
-                                    lockMovementX: true,
-                                    lockMovementY: true,
-                                    hasBorders: false,
-                                    selectable:false,
-                                  };
-    this.trackTypesObject.road = {
-                                    fill: '',
-                                    stroke: '#000',
-                                    strokeWidth: 8,
-                                    strokeDashArray: [],
-                                    hasControls: false,
-                                    lockMovementX: true,
-                                    lockMovementY: true,
-                                    hasBorders: false,
-                                    selectable:false,
-                                  };
-
-    this.trackTypesObject.mainRoad = [{
-                                    fill: '',
-                                    stroke: '#000',
-                                    strokeWidth: 8,
-                                    strokeDashArray: [],
-                                    hasControls: false,
-                                    lockMovementX: true,
-                                    lockMovementY: true,
-                                    hasBorders: false,
-                                    selectable:false,
-                                  },
-                                  {
-                                    fill: '',
-                                    stroke: '#fff',
-                                    strokeWidth: 6,
-                                    strokeDashArray: [],
-                                    hasControls: false,
-                                    lockMovementX: true,
-                                    lockMovementY: true,
-                                    hasBorders: false,
-                                    selectable:false,
-                                  }];
-  },
+  // initTrackTypesObject: function(){
+  //
+  //   this.trackTypesObject.offPiste = {
+  //                                   fill: '',
+  //                                   stroke: '#000',
+  //                                   strokeWidth: 5,
+  //                                   strokeDashArray: [10, 5],
+  //                                   hasControls: false,
+  //                                   lockMovementX: true,
+  //                                   lockMovementY: true,
+  //                                   hasBorders: false,
+  //                                   selectable:false,
+  //                                 };
+  //   this.trackTypesObject.track = {
+  //                                   fill: '',
+  //                                   stroke: '#000',
+  //                                   strokeWidth: 5,
+  //                                   strokeDashArray: [],
+  //                                   hasControls: false,
+  //                                   lockMovementX: true,
+  //                                   lockMovementY: true,
+  //                                   hasBorders: false,
+  //                                   selectable:false,
+  //                                 };
+  //   this.trackTypesObject.road = {
+  //                                   fill: '',
+  //                                   stroke: '#000',
+  //                                   strokeWidth: 8,
+  //                                   strokeDashArray: [],
+  //                                   hasControls: false,
+  //                                   lockMovementX: true,
+  //                                   lockMovementY: true,
+  //                                   hasBorders: false,
+  //                                   selectable:false,
+  //                                 };
+  //
+  //   this.trackTypesObject.mainRoad = [{
+  //                                   fill: '',
+  //                                   stroke: '#000',
+  //                                   strokeWidth: 8,
+  //                                   strokeDashArray: [],
+  //                                   hasControls: false,
+  //                                   lockMovementX: true,
+  //                                   lockMovementY: true,
+  //                                   hasBorders: false,
+  //                                   selectable:false,
+  //                                 },
+  //                                 {
+  //                                   fill: '',
+  //                                   stroke: '#fff',
+  //                                   strokeWidth: 6,
+  //                                   strokeDashArray: [],
+  //                                   hasControls: false,
+  //                                   lockMovementX: true,
+  //                                   lockMovementY: true,
+  //                                   hasBorders: false,
+  //                                   selectable:false,
+  //                                 }];
+  // },
 
   /*
     Adds a track to tulip from UI interaction
   */
   addTrack: function(angle) {
     this.finishRemove();
+    // TODO move functionality to track object
     var trackPath;
     var trackObject = this.trackTypesObject[this.addedTrackType]
     if(trackObject instanceof Array){
@@ -232,7 +237,7 @@ var Tulip = Class({
   },
 
   buildEntry: function(type='track') {
-
+    // TODO move functionality to track object
     var entry = new fabric.Path('M 90 171 C 90, 165, 90, 159, 90, 150 C 90, 141, 90, 129, 90, 120 C 90, 111, 90, 99, 90, 90',this.trackTypesObject[type]);
     var point = new fabric.Circle({
       left: entry.path[0][1],
@@ -249,6 +254,7 @@ var Tulip = Class({
   },
 
   buildExit: function(angle,type='track'){
+    // TODO move functionality to track object
     var exit = new fabric.Path(this.buildTrackPathString(angle),this.trackTypesObject[type]);
     var point = new fabric.Triangle({
       left: exit.path[3][5],
@@ -297,12 +303,12 @@ var Tulip = Class({
     }
   },
 
+  // TODO move functionality to track object
   /*
     Creates an SVG string form the assumption that we are originating at the point (90,90) and vectoring out from there at a given angle
     The angle is provided from the mapping module.
   */
   buildTrackPathString: function(angle) {
-
     var set1 = this.buildPathSet([9,18,27],angle)
     var set2 = this.buildPathSet([36,45,54],angle)
     var set3 = this.buildPathSet([63,72,81],angle)
@@ -313,6 +319,7 @@ var Tulip = Class({
     return trackString;
   },
 
+  // TODO move functionality to track object
   /*
     creates a 2D array of point pairs which describe where a set of points in the track path string should be
     given an angle and a set of 3 maginitudes describing the desired location of key points in the path
@@ -331,18 +338,21 @@ var Tulip = Class({
   },
 
   changeEntryTrackType(type){
+    // TODO move functionality to track object
     this.entryTrack.setOptions(this.trackTypesObject[type])
     this.entryTrackType = type;
     this.canvas.renderAll();
   },
 
   changeExitTrackType(type){
+    // TODO move functionality to track object
     this.exitTrack.setOptions(this.trackTypesObject[type])
     this.exitTrackType = type
     this.canvas.renderAll();
   },
 
   changeExitAngle(angle,exitTrackType){
+    // TODO move functionality to track object
     if(this.exitTrackUneditedPath){
       if((this.uneditedPath == $(this.exitTrack.toSVG()).attr('d')) && (app.roadbook.currentlyEditingWaypoint != null)){
         this.redrawExitAndEditor(angle,exitTrackType);
@@ -375,6 +385,7 @@ var Tulip = Class({
   },
 
   redrawExit(angle,exitTrackType){
+    // TODO move functionality to track object
     this.canvas.remove(this.exitTrack);
     this.canvas.remove(this.exitTrackEnd);
     this.buildExit(angle,exitTrackType);
@@ -384,6 +395,7 @@ var Tulip = Class({
   },
 
   redrawExitAndEditor(angle,exitTrackType){
+    // TODO move functionality to track object
     this.activeEditors[1].destroy();
     this.redrawExit(angle,exitTrackType)
     this.activeEditors.splice(1,0,(new TrackEditor(this.canvas, this.exitTrack ,false, true, true)));
@@ -404,6 +416,7 @@ var Tulip = Class({
     }
   },
 
+  // TODO move functionality to track object
   /*
     The canvas is a 180px by 180px box with (0,0) being the top left corner. The origin of the exit track is at the point (90,90)
 

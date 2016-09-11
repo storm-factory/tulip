@@ -370,18 +370,24 @@ var App = Class({
         _this.roadbook.changeEditingWaypointAdded('track')
       }else if('road-added' == $(this).attr('id')){
         _this.roadbook.changeEditingWaypointAdded('road')
+      }else if('main-road-added' == $(this).attr('id')){
+        _this.roadbook.changeEditingWaypointAdded('mainRoad')
       }else if('off-piste-entry' == $(this).attr('id')){
         _this.roadbook.changeEditingWaypointEntry('offPiste')
       }else if('track-entry' == $(this).attr('id')){
         _this.roadbook.changeEditingWaypointEntry('track')
       }else if('road-entry' == $(this).attr('id')){
         _this.roadbook.changeEditingWaypointEntry('road')
+      }else if('main-road-entry' == $(this).attr('id')){
+        _this.roadbook.changeEditingWaypointEntry('mainRoad')
       }else if('off-piste-exit' == $(this).attr('id')){
         _this.roadbook.changeEditingWaypointExit('offPiste')
       }else if('track-exit' == $(this).attr('id')){
         _this.roadbook.changeEditingWaypointExit('track')
       }else if('road-exit' == $(this).attr('id')){
         _this.roadbook.changeEditingWaypointExit('road')
+      }else if('main-road-exit' == $(this).attr('id')){
+        _this.roadbook.changeEditingWaypointExit('mainRoad')
       }
       $('#track-selection-modal').foundation('reveal', 'close');
     });
