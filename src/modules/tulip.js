@@ -14,10 +14,12 @@ var Tulip = Class({
     this.glyphs = [];
     this.activeEditors = [];
     this.activeRemovers = [];
-    this.trackTypesObject = {};
+    // TODO move to track object
+    // this.trackTypesObject = {};
     this.addedTrackType = 'track';
     this.exitTrackUneditedPath = true;
-    this.initTrackTypesObject();
+    // TODO move to track object
+    // this.initTrackTypesObject();
     this.initTulip(angle, trackTypes, json);
   },
 
@@ -36,119 +38,33 @@ var Tulip = Class({
     if(json !== undefined && angle == undefined){ //the map point has been created from serialized json
       this.buildFromJson(json);
     } else if(angle !== undefined && trackTypes !== undefined){
-      this.buildEntry(trackTypes.entryTrackType);
-      this.buildExit(angle,trackTypes.exitTrackType);
+      this.initEntry(trackTypes.entryTrackType);
+      this.initExit(angle,trackTypes.exitTrackType);
     }
+    // TODO is this a good thing or a hack?
+    var _this = this;
+    this.canvas.on('object:moving',function(e){
+      // NOTE I do not like this dependency
+      e.target.track.editor.pointMoving(e.target);
+    });
   },
 
-  initEntry: function(point, path){
-    // TODO move functionality to track object
-    this.entryTrackOrigin = point;
-    this.entryTrack = path;
-
-    this.disablePointDefaults(this.entryTrackOrigin);
-    this.disablePathDefaults(this.entryTrack);
-
-    this.entryTrackOrigin.track = this.entryTrack;
-    this.entryTrack.origin = this.entryTrackOrigin;
+  // initEntry: function(point, path){
+  initEntry: function(trackType){
+    this.entryTrack = new EntryTrack(trackType, this.canvas);
   },
 
-  initExit: function(point, path){
-    // TODO move functionality to track object
-    this.exitTrackEnd = point;
-    this.exitTrack = path;
-
-    this.disablePointDefaults(this.exitTrackEnd);
-    this.disablePathDefaults(this.exitTrack);
-
-    this.exitTrackEnd.track = this.exitTrack;
-    this.exitTrack.end = this.exitTrackEnd;
-  },
-
-  disablePointDefaults: function(point){
-    // TODO move functionality to track object
-    point.hasBorders    = false;
-    point.selectable    = false;
-    point.hasControls   = false;
-    point.lockMovementX = true;
-    point.lockMovementY = true;
-  },
-
-  disablePathDefaults: function(path){
-    // TODO move functionality to track object
-    path.hasBorders    = false;
-    path.hasControls   = false;
-    path.selectable    = false;
-    path.lockMovementX = true;
-    path.lockMovementY = true;
+  // initExit: function(point, path){
+  initExit: function(angle, trackType){
+    this.exitTrack = new ExitTrack(angle, trackType, this.canvas);
   },
 
   initTracks: function(trackArray){
     this.tracks = trackArray;
     for(i=0;i<this.tracks.length;i++){
-      this.disablePathDefaults(this.tracks[i]);
+      Track.disableDefaults(null,this.tracks[i])
     }
   },
-
-  // initTrackTypesObject: function(){
-  //
-  //   this.trackTypesObject.offPiste = {
-  //                                   fill: '',
-  //                                   stroke: '#000',
-  //                                   strokeWidth: 5,
-  //                                   strokeDashArray: [10, 5],
-  //                                   hasControls: false,
-  //                                   lockMovementX: true,
-  //                                   lockMovementY: true,
-  //                                   hasBorders: false,
-  //                                   selectable:false,
-  //                                 };
-  //   this.trackTypesObject.track = {
-  //                                   fill: '',
-  //                                   stroke: '#000',
-  //                                   strokeWidth: 5,
-  //                                   strokeDashArray: [],
-  //                                   hasControls: false,
-  //                                   lockMovementX: true,
-  //                                   lockMovementY: true,
-  //                                   hasBorders: false,
-  //                                   selectable:false,
-  //                                 };
-  //   this.trackTypesObject.road = {
-  //                                   fill: '',
-  //                                   stroke: '#000',
-  //                                   strokeWidth: 8,
-  //                                   strokeDashArray: [],
-  //                                   hasControls: false,
-  //                                   lockMovementX: true,
-  //                                   lockMovementY: true,
-  //                                   hasBorders: false,
-  //                                   selectable:false,
-  //                                 };
-  //
-  //   this.trackTypesObject.mainRoad = [{
-  //                                   fill: '',
-  //                                   stroke: '#000',
-  //                                   strokeWidth: 8,
-  //                                   strokeDashArray: [],
-  //                                   hasControls: false,
-  //                                   lockMovementX: true,
-  //                                   lockMovementY: true,
-  //                                   hasBorders: false,
-  //                                   selectable:false,
-  //                                 },
-  //                                 {
-  //                                   fill: '',
-  //                                   stroke: '#fff',
-  //                                   strokeWidth: 6,
-  //                                   strokeDashArray: [],
-  //                                   hasControls: false,
-  //                                   lockMovementX: true,
-  //                                   lockMovementY: true,
-  //                                   hasBorders: false,
-  //                                   selectable:false,
-  //                                 }];
-  // },
 
   /*
     Adds a track to tulip from UI interaction
@@ -199,6 +115,7 @@ var Tulip = Class({
   /*
     Builds the tulip from passed in JSON
   */
+  // NOTE this is going to have to handle legacy data structure and translate it into new style
   buildFromJson: function(json){
 
     this.exitTrackUneditedPath = json.exitTrackUneditedPath !== undefined ? json.exitTrackUneditedPath : true;
@@ -222,10 +139,20 @@ var Tulip = Class({
     // TODO because the below are each requiring their own comment section means they could refactor into their own functions
     /*
       Default Tracks
+      // NOTE this will handle legacy track structure but they need to be converted
     */
-    this.initEntry(obs[0], obs[1]);
-    this.initExit(obs[3], obs[2]);
-
+    this.entryTrackOrigin = obs[0];
+    this.entryTrack = obs[1];
+    this.entryTrackOrigin.track = obs[1]
+    this.entryTrack.origin = obs[0]
+    Track.disableDefaults(this.entryTrackOrigin)
+    Track.disableDefaults(this.entryTrack)
+    this.exitTrackEnd = obs[3];
+    this.exitTrack = obs[2];
+    this.exitTrackEnd.track = obs[2]
+    this.exitTrack.end = obs[3]
+    Track.disableDefaults(this.exitTrackEnd)
+    Track.disableDefaults(this.exitTrack)
     /*
       Aux tracks
     */
@@ -236,47 +163,11 @@ var Tulip = Class({
     }
   },
 
-  buildEntry: function(type='track') {
-    // TODO move functionality to track object
-    var entry = new fabric.Path('M 90 171 C 90, 165, 90, 159, 90, 150 C 90, 141, 90, 129, 90, 120 C 90, 111, 90, 99, 90, 90',this.trackTypesObject[type]);
-    var point = new fabric.Circle({
-      left: entry.path[0][1],
-      top: entry.path[0][2],
-      strokeWidth: 1,
-      radius: 7,
-      fill: '#000',
-      stroke: '#666',
-    });
-
-    this.initEntry(point, entry);
-    this.canvas.add(this.entryTrack);
-    this.canvas.add(this.entryTrackOrigin)
-  },
-
-  buildExit: function(angle,type='track'){
-    // TODO move functionality to track object
-    var exit = new fabric.Path(this.buildTrackPathString(angle),this.trackTypesObject[type]);
-    var point = new fabric.Triangle({
-      left: exit.path[3][5],
-      top: exit.path[3][6],
-      strokeWidth: 1,
-      height: 15,
-      width: 15,
-      fill: '#000',
-      stroke: '#666',
-      angle: angle,
-    });
-
-    this.initExit(point, exit);
-    this.canvas.add(this.exitTrack);
-    this.canvas.add(this.exitTrackEnd);
-  },
-
-
   beginEdit: function() {
-    this.uneditedPath = $(this.exitTrack.toSVG()).attr('d');
-    this.activeEditors.push(new TrackEditor(this.canvas, this.entryTrack,true, false, true));
-    this.activeEditors.push(new TrackEditor(this.canvas, this.exitTrack ,false, true, true));
+    // TODO this needs a rework
+    // this.uneditedPath = $(this.exitTrack.toSVG()).attr('d'); TODO move to exit track object
+    this.activeEditors.push(new EntryTrackEditor(this.canvas, this.entryTrack));
+    this.activeEditors.push(new ExitTrackEditor(this.canvas, this.exitTrack));
     for(i=0;i<this.tracks.length;i++){
       this.tracks[i]
       if(this.tracks[i].paths == undefined){
@@ -303,63 +194,33 @@ var Tulip = Class({
     }
   },
 
-  // TODO move functionality to track object
-  /*
-    Creates an SVG string form the assumption that we are originating at the point (90,90) and vectoring out from there at a given angle
-    The angle is provided from the mapping module.
-  */
-  buildTrackPathString: function(angle) {
-    var set1 = this.buildPathSet([9,18,27],angle)
-    var set2 = this.buildPathSet([36,45,54],angle)
-    var set3 = this.buildPathSet([63,72,81],angle)
-    var trackString = 'M 90 90 C '+ set1[0][0] +', '+ set1[0][1] +', '+ set1[1][0] +', '+ set1[1][1] +', '+ set1[2][0] +', '+ set1[2][1]
-                        + ' C '+ set2[0][0] +', '+ set2[0][1] +', '+ set2[1][0] +', '+ set2[1][1] +', '+ set2[2][0] +', '+ set2[2][1]
-                        + ' C '+ set3[0][0] +', '+ set3[0][1] +', '+ set3[1][0] +', '+ set3[1][1] +', '+ set3[2][0] +', '+ set3[2][1]
-
-    return trackString;
-  },
-
-  // TODO move functionality to track object
-  /*
-    creates a 2D array of point pairs which describe where a set of points in the track path string should be
-    given an angle and a set of 3 maginitudes describing the desired location of key points in the path
-  */
-  buildPathSet: function(magnitudes, angle){
-    var set = [];
-    for(var i=0;i<magnitudes.length;i++){
-      var xy = this.rotatePoint(magnitudes[i],angle);
-      set.push(xy);
-    }
-    return set;
-  },
-
   changeAddedTrackType(type){
     this.addedTrackType = type
   },
 
   changeEntryTrackType(type){
     // TODO move functionality to track object
-    this.entryTrack.setOptions(this.trackTypesObject[type])
-    this.entryTrackType = type;
-    this.canvas.renderAll();
+    // this.entryTrack.setOptions(this.trackTypesObject[type])
+    // this.entryTrackType = type;
+    // this.canvas.renderAll();
   },
 
   changeExitTrackType(type){
     // TODO move functionality to track object
-    this.exitTrack.setOptions(this.trackTypesObject[type])
-    this.exitTrackType = type
-    this.canvas.renderAll();
+    // this.exitTrack.setOptions(this.trackTypesObject[type])
+    // this.exitTrackType = type
+    // this.canvas.renderAll();
   },
 
   changeExitAngle(angle,exitTrackType){
     // TODO move functionality to track object
-    if(this.exitTrackUneditedPath){
-      if((this.uneditedPath == $(this.exitTrack.toSVG()).attr('d')) && (app.roadbook.currentlyEditingWaypoint != null)){
-        this.redrawExitAndEditor(angle,exitTrackType);
-      }else if(this.uneditedPath == $(this.exitTrack.toSVG()).attr('d') || this.uneditedPath == null) {
-        this.redrawExit(angle,exitTrackType)
-      }
-    }
+    // if(this.exitTrackUneditedPath){
+    //   if((this.uneditedPath == $(this.exitTrack.toSVG()).attr('d')) && (app.roadbook.currentlyEditingWaypoint != null)){
+    //     this.redrawExitAndEditor(angle,exitTrackType);
+    //   }else if(this.uneditedPath == $(this.exitTrack.toSVG()).attr('d') || this.uneditedPath == null) {
+    //     this.redrawExit(angle,exitTrackType)
+    //   }
+    // }
   },
 
   finishEdit: function() {
@@ -368,10 +229,10 @@ var Tulip = Class({
     }
     this.activeEditors = [];
 
-    //TODO move this to it's own function
-    if(this.uneditedPath != $(this.exitTrack.toSVG()).attr('d')){
-      this.exitTrackUneditedPath = false;
-    }
+    //TODO move this to exit track object
+    // if(this.uneditedPath != $(this.exitTrack.toSVG()).attr('d')){
+    //   this.exitTrackUneditedPath = false;
+    // }
     // remove controls from glyphs and update the canvas' visual state
     this.canvas.deactivateAll().renderAll();
   },
@@ -414,27 +275,6 @@ var Tulip = Class({
         this.activeEditors[i].destroy();
       }
     }
-  },
-
-  // TODO move functionality to track object
-  /*
-    The canvas is a 180px by 180px box with (0,0) being the top left corner. The origin of the exit track is at the point (90,90)
-
-    The mapping module returns the angle of the turn with a positive value if it's a right turn and a negative value if it's a left turn
-
-    This function takes a magnitude of a vector from a typical cartesian system with an origin of (0,0) and rotates that by the specified angle.
-    (In other words, the y component of a vector which originates at the origin and parallels the y axis tending to infinity.)
-    It then transforms the (x,y) components of the vector back to the weird (90,90) origin system and returns them as an array.
-  */
-  rotatePoint: function(magnitude,angle){
-
-    //convert to radians
-    angle = angle * (Math.PI / 180);
-
-    var x = Math.round(magnitude * (Math.sin(angle)));
-    var y = -Math.round(magnitude * (Math.cos(angle)));
-
-    return [x + 90, y + 90]
   },
 
   /*
