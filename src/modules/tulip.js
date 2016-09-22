@@ -71,24 +71,8 @@ var Tulip = Class({
   */
   addTrack: function(angle) {
     this.finishRemove();
-    // TODO move functionality to track object
-    var trackPath;
-    var trackObject = this.trackTypesObject[this.addedTrackType]
-    if(trackObject instanceof Array){
-      var paths = []
-      for(var i=0;i<trackObject.length;i++){
-        paths.push(new fabric.Path(this.buildTrackPathString(angle),trackObject[i]));
-      }
-      trackPath = new fabric.PathGroup(paths);
-      // this.activeEditors.push(new ComplexTrackEditor(this.canvas, trackPath,true, true, false));
-    }else{
-      trackPath = new fabric.Path(this.buildTrackPathString(angle),trackObject);
-      // this.activeEditors.push(new TrackEditor(this.canvas, trackPath, true, true, false));
-    }
-
-    this.canvas.add(trackPath);
-    this.tracks.push(trackPath);
-
+    var track = new AddedTrack(angle, this.addedTrackType, this.canvas)
+    this.tracks.push(track);
 
     //NOTE this solves the problem of having overlapping handles if a control is clicked twice or things get too close to one another.
     //     an alternate solution that may solve any performance issues this might cause is to loop through the active editors and bring all the
@@ -169,13 +153,13 @@ var Tulip = Class({
     this.activeEditors.push(new EntryTrackEditor(this.canvas, this.entryTrack));
     this.activeEditors.push(new ExitTrackEditor(this.canvas, this.exitTrack));
     for(i=0;i<this.tracks.length;i++){
-      this.tracks[i]
-      if(this.tracks[i].paths == undefined){
-        this.activeEditors.push(new TrackEditor(this.canvas, this.tracks[i],true, true, false));
-      } else{
-        console.log("complex path");
-        this.activeEditors.push(new ComplexTrackEditor(this.canvas, this.tracks[i],true, true, false));
-      }
+      this.activeEditors.push(new AddedTrackEditor(this.canvas, this.tracks[i]));
+      // if(this.tracks[i].paths == undefined){
+      //   this.activeEditors.push(new TrackEditor(this.canvas, this.tracks[i],true, true, false));
+      // } else{
+      //   console.log("complex path");
+      //   this.activeEditors.push(new ComplexTrackEditor(this.canvas, this.tracks[i],true, true, false));
+      // }
 
     }
   },
