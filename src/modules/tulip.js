@@ -14,12 +14,8 @@ var Tulip = Class({
     this.glyphs = [];
     this.activeEditors = [];
     this.activeRemovers = [];
-    // TODO move to track object
-    // this.trackTypesObject = {};
     this.addedTrackType = 'track';
     this.exitTrackUneditedPath = true;
-    // TODO move to track object
-    // this.initTrackTypesObject();
     this.initTulip(angle, trackTypes, json);
   },
 
@@ -45,6 +41,7 @@ var Tulip = Class({
     var _this = this;
     this.canvas.on('object:moving',function(e){
       // NOTE I do not like this dependency
+      console.log(e.target);
       e.target.track.editor.pointMoving(e.target);
     });
   },
@@ -154,13 +151,6 @@ var Tulip = Class({
     this.activeEditors.push(new ExitTrackEditor(this.canvas, this.exitTrack));
     for(i=0;i<this.tracks.length;i++){
       this.activeEditors.push(new AddedTrackEditor(this.canvas, this.tracks[i]));
-      // if(this.tracks[i].paths == undefined){
-      //   this.activeEditors.push(new TrackEditor(this.canvas, this.tracks[i],true, true, false));
-      // } else{
-      //   console.log("complex path");
-      //   this.activeEditors.push(new ComplexTrackEditor(this.canvas, this.tracks[i],true, true, false));
-      // }
-
     }
   },
 
@@ -183,10 +173,9 @@ var Tulip = Class({
   },
 
   changeEntryTrackType(type){
-    // TODO move functionality to track object
-    // this.entryTrack.setOptions(this.trackTypesObject[type])
-    // this.entryTrackType = type;
-    // this.canvas.renderAll();
+    this.finishEdit();
+    this.entryTrack.changeType(type);
+    this.beginEdit()
   },
 
   changeExitTrackType(type){

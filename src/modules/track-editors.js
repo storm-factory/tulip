@@ -131,19 +131,19 @@ class TrackEditor {
         this.paths[i].path[0][1] = point.left;
         this.paths[i].path[0][2] = point.top;
         // NOTE could overload
-        // if(this.track.origin){
-        //   this.track.origin.left = point.left;
-        //   this.track.origin.top = point.top;
-        // }
+        if(this.track.origin){
+          this.track.origin.left = point.left;
+          this.track.origin.top = point.top;
+        }
       }else if(point.name == "end"){
         //Move this point on the path
         this.paths[i].path[3][5] = point.left;
         this.paths[i].path[3][6] = point.top;
         // NOTE could overload
-        // if(point.track.end){
-        //   point.track.end.left = point.left;
-        //   point.track.end.top = point.top;
-        // }
+        if(this.track.end){
+          this.track.end.left = point.left;
+          this.track.end.top = point.top;
+        }
       } else if(point.name == "joinOne") {
         //Move this point on the path
         this.paths[i].path[1][5] = point.left;
@@ -162,9 +162,7 @@ class TrackEditor {
 class EntryTrackEditor extends TrackEditor {
   constructor(canvas, track) {
     super(canvas, track,'#ffBA29');
-    // We want to make the entry track visually different than everything else
-    // this.handleColor = '#ffBA29';
-    // this.origin = this.makeEntryOrigin(this.track.path[0][1],this.track.path[0][2]);
+    this.track = track;
     this.origin = this.makeEntryOrigin(this.paths[0].path[0][1],this.paths[0].path[0][2]);
   }
 
@@ -180,7 +178,7 @@ class EntryTrackEditor extends TrackEditor {
 
     origin.name = "origin";
     origin.hasBorders = origin.hasControls = false;
-    // origin.track = this.track
+    origin.track = this.track
     this.canvas.add(origin);
     return origin
   }
@@ -189,8 +187,7 @@ class EntryTrackEditor extends TrackEditor {
 class ExitTrackEditor extends TrackEditor {
   constructor(canvas, track){
     super(canvas, track,'#ffBA29');
-    // this.handleColor = '#ffBA29';
-    // this.end = this.makeExitEnd(this.track.path[3][5],this.track.path[3][6]);
+    this.track = track;
     this.end = this.makeExitEnd(this.paths[0].path[3][5],this.paths[0].path[3][6]);
   }
 
@@ -207,7 +204,7 @@ class ExitTrackEditor extends TrackEditor {
 
     end.hasBorders = end.hasControls = false;
     end.hasBorders = false;
-    // end.track = this.track;
+    end.track = this.track;
     end.name = "end";
     // end.angle = this.track.end.angle;
     this.canvas.add(end);

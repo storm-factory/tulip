@@ -153,7 +153,6 @@ class EntryTrack extends Track {
   }
 
   buildTrackPaths(type='track',canvas) {
-    // var paths = new fabric.Path('M 90 171 C 90, 165, 90, 159, 90, 150 C 90, 141, 90, 129, 90, 120 C 90, 111, 90, 99, 90, 90',this.types[type]);
     var paths = super.buildTrackPaths(0,[90,171], type)
     var point = new fabric.Circle({
       left: paths[0].path[0][1],
@@ -163,10 +162,23 @@ class EntryTrack extends Track {
       fill: '#000',
       stroke: '#666',
     });
-
+    this.origin = point;
     paths.push(point);
     var group = new fabric.Group(paths);
     return this.addGroupToCanvas(group, canvas);
+  }
+
+  changeType(type) {
+    var pathSVG = $(this.objectsOnCanvas.getObjects('path')[0].toSVG()).attr('d')
+    var paths = this.objectsOnCanvas.getObjects('path');
+    for(var i=0;i<paths.length;i++){
+      this.objectsOnCanvas.remove(paths[i]);
+    }
+
+    var typeOptions = this.types[type];
+    for(var i=0;i<typeOptions.length;i++){
+      this.objectsOnCanvas.addWithUpdate(new fabric.Path(pathSVG,typeOptions[i]));
+    }
   }
 }
 
