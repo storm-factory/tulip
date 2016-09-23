@@ -20,19 +20,24 @@ class Track{
     return group;
   }
 
-  buildPath(angle,type='track'){
-    return new fabric.Path(this.buildTrackPathString(angle),this.types[type]);
+  buildTrackPaths(angle,origin,type='track'){
+    var paths = [];
+    var typeOptions = this.types[type];
+    for(var i=0;i<typeOptions.length;i++){
+      paths.push(new fabric.Path(this.buildTrackPathString(angle,origin),typeOptions[i]));
+    }
+    return paths;
   }
 
   /*
     Creates an SVG string form the assumption that we are originating at the point (90,90) and vectoring out from there at a given angle
     The angle is provided from the mapping module.
   */
-  buildTrackPathString(angle) {
-    var set1 = this.buildPathSet([9,18,27],angle)
-    var set2 = this.buildPathSet([36,45,54],angle)
-    var set3 = this.buildPathSet([63,72,81],angle)
-    return 'M 90 90 C '+ set1[0][0] +', '+ set1[0][1] +', '+ set1[1][0] +', '+ set1[1][1] +', '+ set1[2][0] +', '+ set1[2][1]
+  buildTrackPathString(angle,origin) {
+    var set1 = this.buildTrackPathsSet([9,18,27],angle,origin)
+    var set2 = this.buildTrackPathsSet([36,45,54],angle,origin)
+    var set3 = this.buildTrackPathsSet([63,72,81],angle,origin)
+    return 'M '+ origin[0] + ' ' + origin[1] +' C '+ set1[0][0] +', '+ set1[0][1] +', '+ set1[1][0] +', '+ set1[1][1] +', '+ set1[2][0] +', '+ set1[2][1]
                         + ' C '+ set2[0][0] +', '+ set2[0][1] +', '+ set2[1][0] +', '+ set2[1][1] +', '+ set2[2][0] +', '+ set2[2][1]
                         + ' C '+ set3[0][0] +', '+ set3[0][1] +', '+ set3[1][0] +', '+ set3[1][1] +', '+ set3[2][0] +', '+ set3[2][1];
   }
@@ -41,10 +46,10 @@ class Track{
     creates a 2D array of point pairs which describe where a set of points in the track path string should be
     given an angle and a set of 3 maginitudes describing the desired location of key points in the path
   */
-  buildPathSet(magnitudes, angle){
+  buildTrackPathsSet(magnitudes, angle, origin){
     var set = [];
     for(var i=0;i<magnitudes.length;i++){
-      var xy = this.rotatePoint(magnitudes[i],angle);
+      var xy = this.rotatePoint(magnitudes[i],angle, origin);
       set.push(xy);
     }
     return set;
@@ -59,7 +64,7 @@ class Track{
     (In other words, the y component of a vector which originates at the origin and parallels the y axis tending to infinity.)
     It then transforms the (x,y) components of the vector back to the weird (90,90) origin system and returns them as an array.
   */
-  rotatePoint(magnitude,angle){
+  rotatePoint(magnitude,angle, origin){
 
     //convert to radians
     angle = angle * (Math.PI / 180);
@@ -67,7 +72,7 @@ class Track{
     var x = Math.round(magnitude * (Math.sin(angle)));
     var y = -Math.round(magnitude * (Math.cos(angle)));
 
-    return [x + 90, y + 90]
+    return [x + origin[0], y + origin[1]]
   }
 
   static disableDefaults(object){
@@ -144,21 +149,23 @@ class EntryTrack extends Track {
     super();
     this.types = {};
     this.initTypes();
-    this.objectsOnCanvas = this.build(type, canvas);
+    this.objectsOnCanvas = this.buildTrackPaths(type, canvas);
   }
 
-  build(type='track',canvas) {
-    var path = new fabric.Path('M 90 171 C 90, 165, 90, 159, 90, 150 C 90, 141, 90, 129, 90, 120 C 90, 111, 90, 99, 90, 90',this.types[type]);
+  buildTrackPaths(type='track',canvas) {
+    // var paths = new fabric.Path('M 90 171 C 90, 165, 90, 159, 90, 150 C 90, 141, 90, 129, 90, 120 C 90, 111, 90, 99, 90, 90',this.types[type]);
+    var paths = super.buildTrackPaths(0,[90,171], type)
     var point = new fabric.Circle({
-      left: path.path[0][1],
-      top: path.path[0][2],
+      left: paths[0].path[0][1],
+      top: paths[0].path[0][2],
       strokeWidth: 1,
       radius: 7,
       fill: '#000',
       stroke: '#666',
     });
 
-    var group = new fabric.Group([point,path]);
+    paths.push(point);
+    var group = new fabric.Group(paths);
     return this.addGroupToCanvas(group, canvas);
   }
 }
@@ -166,14 +173,14 @@ class EntryTrack extends Track {
 class ExitTrack extends Track {
   constructor(angle,type, canvas){
     super();
-    this.objectsOnCanvas = this.buildPath(angle,type, canvas);
+    this.objectsOnCanvas = this.buildTrackPaths(angle,type, canvas);
   }
 
-  buildPath(angle,type, canvas){
-    var path = super.buildPath(angle, type)//new fabric.Path(this.buildTrackPathString(angle),this.types[type]);
+  buildTrackPaths(angle,type, canvas){
+    var paths = super.buildTrackPaths(angle,[90,90], type)//new fabric.Path(this.buildTrackPathString(angle),this.types[type]);
     var point = new fabric.Triangle({
-      left: path.path[3][5],
-      top: path.path[3][6],
+      left: paths[0].path[3][5],
+      top: paths[0].path[3][6],
       strokeWidth: 1,
       height: 15,
       width: 15,
@@ -181,8 +188,8 @@ class ExitTrack extends Track {
       stroke: '#666',
       angle: angle,
     });
-
-    var group = new fabric.Group([point,path]);
+    paths.push(point);
+    var group = new fabric.Group(paths);
     return this.addGroupToCanvas(group, canvas);
   }
 }
@@ -190,7 +197,7 @@ class ExitTrack extends Track {
 class AddedTrack extends Track {
   constructor(angle,type, canvas){
     super();
-    var group = new fabric.Group([this.buildPath(angle,type)]);
+    var group = new fabric.Group(this.buildTrackPaths(angle,[90,90],type));
     this.objectsOnCanvas = group;
     this.addGroupToCanvas(group, canvas);
   }
