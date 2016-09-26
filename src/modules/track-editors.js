@@ -206,7 +206,7 @@ class ExitTrackEditor extends TrackEditor {
     endHandle.hasBorders = endHandle.hasControls = false;
     endHandle.editor = this;
     endHandle.name = "endHandle";
-    // end.angle = this.track.end.angle;
+    endHandle.angle = this.track.end.angle;
     this.canvas.add(endHandle);
     return endHandle;
   }
@@ -236,9 +236,8 @@ class ExitTrackEditor extends TrackEditor {
 class AddedTrackEditor extends TrackEditor {
   constructor(canvas, track){
     super(canvas, track);
-    // this.handleColor = '#296EFF';
     this.originHandle = this.makeMidPoint(this.paths[0].path[0][1],this.paths[0].path[0][2]);
-    this.end = this.makeMidPoint(this.paths[0].path[3][5],this.paths[0].path[3][6]);
+    this.endHandle = this.makeMidPoint(this.paths[0].path[3][5],this.paths[0].path[3][6]);
     this.originHandle.name = "originHandle";
     this.endHandle.name = "endHandle";
     this.canvas.add(this.originHandle);

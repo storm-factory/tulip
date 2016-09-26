@@ -40,7 +40,9 @@ var Tulip = Class({
     // TODO is this a good thing or a hack?
     this.canvas.on('object:moving',function(e){
       // NOTE I do not like this dependency
-      e.target.editor.pointMoving(e.target);
+      if(e.target.editor){
+        e.target.editor.pointMoving(e.target);
+      }
     });
   },
 
@@ -177,10 +179,9 @@ var Tulip = Class({
   },
 
   changeExitTrackType(type){
-    // TODO move functionality to track object
-    // this.exitTrack.setOptions(this.trackTypesObject[type])
-    // this.exitTrackType = type
-    // this.canvas.renderAll();
+    this.finishEdit();
+    this.exitTrack.changeType(type);
+    this.beginEdit()
   },
 
   changeExitAngle(angle,exitTrackType){

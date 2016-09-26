@@ -141,6 +141,19 @@ class Track{
                                     selectable:false,
                                   }];
   }
+
+  changeType(type) {
+    var pathSVG = $(this.objectsOnCanvas.getObjects('path')[0].toSVG()).attr('d')
+    var paths = this.objectsOnCanvas.getObjects('path');
+    for(var i=0;i<paths.length;i++){
+      this.objectsOnCanvas.remove(paths[i]);
+    }
+
+    var typeOptions = this.types[type];
+    for(var i=0;i<typeOptions.length;i++){
+      this.objectsOnCanvas.addWithUpdate(new fabric.Path(pathSVG,typeOptions[i]));
+    }
+  }
 }
 
 class EntryTrack extends Track {
@@ -168,17 +181,10 @@ class EntryTrack extends Track {
     return group
   }
 
-  changeType(type) {
-    var pathSVG = $(this.objectsOnCanvas.getObjects('path')[0].toSVG()).attr('d')
-    var paths = this.objectsOnCanvas.getObjects('path');
-    for(var i=0;i<paths.length;i++){
-      this.objectsOnCanvas.remove(paths[i]);
-    }
-
-    var typeOptions = this.types[type];
-    for(var i=0;i<typeOptions.length;i++){
-      this.objectsOnCanvas.addWithUpdate(new fabric.Path(pathSVG,typeOptions[i]));
-    }
+  changeType(type){
+    super.changeType(type);
+    this.objectsOnCanvas.getObjects('circle')[0].bringToFront();
+    Track.disableDefaults(this.objectsOnCanvas.getObjects('circle')[0]);
   }
 }
 
@@ -205,6 +211,12 @@ class ExitTrack extends Track {
     var group = new fabric.Group(paths);
     this.addGroupToCanvas(group, canvas);
     return group
+  }
+
+  changeType(type){
+    super.changeType(type);
+    this.objectsOnCanvas.getObjects('triangle')[0].bringToFront();
+    Track.disableDefaults(this.objectsOnCanvas.getObjects('triangle')[0]);
   }
 }
 
