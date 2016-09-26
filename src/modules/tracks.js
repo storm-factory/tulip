@@ -17,7 +17,6 @@ class Track{
   addGroupToCanvas(group, canvas){
     Track.disableDefaults(group);
     canvas.add(group);
-    return group;
   }
 
   buildTrackPaths(angle,origin,type='track'){
@@ -165,7 +164,8 @@ class EntryTrack extends Track {
     this.origin = point;
     paths.push(point);
     var group = new fabric.Group(paths);
-    return this.addGroupToCanvas(group, canvas);
+    this.addGroupToCanvas(group, canvas);
+    return group
   }
 
   changeType(type) {
@@ -200,9 +200,11 @@ class ExitTrack extends Track {
       stroke: '#666',
       angle: angle,
     });
+    this.end = point;
     paths.push(point);
     var group = new fabric.Group(paths);
-    return this.addGroupToCanvas(group, canvas);
+    this.addGroupToCanvas(group, canvas);
+    return group
   }
 }
 

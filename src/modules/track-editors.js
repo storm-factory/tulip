@@ -2,7 +2,7 @@ class TrackEditor {
   // change params to entryTrack and exitTrack: entry track can't move end point, exit track can't move origin.
   // all other bets are off.
   constructor(canvas, track, handleColor='#296EFF') {
-    fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
+    // fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
 
     this.track = track
     this.track.editor = this;
@@ -11,20 +11,20 @@ class TrackEditor {
     this.handleColor = handleColor
     this.canvas = canvas
     // TODO somehow set handle color via child class
-    this.joinOne = this.makeMidPoint(this.paths[0].path[1][5], this.paths[0].path[1][6]);
-    this.joinOne.name = "joinOne";
-    this.canvas.add(this.joinOne);
+    this.joinOneHandle = this.makeMidPoint(this.paths[0].path[1][5], this.paths[0].path[1][6]);
+    this.joinOneHandle.name = "joinOneHandle";
+    this.canvas.add(this.joinOneHandle);
 
-    this.joinTwo = this.makeMidPoint(this.paths[0].path[2][5], this.paths[0].path[2][6]);
-    this.joinTwo.name = "joinTwo";
-    this.canvas.add(this.joinTwo);
+    this.joinTwoHandle = this.makeMidPoint(this.paths[0].path[2][5], this.paths[0].path[2][6]);
+    this.joinTwoHandle.name = "joinTwoHandle";
+    this.canvas.add(this.joinTwoHandle);
   }
 
   destroy(){
-    this.canvas.remove(this.origin);
-    this.canvas.remove(this.joinOne);
-    this.canvas.remove(this.joinTwo);
-    this.canvas.remove(this.end);
+    this.canvas.remove(this.originHandle);
+    this.canvas.remove(this.joinOneHandle);
+    this.canvas.remove(this.joinTwoHandle);
+    this.canvas.remove(this.endHandle);
     delete this;
   }
 
@@ -40,7 +40,7 @@ class TrackEditor {
     });
 
     r.hasBorders = r.hasControls = false;
-    r.track = this.track;
+    r.editor = this;
     return r;
   }
 
@@ -126,29 +126,32 @@ class TrackEditor {
   // TODO this could be an object literal
   pointMoving(point){
     for(i=0;i<this.paths.length;i++){
-      if (point.name == "origin") {
+      if (point.name == "originHandle") {
         //Move this point on the path
+
         this.paths[i].path[0][1] = point.left;
         this.paths[i].path[0][2] = point.top;
         // NOTE could overload
         if(this.track.origin){
-          this.track.origin.left = point.left;
-          this.track.origin.top = point.top;
+          // for some reason the objects left and top are relative to the group not the canvas so we have to correct that
+          this.track.origin.left = point.left - this.track.objectsOnCanvas.left;
+          this.track.origin.top = point.top - this.track.objectsOnCanvas.top;
         }
-      }else if(point.name == "end"){
+      }else if(point.name == "endHandle"){
         //Move this point on the path
         this.paths[i].path[3][5] = point.left;
         this.paths[i].path[3][6] = point.top;
         // NOTE could overload
         if(this.track.end){
-          this.track.end.left = point.left;
-          this.track.end.top = point.top;
+          // for some reason the objects left and top are relative to the group not the canvas so we have to correct that
+          this.track.end.left = point.left - this.track.objectsOnCanvas.left;
+          this.track.end.top = point.top - this.track.objectsOnCanvas.top;
         }
-      } else if(point.name == "joinOne") {
+      } else if(point.name == "joinOneHandle") {
         //Move this point on the path
         this.paths[i].path[1][5] = point.left;
         this.paths[i].path[1][6] = point.top;
-      } else if(point.name == "joinTwo") {
+      } else if(point.name == "joinTwoHandle") {
         //Move this point on the path
         this.paths[i].path[2][5] = point.left;
         this.paths[i].path[2][6] = point.top;
@@ -162,12 +165,11 @@ class TrackEditor {
 class EntryTrackEditor extends TrackEditor {
   constructor(canvas, track) {
     super(canvas, track,'#ffBA29');
-    this.track = track;
-    this.origin = this.makeEntryOrigin(this.paths[0].path[0][1],this.paths[0].path[0][2]);
+    this.originHandle = this.makeEntryOrigin(this.paths[0].path[0][1],this.paths[0].path[0][2]);
   }
 
   makeEntryOrigin(left, top){
-    var origin = new fabric.Circle({
+    var originHandle = new fabric.Circle({
       left: left,
       top: top,
       strokeWidth: 1,
@@ -176,23 +178,22 @@ class EntryTrackEditor extends TrackEditor {
       stroke: '#787878'
     });
 
-    origin.name = "origin";
-    origin.hasBorders = origin.hasControls = false;
-    origin.track = this.track
-    this.canvas.add(origin);
-    return origin
+    originHandle.name = "originHandle";
+    originHandle.hasBorders = originHandle.hasControls = false;
+    originHandle.editor = this;
+    this.canvas.add(originHandle);
+    return originHandle
   }
 }
 
 class ExitTrackEditor extends TrackEditor {
   constructor(canvas, track){
     super(canvas, track,'#ffBA29');
-    this.track = track;
-    this.end = this.makeExitEnd(this.paths[0].path[3][5],this.paths[0].path[3][6]);
+    this.endHandle = this.makeExitEnd(this.paths[0].path[3][5],this.paths[0].path[3][6]);
   }
 
   makeExitEnd(left, top){
-    var end = new fabric.Triangle({
+    var endHandle = new fabric.Triangle({
       left: left,
       top: top,
       strokeWidth: 1,
@@ -202,13 +203,12 @@ class ExitTrackEditor extends TrackEditor {
       stroke: '#787878'
     });
 
-    end.hasBorders = end.hasControls = false;
-    end.hasBorders = false;
-    end.track = this.track;
-    end.name = "end";
+    endHandle.hasBorders = endHandle.hasControls = false;
+    endHandle.editor = this;
+    endHandle.name = "endHandle";
     // end.angle = this.track.end.angle;
-    this.canvas.add(end);
-    return end;
+    this.canvas.add(endHandle);
+    return endHandle;
   }
 
   interpolatePath(path){
@@ -228,8 +228,8 @@ class ExitTrackEditor extends TrackEditor {
     if(adj > 0) {
       theta = 180 - theta
     }
-    // this.track.end.angle = theta;
-    // this.end.angle = theta;
+    this.track.end.angle = theta;
+    this.endHandle.angle = theta;
   }
 }
 
@@ -237,11 +237,11 @@ class AddedTrackEditor extends TrackEditor {
   constructor(canvas, track){
     super(canvas, track);
     // this.handleColor = '#296EFF';
-    this.origin = this.makeMidPoint(this.paths[0].path[0][1],this.paths[0].path[0][2]);
+    this.originHandle = this.makeMidPoint(this.paths[0].path[0][1],this.paths[0].path[0][2]);
     this.end = this.makeMidPoint(this.paths[0].path[3][5],this.paths[0].path[3][6]);
-    this.origin.name = "origin";
-    this.end.name = "end";
-    this.canvas.add(this.origin);
-    this.canvas.add(this.end);
+    this.originHandle.name = "originHandle";
+    this.endHandle.name = "endHandle";
+    this.canvas.add(this.originHandle);
+    this.canvas.add(this.endHandle);
   }
 }
