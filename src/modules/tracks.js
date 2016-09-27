@@ -194,7 +194,7 @@ class ExitTrack extends Track {
     this.objectsOnCanvas = this.buildTrackPaths(angle,type, canvas);
   }
 
-  buildTrackPaths(angle,type, canvas){
+  buildTrackPaths(angle, type, canvas){
     var paths = super.buildTrackPaths(angle,[90,90], type)//new fabric.Path(this.buildTrackPathString(angle),this.types[type]);
     var point = new fabric.Triangle({
       left: paths[0].path[3][5],
@@ -211,6 +211,11 @@ class ExitTrack extends Track {
     var group = new fabric.Group(paths);
     this.addGroupToCanvas(group, canvas);
     return group
+  }
+
+  changeAngle(angle, type, canvas) {
+    canvas.remove(this.objectsOnCanvas);
+    this.objectsOnCanvas = this.buildTrackPaths(angle, type, canvas)
   }
 
   changeType(type){

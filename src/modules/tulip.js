@@ -15,7 +15,7 @@ var Tulip = Class({
     this.activeEditors = [];
     this.activeRemovers = [];
     this.addedTrackType = 'track';
-    this.exitTrackUneditedPath = true;
+    this.exitTrackEdited = false;
     this.initTulip(angle, trackTypes, json);
   },
 
@@ -38,9 +38,13 @@ var Tulip = Class({
       this.initExit(angle,trackTypes.exitTrackType);
     }
     // TODO is this a good thing or a hack?
+    var _this = this;
     this.canvas.on('object:moving',function(e){
       // NOTE I do not like this dependency
       if(e.target.editor){
+        if(e.target.editor.track instanceof ExitTrack && !_this.exitTrackEdited){
+          _this.exitTrackEdited = true;
+        }
         e.target.editor.pointMoving(e.target);
       }
     });
@@ -185,14 +189,13 @@ var Tulip = Class({
   },
 
   changeExitAngle(angle,exitTrackType){
-    // TODO move functionality to track object
-    // if(this.exitTrackUneditedPath){
-    //   if((this.uneditedPath == $(this.exitTrack.toSVG()).attr('d')) && (app.roadbook.currentlyEditingWaypoint != null)){
-    //     this.redrawExitAndEditor(angle,exitTrackType);
-    //   }else if(this.uneditedPath == $(this.exitTrack.toSVG()).attr('d') || this.uneditedPath == null) {
-    //     this.redrawExit(angle,exitTrackType)
-    //   }
-    // }
+    if(!this.exitTrackEdited){
+      this.exitTrack.changeAngle(angle,exitTrackType,this.canvas);
+      if(this.activeEditors.length){
+        this.finishEdit();
+        this.beginEdit();
+      }
+    }
   },
 
   finishEdit: function() {
@@ -200,11 +203,6 @@ var Tulip = Class({
       this.activeEditors[i].destroy();
     }
     this.activeEditors = [];
-
-    //TODO move this to exit track object
-    // if(this.uneditedPath != $(this.exitTrack.toSVG()).attr('d')){
-    //   this.exitTrackUneditedPath = false;
-    // }
     // remove controls from glyphs and update the canvas' visual state
     this.canvas.deactivateAll().renderAll();
   },
@@ -215,16 +213,6 @@ var Tulip = Class({
     }
     // remove controls from glyphs and update the canvas' visual state
     this.canvas.deactivateAll().renderAll();
-  },
-
-  redrawExit(angle,exitTrackType){
-    // TODO move functionality to track object
-    this.canvas.remove(this.exitTrack);
-    this.canvas.remove(this.exitTrackEnd);
-    this.buildExit(angle,exitTrackType);
-    if(this.uneditedPath != null){
-      this.uneditedPath = $(this.exitTrack.toSVG()).attr('d');
-    }
   },
 
   redrawExitAndEditor(angle,exitTrackType){
@@ -255,13 +243,11 @@ var Tulip = Class({
   serialize: function(){
     var json = {
       entry: {
-        point: this.entryTrackOrigin,
-        path: this.entryTrack
+        object: this.entryTrack
       },
-      exitTrackUneditedPath: this.exitTrackUneditedPath,
+      exitTrackUnedited: this.exitTrackUnedited,
       exit: {
-        point: this.exitTrackEnd,
-        path: this.exitTrack
+        object: this.exitTrack
       },
       tracks: this.tracks,
       glyphs: this.serializeGlyphs(),
