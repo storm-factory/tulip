@@ -7,7 +7,7 @@ class TrackEditor {
     this.track = track
     this.track.editor = this;
     // path = TODO get paths from track object
-    this.paths = track.objectsOnCanvas.getObjects('path');
+    this.paths = track.paths;
     this.handleColor = handleColor
     this.canvas = canvas
     // TODO somehow set handle color via child class
@@ -128,14 +128,12 @@ class TrackEditor {
     for(i=0;i<this.paths.length;i++){
       if (point.name == "originHandle") {
         //Move this point on the path
-
         this.paths[i].path[0][1] = point.left;
         this.paths[i].path[0][2] = point.top;
         // NOTE could overload
         if(this.track.origin){
-          // for some reason the objects left and top are relative to the group not the canvas so we have to correct that
-          this.track.origin.left = point.left - this.track.objectsOnCanvas.left;
-          this.track.origin.top = point.top - this.track.objectsOnCanvas.top;
+          this.track.origin.left = point.left;
+          this.track.origin.top = point.top;
         }
       }else if(point.name == "endHandle"){
         //Move this point on the path
@@ -143,9 +141,8 @@ class TrackEditor {
         this.paths[i].path[3][6] = point.top;
         // NOTE could overload
         if(this.track.end){
-          // for some reason the objects left and top are relative to the group not the canvas so we have to correct that
-          this.track.end.left = point.left - this.track.objectsOnCanvas.left;
-          this.track.end.top = point.top - this.track.objectsOnCanvas.top;
+          this.track.end.left = point.left;
+          this.track.end.top = point.top;
         }
       } else if(point.name == "joinOneHandle") {
         //Move this point on the path

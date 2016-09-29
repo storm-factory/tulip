@@ -19,6 +19,15 @@ class Track{
     canvas.add(group);
   }
 
+  addObjectsToCanvas(objectsArray, canvas){
+    if(objectsArray.length){
+      for(var i=0;i<objectsArray.length;i++){
+        Track.disableDefaults(objectsArray[i]);
+        canvas.add(objectsArray[i]);
+      }
+    }
+  }
+
   buildTrackPaths(angle,origin,type='track'){
     var paths = [];
     var typeOptions = this.types[type];
@@ -157,14 +166,12 @@ class Track{
 }
 
 class EntryTrack extends Track {
-  constructor(type, canvas){
+  constructor(type,canvas){
     super();
-    this.types = {};
-    this.initTypes();
-    this.objectsOnCanvas = this.buildTrackPaths(type, canvas);
+    this.buildTrackObjects(type, canvas);
   }
 
-  buildTrackPaths(type='track',canvas) {
+  buildTrackObjects(type='track',canvas) {
     var paths = super.buildTrackPaths(0,[90,171], type)
     var point = new fabric.Circle({
       left: paths[0].path[0][1],
@@ -175,27 +182,26 @@ class EntryTrack extends Track {
       stroke: '#666',
     });
     this.origin = point;
-    paths.push(point);
-    var group = new fabric.Group(paths);
-    this.addGroupToCanvas(group, canvas);
-    return group
+    this.paths = paths;
+    var objects = paths.concat(point);
+    this.addObjectsToCanvas(objects, canvas);
   }
 
   changeType(type){
     super.changeType(type);
-    this.objectsOnCanvas.getObjects('circle')[0].bringToFront();
-    Track.disableDefaults(this.objectsOnCanvas.getObjects('circle')[0]);
+    // this.objectsOnCanvas.getObjects('circle')[0].bringToFront();
+    // Track.disableDefaults(this.objectsOnCanvas.getObjects('circle')[0]);
   }
 }
 
 class ExitTrack extends Track {
-  constructor(angle,type, canvas){
+  constructor(angle,type,canvas){
     super();
-    this.objectsOnCanvas = this.buildTrackPaths(angle,type, canvas);
+    this.buildTrackObjects(angle,type, canvas);
   }
 
-  buildTrackPaths(angle, type, canvas){
-    var paths = super.buildTrackPaths(angle,[90,90], type)//new fabric.Path(this.buildTrackPathString(angle),this.types[type]);
+  buildTrackObjects(angle, type, canvas){
+    var paths = super.buildTrackPaths(angle,[90,90], type)
     var point = new fabric.Triangle({
       left: paths[0].path[3][5],
       top: paths[0].path[3][6],
@@ -207,21 +213,20 @@ class ExitTrack extends Track {
       angle: angle,
     });
     this.end = point;
-    paths.push(point);
-    var group = new fabric.Group(paths);
-    this.addGroupToCanvas(group, canvas);
-    return group
+    this.paths = paths
+    var objects = paths.concat(point);
+    this.addObjectsToCanvas(objects, canvas);
   }
 
   changeAngle(angle, type, canvas) {
-    canvas.remove(this.objectsOnCanvas);
-    this.objectsOnCanvas = this.buildTrackPaths(angle, type, canvas)
+    // canvas.remove(this.objectsOnCanvas);
+    // this.objectsOnCanvas = this.buildTrackPaths(angle, type, canvas)
   }
 
   changeType(type){
     super.changeType(type);
-    this.objectsOnCanvas.getObjects('triangle')[0].bringToFront();
-    Track.disableDefaults(this.objectsOnCanvas.getObjects('triangle')[0]);
+    // this.objectsOnCanvas.getObjects('triangle')[0].bringToFront();
+    // Track.disableDefaults(this.objectsOnCanvas.getObjects('triangle')[0]);
   }
 }
 

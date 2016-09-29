@@ -10,6 +10,18 @@ var Tulip = Class({
     this.canvas.selection = false;
     this.canvas.hoverCursor = 'pointer';
 
+    // TODO is this a good thing or a hack?
+    var _this = this;
+    this.canvas.on('object:moving',function(e){
+      // NOTE I do not like this dependency
+      if(e.target.editor){
+        if(e.target.editor.track instanceof ExitTrack && !_this.exitTrackEdited){
+          _this.exitTrackEdited = true;
+        }
+        e.target.editor.pointMoving(e.target);
+      }
+    });
+
     this.tracks = [];
     this.glyphs = [];
     this.activeEditors = [];
@@ -37,17 +49,6 @@ var Tulip = Class({
       this.initEntry(trackTypes.entryTrackType);
       this.initExit(angle,trackTypes.exitTrackType);
     }
-    // TODO is this a good thing or a hack?
-    var _this = this;
-    this.canvas.on('object:moving',function(e){
-      // NOTE I do not like this dependency
-      if(e.target.editor){
-        if(e.target.editor.track instanceof ExitTrack && !_this.exitTrackEdited){
-          _this.exitTrackEdited = true;
-        }
-        e.target.editor.pointMoving(e.target);
-      }
-    });
   },
 
   // initEntry: function(point, path){
@@ -126,26 +127,49 @@ var Tulip = Class({
       Default Tracks
       // NOTE this will handle legacy track structure but they need to be converted
     */
-    this.entryTrackOrigin = obs[0];
-    this.entryTrack = obs[1];
-    this.entryTrackOrigin.track = obs[1]
-    this.entryTrack.origin = obs[0]
-    Track.disableDefaults(this.entryTrackOrigin)
-    Track.disableDefaults(this.entryTrack)
-    this.exitTrackEnd = obs[3];
-    this.exitTrack = obs[2];
-    this.exitTrackEnd.track = obs[2]
-    this.exitTrack.end = obs[3]
-    Track.disableDefaults(this.exitTrackEnd)
-    Track.disableDefaults(this.exitTrack)
+    // TODO check to see if we have an entry track and if it's a group.
+    console.log(obs[3]);
+    if(obs[1].type == "path" && obs[0].type == "circle" && obs[3].type == "triangle" && obs[2].type == "path"){
+      console.log("old style");
+      var entryTrackOrigin = obs[0];
+      var entryTrack = obs[1];
+      // TODO move this to track object
+      var group = new fabric.Group();
+      group.addWithUpdate(entryTrack);
+      group.addWithUpdate(entryTrackOrigin);
+      this.entryTrack = new EntryTrack(null,null,group);
+
+      var exitTrackEnd = obs[3];
+      var exitTrack = obs[2];
+      // TODO move this to track object
+      var group = new fabric.Group();
+      group.addWithUpdate(exitTrack);
+      group.addWithUpdate(exitTrackEnd);
+      this.exitTrack = new ExitTrack(null,null,null,group);
+    }else {
+      console.log("new style");
+    }
+    // TODO otherwise handle the old style but convert it to the new style
+
+
+    // this.entryTrackOrigin.track = obs[1]
+    // this.entryTrack.origin = obs[0]
+    // Track.disableDefaults(this.entryTrackOrigin)
+    // Track.disableDefaults(this.entryTrack)
+    // this.exitTrackEnd = obs[3];
+    // this.exitTrack = obs[2];
+    // this.exitTrackEnd.track = obs[2]
+    // this.exitTrack.end = obs[3]
+    // Track.disableDefaults(this.exitTrackEnd)
+    // Track.disableDefaults(this.exitTrack)
     /*
       Aux tracks
     */
     // slice and dice obs
-    if(numTracks > 0){
-      var tracks = obs.slice(4, 4 + numTracks);
-      this.initTracks(tracks);
-    }
+    // if(numTracks > 0){
+    //   var tracks = obs.slice(4, 4 + numTracks);
+    //   this.initTracks(tracks);
+    // }
   },
 
   beginEdit: function() {
