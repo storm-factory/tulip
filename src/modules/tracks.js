@@ -168,9 +168,15 @@ class Track{
 }
 
 class EntryTrack extends Track {
-  constructor(type,canvas){
+  constructor(type,canvas,objects=null){
     super();
-    this.buildTrackObjects(type, canvas);
+    if(objects){
+      this.origin = objects.origin
+      this.paths = objects.paths
+    }else {
+      this.buildTrackObjects(type, canvas);
+    }
+
   }
 
   buildTrackObjects(type='track',canvas) {
@@ -196,9 +202,14 @@ class EntryTrack extends Track {
 }
 
 class ExitTrack extends Track {
-  constructor(angle,type,canvas){
+  constructor(angle,type,canvas,objects=null){
     super();
-    this.buildTrackObjects(angle,type, canvas);
+    if(objects){
+      this.end = objects.end
+      this.paths = objects.paths
+    }else {
+      this.buildTrackObjects(angle,type, canvas);
+    }
   }
 
   buildTrackObjects(angle, type, canvas){
@@ -235,11 +246,17 @@ class ExitTrack extends Track {
 }
 
 class AddedTrack extends Track {
-  constructor(angle,type, canvas){
+  constructor(angle,type, canvas,objects=null){
     super();
-    var group = new fabric.Group(this.buildTrackPaths(angle,[90,90],type));
-    this.objectsOnCanvas = group;
-    this.addGroupToCanvas(group, canvas);
+    if(objects){
+      Track.disableDefaults(objects.track[0])
+      this.paths = objects.track
+    }else {
+      this.paths = this.buildTrackPaths(angle,[90,90],type)
+      for(var i=0;i<this.paths.length;i++){
+        canvas.add(this.paths[i]);
+      }
+    }
   }
 
 }

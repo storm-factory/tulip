@@ -233,6 +233,7 @@ class ExitTrackEditor extends TrackEditor {
 class AddedTrackEditor extends TrackEditor {
   constructor(canvas, track){
     super(canvas, track);
+    console.log(track);
     this.originHandle = this.makeMidPoint(this.paths[0].path[0][1],this.paths[0].path[0][2]);
     this.endHandle = this.makeMidPoint(this.paths[0].path[3][5],this.paths[0].path[3][6]);
     this.originHandle.name = "originHandle";
