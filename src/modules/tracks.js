@@ -151,16 +151,18 @@ class Track{
                                   }];
   }
 
-  changeType(type) {
-    var pathSVG = $(this.objectsOnCanvas.getObjects('path')[0].toSVG()).attr('d')
-    var paths = this.objectsOnCanvas.getObjects('path');
-    for(var i=0;i<paths.length;i++){
-      this.objectsOnCanvas.remove(paths[i]);
+  changeType(type,canvas){
+    var pathSVG = $(this.paths[0].toSVG()).attr('d')
+
+    for(var i=0;i<this.paths.length;i++){
+      canvas.remove(this.paths[i]);
     }
 
     var typeOptions = this.types[type];
     for(var i=0;i<typeOptions.length;i++){
-      this.objectsOnCanvas.addWithUpdate(new fabric.Path(pathSVG,typeOptions[i]));
+      var path = new fabric.Path(pathSVG,typeOptions[i])
+      canvas.add(path);
+      this.paths.push(path);
     }
   }
 }
@@ -187,10 +189,9 @@ class EntryTrack extends Track {
     this.addObjectsToCanvas(objects, canvas);
   }
 
-  changeType(type){
-    super.changeType(type);
-    // this.objectsOnCanvas.getObjects('circle')[0].bringToFront();
-    // Track.disableDefaults(this.objectsOnCanvas.getObjects('circle')[0]);
+  changeType(type,canvas){
+    super.changeType(type,canvas);
+    this.origin.bringToFront();
   }
 }
 
@@ -219,14 +220,17 @@ class ExitTrack extends Track {
   }
 
   changeAngle(angle, type, canvas) {
-    // canvas.remove(this.objectsOnCanvas);
-    // this.objectsOnCanvas = this.buildTrackPaths(angle, type, canvas)
+    canvas.remove(this.end);
+    for(var i=0;i<this.paths.length;i++){
+      canvas.remove(this.paths[i]);
+    }
+
+    this.buildTrackObjects(angle,type, canvas);
   }
 
-  changeType(type){
-    super.changeType(type);
-    // this.objectsOnCanvas.getObjects('triangle')[0].bringToFront();
-    // Track.disableDefaults(this.objectsOnCanvas.getObjects('triangle')[0]);
+  changeType(type,canvas){
+    super.changeType(type,canvas);
+    this.end.bringToFront();
   }
 }
 

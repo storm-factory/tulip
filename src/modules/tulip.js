@@ -202,13 +202,13 @@ var Tulip = Class({
 
   changeEntryTrackType(type){
     this.finishEdit();
-    this.entryTrack.changeType(type);
+    this.entryTrack.changeType(type,this.canvas);
     this.beginEdit()
   },
 
   changeExitTrackType(type){
     this.finishEdit();
-    this.exitTrack.changeType(type);
+    this.exitTrack.changeType(type,this.canvas);
     this.beginEdit()
   },
 
