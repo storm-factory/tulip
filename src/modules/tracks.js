@@ -1,5 +1,5 @@
 /*
-  NOTE this class uses ES6 class syntax which is how all other classes should be rewriteen moving forward
+  NOTE this class uses ES6 class syntax which is how all other classes should be rewritten moving forward
 */
 'use strict';
 class Track{

@@ -218,7 +218,6 @@ var Tulip = Class({
   },
 
   redrawExitAndEditor(angle,exitTrackType){
-    // TODO move functionality to track object
     this.activeEditors[1].destroy();
     this.redrawExit(angle,exitTrackType)
     this.activeEditors.splice(1,0,(new TrackEditor(this.canvas, this.exitTrack ,false, true, true)));
@@ -231,7 +230,9 @@ var Tulip = Class({
 
   removeLastTrack: function(){
     var track = this.tracks.pop()
-    this.canvas.remove(track);
+    for(i = 0; i < track.paths.length; i++) {
+      this.canvas.remove(track.paths[i]);
+    }
     for(i = 0; i < this.activeEditors.length; i++) {
       if(this.activeEditors[i].track == track){
         this.activeEditors[i].destroy();
