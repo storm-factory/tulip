@@ -246,7 +246,7 @@ class ExitTrack extends Track {
 }
 
 class AddedTrack extends Track {
-  constructor(angle,type, canvas,objects=null){
+  constructor(angle,type,canvas,objects=null){
     super();
     if(objects){
       Track.disableDefaults(objects.track[0])

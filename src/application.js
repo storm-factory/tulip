@@ -136,6 +136,7 @@ var App = Class({
       // Request documents directory path from node
       this.ipc.send('get-documents-path');
     } else {
+      this.roadbook.finishWaypointEdit();
       this.fs.writeFile(this.roadbook.filePath, JSON.stringify(this.roadbook.statefulJSON(), null, 2), function (err) {});
     }
   },

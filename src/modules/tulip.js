@@ -62,10 +62,7 @@ var Tulip = Class({
   },
 
   initTracks: function(trackArray){
-    // this.tracks = trackArray;
     for(i=0;i<trackArray.length;i++){
-      // Track.disableDefaults(null,this.tracks[i])
-      console.log(trackArray[i]);
       this.tracks.push(new AddedTrack(null,null,null,{track: [trackArray[i]]}))
     }
   },
@@ -105,37 +102,31 @@ var Tulip = Class({
   */
   // NOTE this is going to have to handle legacy data structure and translate it into new style
   buildFromJson: function(json){
-
-    this.exitTrackUneditedPath = json.exitTrackUneditedPath !== undefined ? json.exitTrackUneditedPath : true;
+    this.exitTrackEdited = json.exitTrackEdited !== undefined ? json.exitTrackEdited : false;
     var _this = this;
     var numTracks = json.tracks.length;
-    // build a propperly formatted json string to import
-
-    var json = {
-      "objects": [json.entry.point, json.entry.path, json.exit.path, json.exit.point].concat(json.tracks).concat(json.glyphs.reverse()),
-    };
-    var obs = [];
-
-    this.canvas.loadFromJSON(json, this.canvas.renderAll.bind(this.canvas), function(o, object) {
-      obs.push(object);
-      if(object.type == "image"){
-          //if the object is an image add it to the glyphs array
-          _this.glyphs.push(object);
-      }
-    });
-
-    // TODO because the below are each requiring their own comment section means they could refactor into their own functions
     /*
       Default Tracks
       // NOTE this will handle legacy track structure but they need to be converted
     */
-    // TODO check to see if we have an entry track and if it's a group.
-    if(obs[1].type == "path" && obs[0].type == "circle" && obs[3].type == "triangle" && obs[2].type == "path"){
+    if(json.entry.path && json.exit.path){
       console.log("old style");
+      // build a propperly formatted json string to import
+
+      var json = {
+        "objects": [json.entry.point, json.entry.path, json.exit.path, json.exit.point].concat(json.tracks).concat(json.glyphs.reverse()),
+      };
+      var obs = [];
+      this.canvas.loadFromJSON(json, this.canvas.renderAll.bind(this.canvas), function(o, object) {
+        obs.push(object);
+        if(object.type == "image"){
+            //if the object is an image add it to the glyphs array
+            _this.glyphs.push(object);
+        }
+      });
       // TODO move this to track object
       var objects = {origin: obs[0], paths: [obs[1]]};
       this.entryTrack = new EntryTrack(null,null,objects);
-
 
       var objects = {end: obs[3], paths: [obs[2]]};
       this.exitTrack = new ExitTrack(null,null,null,objects);
@@ -148,7 +139,60 @@ var Tulip = Class({
         this.initTracks(tracks);
       }
     }else {
-      console.log("new style");
+
+      // entry track
+      var paths = [];
+      for(var i =0;i<json.entry.paths.length;i++){
+        var path = new fabric.Path(json.entry.paths[i].path, json.entry.paths[i]);
+        Track.disableDefaults(path);
+        this.canvas.add(path);
+        paths.push(path)
+      }
+      var point = new fabric.Circle(json.entry.point)
+      this.canvas.add(point);
+      this.entryTrack = new EntryTrack(null,null,{origin: point, paths: paths});
+      // exit track
+      paths = [];
+      for(var i =0;i<json.exit.paths.length;i++){
+        var path = new fabric.Path(json.exit.paths[i].path, json.exit.paths[i]);
+        Track.disableDefaults(path);
+        this.canvas.add(path);
+        paths.push(path)
+      }
+      var point = new fabric.Triangle(json.exit.point)
+      this.canvas.add(point);
+      this.exitTrack = new ExitTrack(null,null,null,{end: point, paths: paths});
+      //added tracks
+      this.buildAddedTracksFromJson(json.tracks)
+      // glyphs
+
+      // var json = {
+      //   // "objects": [json.entry.point].concat(json.entry.paths).concat(json.exit.paths).concat([json.exit.point]).concat(tracks).concat(json.glyphs.reverse()),
+      //   "objects": json.glyphs.reverse()
+      // };
+      // var obs = [];
+      // this.canvas.loadFromJSON(json, this.canvas.renderAll.bind(this.canvas), function(o, object) {
+      //   obs.push(object);
+      //   if(object.type == "image"){
+      //       //if the object is an image add it to the glyphs array
+      //       _this.glyphs.push(object);
+      //   }
+      // });
+      // console.log(obs);
+    }
+  },
+
+  buildAddedTracksFromJson(tracks){
+    for(var i=0;i<tracks.length;i++){
+      var paths = []
+      for(var j=0;j<tracks[i].paths.length;j++){
+        var path = new fabric.Path(tracks[i].paths[j].path, tracks[i].paths[j]);
+        Track.disableDefaults(path);
+        this.canvas.add(path);
+        paths.push(path);
+      }
+      var track = new AddedTrack(null,null,this.canvas,{track: paths});
+      this.tracks.push(track);
     }
   },
 
@@ -204,6 +248,11 @@ var Tulip = Class({
     for(var i = 0; i < this.activeEditors.length; i++) {
       this.activeEditors[i].destroy();
     }
+    delete this.entryTrack.editor
+    delete this.exitTrack.editor
+    for(var i=0;i<this.tracks.length;i++){
+      delete this.tracks[i].editor
+    }
     this.activeEditors = [];
     // remove controls from glyphs and update the canvas' visual state
     this.canvas.deactivateAll().renderAll();
@@ -246,13 +295,15 @@ var Tulip = Class({
   serialize: function(){
     var json = {
       entry: {
-        object: this.entryTrack
+        point: this.entryTrack.origin,
+        paths: this.entryTrack.paths
       },
-      exitTrackUnedited: this.exitTrackUnedited,
+      exitTrackEdited: this.exitTrackEdited,
       exit: {
-        object: this.exitTrack
+        point: this.exitTrack.end,
+        paths: this.exitTrack.paths,
       },
-      tracks: this.tracks,
+      tracks: this.serializeTracks(),
       glyphs: this.serializeGlyphs(),
     };
     return json;
@@ -267,6 +318,16 @@ var Tulip = Class({
       glyphsJson.push(json);
     }
     return glyphsJson;
+  },
+
+  serializeTracks: function(){
+    var tracksJson = [];
+    // NOTE not sure, but again here the for loop doesn't error out like the for each
+    for(track of this.tracks) {
+      var json = {paths: track.paths};
+      tracksJson.push(json);
+    }
+    return tracksJson;
   },
 
   toPNG: function(){
