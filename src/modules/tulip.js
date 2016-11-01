@@ -139,8 +139,6 @@ var Tulip = Class({
         this.initTracks(tracks);
       }
     }else {
-
-      // entry track
       var paths = [];
       for(var i =0;i<json.entry.paths.length;i++){
         var path = new fabric.Path(json.entry.paths[i].path, json.entry.paths[i]);
@@ -164,21 +162,16 @@ var Tulip = Class({
       this.exitTrack = new ExitTrack(null,null,null,{end: point, paths: paths});
       //added tracks
       this.buildAddedTracksFromJson(json.tracks)
-      // glyphs
-
-      // var json = {
-      //   // "objects": [json.entry.point].concat(json.entry.paths).concat(json.exit.paths).concat([json.exit.point]).concat(tracks).concat(json.glyphs.reverse()),
-      //   "objects": json.glyphs.reverse()
-      // };
-      // var obs = [];
-      // this.canvas.loadFromJSON(json, this.canvas.renderAll.bind(this.canvas), function(o, object) {
-      //   obs.push(object);
-      //   if(object.type == "image"){
-      //       //if the object is an image add it to the glyphs array
-      //       _this.glyphs.push(object);
-      //   }
-      // });
-      // console.log(obs);
+      // glyphs NOTE images like for..of loops but not for loops
+      var glyphs = json.glyphs.reverse();
+      for(glyph of glyphs){
+        if(glyph !== undefined){
+          fabric.Image.fromObject(glyph, function(oImg) {
+            _this.canvas.add(oImg);
+            _this.glyphs.push(oImg);
+          });
+        }
+      }
     }
   },
 
