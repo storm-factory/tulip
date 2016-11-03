@@ -139,40 +139,45 @@ var Tulip = Class({
         this.initTracks(tracks);
       }
     }else {
-      var paths = [];
-      for(var i =0;i<json.entry.paths.length;i++){
-        var path = new fabric.Path(json.entry.paths[i].path, json.entry.paths[i]);
-        Track.disableDefaults(path);
-        this.canvas.add(path);
-        paths.push(path)
-      }
-      var point = new fabric.Circle(json.entry.point)
-      this.canvas.add(point);
-      this.entryTrack = new EntryTrack(null,null,{origin: point, paths: paths});
-      // exit track
-      paths = [];
-      for(var i =0;i<json.exit.paths.length;i++){
-        var path = new fabric.Path(json.exit.paths[i].path, json.exit.paths[i]);
-        Track.disableDefaults(path);
-        this.canvas.add(path);
-        paths.push(path)
-      }
-      var point = new fabric.Triangle(json.exit.point)
-      this.canvas.add(point);
-      this.exitTrack = new ExitTrack(null,null,null,{end: point, paths: paths});
-      //added tracks
-      this.buildAddedTracksFromJson(json.tracks)
-      // glyphs NOTE images like for..of loops but not for loops
-      var glyphs = json.glyphs.reverse();
-      for(glyph of glyphs){
-        if(glyph !== undefined){
-          fabric.Image.fromObject(glyph, function(oImg) {
-            _this.canvas.add(oImg);
-            _this.glyphs.push(oImg);
-          });
+      // we load the glyphs from JSON to avoid race conditions with asyncronius image loading
+      this.canvas.loadFromJSON({"objects": json.glyphs.reverse()}, function(){
+        _this.canvas.renderAll();
+        //render the canvas then load the tracks after all images have loaded to make sure things render nice
+        _this.buildEntryTrackFromJson(json.entry);
+        _this.buildExitTrackFromJson(json.exit);
+        _this.buildAddedTracksFromJson(json.tracks);
+      }, function(o, object) {
+        if(object.type == "image"){
+            //if the object is an image add it to the glyphs array
+            _this.glyphs.push(object);
         }
-      }
+      });
     }
+  },
+  buildEntryTrackFromJson(entry){
+    var paths = [];
+    for(var i =0;i<entry.paths.length;i++){
+      var path = new fabric.Path(entry.paths[i].path, entry.paths[i]);
+      Track.disableDefaults(path);
+      this.canvas.add(path);
+      paths.push(path)
+    }
+    var point = new fabric.Circle(entry.point)
+    this.canvas.add(point);
+    this.entryTrack = new EntryTrack(null,null,{origin: point, paths: paths});
+  },
+
+  buildExitTrackFromJson(exit){
+    paths = [];
+    for(var i =0;i<exit.paths.length;i++){
+      var path = new fabric.Path(exit.paths[i].path, exit.paths[i]);
+      Track.disableDefaults(path);
+      this.canvas.add(path);
+      paths.push(path)
+    }
+    var point = new fabric.Triangle(exit.point)
+    this.canvas.add(point);
+    this.exitTrack = new ExitTrack(null,null,null,{end: point, paths: paths});
   },
 
   buildAddedTracksFromJson(tracks){
