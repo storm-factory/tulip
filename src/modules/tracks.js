@@ -149,6 +149,39 @@ class Track{
                                     hasBorders: false,
                                     selectable:false,
                                   }];
+    this.types.dcw = [{
+                                    fill: '',
+                                    stroke: '#000',
+                                    strokeWidth: 10,
+                                    strokeDashArray: [],
+                                    hasControls: false,
+                                    lockMovementX: true,
+                                    lockMovementY: true,
+                                    hasBorders: false,
+                                    selectable:false,
+                                  },
+                                  {
+                                    fill: '',
+                                    stroke: '#fff',
+                                    strokeWidth: 8,
+                                    strokeDashArray: [],
+                                    hasControls: false,
+                                    lockMovementX: true,
+                                    lockMovementY: true,
+                                    hasBorders: false,
+                                    selectable:false,
+                                  },
+                                  {
+                                    fill: '',
+                                    stroke: '#000',
+                                    strokeWidth: 2,
+                                    strokeDashArray: [],
+                                    hasControls: false,
+                                    lockMovementX: true,
+                                    lockMovementY: true,
+                                    hasBorders: false,
+                                    selectable:false,
+                                  }];
   }
 
   changeType(type,canvas){

@@ -112,7 +112,6 @@ var Tulip = Class({
     if(json.entry.path && json.exit.path){
       console.log("old style");
       // build a propperly formatted json string to import
-
       var json = {
         "objects": [json.entry.point, json.entry.path, json.exit.path, json.exit.point].concat(json.tracks).concat(json.glyphs.reverse()),
       };
@@ -124,7 +123,6 @@ var Tulip = Class({
             _this.glyphs.push(object);
         }
       });
-      // TODO move this to track object
       var objects = {origin: obs[0], paths: [obs[1]]};
       this.entryTrack = new EntryTrack(null,null,objects);
 
@@ -155,26 +153,14 @@ var Tulip = Class({
     }
   },
   buildEntryTrackFromJson(entry){
-    var paths = [];
-    for(var i =0;i<entry.paths.length;i++){
-      var path = new fabric.Path(entry.paths[i].path, entry.paths[i]);
-      Track.disableDefaults(path);
-      this.canvas.add(path);
-      paths.push(path)
-    }
+    var paths = this.buildPaths(entry.paths);
     var point = new fabric.Circle(entry.point)
     this.canvas.add(point);
     this.entryTrack = new EntryTrack(null,null,{origin: point, paths: paths});
   },
 
   buildExitTrackFromJson(exit){
-    paths = [];
-    for(var i =0;i<exit.paths.length;i++){
-      var path = new fabric.Path(exit.paths[i].path, exit.paths[i]);
-      Track.disableDefaults(path);
-      this.canvas.add(path);
-      paths.push(path)
-    }
+    var paths = this.buildPaths(exit.paths);
     var point = new fabric.Triangle(exit.point)
     this.canvas.add(point);
     this.exitTrack = new ExitTrack(null,null,null,{end: point, paths: paths});
@@ -182,16 +168,21 @@ var Tulip = Class({
 
   buildAddedTracksFromJson(tracks){
     for(var i=0;i<tracks.length;i++){
-      var paths = []
-      for(var j=0;j<tracks[i].paths.length;j++){
-        var path = new fabric.Path(tracks[i].paths[j].path, tracks[i].paths[j]);
-        Track.disableDefaults(path);
-        this.canvas.add(path);
-        paths.push(path);
-      }
+      var paths = this.buildPaths(tracks[i].paths);
       var track = new AddedTrack(null,null,this.canvas,{track: paths});
       this.tracks.push(track);
     }
+  },
+
+  buildPaths(array){
+    var paths = [];
+    for(var i =0;i<array.length;i++){
+      var path = new fabric.Path(array[i].path, array[i]);
+      Track.disableDefaults(path);
+      this.canvas.add(path);
+      paths.push(path)
+    }
+    return paths;
   },
 
   beginEdit: function() {
