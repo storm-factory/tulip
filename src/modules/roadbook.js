@@ -328,7 +328,6 @@ var Roadbook = Class({
           heading: points[i].waypoint.exactHeading(),
           notes: {
             text: points[i].waypoint.noteHTML(),
-            glyphs: points[i].waypoint.noteGlyphs(), //TODO need to convert paths into actual file contents
           },
           tulip: points[i].waypoint.tulipPNG(),
         }

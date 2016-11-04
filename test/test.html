@@ -238,17 +238,12 @@
         </div>
         <div class='waypoint-note'>
           <!--  render note glyph template-->
-          <div class="glyph-container" data-bind="template: { name: 'note-glyph-template', foreach: noteGlyphs }"></div>
           <p data-bind="html: noteHTML"></p>
           <div class='heading' >
             <label>CAP </label><span data-bind="text: heading"></span>
           </div>
         </div>
       </div>
-    </script>
-    <!-- note glyph template-->
-    <script type="text/html" id="note-glyph-template">
-      <img data-bind="attr: { src: src}">
     </script>
   </div>
 </body>

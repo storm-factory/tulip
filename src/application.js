@@ -103,11 +103,6 @@ var App = Class({
     });
   },
 
-  // NOTE: this is just to avoid breaking changes for v1.2b, it should come out in the next release
-  fixGlyphPaths: function(path){
-    return path.replace(/\/features|orga|details|tracks\//, 'glyphs')
-  },
-
   exportGPX: function(callback){
     var gpx = this.io.exportGPX();
     var filename = this.roadbook.filePath.replace('tlp','gpx');
@@ -141,6 +136,7 @@ var App = Class({
       // Request documents directory path from node
       this.ipc.send('get-documents-path');
     } else {
+      this.roadbook.finishWaypointEdit();
       this.fs.writeFile(this.roadbook.filePath, JSON.stringify(this.roadbook.statefulJSON(), null, 2), function (err) {});
     }
   },
@@ -375,18 +371,30 @@ var App = Class({
         _this.roadbook.changeEditingWaypointAdded('track')
       }else if('road-added' == $(this).attr('id')){
         _this.roadbook.changeEditingWaypointAdded('road')
+      }else if('main-road-added' == $(this).attr('id')){
+        _this.roadbook.changeEditingWaypointAdded('mainRoad')
+      }else if('dcw-added' == $(this).attr('id')){
+        _this.roadbook.changeEditingWaypointAdded('dcw')
       }else if('off-piste-entry' == $(this).attr('id')){
         _this.roadbook.changeEditingWaypointEntry('offPiste')
       }else if('track-entry' == $(this).attr('id')){
         _this.roadbook.changeEditingWaypointEntry('track')
       }else if('road-entry' == $(this).attr('id')){
         _this.roadbook.changeEditingWaypointEntry('road')
+      }else if('main-road-entry' == $(this).attr('id')){
+        _this.roadbook.changeEditingWaypointEntry('mainRoad')
+      }else if('dcw-entry' == $(this).attr('id')){
+        _this.roadbook.changeEditingWaypointEntry('dcw')
       }else if('off-piste-exit' == $(this).attr('id')){
         _this.roadbook.changeEditingWaypointExit('offPiste')
       }else if('track-exit' == $(this).attr('id')){
         _this.roadbook.changeEditingWaypointExit('track')
       }else if('road-exit' == $(this).attr('id')){
         _this.roadbook.changeEditingWaypointExit('road')
+      }else if('main-road-exit' == $(this).attr('id')){
+        _this.roadbook.changeEditingWaypointExit('mainRoad')
+      }else if('dcw-exit' == $(this).attr('id')){
+        _this.roadbook.changeEditingWaypointExit('dcw')
       }
       $('#track-selection-modal').foundation('reveal', 'close');
     });
