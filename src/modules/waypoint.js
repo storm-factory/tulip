@@ -31,6 +31,9 @@ var Waypoint = Class({
     this.entryTrackType = wptJson.entryTrackType == undefined ? 'track' : wptJson.entryTrackType;
     this.exitTrackType = wptJson.exitTrackType == undefined ? 'track' : wptJson.exitTrackType;
 
+    // TODO get notification from json
+    this.notification = null
+
     // waypoints don't get any note info when they are added via UI so intialize them to blank
     var text = wptJson.notes == undefined ? '' : wptJson.notes.text;
     this.noteHTML = ko.observable(text);
@@ -49,6 +52,25 @@ var Waypoint = Class({
         _this.element = $(element).parents('.waypoint');
       }
     };
+  },
+
+  addWpm(){
+    console.log("add wpm");
+    this.notification = new Notification("rallyBlitzWPM");
+    console.log(this.notification);
+    app.mapEditor.addWaypointBubble(this.routePointIndex, this.notification.bubble)
+  },
+
+  removeWpm(){
+    this.notification = null;
+  },
+
+  addSafety(){
+    this.notification = new Notification("rallyBlitzSafety");
+  },
+
+  removeSafety(){
+    this.notification = null;
   },
 
   changeAddedTrackType(type){

@@ -106,6 +106,21 @@ var MapEditor = Class({
                     });
   },
 
+  waypointBubble: function(radius,center){
+    console.log(radius);
+    console.log(center);
+    return new google.maps.Circle({
+            strokeColor: '#008CBA',
+            strokeOpacity: 0.5,
+            strokeWeight: 2,
+            fillColor: '#008CBA',
+            fillOpacity: 0.2,
+            map: this.map,
+            center: center,
+            radius: radius
+          });
+  },
+
   /*
     Adds a point to the route path points array for manangement
     Since route path points is an MVCArray bound to the route path
@@ -176,13 +191,21 @@ var MapEditor = Class({
     Returns distance options so a new roadbook waypoint can be built from it.
     The reason we don't just do that here is that it allows the waypoint generation
     workflow to be more generalized
-    NOTE this function does too many things, it should just change the icon, and the opts part should be another function (if that is even needed as updateRoute basically handles it)
   */
   addWaypoint: function(marker) {
     //update the waypoint marker's icon
     marker.setIcon(this.waypointIcon());
     // return point geoData so a roadbook waypoint can be created
     return this.getWaypointGeodata(marker);
+  },
+  /*
+    Add a bubble to a marker
+    NOTE not sure if this is exactly how we want to do things but we are in the crawl phase.
+  */
+  addWaypointBubble: function(routePointIndex,radius) {
+    var marker = this.routeMarkers[routePointIndex];
+    var bubble = this.waypointBubble(radius, marker.getPosition());
+    marker.bubble = bubble;
   },
 
   getWaypointGeodata: function(marker){

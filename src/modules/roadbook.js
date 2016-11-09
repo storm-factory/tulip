@@ -121,6 +121,34 @@ var Roadbook = Class({
     }
   },
 
+
+  /*
+    Here we check the note section for WPM glyphs, !!! glyphs, and eventually speed zone glyphs
+    so that we can capture data for rally blitz or rally comp exports
+  */
+  checkNoteForExportables(waypoint, noteHTML){
+    var glyphs = $(noteHTML).find("img[src*='waypoint-masked']", "img[src*='danger-3']");
+    if(glyphs.length){
+    for(var i=0;i<glyphs.length;i++){
+      //toggle wpm
+      if($(glyphs[i]).attr('src').includes("waypoint-masked")){
+        this.currentlyEditingWaypoint.addWpm();
+      }else {
+        this.currentlyEditingWaypoint.removeWpm();
+      }
+      //toggle danger
+      if($(glyphs[i]).attr('src').includes("danger-3")){
+        this.currentlyEditingWaypoint.addSafety();
+      }else {
+        this.currentlyEditingWaypoint.removeSafety();
+      }
+    }}else{
+      this.currentlyEditingWaypoint.removeWpm();
+      this.currentlyEditingWaypoint.removeSafety();
+    }
+
+  },
+
   deleteWaypoint: function(wptId){
     this.finishWaypointEdit();
     this.waypoints.splice(wptId - 1,1);
@@ -185,7 +213,7 @@ var Roadbook = Class({
     this.noteTextEditor.on('text-change', function() {
       $('#note-editor div.ql-editor img').removeClass('resizable');
       $('#note-glyph-range').val(1);
-      app.glyphControls.bindNoteGlypheResizable();
+      app.glyphControls.bindNoteGlyphResizable();
     });
   },
 
@@ -208,7 +236,7 @@ var Roadbook = Class({
       $('#save-roadbook').removeClass('secondary');
       this.currentlyEditingWaypoint = waypoint;
       this.noteTextEditor.setHTML(waypoint.noteHTML());
-      app.glyphControls.bindNoteGlypheResizable();
+      app.glyphControls.bindNoteGlyphResizable();
       var latLng = new google.maps.LatLng(waypoint.lat(), waypoint.lng());
       app.setMapCenter(latLng);
       if(app.getMapZoom() < 18){
@@ -236,6 +264,7 @@ var Roadbook = Class({
       $('#roadbook').css('padding-bottom', '150%');
       $('#roadbook').find('.roadbook-info').show();
       $('#roadbook').scrollTop(this.currentlyEditingWaypoint.element.position().top - 80)
+      this.checkNoteForExportables(this.currentlyEditingWaypoint,this.noteTextEditor.getHTML());
       this.currentlyEditingWaypoint.noteHTML(this.noteTextEditor.getHTML());
       this.currentlyEditingWaypoint.tulip.finishEdit();
       this.currentlyEditingWaypoint.tulip.finishRemove();

@@ -34,7 +34,7 @@ var Io = Class({
     var trackPoints = "<trk><trkseg>";
     // TODO abstract this to the app
     var points = app.mapEditor.routeMarkers;
-    var wptCount = 0;
+    var wptCount = 1;
     for(var i=0;i<points.length;i++){
       if(points[i].waypoint !== undefined){
         var waypoint = "<wpt lat='" + points[i].getPosition().lat() + "' lon='" + points[i].getPosition().lng() + "'><name>" + wptCount + "</name></wpt>";

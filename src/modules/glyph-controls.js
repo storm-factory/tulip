@@ -103,7 +103,7 @@ var GlyphControls = Class({
     });
   },
 
-  bindNoteGlypheResizable: function(){
+  bindNoteGlyphResizable: function(){
     $('#note-editor div.ql-editor img').unbind();
     $('#note-editor div.ql-editor img').click(function(){
       var size = $(this).attr('class');
@@ -124,7 +124,7 @@ var GlyphControls = Class({
 
     if(this.addToNote){
       app.roadbook.noteTextEditor.insertEmbed(app.roadbook.noteTextEditor.getLength(),'image',src);
-      this.bindNoteGlypheResizable();
+      this.bindNoteGlyphResizable();
     } else {
       app.roadbook.currentlyEditingWaypoint.tulip.addGlyph(app.glyphPlacementPosition,src);
     }
