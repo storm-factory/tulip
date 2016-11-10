@@ -32,7 +32,7 @@ var Waypoint = Class({
     this.exitTrackType = wptJson.exitTrackType == undefined ? 'track' : wptJson.exitTrackType;
 
     // TODO get notification from json
-    this.notification = null
+    this.notification = null;
 
     // waypoints don't get any note info when they are added via UI so intialize them to blank
     var text = wptJson.notes == undefined ? '' : wptJson.notes.text;
@@ -55,14 +55,18 @@ var Waypoint = Class({
   },
 
   addWpm(){
-    console.log("add wpm");
-    this.notification = new Notification("rallyBlitzWPM");
     console.log(this.notification);
-    app.mapEditor.addWaypointBubble(this.routePointIndex, this.notification.bubble)
+    if(this.notification == null){
+      this.notification = new Notification("rallyBlitzWPM");
+      app.mapEditor.addWaypointBubble(this.routePointIndex, this.notification.bubble)
+      console.log(this.notification);
+    }
   },
 
   removeWpm(){
+    console.log("removeWpm");
     this.notification = null;
+    app.mapEditor.deleteWaypointBubble(this.routePointIndex);
   },
 
   addSafety(){

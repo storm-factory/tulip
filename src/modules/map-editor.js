@@ -107,8 +107,6 @@ var MapEditor = Class({
   },
 
   waypointBubble: function(radius,center){
-    console.log(radius);
-    console.log(center);
     return new google.maps.Circle({
             strokeColor: '#008CBA',
             strokeOpacity: 0.5,
@@ -293,17 +291,18 @@ var MapEditor = Class({
     Removes a point or waypoint from the route
   */
   deletePoint: function(marker){
-    var vertexIndex = marker.routePointIndex;
+    var pointIndex = marker.routePointIndex;
+    this.deleteWaypointBubble(pointIndex);
     marker.setMap(null);
     //remove the point from our points array
-    this.routePoints.removeAt(vertexIndex)
+    this.routePoints.removeAt(pointIndex)
     //remove the marker from our markers array
-    this.routeMarkers.splice(vertexIndex,1);
+    this.routeMarkers.splice(pointIndex,1);
     /*
-      Decrement the vertexIndex of each point on the route after the point being
+      Decrement the pointIndex of each point on the route after the point being
       removed by one.
     */
-    this.decrementRouteVertexIndecies(vertexIndex);
+    this.decrementRouteVertexIndecies(pointIndex);
 
   },
 
@@ -312,7 +311,14 @@ var MapEditor = Class({
     app.roadbook.deleteWaypoint(marker.waypoint.id);
     //update the point's icon and remove its waypoint object
     marker.setIcon(this.vertexIcon());
+    this.deleteWaypointBubble(marker.routePointIndex);
     marker.waypoint = null;
+  },
+
+  deleteWaypointBubble: function(routePointIndex){
+    if(this.routeMarkers[routePointIndex].bubble){
+      this.routeMarkers[routePointIndex].bubble.setMap(null);
+    }
   },
 
   computeDistanceBetweenPoints: function(beginMarkerRoutePointIndex, endMarkerRoutePointIndex){
@@ -480,6 +486,9 @@ var MapEditor = Class({
     */
     google.maps.event.addListener(marker, 'drag', function(evt) {
       _this.routePoints.setAt(this.routePointIndex, evt.latLng);
+      if(this.bubble){
+        this.bubble.setCenter(evt.latLng);
+      }
     });
 
     google.maps.event.addListener(marker, 'dragend', function(evt) {
