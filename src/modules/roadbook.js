@@ -127,22 +127,25 @@ var Roadbook = Class({
     so that we can capture data for rally blitz or rally comp exports
   */
   checkNoteForExportables(waypoint, noteHTML){
-    var glyphs = $(noteHTML).find("img[src*='waypoint-masked']", "img[src*='danger-3']");
+    var glyphs = $(noteHTML).find("img[src*='waypoint-masked'], img[src*='danger-3']");
+    console.log(glyphs);
     if(glyphs.length){
-    for(var i=0;i<glyphs.length;i++){
-      //toggle wpm
-      if($(glyphs[i]).attr('src').includes("waypoint-masked")){
-        this.currentlyEditingWaypoint.addWpm();
-      }else {
-        this.currentlyEditingWaypoint.removeWpm();
+      for(var i=0;i<glyphs.length;i++){
+        console.log($(glyphs[i]).attr('src'));
+        //toggle wpm
+        if($(glyphs[i]).attr('src').includes("waypoint-masked")){
+          this.currentlyEditingWaypoint.addWpm();
+        }else {
+          this.currentlyEditingWaypoint.removeWpm();
+        }
+        //toggle danger
+        if($(glyphs[i]).attr('src').includes("danger-3")){
+          this.currentlyEditingWaypoint.addSafety();
+        }else {
+          this.currentlyEditingWaypoint.removeSafety();
+        }
       }
-      //toggle danger
-      if($(glyphs[i]).attr('src').includes("danger-3")){
-        this.currentlyEditingWaypoint.addSafety();
-      }else {
-        this.currentlyEditingWaypoint.removeSafety();
-      }
-    }}else{
+    }else{
       this.currentlyEditingWaypoint.removeWpm();
       this.currentlyEditingWaypoint.removeSafety();
     }

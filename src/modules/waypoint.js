@@ -55,26 +55,32 @@ var Waypoint = Class({
   },
 
   addWpm(){
-    console.log(this.notification);
     if(this.notification == null){
       this.notification = new Notification("rallyBlitzWPM");
-      app.mapEditor.addWaypointBubble(this.routePointIndex, this.notification.bubble)
+      app.mapEditor.addWaypointBubble(this.routePointIndex, this.notification.bubble, this.notification.fill)
       console.log(this.notification);
     }
   },
 
   removeWpm(){
-    console.log("removeWpm");
-    this.notification = null;
-    app.mapEditor.deleteWaypointBubble(this.routePointIndex);
+    if(this.notification != null && this.notification.class == "wpm"){
+      this.notification = null;
+      app.mapEditor.deleteWaypointBubble(this.routePointIndex);
+    }
   },
 
   addSafety(){
-    this.notification = new Notification("rallyBlitzSafety");
+    if(this.notification == null){
+      this.notification = new Notification("rallyBlitzSafety");
+      app.mapEditor.addWaypointBubble(this.routePointIndex, this.notification.bubble, this.notification.fill)
+    }
   },
 
   removeSafety(){
-    this.notification = null;
+    if(this.notification != null && this.notification.class == "safety"){
+      this.notification = null;
+      app.mapEditor.deleteWaypointBubble(this.routePointIndex);
+    }
   },
 
   changeAddedTrackType(type){
@@ -104,9 +110,9 @@ var Waypoint = Class({
       this.exactHeading(geoData.angles.heading);
       this.tulip.changeExitAngle(geoData.angles.relativeAngle, this.exitTrackType);
     }
-    if(geoData.latLng){
-      this.lat(geoData.latLng.lat);
-      this.lng(geoData.latLng.lng);
+    if(geoData.lat && geoData.lng){
+      this.lat(geoData.lat);
+      this.lng(geoData.lng);
     }
     if(routePointIndex) {
       this.routePointIndex = routePointIndex

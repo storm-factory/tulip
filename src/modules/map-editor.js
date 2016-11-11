@@ -106,12 +106,12 @@ var MapEditor = Class({
                     });
   },
 
-  waypointBubble: function(radius,center){
+  waypointBubble: function(radius,center,fill){
     return new google.maps.Circle({
-            strokeColor: '#008CBA',
+            strokeColor: fill,
             strokeOpacity: 0.5,
             strokeWeight: 2,
-            fillColor: '#008CBA',
+            fillColor: fill,
             fillOpacity: 0.2,
             map: this.map,
             center: center,
@@ -200,9 +200,9 @@ var MapEditor = Class({
     Add a bubble to a marker
     NOTE not sure if this is exactly how we want to do things but we are in the crawl phase.
   */
-  addWaypointBubble: function(routePointIndex,radius) {
+  addWaypointBubble: function(routePointIndex,radius,fill) {
     var marker = this.routeMarkers[routePointIndex];
-    var bubble = this.waypointBubble(radius, marker.getPosition());
+    var bubble = this.waypointBubble(radius, marker.getPosition(), fill);
     marker.bubble = bubble;
   },
 
