@@ -128,10 +128,8 @@ var Roadbook = Class({
   */
   checkNoteForExportables(waypoint, noteHTML){
     var glyphs = $(noteHTML).find("img[src*='waypoint-masked'], img[src*='danger-3']");
-    console.log(glyphs);
     if(glyphs.length){
       for(var i=0;i<glyphs.length;i++){
-        console.log($(glyphs[i]).attr('src'));
         //toggle wpm
         if($(glyphs[i]).attr('src').includes("waypoint-masked")){
           this.currentlyEditingWaypoint.addWpm();
