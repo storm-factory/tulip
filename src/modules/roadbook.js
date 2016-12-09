@@ -81,6 +81,7 @@ var Roadbook = Class({
         opts.angles.relativeAngle = undefined;
 
         opts.notes = point.notes;
+        opts.notification = point.notification;
         routePoint.waypoint =  this.addWaypoint(opts);
       }
     }
@@ -210,10 +211,13 @@ var Roadbook = Class({
     this.noteTextEditor.addModule('toolbar', {
       container: '#note-toolbar'     // Selector for toolbar container
     });
-
+    var _this = this;
     this.noteTextEditor.on('text-change', function() {
       $('#note-editor div.ql-editor img').removeClass('resizable');
       $('#note-glyph-range').val(1);
+      if(_this.currentlyEditingWaypoint){
+        _this.checkNoteForExportables(_this.currentlyEditingWaypoint,_this.noteTextEditor.getHTML());
+      }
       app.glyphControls.bindNoteGlyphResizable();
     });
   },
@@ -265,7 +269,6 @@ var Roadbook = Class({
       $('#roadbook').css('padding-bottom', '150%');
       $('#roadbook').find('.roadbook-info').show();
       $('#roadbook').scrollTop(this.currentlyEditingWaypoint.element.position().top - 80)
-      this.checkNoteForExportables(this.currentlyEditingWaypoint,this.noteTextEditor.getHTML());
       this.currentlyEditingWaypoint.noteHTML(this.noteTextEditor.getHTML());
       this.currentlyEditingWaypoint.tulip.finishEdit();
       this.currentlyEditingWaypoint.tulip.finishRemove();
@@ -324,12 +327,12 @@ var Roadbook = Class({
           heading: points[i].waypoint ? points[i].waypoint.exactHeading() : null,
           entryTrackType: points[i].waypoint ? points[i].waypoint.entryTrackType : null,
           exitTrackType: points[i].waypoint ? points[i].waypoint.exitTrackType : null,
+          notification: points[i].waypoint && points[i].waypoint.notification  ? points[i].waypoint.notification : null,
           notes: {
             text: points[i].waypoint ? points[i].waypoint.noteHTML() : null,
           },
           tulipJson: points[i].waypoint ? points[i].waypoint.serializeTulip() : null,
         }
-
         roadbookJSON.waypoints.push(waypointJSON);
     }
     return roadbookJSON;
