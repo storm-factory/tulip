@@ -105,17 +105,20 @@ textarea.waypoint-palette{
 .waypoint-note p div img,
 #note-editor div.ql-editor img,
 #note-editor div.ql-editor img.normal {
-  width: 30%;
+  width: 55px;
+  height: 55px;
 }
 
 .waypoint-note p div img.large,
 #note-editor div.ql-editor img.large {
-  width: 40%;
+  width: 75px;
+  height: 75px;
 }
 
 .waypoint-note p div img.huge,
 #note-editor div.ql-editor img.huge {
-  width: 50%;
+  width: 95px;
+  height: 95px;
 }
 
 #roadbook {
@@ -195,6 +198,7 @@ textarea.waypoint-palette{
 #detail-glyphs li img,
 #orga-glyphs li img {
   width:100px;
+  height:100px;
 }
 
 #track-glyphs li.tab-title,

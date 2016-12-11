@@ -282,14 +282,15 @@ var Roadbook = Class({
     return true;
   },
 
-  finishNameDescEdit: function(){
-    if(this.editingNameDesc == true){
-      this.editingNameDesc = false;
-      $('#roadbook-desc, #roadbook-name').find('a').show('fast')
-      $('#roadbook-desc, #roadbook-name').find(':input').hide('fast');
-      return true;
-    }
-  },
+  // DEPRICATED?
+  // finishNameDescEdit: function(){
+  //   if(this.editingNameDesc == true){
+  //     this.editingNameDesc = false;
+  //     $('#roadbook-desc, #roadbook-name').find('a').show('fast')
+  //     $('#roadbook-desc, #roadbook-name').find(':input').hide('fast');
+  //     return true;
+  //   }
+  // },
 
   updateTotalDistance: function(){
     // this.finishWaypointEdit();

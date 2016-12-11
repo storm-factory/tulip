@@ -13,15 +13,16 @@
    id="Layer_1"
    x="0px"
    y="0px"
-   viewBox="0 0 250 250"
-   style="enable-background:new 0 0 250 250;"
+   viewBox="0 0 180 200"
    xml:space="preserve"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="keep-straight.svg"><metadata
-     id="metadata11"><rdf:RDF><cc:Work
+   sodipodi:docname="keep-straight.svg"
+   width="180"
+   height="200"><metadata
+     id="metadata15"><rdf:RDF><cc:Work
          rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
-     id="defs9" /><sodipodi:namedview
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+     id="defs13" /><sodipodi:namedview
      pagecolor="#ffffff"
      bordercolor="#666666"
      borderopacity="1"
@@ -30,26 +31,40 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1026"
-     inkscape:window-height="660"
-     id="namedview7"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     id="namedview11"
      showgrid="false"
-     inkscape:zoom="0.944"
-     inkscape:cx="3.1779661"
-     inkscape:cy="125"
-     inkscape:window-x="0"
-     inkscape:window-y="23"
-     inkscape:window-maximized="0"
-     inkscape:current-layer="Layer_1" /><style
+     inkscape:zoom="7.0666659"
+     inkscape:cx="90.000008"
+     inkscape:cy="100"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="text3344" /><style
      type="text/css"
      id="style3">
 	.st0{font-family:&quot;Arial Black&quot;, &quot;Arial Bold&quot;, Gadget, sans-serif;}
-	.st1{font-size:100px;}
-</style><text
-     class="st0 st1"
-     id="text5"
-     x="7.9333029"
-     y="178.84302"
-     style="font-size:160.21076965px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
-     transform="scale(0.97907712,1.02137)">TD</text>
-</svg>
+	.st1{font-size:118.4014px;}
+	
+		.st2{fill-rule:evenodd;clip-rule:evenodd;fill:none;stroke:#000000;stroke-width:18.9859;stroke-linecap:round;stroke-miterlimit:10;}
+</style><flowRoot
+     xml:space="preserve"
+     id="flowRoot3336"
+     style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Arial;font-style:normal;font-weight:900;font-size:40px;line-height:125%;letter-spacing:0px;word-spacing:0px;-inkscape-font-specification:'Arial, Heavy';font-stretch:normal;font-variant:normal;text-anchor:middle;text-align:center;writing-mode:lr"><flowRegion
+       id="flowRegion3338"><rect
+         id="rect3340"
+         width="142.58875"
+         height="86.720642"
+         x="17.510899"
+         y="69.919037" /></flowRegion><flowPara
+       id="flowPara3342" /></flowRoot><g
+     transform="scale(0.84076556,1.1893922)"
+     style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-size:140.94581604px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Heavy';text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     id="text3344"><path
+       d="m 5.9469644,33.630613 94.7667956,0 0,24.913274 -31.795398,0 0,75.978603 -31.176004,0 0,-75.978603 -31.7953936,0 0,-24.913274 z"
+       style=""
+       id="path3458" /><path
+       d="m 115.30385,33.630613 46.31667,0 q 13.69542,0 22.0916,3.716345 8.46501,3.716345 13.97071,10.667286 5.50569,6.950941 7.98326,16.172982 2.47756,9.222041 2.47756,19.54522 0,16.172982 -3.71634,25.119734 -3.64753,8.87794 -10.18554,14.9342 -6.53802,5.98745 -14.03953,7.98326 -10.25436,2.75285 -18.58172,2.75285 l -46.31667,0 0,-100.891877 z m 31.17601,22.848639 0,55.125778 7.63915,0 q 9.77261,0 13.90188,-2.13346 4.12927,-2.20227 6.46919,-7.57033 2.33992,-5.436872 2.33992,-17.549403 0,-16.035339 -5.23041,-21.953962 -5.23041,-5.918623 -17.34294,-5.918623 l -7.77679,0 z"
+       style=""
+       id="path3460" /></g></svg>

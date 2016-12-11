@@ -13,14 +13,15 @@
    id="Layer_1"
    x="0px"
    y="0px"
-   viewBox="0 0 250 250"
-   style="enable-background:new 0 0 250 250;"
+   viewBox="0 0 250 200"
    xml:space="preserve"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="bad.svg"><metadata
+   sodipodi:docname="bad.svg"
+   width="250"
+   height="200"><metadata
      id="metadata11"><rdf:RDF><cc:Work
          rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title /></cc:Work></rdf:RDF></metadata><defs
      id="defs9" /><sodipodi:namedview
      pagecolor="#ffffff"
      bordercolor="#666666"
@@ -30,26 +31,31 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1365"
-     inkscape:window-height="811"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
      id="namedview7"
      showgrid="false"
-     inkscape:zoom="0.944"
-     inkscape:cx="129.76695"
-     inkscape:cy="125"
-     inkscape:window-x="0"
-     inkscape:window-y="23"
-     inkscape:window-maximized="0"
-     inkscape:current-layer="Layer_1" /><style
+     inkscape:zoom="5.8916662"
+     inkscape:cx="125.00001"
+     inkscape:cy="100.00001"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="text5" /><style
      type="text/css"
      id="style3">
 	.st0{font-family:&quot;Arial Black&quot;, &quot;Arial Bold&quot;, Gadget, sans-serif;}
 	.st1{font-size:125px;}
-</style><text
-     transform="scale(0.92202015,1.084575)"
-     class="st0 st1"
-     id="text5"
-     x="0.56790143"
-     y="148.72845"
-     style="font-size:109.97463989px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif">MVS</text>
-</svg>
+</style><g
+     transform="scale(0.79643559,1.2555943)"
+     style="font-size:129.11082458px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
+     id="text5"><path
+       d="m 6.2779716,33.433479 37.5732674,0 14.499751,56.233816 14.436708,-56.233816 37.447182,0 0,92.420151 -23.325685,0 0,-70.481397 -18.093168,70.481397 -21.119202,0 -18.030125,-70.481397 0,70.481397 -23.3887284,0 0,-92.420151 z"
+       style="font-size:129.11082458px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
+       id="path3361" /><path
+       d="m 119.24994,33.433479 29.8821,0 20.80399,66.509727 20.48878,-66.509727 28.9995,0 -34.29507,92.420151 -30.95381,0 -34.92549,-92.420151 z"
+       style="font-size:129.11082458px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
+       id="path3363" /><path
+       d="m 223.77424,95.278069 27.17127,-1.702145 q 0.8826,6.619456 3.59342,10.086786 4.41297,5.61077 12.60848,5.61077 6.11511,0 9.39332,-2.83691 3.34124,-2.89995 3.34124,-6.682491 0,-3.593417 -3.15212,-6.430325 -3.15212,-2.836907 -14.62583,-5.358603 -18.78664,-4.223841 -26.79302,-11.221546 -8.06943,-6.997706 -8.06943,-17.840998 0,-7.123791 4.09776,-13.42803 4.1608,-6.367282 12.41935,-9.960699 8.3216,-3.656459 22.75831,-3.656459 17.71491,0 26.98214,6.619452 9.33027,6.556409 11.09546,20.930075 l -26.9191,1.57606 q -1.07172,-6.241197 -4.53905,-9.078105 -3.40429,-2.836908 -9.45636,-2.836908 -4.98035,0 -7.50205,2.143442 -2.52169,2.080399 -2.52169,5.106434 0,2.206483 2.0804,3.97167 2.01735,1.82823 9.58244,3.40429 18.72359,4.034713 26.79302,8.195511 8.13247,4.097756 11.78893,10.212868 3.7195,6.115112 3.7195,13.6802 0,8.888982 -4.91731,16.391022 -4.91731,7.50205 -13.74324,11.41067 -8.82594,3.84559 -22.25397,3.84559 -23.57785,0 -32.65596,-9.0781 -9.0781,-9.07811 -10.27591,-23.073521 z"
+       style="font-size:129.11082458px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
+       id="path3365" /></g></svg>

@@ -13,15 +13,16 @@
    id="Layer_1"
    x="0px"
    y="0px"
-   viewBox="0 0 250 250"
-   style="enable-background:new 0 0 250 250;"
+   viewBox="0 0 180 200"
    xml:space="preserve"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="on-the-right.svg"><metadata
-     id="metadata11"><rdf:RDF><cc:Work
+   sodipodi:docname="on-the-right.svg"
+   width="180"
+   height="200"><metadata
+     id="metadata15"><rdf:RDF><cc:Work
          rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
-     id="defs9" /><sodipodi:namedview
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title /></cc:Work></rdf:RDF></metadata><defs
+     id="defs13" /><sodipodi:namedview
      pagecolor="#ffffff"
      bordercolor="#666666"
      borderopacity="1"
@@ -30,23 +31,40 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="640"
-     inkscape:window-height="480"
-     id="namedview7"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     id="namedview11"
      showgrid="false"
-     inkscape:zoom="2.276"
-     inkscape:cx="125"
-     inkscape:cy="125"
-     inkscape:current-layer="Layer_1" /><style
+     inkscape:zoom="7.0666667"
+     inkscape:cx="89.999999"
+     inkscape:cy="99.999997"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="text3344" /><style
      type="text/css"
      id="style3">
 	.st0{font-family:&quot;Arial Black&quot;, &quot;Arial Bold&quot;, Gadget, sans-serif;}
-	.st1{font-size:125px;}
-</style><text
-     class="st0 st1"
-     id="text5"
-     x="6.346272"
-     y="177.08144"
-     style="font-size:158.50042725px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
-     transform="scale(0.97573837,1.0248649)">AD</text>
-</svg>
+	.st1{font-size:118.4014px;}
+	
+		.st2{fill-rule:evenodd;clip-rule:evenodd;fill:none;stroke:#000000;stroke-width:18.9859;stroke-linecap:round;stroke-miterlimit:10;}
+</style><flowRoot
+     xml:space="preserve"
+     id="flowRoot3336"
+     style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Arial;font-style:normal;font-weight:900;font-size:40px;line-height:125%;letter-spacing:0px;word-spacing:0px;-inkscape-font-specification:'Arial, Heavy';font-stretch:normal;font-variant:normal;text-anchor:middle;text-align:center;writing-mode:lr"><flowRegion
+       id="flowRegion3338"><rect
+         id="rect3340"
+         width="142.58875"
+         height="86.720642"
+         x="17.510899"
+         y="69.919037" /></flowRegion><flowPara
+       id="flowPara3342" /></flowRoot><g
+     transform="scale(0.81916331,1.2207578)"
+     style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-size:137.32440186px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Heavy';text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     id="text3344"><path
+       d="m 76.509366,114.83932 -34.599312,0 -4.760758,16.22681 -31.0455067,0 36.9461647,-98.299595 33.124148,0 36.946168,98.299595 -31.783093,0 -4.827811,-16.22681 z M 70.139338,93.583543 59.276763,58.246649 48.481241,93.583543 l 21.658097,0 z"
+       style=""
+       id="path4798" /><path
+       d="m 123.17821,32.766535 45.12662,0 q 13.34353,0 21.52399,3.620859 8.24751,3.620858 13.61175,10.393204 5.36423,6.772346 7.77814,15.757439 2.4139,8.985092 2.4139,19.043032 0,15.757439 -3.62086,24.474321 -3.5538,8.64983 -9.92383,14.55048 -6.37003,5.83361 -13.6788,7.77814 -9.99088,2.68212 -18.10429,2.68212 l -45.12662,0 0,-98.299595 z m 30.37498,22.261573 0,53.709402 7.44287,0 q 9.52152,0 13.54469,-2.07865 4.02318,-2.14569 6.30298,-7.375818 2.2798,-5.297181 2.2798,-17.098497 0,-15.623333 -5.09602,-21.389885 -5.09603,-5.766552 -16.89734,-5.766552 l -7.57698,0 z"
+       style=""
+       id="path4800" /></g></svg>

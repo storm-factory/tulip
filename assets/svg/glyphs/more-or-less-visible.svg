@@ -13,14 +13,15 @@
    id="Layer_1"
    x="0px"
    y="0px"
-   viewBox="0 0 250 250"
-   style="enable-background:new 0 0 250 250;"
+   viewBox="0 0 180 200"
    xml:space="preserve"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="more-or-less-visible.svg"><metadata
+   sodipodi:docname="more-or-less-visible.svg"
+   width="180"
+   height="200"><metadata
      id="metadata15"><rdf:RDF><cc:Work
          rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title /></cc:Work></rdf:RDF></metadata><defs
      id="defs13" /><sodipodi:namedview
      pagecolor="#ffffff"
      bordercolor="#666666"
@@ -30,16 +31,16 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="711"
-     inkscape:window-height="480"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
      id="namedview11"
      showgrid="false"
-     inkscape:zoom="0.944"
-     inkscape:cx="129.76695"
-     inkscape:cy="125"
-     inkscape:window-x="0"
-     inkscape:window-y="23"
-     inkscape:window-maximized="0"
+     inkscape:zoom="7.0660788"
+     inkscape:cx="90.455761"
+     inkscape:cy="113.05561"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
      inkscape:current-layer="Layer_1" /><style
      type="text/css"
      id="style3">
@@ -47,18 +48,23 @@
 	.st1{font-size:118.4014px;}
 	
 		.st2{fill-rule:evenodd;clip-rule:evenodd;fill:none;stroke:#000000;stroke-width:18.9859;stroke-linecap:round;stroke-miterlimit:10;}
-</style><text
-     transform="matrix(1 0 0 1 21.3929 149.9529)"
-     class="st0 st1"
-     id="text5">+</text>
-<text
-     transform="scale(0.64056346,1.5611256)"
-     class="st0 st1"
-     id="text7"
-     x="42.6231"
-     y="93.11554"
-     style="font-size:184.83944702px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif">_</text>
-<polyline
-     class="st2"
-     points="109.8,99.3 140.6,188.7 174.6,99.3 230,99.3 "
-     id="polyline9" /></svg>
+</style><g
+     transform="matrix(1.0004582,0,0,0.999542,0,-20)"
+     style="font-size:120.08430481px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
+     id="text5"><path
+       d="m 13.993584,77.741687 22.457172,0 0,-22.574442 18.939078,0 0,22.574442 22.574442,0 0,18.997712 -22.574442,0 0,22.457171 -18.939078,0 0,-22.457171 -22.457172,0 0,-18.997712 z"
+       style="font-size:120.08430481px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
+       id="path3375"
+       inkscape:connector-curvature="0" /></g><g
+     transform="matrix(0.58495873,0,0,1.7095223,0,-6)"
+     style="font-size:213.80773926px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
+     id="text7"><path
+       d="m 23.933313,74.326745 109.409427,0 0,10.648627 -109.409427,0 0,-10.648627 z"
+       style="font-size:213.80773926px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
+       id="path3372"
+       inkscape:connector-curvature="0" /></g><path
+     style="clip-rule:evenodd;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:22.46506119;stroke-linecap:square;stroke-miterlimit:5;stroke-dasharray:none"
+     d="m 90.044098,38.26842 0.003,1.873455 18.448592,95.474185 12.82473,0.0581 17.3636,-97.259886 16.89846,-0.145834"
+     id="polyline9"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="cccccc" /></svg>

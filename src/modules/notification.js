@@ -9,25 +9,25 @@ class Notification{
 
   buildNotification(type){
     var types = {};
-    types.rallyBlitzWPM = {
+    types.wpm = {
         class: "wpm",
         fill: '#008CBA',
         bubble: 400,
-        aquisition: 20,
+        acquisition: 20,
     }
 
-    types.rallyBlitzSafety = {
-        class: "safety",
+    types.wps = {
+        class: "wps",
         fill: '#ff4200',
         bubble: 150,
-        aquisition: 20,
+        acquisition: 20,
     }
 
-    types.rallyBlitzSpeed = {
+    types.speed = {
         class: "speed",
         fill: '#ffba29',
         bubble: 200,
-        aquisition: 20,
+        acquisition: 20,
     }
 
     return types[type]

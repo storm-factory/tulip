@@ -13,14 +13,15 @@
    id="Layer_1"
    x="0px"
    y="0px"
-   viewBox="0 0 250 250"
-   style="enable-background:new 0 0 250 250;"
+   viewBox="0 0 250 200"
    xml:space="preserve"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="tight.svg"><metadata
+   sodipodi:docname="tight.svg"
+   width="250"
+   height="200"><metadata
      id="metadata11"><rdf:RDF><cc:Work
          rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title /></cc:Work></rdf:RDF></metadata><defs
      id="defs9" /><sodipodi:namedview
      pagecolor="#ffffff"
      bordercolor="#666666"
@@ -30,23 +31,71 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="640"
-     inkscape:window-height="480"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
      id="namedview7"
      showgrid="false"
-     inkscape:zoom="2.276"
-     inkscape:cx="89.850615"
-     inkscape:cy="125"
-     inkscape:current-layer="Layer_1" /><style
+     inkscape:zoom="5.8916666"
+     inkscape:cx="125"
+     inkscape:cy="100.00001"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="text5" /><style
      type="text/css"
      id="style3">
 	.st0{font-family:&quot;Arial Black&quot;, &quot;Arial Bold&quot;, Gadget, sans-serif;}
-	.st1{font-size:125px;}
-</style><text
+	.st1{font-size:75px;}
+</style><g
+     transform="scale(0.82202785,1.2165038)"
+     style="font-size:133.2596283px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
+     id="text5"><path
+       d="M 6.0825189,98.339685 34.126904,96.582844 q 0.910954,6.832156 3.708886,10.410906 4.554772,5.79107 13.013635,5.79107 6.311614,0 9.695159,-2.92807 3.448613,-2.99313 3.448613,-6.89722 0,-3.708891 -3.253409,-6.636959 Q 57.486379,93.394503 45.643971,90.791776 26.253654,86.432208 17.989995,79.20964 9.6612687,71.987073 9.6612687,60.795346 q 0,-7.352704 4.2294313,-13.859522 4.2945,-6.571886 12.818431,-10.280772 8.589,-3.773954 23.489613,-3.773954 18.284158,0 27.84918,6.832158 9.63009,6.767091 11.451999,21.602635 l -27.784112,1.626705 q -1.106159,-6.44175 -4.684909,-9.369818 -3.513681,-2.928068 -9.760226,-2.928068 -5.140387,0 -7.743114,2.212318 -2.602727,2.14725 -2.602727,5.270523 0,2.277386 2.14725,4.099295 2.082182,1.886977 9.890363,3.513681 19.325249,4.164364 27.653976,8.458864 8.393795,4.229431 12.167749,10.541044 3.839023,6.311614 3.839023,14.119795 0,9.17461 -5.075318,16.91773 -5.075318,7.74311 -14.184863,11.77734 -9.109545,3.96916 -22.969067,3.96916 -24.335498,0 -33.705316,-9.36982 Q 7.3188143,112.78482 6.0825189,98.339685 Z"
+       style="font-size:133.2596283px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
+       id="path3394" /><path
+       d="m 107.45874,34.507802 78.99277,0 0,20.36634 -49.45182,0 0,15.160885 45.87307,0 0,19.455385 -45.87307,0 0,18.804708 50.88332,0 0,21.60263 -80.42427,0 0,-95.389948 z"
+       style="font-size:133.2596283px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
+       id="path3396" /><path
+       d="m 204.21512,129.89775 0,-95.389948 49.12648,0 q 13.66431,0 20.88688,2.342454 7.22257,2.342455 11.6472,8.719136 4.42464,6.311614 4.42464,15.421158 0,7.938318 -3.38355,13.729386 -3.38354,5.726 -9.30474,9.304749 -3.77396,2.277387 -10.34584,3.773955 5.27052,1.756841 7.67804,3.513681 1.6267,1.171228 4.68491,5.01025 3.12327,3.839019 4.16436,5.921209 l 14.24993,27.65397 -33.3149,0 -15.7465,-29.15054 q -2.99314,-5.660934 -5.33559,-7.352707 -3.18834,-2.212318 -7.22257,-2.212318 l -2.60273,0 0,38.715565 -29.60602,0 z m 29.60602,-56.73945 12.42802,0 q 2.01712,0 7.80818,-1.301364 2.92807,-0.585613 4.74998,-2.993136 1.88698,-2.407523 1.88698,-5.530795 0,-4.619841 -2.92807,-7.092432 -2.92807,-2.47259 -10.99652,-2.47259 l -12.94857,0 0,19.390317 z"
+       style="font-size:133.2596283px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
+       id="path3398" /></g><text
+     transform="scale(0.79983082,1.2502644)"
      class="st0 st1"
-     id="text5"
-     x="7.1835251"
-     y="148.9046"
-     style="font-size:135.31095886px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
-     transform="scale(0.7844835,1.2747241)">SER</text>
-</svg>
+     x="5.0010576"
+     y="96.020195"
+     style="font-size:97.24591827px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
+     id="text3386" />
+<text
+     xml:space="preserve"
+     style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     x="83.726418"
+     y="71.75708"
+     id="text3370"
+     sodipodi:linespacing="125%"><tspan
+       sodipodi:role="line"
+       id="tspan3372"
+       x="83.726418"
+       y="71.75708" /></text>
+<text
+     xml:space="preserve"
+     style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     x="30.365566"
+     y="93.86792"
+     id="text3374"
+     sodipodi:linespacing="125%"><tspan
+       sodipodi:role="line"
+       id="tspan3376"
+       x="30.365566"
+       y="93.86792" /></text>
+<flowRoot
+     xml:space="preserve"
+     id="flowRoot3378"
+     style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     transform="translate(0,-50)"><flowRegion
+       id="flowRegion3380"><rect
+         id="rect3382"
+         width="115.27122"
+         height="155.66037"
+         x="53.066036"
+         y="38.915092" /></flowRegion><flowPara
+       id="flowPara3384" /></flowRoot></svg>

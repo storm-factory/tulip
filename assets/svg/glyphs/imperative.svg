@@ -13,14 +13,15 @@
    id="Layer_1"
    x="0px"
    y="0px"
-   viewBox="0 0 250 250"
-   style="enable-background:new 0 0 250 250;"
+   viewBox="0 0 250 200"
    xml:space="preserve"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="imperative.svg"><metadata
+   sodipodi:docname="imperative.svg"
+   width="250"
+   height="200"><metadata
      id="metadata11"><rdf:RDF><cc:Work
          rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title /></cc:Work></rdf:RDF></metadata><defs
      id="defs9" /><sodipodi:namedview
      pagecolor="#ffffff"
      bordercolor="#666666"
@@ -30,26 +31,71 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="711"
-     inkscape:window-height="480"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
      id="namedview7"
      showgrid="false"
-     inkscape:zoom="0.944"
-     inkscape:cx="133.3546"
-     inkscape:cy="125"
-     inkscape:window-x="0"
-     inkscape:window-y="23"
-     inkscape:window-maximized="0"
-     inkscape:current-layer="Layer_1" /><style
+     inkscape:zoom="5.8916666"
+     inkscape:cx="125"
+     inkscape:cy="100.00001"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="text5" /><style
      type="text/css"
      id="style3">
 	.st0{font-family:&quot;Arial Black&quot;, &quot;Arial Bold&quot;, Gadget, sans-serif;}
-	.st1{font-size:125px;}
-</style><text
+	.st1{font-size:75px;}
+</style><g
+     transform="scale(0.86133777,1.1609847)"
+     style="font-size:144.39453125px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
+     id="text5"><path
+       d="m 5.8049231,34.453503 32.0093349,0 0,103.360537 -32.0093349,0 0,-103.360537 z"
+       style="font-size:144.39453125px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
+       id="path3424" /><path
+       d="m 60.305398,34.453503 42.021062,0 16.21619,62.890587 16.14567,-62.890587 41.88006,0 0,103.360537 -26.08691,0 0,-78.824748 -20.23497,78.824748 -23.61922,0 -20.164474,-78.824748 0,78.824748 -26.157408,0 0,-103.360537 z"
+       style="font-size:144.39453125px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
+       id="path3426" /><path
+       d="m 196.73286,34.453503 53.09038,0 q 17.34426,0 25.94589,8.249101 8.67213,8.249102 8.67213,23.478213 0,15.652141 -9.44769,24.465284 -9.37718,8.813143 -28.69559,8.813143 l -17.48528,0 0,38.354796 -32.07984,0 0,-103.360537 z m 32.07984,44.065714 7.82607,0 q 9.23618,0 12.97295,-3.172732 3.73677,-3.243236 3.73677,-8.249102 0,-4.864854 -3.24323,-8.249101 -3.24324,-3.384247 -12.19739,-3.384247 l -9.09517,0 0,23.055182 z"
+       style="font-size:144.39453125px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
+       id="path3428" /></g><text
+     transform="scale(0.79983082,1.2502644)"
      class="st0 st1"
-     id="text5"
-     x="-2.3188047"
-     y="162.64586"
-     style="font-size:129.34317017px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
-     transform="scale(0.94522174,1.0579528)">IMP</text>
-</svg>
+     x="5.0010576"
+     y="96.020195"
+     style="font-size:97.24591827px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
+     id="text3386" />
+<text
+     xml:space="preserve"
+     style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     x="83.726418"
+     y="71.75708"
+     id="text3370"
+     sodipodi:linespacing="125%"><tspan
+       sodipodi:role="line"
+       id="tspan3372"
+       x="83.726418"
+       y="71.75708" /></text>
+<text
+     xml:space="preserve"
+     style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     x="30.365566"
+     y="93.86792"
+     id="text3374"
+     sodipodi:linespacing="125%"><tspan
+       sodipodi:role="line"
+       id="tspan3376"
+       x="30.365566"
+       y="93.86792" /></text>
+<flowRoot
+     xml:space="preserve"
+     id="flowRoot3378"
+     style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     transform="translate(0,-50)"><flowRegion
+       id="flowRegion3380"><rect
+         id="rect3382"
+         width="115.27122"
+         height="155.66037"
+         x="53.066036"
+         y="38.915092" /></flowRegion><flowPara
+       id="flowPara3384" /></flowRoot></svg>

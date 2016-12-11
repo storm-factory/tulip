@@ -292,7 +292,6 @@ var App = Class({
 
     $('#save-roadbook').click(function(e){
       e.preventDefault();
-      console.log(e);
       if(_this.canSave()){
         $(this).addClass('secondary');
         if(e.shiftKey){

@@ -13,14 +13,15 @@
    id="Layer_1"
    x="0px"
    y="0px"
-   viewBox="0 0 250 250"
-   style="enable-background:new 0 0 250 250;"
+   viewBox="0 0 250 200"
    xml:space="preserve"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="dry-river.svg"><metadata
+   sodipodi:docname="dry-river.svg"
+   width="250"
+   height="200"><metadata
      id="metadata11"><rdf:RDF><cc:Work
          rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title /></cc:Work></rdf:RDF></metadata><defs
      id="defs9" /><sodipodi:namedview
      pagecolor="#ffffff"
      bordercolor="#666666"
@@ -30,25 +31,32 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="711"
-     inkscape:window-height="480"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
      id="namedview7"
      showgrid="false"
-     inkscape:zoom="0.944"
-     inkscape:cx="129.76695"
-     inkscape:cy="125"
-     inkscape:window-x="0"
-     inkscape:window-y="23"
-     inkscape:window-maximized="0"
-     inkscape:current-layer="Layer_1" /><style
+     inkscape:zoom="5.8916668"
+     inkscape:cx="125"
+     inkscape:cy="99.999989"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="text5" /><style
      type="text/css"
      id="style3">
 	.st0{font-family:&quot;Arial Black&quot;, &quot;Arial Bold&quot;, Gadget, sans-serif;}
-	.st1{font-size:125px;}
-</style><text
-     class="st0 st1"
-     id="text5"
-     x="-2.2542372"
-     y="161.23729"
-     style="font-size:125px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif">RIO</text>
-</svg>
+	.st1{font-size:75px;}
+</style><g
+     transform="scale(0.87723608,1.139944)"
+     style="font-size:142.2094574px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
+     id="text5"><path
+       d="m 5.6997197,138.62183 0,-101.796422 52.4258493,0 q 14.582025,0 22.289666,2.499776 7.707642,2.499775 12.42944,9.30472 4.721799,6.735506 4.721799,16.456856 0,8.471462 -3.610787,14.651463 -3.610787,6.110562 -9.929665,9.929664 -4.027416,2.430337 -11.040675,4.027416 5.624495,1.874832 8.193709,3.749664 1.735955,1.249887 4.999551,5.346743 3.333034,4.09685 4.444046,6.31888 l 15.206967,29.51124 -35.552363,0 -16.804048,-31.10832 Q 50.279052,101.47238 47.779276,99.666989 44.376804,97.30609 40.071634,97.30609 l -2.777528,0 0,41.31574 -31.5943863,0 z m 31.5943863,-60.550124 13.262698,0 q 2.152585,0 8.332586,-1.388765 3.124719,-0.624943 5.068989,-3.194157 2.013708,-2.569214 2.013708,-5.902248 0,-4.930113 -3.124719,-7.568765 -3.12472,-2.638652 -11.735058,-2.638652 l -13.818204,0 0,20.692587 z"
+       style="font-size:142.2094574px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
+       id="path3343" /><path
+       d="m 119.3585,36.825408 31.52495,0 0,101.796422 -31.52495,0 0,-101.796422 z"
+       style="font-size:142.2094574px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
+       id="path3345"
+       inkscape:connector-curvature="0" /><path
+       d="m 167.14356,87.793055 q 0,-24.928318 13.88765,-38.81596 13.88764,-13.887642 38.67708,-13.887642 25.41438,0 39.16315,13.679327 13.74877,13.60989 13.74877,38.191017 0,17.845623 -6.04113,29.302923 -5.97168,11.38787 -17.35955,17.77618 -11.31843,6.31888 -28.26135,6.31888 -17.22068,0 -28.53911,-5.48562 -11.24899,-5.48562 -18.26225,-17.35955 -7.01326,-11.87393 -7.01326,-29.719555 z m 31.45551,0.138877 q 0,15.415278 5.69394,22.150788 5.76337,6.73551 15.62359,6.73551 10.13798,0 15.69304,-6.59663 5.55506,-6.59663 5.55506,-23.678433 0,-14.373709 -5.83281,-20.970339 -5.76337,-6.666069 -15.69304,-6.666069 -9.51303,0 -15.27641,6.735507 -5.76337,6.735506 -5.76337,22.289666 z"
+       style="font-size:142.2094574px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
+       id="path3347" /></g></svg>

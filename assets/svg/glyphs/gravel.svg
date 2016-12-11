@@ -13,15 +13,16 @@
    id="Layer_1"
    x="0px"
    y="0px"
-   viewBox="0 0 250 250"
-   style="enable-background:new 0 0 250 250;"
+   viewBox="0 0 180 200"
    xml:space="preserve"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="gravel.svg"><metadata
-     id="metadata10"><rdf:RDF><cc:Work
+   sodipodi:docname="gravel.svg"
+   width="180"
+   height="200"><metadata
+     id="metadata15"><rdf:RDF><cc:Work
          rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
-     id="defs8" /><sodipodi:namedview
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title /></cc:Work></rdf:RDF></metadata><defs
+     id="defs13" /><sodipodi:namedview
      pagecolor="#ffffff"
      bordercolor="#666666"
      borderopacity="1"
@@ -30,26 +31,40 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="711"
-     inkscape:window-height="480"
-     id="namedview6"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     id="namedview11"
      showgrid="false"
-     inkscape:zoom="0.944"
-     inkscape:cx="129.76695"
-     inkscape:cy="125"
-     inkscape:window-x="0"
-     inkscape:window-y="23"
-     inkscape:window-maximized="0"
-     inkscape:current-layer="Layer_1" /><style
+     inkscape:zoom="7.066667"
+     inkscape:cx="90.000006"
+     inkscape:cy="100"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="text3344" /><style
      type="text/css"
      id="style3">
 	.st0{font-family:&quot;Arial Black&quot;, &quot;Arial Bold&quot;, Gadget, sans-serif;}
-	.st1{font-size:125px;}
-</style><text
-     id="XMLID_1_"
-     class="st0 st1"
-     x="4.9397159"
-     y="171.96562"
-     style="font-size:152.54164124px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
-     transform="scale(0.97481044,1.0258405)">GV</text>
-</svg>
+	.st1{font-size:118.4014px;}
+	
+		.st2{fill-rule:evenodd;clip-rule:evenodd;fill:none;stroke:#000000;stroke-width:18.9859;stroke-linecap:round;stroke-miterlimit:10;}
+</style><flowRoot
+     xml:space="preserve"
+     id="flowRoot3336"
+     style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Arial;font-style:normal;font-weight:900;font-size:40px;line-height:125%;letter-spacing:0px;word-spacing:0px;-inkscape-font-specification:'Arial, Heavy';font-stretch:normal;font-variant:normal;text-anchor:middle;text-align:center;writing-mode:lr"><flowRegion
+       id="flowRegion3338"><rect
+         id="rect3340"
+         width="142.58875"
+         height="86.720642"
+         x="17.510899"
+         y="69.919037" /></flowRegion><flowPara
+       id="flowPara3342" /></flowRoot><g
+     transform="scale(0.81821282,1.2221759)"
+     style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-size:132.6411438px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Heavy';text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     id="text3344"><path
+       d="m 57.470464,94.904048 0,-19.753686 45.336326,0 0,40.478868 q -13.018,8.87296 -23.056759,12.11127 -9.973992,3.17355 -23.704423,3.17355 -16.903974,0 -27.590394,-5.76419 Q 17.83356,119.38567 11.939837,107.98682 6.1108806,96.587969 6.1108806,81.821279 q 0,-15.543884 6.4118524,-27.007499 6.411852,-11.52838 18.782193,-17.486869 9.650161,-4.598399 25.97124,-4.598399 15.738182,0 23.510124,2.849712 7.836708,2.849712 12.953237,8.872967 5.181295,5.958489 7.771943,15.155287 L 73.208647,64.65824 q -1.748687,-5.375593 -5.958489,-8.225305 -4.145036,-2.849712 -10.621654,-2.849712 -9.650162,0 -15.414352,6.735683 -5.699424,6.670917 -5.699424,21.178542 0,15.414352 5.76419,22.020502 5.828957,6.60615 16.191546,6.60615 4.92223,0 9.391097,-1.42485 4.468866,-1.42486 10.233057,-4.85747 l 0,-8.937732 -19.624154,0 z"
+       style=""
+       id="path3396" /><path
+       d="m 110.96733,34.347666 30.69917,0 21.37285,68.328324 21.04901,-68.328324 29.79244,0 -35.2328,94.947224 -31.8002,0 -35.88047,-94.947224 z"
+       style=""
+       id="path3398" /></g></svg>

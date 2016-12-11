@@ -37,7 +37,9 @@ var Io = Class({
     var wptCount = 1;
     for(var i=0;i<points.length;i++){
       if(points[i].waypoint !== undefined){
-        var waypoint = "<wpt lat='" + points[i].getPosition().lat() + "' lon='" + points[i].getPosition().lng() + "'><name>" + wptCount + "</name></wpt>";
+        var name = this.buildNameString(wptCount,points[i].waypoint);
+        var desc = this.buildDescString(wptCount,points[i].waypoint);
+        var waypoint = "<wpt lat='" + points[i].getPosition().lat() + "' lon='" + points[i].getPosition().lng() + "'><name>" + name + "</name><desc>" + desc + "</desc></wpt>";
         waypoints += waypoint;
         wptCount++;
       }
@@ -50,6 +52,35 @@ var Io = Class({
     gpxString += "</gpx>";
 
     return gpxString;
+  },
+
+  /*
+    New rally blitz and rally comp format notification
+  */
+  buildNameString: function(count,waypoint) {
+    var string;
+    if(waypoint.notification){
+      var dist = waypoint.kmFromStart().toFixed(2);
+      var type = waypoint.notification.class
+      var bubble = waypoint.notification.bubble
+      // TODO Speed Zone
+      string = type.toUpperCase() + count + ":" + bubble + ":" + dist;
+    }else{
+      string = count;
+    }
+    return string;
+  },
+  /*
+    legacy rally blitz notification
+  */
+  buildDescString: function(count,waypoint) {
+    var string = "";
+    if(waypoint.notification){
+      var type = waypoint.notification.class
+      // TODO Speed Zone
+      string = (type == "wpm" ? "WP"+count : (type == "wps" ? "!!!" : ""));
+    }
+    return string;
   },
 
   importGPXTracks: function(tracks){

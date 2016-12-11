@@ -13,14 +13,15 @@
    id="Layer_1"
    x="0px"
    y="0px"
-   viewBox="0 0 250 250"
-   style="enable-background:new 0 0 250 250;"
+   viewBox="0 0 110 200"
    xml:space="preserve"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="bearing.svg"><metadata
+   sodipodi:docname="bearing.svg"
+   width="110"
+   height="200"><metadata
      id="metadata11"><rdf:RDF><cc:Work
          rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title /></cc:Work></rdf:RDF></metadata><defs
      id="defs9" /><sodipodi:namedview
      pagecolor="#ffffff"
      bordercolor="#666666"
@@ -34,22 +35,21 @@
      inkscape:window-height="811"
      id="namedview7"
      showgrid="false"
-     inkscape:zoom="0.944"
-     inkscape:cx="7.9449153"
-     inkscape:cy="125"
+     inkscape:zoom="5.35"
+     inkscape:cx="55.000002"
+     inkscape:cy="100.00001"
      inkscape:window-x="0"
      inkscape:window-y="23"
      inkscape:window-maximized="0"
-     inkscape:current-layer="Layer_1" /><style
+     inkscape:current-layer="text5" /><style
      type="text/css"
      id="style3">
 	.st0{font-family:&quot;Arial Black&quot;, &quot;Arial Bold&quot;, Gadget, sans-serif;}
 	.st1{font-size:100px;}
-</style><text
-     class="st0 st1"
-     id="text5"
-     x="53.354393"
-     y="186.51839"
-     style="font-size:171.57507324px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
-     transform="scale(1.0439273,0.95792112)">C</text>
-</svg>
+</style><g
+     transform="scale(0.94154786,1.0620809)"
+     style="font-size:152.53448486px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
+     id="text5"><path
+       d="m 81.950046,104.09782 29.568454,8.93757 q -2.97919,12.43812 -9.38445,20.77985 -6.405255,8.34173 -15.93866,12.58707 -9.458925,4.24534 -24.131432,4.24534 -17.800655,0 -29.121574,-5.1391 -11.246439,-5.21358 -19.439209,-18.24753 -8.1927706,-13.03395 -8.1927706,-33.366919 0,-27.110621 14.3745876,-41.634168 14.449068,-14.598027 40.814892,-14.598027 20.630885,0 32.398682,8.341729 11.842274,8.34173 17.577214,25.621027 l -29.79189,6.628696 q -1.564074,-4.990142 -3.277108,-7.299013 -2.83023,-3.872946 -6.926615,-5.958379 -4.096385,-2.085432 -9.161006,-2.085432 -11.469879,0 -17.577216,9.235486 -4.617744,6.852135 -4.617744,21.524642 0,18.173058 5.5115,24.950708 5.5115,6.70318 15.491784,6.70318 9.682365,0 14.598027,-5.43702 4.990142,-5.43702 7.224534,-15.78971 z"
+       style="font-size:152.53448486px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
+       id="path3374" /></g></svg>

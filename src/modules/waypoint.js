@@ -59,7 +59,7 @@ var Waypoint = Class({
 
   addWpm(){
     if(this.notification == null){
-      this.notification = new Notification("rallyBlitzWPM");
+      this.notification = new Notification("wpm");
       app.mapEditor.addWaypointBubble(this.routePointIndex, this.notification.bubble, this.notification.fill)
     }
   },
@@ -73,13 +73,13 @@ var Waypoint = Class({
 
   addSafety(){
     if(this.notification == null){
-      this.notification = new Notification("rallyBlitzSafety");
+      this.notification = new Notification("wps");
       app.mapEditor.addWaypointBubble(this.routePointIndex, this.notification.bubble, this.notification.fill)
     }
   },
 
   removeSafety(){
-    if(this.notification != null && this.notification.class == "safety"){
+    if(this.notification != null && this.notification.class == "wps"){
       this.notification = null;
       app.mapEditor.deleteWaypointBubble(this.routePointIndex);
     }

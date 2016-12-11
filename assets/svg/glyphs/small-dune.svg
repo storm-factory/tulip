@@ -13,15 +13,16 @@
    id="Layer_1"
    x="0px"
    y="0px"
-   viewBox="0 0 250 250"
-   style="enable-background:new 0 0 250 250;"
+   viewBox="0 0 250 200"
    xml:space="preserve"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="small-dune.svg"><metadata
-     id="metadata10"><rdf:RDF><cc:Work
+   sodipodi:docname="small-dune.svg"
+   width="250"
+   height="200"><metadata
+     id="metadata11"><rdf:RDF><cc:Work
          rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
-     id="defs8" /><sodipodi:namedview
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title /></cc:Work></rdf:RDF></metadata><defs
+     id="defs9" /><sodipodi:namedview
      pagecolor="#ffffff"
      bordercolor="#666666"
      borderopacity="1"
@@ -30,23 +31,71 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="640"
-     inkscape:window-height="480"
-     id="namedview6"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     id="namedview7"
      showgrid="false"
-     inkscape:zoom="2.276"
+     inkscape:zoom="5.8916669"
      inkscape:cx="125"
-     inkscape:cy="125"
-     inkscape:current-layer="Layer_1" /><style
+     inkscape:cy="99.999999"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="text5" /><style
      type="text/css"
      id="style3">
 	.st0{font-family:&quot;Arial Black&quot;, &quot;Arial Bold&quot;, Gadget, sans-serif;}
-	.st1{font-size:125px;}
-</style><text
-     id="XMLID_1_"
+	.st1{font-size:75px;}
+</style><g
+     transform="scale(0.80115938,1.2481911)"
+     style="font-size:134.30622864px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
+     id="text5"><path
+       d="m 6.2409554,32.046375 44.1348106,0 q 13.050263,0 21.050927,3.541277 8.066244,3.541278 13.312581,10.164778 5.246337,6.623501 7.607188,15.411115 2.360852,8.787615 2.360852,18.624497 0,15.411115 -3.541277,23.936408 -3.475699,8.45972 -9.705724,14.23069 -6.230025,5.7054 -13.37816,7.60719 -9.771302,2.62317 -17.706387,2.62317 l -44.1348106,0 0,-96.139125 z m 29.7073836,21.772298 0,52.528947 7.279293,0 q 9.312248,0 13.247001,-2.03295 3.934753,-2.09854 6.164446,-7.213716 2.229693,-5.180758 2.229693,-16.722699 0,-15.279957 -4.98402,-20.919769 -4.98402,-5.639813 -16.525962,-5.639813 l -7.410451,0 z"
+       style="font-size:134.30622864px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
+       id="path5009" /><path
+       d="m 110.44633,32.046375 27.74,0 36.19973,53.184741 0,-53.184741 28.00232,0 0,96.139125 -28.00232,0 -36.00299,-52.791266 0,52.791266 -27.93674,0 0,-96.139125 z"
+       style="font-size:134.30622864px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
+       id="path5011" /><path
+       d="m 215.50423,32.046375 90.30258,0 0,23.739675 -30.2976,0 0,72.39945 -29.70738,0 0,-72.39945 -30.2976,0 0,-23.739675 z"
+       style="font-size:134.30622864px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
+       id="path5013" /></g><text
+     transform="scale(0.79983082,1.2502644)"
      class="st0 st1"
-     x="-4.9529576"
-     y="146.05127"
-     style="font-size:132.73904419px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
-     transform="scale(0.81407363,1.2283901)">DNT</text>
-</svg>
+     x="5.0010576"
+     y="96.020195"
+     style="font-size:97.24591827px;font-family:'Arial Black', 'Arial Bold', Gadget, sans-serif"
+     id="text3386" />
+<text
+     xml:space="preserve"
+     style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     x="83.726418"
+     y="71.75708"
+     id="text3370"
+     sodipodi:linespacing="125%"><tspan
+       sodipodi:role="line"
+       id="tspan3372"
+       x="83.726418"
+       y="71.75708" /></text>
+<text
+     xml:space="preserve"
+     style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     x="30.365566"
+     y="93.86792"
+     id="text3374"
+     sodipodi:linespacing="125%"><tspan
+       sodipodi:role="line"
+       id="tspan3376"
+       x="30.365566"
+       y="93.86792" /></text>
+<flowRoot
+     xml:space="preserve"
+     id="flowRoot3378"
+     style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     transform="translate(0,-50)"><flowRegion
+       id="flowRegion3380"><rect
+         id="rect3382"
+         width="115.27122"
+         height="155.66037"
+         x="53.066036"
+         y="38.915092" /></flowRegion><flowPara
+       id="flowPara3384" /></flowRoot></svg>
