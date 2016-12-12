@@ -407,7 +407,7 @@ var App = Class({
     // NOTE only use this for roadbooks which haven't been named
     this.ipc.on('documents-path', function(event, arg){
       var path = arg+'/';
-      path += _this.roadbook.name() == 'Name your roadbook' ? 'Untitled' : _this.roadbook.name().replace(' ', '-')
+      path += _this.roadbook.name() == 'Name your roadbook' ? 'Untitled' : _this.roadbook.name().replace(/\s/, '-')
       _this.showSaveDialog('Save roadbook', path)
     });
   },
