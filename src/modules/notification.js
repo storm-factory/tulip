@@ -8,28 +8,44 @@ class Notification{
   }
 
   buildNotification(type){
-    var types = {};
-    types.wpm = {
-        class: "wpm",
-        fill: '#008CBA',
-        bubble: 400,
-        acquisition: 20,
+    var types = {
+      wpm: {
+          class: "wpm",
+          fill: '#008CBA',
+          bubble: 400,
+          acquisition: 20,
+      },
+      wps: {
+          class: "wps",
+          fill: '#ff4200',
+          bubble: 200,
+          acquisition: 20,
+      },
+      dss: {
+          class: "dss",
+          fill: '#ffba29',
+          bubble: 200,
+          acquisition: 20,
+      },
+      ass: {
+          class: "ass",
+          fill: '#ffba29',
+          bubble: 200,
+          acquisition: 20,
+      },
+      dsz: {
+          class: "dsz",
+          fill: '#ffba29',
+          bubble: 200,
+          acquisition: 20,
+      },
+      fsz: {
+          class: "fsz",
+          fill: '#ffba29',
+          bubble: 200,
+          acquisition: 20,
+      },
     }
-
-    types.wps = {
-        class: "wps",
-        fill: '#ff4200',
-        bubble: 150,
-        acquisition: 20,
-    }
-
-    types.speed = {
-        class: "speed",
-        fill: '#ffba29',
-        bubble: 200,
-        acquisition: 20,
-    }
-
     return types[type]
   }
 }

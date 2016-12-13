@@ -85,6 +85,62 @@ var Waypoint = Class({
     }
   },
 
+  addSpeedZoneStart(){
+    if(this.notification == null){
+      this.notification = new Notification("dsz");
+      app.mapEditor.addWaypointBubble(this.routePointIndex, this.notification.bubble, this.notification.fill)
+    }
+  },
+
+  removeSpeedZoneStart(){
+    if(this.notification != null && this.notification.class == "dsz"){
+      this.notification = null;
+      app.mapEditor.deleteWaypointBubble(this.routePointIndex);
+    }
+  },
+
+  addSpeedZoneEnd(){
+    if(this.notification == null){
+      this.notification = new Notification("fsz");
+      app.mapEditor.addWaypointBubble(this.routePointIndex, this.notification.bubble, this.notification.fill)
+    }
+  },
+
+  removeSpeedZoneEnd(){
+    if(this.notification != null && this.notification.class == "fsz"){
+      this.notification = null;
+      app.mapEditor.deleteWaypointBubble(this.routePointIndex);
+    }
+  },
+
+  addSpecialStart(){
+    if(this.notification == null){
+      this.notification = new Notification("dss");
+      app.mapEditor.addWaypointBubble(this.routePointIndex, this.notification.bubble, this.notification.fill)
+    }
+  },
+
+  removeSpecialStart(){
+    if(this.notification != null && this.notification.class == "dss"){
+      this.notification = null;
+      app.mapEditor.deleteWaypointBubble(this.routePointIndex);
+    }
+  },
+
+  addSpecialEnd(){
+    if(this.notification == null){
+      this.notification = new Notification("ass");
+      app.mapEditor.addWaypointBubble(this.routePointIndex, this.notification.bubble, this.notification.fill)
+    }
+  },
+
+  removeSpecialEnd(){
+    if(this.notification != null && this.notification.class == "ass"){
+      this.notification = null;
+      app.mapEditor.deleteWaypointBubble(this.routePointIndex);
+    }
+  },
+
   changeAddedTrackType(type){
     this.tulip.changeAddedTrackType(type)
   },

@@ -128,7 +128,7 @@ var Roadbook = Class({
     so that we can capture data for rally blitz or rally comp exports
   */
   checkNoteForExportables(waypoint, noteHTML){
-    var glyphs = $(noteHTML).find("img[src*='waypoint-masked'], img[src*='danger-3']");
+    var glyphs = $(noteHTML).find("img[src*='waypoint-masked'], img[src*='danger-3'], img[src*='waypoint-safety'], img[src*='speed-start'], img[src*='speed-end']");
     if(glyphs.length){
       for(var i=0;i<glyphs.length;i++){
         //toggle wpm
@@ -138,15 +138,29 @@ var Roadbook = Class({
           this.currentlyEditingWaypoint.removeWpm();
         }
         //toggle danger
-        if($(glyphs[i]).attr('src').includes("danger-3")){
+        if($(glyphs[i]).attr('src').includes("danger-3") || $(glyphs[i]).attr('src').includes("waypoint-safety")){
           this.currentlyEditingWaypoint.addSafety();
         }else {
           this.currentlyEditingWaypoint.removeSafety();
+        }
+        //toggle speed start
+        if($(glyphs[i]).attr('src').includes("speed-start")){
+          this.currentlyEditingWaypoint.addSpeedZoneStart();
+        }else {
+          this.currentlyEditingWaypoint.removeSpeedZoneStart();
+        }
+        //toggle speed end
+        if($(glyphs[i]).attr('src').includes("speed-end")){
+          this.currentlyEditingWaypoint.addSpeedZoneEnd();
+        }else {
+          this.currentlyEditingWaypoint.removeSpeedZoneEnd();
         }
       }
     }else{
       this.currentlyEditingWaypoint.removeWpm();
       this.currentlyEditingWaypoint.removeSafety();
+      this.currentlyEditingWaypoint.removeSpeedZoneStart();
+      this.currentlyEditingWaypoint.removeSpeedZoneEnd();
     }
 
   },
