@@ -57,8 +57,8 @@ var Waypoint = Class({
     };
   },
 
+  // TODO something to manage speed and waypoint bubble circumference
   manageNotifications(glyphs){
-    console.log("manging");
     if(this.notification == null){
       // create a new notification
       for(i=0;i<glyphs.length;i++){
@@ -67,6 +67,13 @@ var Waypoint = Class({
         app.mapEditor.addWaypointBubble(this.routePointIndex, this.notification.bubble, this.notification.fill)
       }
     }else{
+      // see if we need to set a speed zone limit
+      if(this.notification.type == "dsz"){
+        // console.log(glyphs.join(' ').match(/(?!speed-)[0-9]{2,3}/)[0]);
+        var speed = glyphs.join(' ').match(/(?!speed-)[0-9]{2,3}/)[0]
+        this.notification.modifier = speed;
+        console.log(this.notification);
+      }
       // see if we need to remove the notification using the notification class
       var _this = this;
       var contains = glyphs.map(function(g){return Notification.nameMatchesClass(g,_this.notification.type)})
@@ -76,6 +83,7 @@ var Waypoint = Class({
         this.notification = null;
         app.mapEditor.deleteWaypointBubble(this.routePointIndex);
       }
+
     }
   },
 

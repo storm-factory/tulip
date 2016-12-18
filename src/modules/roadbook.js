@@ -176,7 +176,7 @@ var Roadbook = Class({
 
   /*
     This function handles' listening to input on the waypoint palette
-    and persisting text/glyphs/notifications to the waypoint object 
+    and persisting text/glyphs/notifications to the waypoint object
   */
   initWaypointNoteEditor: function(){
     this.noteTextEditor = new Quill('#note-editor');

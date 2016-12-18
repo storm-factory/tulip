@@ -60,11 +60,11 @@ var Io = Class({
   buildNameString: function(count,waypoint) {
     var string;
     if(waypoint.notification){
-      var dist = waypoint.kmFromStart().toFixed(2);
       var type = waypoint.notification.type
-      var bubble = waypoint.notification.bubble
-      // TODO Speed Zone
-      string = type.toUpperCase() + count + ":" + bubble + ":" + dist;
+      type = (type == "wpm" ? type + count : type).toUpperCase();
+      var dist = type == "wpm" ? ":" + waypoint.kmFromStart().toFixed(2) : "";
+      var modifier = waypoint.notification.modifier ? ":" + waypoint.notification.modifier : ""
+      string = type + modifier + dist;
     }else{
       string = count;
     }
@@ -78,7 +78,7 @@ var Io = Class({
     if(waypoint.notification){
       var type = waypoint.notification.type
       // TODO Speed Zone
-      string = (type == "wpm" ? "WP"+count : (type == "wps" ? "!!!" : ""));
+      string = (type == "wpm" ? "WP"+count : (type == "wps" ? "!!!" : (type == "dsz" ? "SZ"+waypoint.notification.modifier : "")));
     }
     return string;
   },

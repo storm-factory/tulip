@@ -5,7 +5,7 @@ class Notification{
       var notification = Notification.buildNotification(type);
       this.type = notification.type;
       this.bubble = notification.bubble;
-      this.aquisition = notification.aquisition;
+      this.modifier = notification.modifier;
       this.fill = notification.fill;
     }
   }
@@ -13,8 +13,11 @@ class Notification{
   static mapFileNameToType(filename){
     var map = {
       "waypoint-masked": "wpm",
+      "waypoint-eclipsed": "wpe",
       "danger-3": "wps",
       "waypoint-safety": "wps",
+      "start-of-selective-section": "dss",
+      "finish-of-selective-section": "ass",
       "speed-start": "dsz",
       "speed-end": "fsz",
     }
@@ -28,45 +31,46 @@ class Notification{
           type: "wpm",
           fill: '#008CBA',
           bubble: 400,
-          acquisition: 20,
+          modifier: 400,
+      },
+      wpe: {
+          type: "wpe",
+          fill: '#008CBA',
+          bubble: 400,
+          modifier: 400,
       },
       wps: {
           type: "wps",
           fill: '#ff4200',
           bubble: 200,
-          acquisition: 20,
+          modifier: 200,
       },
       dss: {
           type: "dss",
           fill: '#ffba29',
           bubble: 200,
-          acquisition: 20,
       },
       ass: {
           type: "ass",
           fill: '#ffba29',
           bubble: 200,
-          acquisition: 20,
       },
       dsz: {
           type: "dsz",
           fill: '#ffba29',
           bubble: 200,
-          acquisition: 20,
+          modifier: 0,
       },
       fsz: {
           type: "fsz",
           fill: '#ffba29',
           bubble: 200,
-          acquisition: 20,
       },
     }
     return types[type];
   }
 
   static nameMatchesClass(name,type){
-    console.log(name);
-    console.log(type);
     return (this.mapFileNameToType(name) == type);
   }
 }
