@@ -57,87 +57,25 @@ var Waypoint = Class({
     };
   },
 
-  addWpm(){
+  manageNotifications(glyphs){
+    console.log("manging");
     if(this.notification == null){
-      this.notification = new Notification("wpm");
-      app.mapEditor.addWaypointBubble(this.routePointIndex, this.notification.bubble, this.notification.fill)
-    }
-  },
-
-  removeWpm(){
-    if(this.notification != null && this.notification.class == "wpm"){
-      this.notification = null;
-      app.mapEditor.deleteWaypointBubble(this.routePointIndex);
-    }
-  },
-
-  addSafety(){
-    if(this.notification == null){
-      this.notification = new Notification("wps");
-      app.mapEditor.addWaypointBubble(this.routePointIndex, this.notification.bubble, this.notification.fill)
-    }
-  },
-
-  removeSafety(){
-    if(this.notification != null && this.notification.class == "wps"){
-      this.notification = null;
-      app.mapEditor.deleteWaypointBubble(this.routePointIndex);
-    }
-  },
-
-  addSpeedZoneStart(){
-    if(this.notification == null){
-      this.notification = new Notification("dsz");
-      app.mapEditor.addWaypointBubble(this.routePointIndex, this.notification.bubble, this.notification.fill)
-    }
-  },
-
-  removeSpeedZoneStart(){
-    if(this.notification != null && this.notification.class == "dsz"){
-      this.notification = null;
-      app.mapEditor.deleteWaypointBubble(this.routePointIndex);
-    }
-  },
-
-  addSpeedZoneEnd(){
-    if(this.notification == null){
-      this.notification = new Notification("fsz");
-      app.mapEditor.addWaypointBubble(this.routePointIndex, this.notification.bubble, this.notification.fill)
-    }
-  },
-
-  removeSpeedZoneEnd(){
-    if(this.notification != null && this.notification.class == "fsz"){
-      this.notification = null;
-      app.mapEditor.deleteWaypointBubble(this.routePointIndex);
-    }
-  },
-
-  addSpecialStart(){
-    if(this.notification == null){
-      this.notification = new Notification("dss");
-      app.mapEditor.addWaypointBubble(this.routePointIndex, this.notification.bubble, this.notification.fill)
-    }
-  },
-
-  removeSpecialStart(){
-    if(this.notification != null && this.notification.class == "dss"){
-      this.notification = null;
-      app.mapEditor.deleteWaypointBubble(this.routePointIndex);
-    }
-  },
-
-  addSpecialEnd(){
-    if(this.notification == null){
-      this.notification = new Notification("ass");
-      app.mapEditor.addWaypointBubble(this.routePointIndex, this.notification.bubble, this.notification.fill)
-    }
-  },
-
-  removeSpecialEnd(){
-    if(this.notification != null && this.notification.class == "ass"){
-      this.notification = null;
-      app.mapEditor.deleteWaypointBubble(this.routePointIndex);
+      // create a new notification
+      for(i=0;i<glyphs.length;i++){
+        // grab the glyph name from the file name, agnostic to the path.
+        this.notification = new Notification(glyphs[i]);
+        app.mapEditor.addWaypointBubble(this.routePointIndex, this.notification.bubble, this.notification.fill)
+      }
+    }else{
+      // see if we need to remove the notification using the notification class
+      var _this = this;
+      var contains = glyphs.map(function(g){return Notification.nameMatchesClass(g,_this.notification.type)})
+      // if the glyphs array contains our notification keep it
+      //otherwise nullify our current notification
+      if(!contains.includes(true) || (glyphs.length < 1)){
+        this.notification = null;
+        app.mapEditor.deleteWaypointBubble(this.routePointIndex);
+      }
     }
   },
 

@@ -61,7 +61,7 @@ var Io = Class({
     var string;
     if(waypoint.notification){
       var dist = waypoint.kmFromStart().toFixed(2);
-      var type = waypoint.notification.class
+      var type = waypoint.notification.type
       var bubble = waypoint.notification.bubble
       // TODO Speed Zone
       string = type.toUpperCase() + count + ":" + bubble + ":" + dist;
@@ -76,7 +76,7 @@ var Io = Class({
   buildDescString: function(count,waypoint) {
     var string = "";
     if(waypoint.notification){
-      var type = waypoint.notification.class
+      var type = waypoint.notification.type
       // TODO Speed Zone
       string = (type == "wpm" ? "WP"+count : (type == "wps" ? "!!!" : ""));
     }

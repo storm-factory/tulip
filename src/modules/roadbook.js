@@ -123,48 +123,6 @@ var Roadbook = Class({
   },
 
 
-  /*
-    Here we check the note section for WPM glyphs, !!! glyphs, and eventually speed zone glyphs
-    so that we can capture data for rally blitz or rally comp exports
-  */
-  checkNoteForExportables(waypoint, noteHTML){
-    var glyphs = $(noteHTML).find("img[src*='waypoint-masked'], img[src*='danger-3'], img[src*='waypoint-safety'], img[src*='speed-start'], img[src*='speed-end']");
-    if(glyphs.length){
-      for(var i=0;i<glyphs.length;i++){
-        //toggle wpm
-        if($(glyphs[i]).attr('src').includes("waypoint-masked")){
-          this.currentlyEditingWaypoint.addWpm();
-        }else {
-          this.currentlyEditingWaypoint.removeWpm();
-        }
-        //toggle danger
-        if($(glyphs[i]).attr('src').includes("danger-3") || $(glyphs[i]).attr('src').includes("waypoint-safety")){
-          this.currentlyEditingWaypoint.addSafety();
-        }else {
-          this.currentlyEditingWaypoint.removeSafety();
-        }
-        //toggle speed start
-        if($(glyphs[i]).attr('src').includes("speed-start")){
-          this.currentlyEditingWaypoint.addSpeedZoneStart();
-        }else {
-          this.currentlyEditingWaypoint.removeSpeedZoneStart();
-        }
-        //toggle speed end
-        if($(glyphs[i]).attr('src').includes("speed-end")){
-          this.currentlyEditingWaypoint.addSpeedZoneEnd();
-        }else {
-          this.currentlyEditingWaypoint.removeSpeedZoneEnd();
-        }
-      }
-    }else{
-      this.currentlyEditingWaypoint.removeWpm();
-      this.currentlyEditingWaypoint.removeSafety();
-      this.currentlyEditingWaypoint.removeSpeedZoneStart();
-      this.currentlyEditingWaypoint.removeSpeedZoneEnd();
-    }
-
-  },
-
   deleteWaypoint: function(wptId){
     this.finishWaypointEdit();
     this.waypoints.splice(wptId - 1,1);
@@ -218,7 +176,7 @@ var Roadbook = Class({
 
   /*
     This function handles' listening to input on the waypoint palette
-    and persisting it to the waypoint object
+    and persisting text/glyphs/notifications to the waypoint object 
   */
   initWaypointNoteEditor: function(){
     this.noteTextEditor = new Quill('#note-editor');
@@ -229,8 +187,15 @@ var Roadbook = Class({
     this.noteTextEditor.on('text-change', function() {
       $('#note-editor div.ql-editor img').removeClass('resizable');
       $('#note-glyph-range').val(1);
+      /*
+        Here we check the note section for WPM glyphs, !!! glyphs, and eventually speed zone glyphs
+        so that we can capture data for rally blitz or rally comp exports
+      */
       if(_this.currentlyEditingWaypoint){
-        _this.checkNoteForExportables(_this.currentlyEditingWaypoint,_this.noteTextEditor.getHTML());
+        // reduce DOM image objects in the text editor to a collection of glyph names
+        // maybe not the cleanest way to do that, but it works.
+        var glyphs = $(this.getHTML()).find("img").toArray().map(function(g){return $(g).attr('src').match(/\/[a-z0-9,-]*\./)[0].match(/\w+[\-]*\w*/)[0]})
+        _this.currentlyEditingWaypoint.manageNotifications(glyphs);
       }
       app.glyphControls.bindNoteGlyphResizable();
     });
