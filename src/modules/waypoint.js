@@ -57,7 +57,6 @@ var Waypoint = Class({
     };
   },
 
-  // TODO something to manage speed and waypoint bubble circumference
   manageNotifications(glyphs){
     if(this.notification == null){
       // create a new notification
@@ -72,7 +71,6 @@ var Waypoint = Class({
         // console.log(glyphs.join(' ').match(/(?!speed-)[0-9]{2,3}/)[0]);
         var speed = glyphs.join(' ').match(/(?!speed-)[0-9]{2,3}/)[0]
         this.notification.modifier = speed;
-        console.log(this.notification);
       }
       // see if we need to remove the notification using the notification class
       var _this = this;

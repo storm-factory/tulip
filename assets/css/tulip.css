@@ -81,17 +81,9 @@ textarea.waypoint-palette{
   background: #fff;
   padding:0;
 }
-/*#note-editor.ql-container {
-  line-height: 1; /* for some reason this causes a weird rendering error on delete, probably because quill.css is in conflict */
-}*/
 
-#note-editor div.ql-editor img.resizable {
+#note-editor div.ql-editor div img.resizable {
   border: 3px solid #ff4200;
-}
-
-.waypoint-note p div img.small,
-#note-editor div.ql-editor img.small {
-  width: 20%;
 }
 
 #note-editor div.ql-editor img:active {
@@ -100,6 +92,11 @@ textarea.waypoint-palette{
 
 #note-editor div.ql-editor img {
   cursor: -webkit-grab;
+}
+
+.waypoint-note p div img.small,
+#note-editor div.ql-editor img.small {
+  height: 35px;
 }
 
 .waypoint-note p div img,

@@ -49,9 +49,12 @@ var PrintApp = Class({
     if(size == "Roll"){
       size = {height: $(document).height()*265, width: $(document).width()*265};
     }
+    if(!(size == "A5")){
+      $('body').css('margin-left', '-60px');
+    }
     var data = {'filepath': this.filePath, 'opts': {'pageSize': size, 'marginsType' : '1'}};
-    
-    // this.ipc.send('print-pdf', data);
+
+    this.ipc.send('print-pdf', data);
   },
 
   rerenderForPageSize: function(){
@@ -64,9 +67,6 @@ var PrintApp = Class({
 
       if(pageSize == "A5"){
         $('.waypoint, .waypoint-note, .waypoint-distance, .waypoint-tulip').addClass('A5');
-      }else {
-
-        $('body').css('margin-left', '-60px');
       }
     }
   },

@@ -47,6 +47,22 @@ body {
   font-size: 35px;
 }
 
+.waypoint-note p div img.small {
+  height: 35px;
+}
+
+.waypoint-note p div img {
+  height: 55px;
+}
+
+.waypoint-note p div img.large {
+  height: 75px;
+}
+
+.waypoint-note p div img.huge {
+  height: 95px;
+}
+
 .break{
  margin-top: 1px;
  display: block;
@@ -209,6 +225,9 @@ body {
 /*
   neccessary foundation stuff
 */
+img {
+  vertical-align: middle;
+}
 
 .left {
   float: left !important; }
