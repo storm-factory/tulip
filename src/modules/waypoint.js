@@ -68,8 +68,7 @@ var Waypoint = Class({
     }else{
       // see if we need to set a speed zone limit
       if(this.notification.type == "dsz"){
-        // console.log(glyphs.join(' ').match(/(?!speed-)[0-9]{2,3}/)[0]);
-        var speed = glyphs.join(' ').match(/(?!speed-)[0-9]{2,3}/)[0]
+        var speed = glyphs.join(' ').match(/speed-([0-9]{2,3})/)[1]
         this.notification.modifier = speed;
       }
       // see if we need to remove the notification using the notification class

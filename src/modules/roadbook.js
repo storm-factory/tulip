@@ -96,7 +96,6 @@ var Roadbook = Class({
   },
 
   changeEditingWaypointAdded: function(type){
-    console.log('added: ' + type);
     this.currentlyEditingWaypoint.changeAddedTrackType(type);
   },
 
@@ -193,8 +192,7 @@ var Roadbook = Class({
       */
       if(_this.currentlyEditingWaypoint){
         // reduce DOM image objects in the text editor to a collection of glyph names
-        // maybe not the cleanest way to do that, but it works.
-        var glyphs = $(this.getHTML()).find("img").toArray().map(function(g){return $(g).attr('src').match(/\/[a-z0-9,-]*\./)[0].match(/\w+[\-]*\w*/)[0]})
+        var glyphs = $(this.getHTML()).find("img").toArray().map(function(g){return $(g).attr('src').match(/\/([a-z0-9,-]*)\./)[1]})
         _this.currentlyEditingWaypoint.manageNotifications(glyphs);
       }
       app.glyphControls.bindNoteGlyphResizable();
