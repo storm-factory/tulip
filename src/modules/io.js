@@ -1,8 +1,15 @@
 var Io = Class({
 
   importGPX: function(gpx){
-    var gpxDoc = $.parseXML(gpx);
-    this.gpx = $(gpxDoc);
+    try {
+      var gpxDoc = $.parseXML(gpx.trim());
+      this.gpx = $(gpxDoc);
+    } catch (e) {
+      alert("Error parsing GPX :-(");
+      app.stopLoading();
+      return
+    }
+
 
     this.importGPXTracks($.makeArray(this.gpx.find( "trkpt" )));
     this.importGPXWaypoints($.makeArray(this.gpx.find( "wpt" )));

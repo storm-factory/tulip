@@ -1,3 +1,10 @@
+/*
+  This class provides a structured data format to store
+  and modify notifications which can be exported via GPX
+  for use in RallyBlitz and RallyComp.
+
+  Any other parties interested in integrating should also be accomodated.
+*/
 class Notification{
   constructor(name){
     var type = Notification.mapFileNameToType(name);
@@ -16,8 +23,10 @@ class Notification{
       "waypoint-eclipsed": "wpe",
       "danger-3": "wps",
       "waypoint-safety": "wps",
+      "start": "dss",
       "start-of-selective-section": "dss",
-      "finish-of-selective-section": "ass",
+      "finish": "fss",
+      "finish-of-selective-section": "fss",
       "speed-start": "dsz",
       "speed-end": "fsz",
     }
@@ -36,8 +45,7 @@ class Notification{
       wpe: {
           type: "wpe",
           fill: '#008CBA',
-          bubble: 400,
-          modifier: 400,
+          bubble: 50,
       },
       wps: {
           type: "wps",
@@ -48,12 +56,12 @@ class Notification{
       dss: {
           type: "dss",
           fill: '#ffba29',
-          bubble: 200,
+          bubble: 50,
       },
-      ass: {
+      fss: {
           type: "ass",
           fill: '#ffba29',
-          bubble: 200,
+          bubble: 50,
       },
       dsz: {
           type: "dsz",
@@ -64,7 +72,7 @@ class Notification{
       fsz: {
           type: "fsz",
           fill: '#ffba29',
-          bubble: 200,
+          bubble: 50,
       },
     }
     return types[type];
