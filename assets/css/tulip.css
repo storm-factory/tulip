@@ -290,7 +290,7 @@ textarea.waypoint-palette{
 }
 
 .roadbook-container {
-  width: 520px;
+  width: 540px;
   position: absolute;
   top: 1rem;
   right: 25px;
@@ -390,7 +390,7 @@ nav.top-bar {
 }
 
 .waypoint {
-  width:480px;
+  width:500px !important;
   border: 2px solid #000;
   height:182px;
   margin-left: 0 !important;
