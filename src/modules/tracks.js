@@ -38,8 +38,9 @@ class Track{
   }
 
   /*
-    Creates an SVG string form the assumption that we are originating at the point (90,90) and vectoring out from there at a given angle
-    The angle is provided from the mapping module.
+    Creates an SVG Cubic Bezier Curve string from a passed in origin (generally [90,90]) and vectoring out from there at a given angle
+    The angle is provided from the mapping module. We create the curve in a straight line, but UI interaction will move the control points
+    and produce a smooth Cubic Bezier
   */
   buildTrackPathString(angle,origin) {
     var set1 = this.buildTrackPathsSet([9,18,27],angle,origin)

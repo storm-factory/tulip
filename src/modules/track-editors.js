@@ -124,36 +124,36 @@ class TrackEditor {
   }
 
   // TODO this could be an object literal
+  // TODO refactor to be more SOLID/DRY
   pointMoving(point){
-    for(i=0;i<this.paths.length;i++){
-      if (point.name == "originHandle") {
-        //Move this point on the path
-        this.paths[i].path[0][1] = point.left;
-        this.paths[i].path[0][2] = point.top;
-        // NOTE could overload
-        if(this.track.origin){
-          this.track.origin.left = point.left;
-          this.track.origin.top = point.top;
-        }
-      }else if(point.name == "endHandle"){
-        //Move this point on the path
-        this.paths[i].path[3][5] = point.left;
-        this.paths[i].path[3][6] = point.top;
-        // NOTE could overload
-        if(this.track.end){
-          this.track.end.left = point.left;
-          this.track.end.top = point.top;
-        }
-      } else if(point.name == "joinOneHandle") {
-        //Move this point on the path
-        this.paths[i].path[1][5] = point.left;
-        this.paths[i].path[1][6] = point.top;
-      } else if(point.name == "joinTwoHandle") {
-        //Move this point on the path
-        this.paths[i].path[2][5] = point.left;
-        this.paths[i].path[2][6] = point.top;
-
+    if (point.name == "originHandle") {
+      this.setBezierCurveControlPointPosition([[0,1],[0,2]],point.left,point.top);
+      if(this.track.origin){
+        this.track.origin.left = point.left;
+        this.track.origin.top = point.top;
       }
+    }else if(point.name == "endHandle"){
+      this.setBezierCurveControlPointPosition([[3,5],[3,6]],point.left,point.top);
+      if(this.track.end){
+        this.track.end.left = point.left;
+        this.track.end.top = point.top;
+      }
+    } else if(point.name == "joinOneHandle") {
+      this.setBezierCurveControlPointPosition([[1,5],[1,6]],point.left,point.top);
+    } else if(point.name == "joinTwoHandle") {
+      this.setBezierCurveControlPointPosition([[2,5],[2,6]],point.left,point.top);
+    }
+  }
+
+  /*
+    TODO explain this mess
+  */
+  setBezierCurveControlPointPosition(controlPoints, left, top){
+    for(i=0;i<this.paths.length;i++){
+      this.paths[i].path[controlPoints[0][0]][controlPoints[0][1]] = left;
+      this.paths[i].path[controlPoints[1][0]][controlPoints[1][1]] = top;
+      // if line is straight and entry or end is being manipulated have
+      // rotate path function, otherwise interpolate path
       this.interpolatePath(this.paths[i].path);
     }
   }
