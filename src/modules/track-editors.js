@@ -128,16 +128,10 @@ class TrackEditor {
   pointMoving(point){
     if (point.name == "originHandle") {
       this.setBezierCurveControlPointPosition([[0,1],[0,2]],point.left,point.top);
-      if(this.track.origin){
-        this.track.origin.left = point.left;
-        this.track.origin.top = point.top;
-      }
+      this.setTrackCapPosition("origin", point.left, point.top);
     }else if(point.name == "endHandle"){
       this.setBezierCurveControlPointPosition([[3,5],[3,6]],point.left,point.top);
-      if(this.track.end){
-        this.track.end.left = point.left;
-        this.track.end.top = point.top;
-      }
+      this.setTrackCapPosition("end", point.left, point.top);
     } else if(point.name == "joinOneHandle") {
       this.setBezierCurveControlPointPosition([[1,5],[1,6]],point.left,point.top);
     } else if(point.name == "joinTwoHandle") {
@@ -155,6 +149,16 @@ class TrackEditor {
       // if line is straight and entry or end is being manipulated have
       // rotate path function, otherwise interpolate path
       this.interpolatePath(this.paths[i].path);
+    }
+  }
+
+  /*
+    adjusts the position of the track cap which is either an origin or and end.
+  */
+  setTrackCapPosition(capType,left, top){
+    if(this.track[capType]){
+      this.track[capType].left = left;
+      this.track[capType].top = top;
     }
   }
 };
