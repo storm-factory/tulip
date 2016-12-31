@@ -127,9 +127,11 @@ class TrackEditor {
   // TODO refactor to be more SOLID/DRY
   pointMoving(point){
     if (point.name == "originHandle") {
+      console.log(this.checkTrackLinearity());
       this.setBezierCurveControlPointPosition([[0,1],[0,2]],point.left,point.top);
       this.setTrackCapPosition("origin", point.left, point.top);
     }else if(point.name == "endHandle"){
+      console.log(this.checkTrackLinearity());
       this.setBezierCurveControlPointPosition([[3,5],[3,6]],point.left,point.top);
       this.setTrackCapPosition("end", point.left, point.top);
     } else if(point.name == "joinOneHandle") {
@@ -160,6 +162,22 @@ class TrackEditor {
       this.track[capType].left = left;
       this.track[capType].top = top;
     }
+  }
+
+  checkTrackLinearity(){
+    var x1 = this.paths[0].path[0][1];
+    var y1 = this.paths[0].path[0][2];
+
+    var x2 = this.paths[0].path[1][5];
+    var y2 = this.paths[0].path[1][6];
+
+    var x3 = this.paths[0].path[2][5];
+    var y3 = this.paths[0].path[2][6];
+
+    var x4 = this.paths[0].path[3][5];
+    var y4 = this.paths[0].path[3][6];
+
+    return (((y2-y1)/(x2-x1) == (y3-y1)/(x3-x1)) && ((y2-y1)/(x2-x1) == (y4-y1)/(x4-x1)));
   }
 };
 
