@@ -1,16 +1,11 @@
 class TrackEditor {
-  // change params to entryTrack and exitTrack: entry track can't move end point, exit track can't move origin.
-  // all other bets are off.
   constructor(canvas, track, handleColor='#296EFF') {
-    // fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
 
     this.track = track
     this.track.editor = this;
-    // path = TODO get paths from track object
     this.paths = track.paths;
     this.handleColor = handleColor
     this.canvas = canvas
-    // TODO somehow set handle color via child class
     this.joinOneHandle = this.makeMidPoint(this.paths[0].path[1][5], this.paths[0].path[1][6]);
     this.joinOneHandle.name = "joinOneHandle";
     this.canvas.add(this.joinOneHandle);
@@ -123,35 +118,61 @@ class TrackEditor {
     path[2][2] = controlPoints[3];
   }
 
-  // TODO this could be an object literal
+  // TODO this could be an object literal (maybe)
   // TODO refactor to be more SOLID/DRY
+  // TODO explain the significance of the 2D and 3D arrays and how they are derived from the fabric.js path object
   pointMoving(point){
+    var linear;
     if (point.name == "originHandle") {
-      console.log(this.checkTrackLinearity());
-      this.setBezierCurveControlPointPosition([[0,1],[0,2]],point.left,point.top);
+      linear = this.checkTrackLinearity();
+
+      this.setTrackTransformation([[[0,1],[0,2]],[[3,5],[3,6]]],point.left,point.top)
+
+      // this.setTrackCurve([[0,1],[0,2]],point.left,point.top);
       this.setTrackCapPosition("origin", point.left, point.top);
+
     }else if(point.name == "endHandle"){
-      console.log(this.checkTrackLinearity());
-      this.setBezierCurveControlPointPosition([[3,5],[3,6]],point.left,point.top);
+      linear = this.checkTrackLinearity();
+
+      this.setTrackTransformation([[[3,5],[3,6]],[[0,1],[0,2]]],point.left,point.top)
+
+      // this.setTrackCurve([[3,5],[3,6]],point.left,point.top);
       this.setTrackCapPosition("end", point.left, point.top);
+
     } else if(point.name == "joinOneHandle") {
-      this.setBezierCurveControlPointPosition([[1,5],[1,6]],point.left,point.top);
+      this.setTrackCurve([[1,5],[1,6]],point.left,point.top);
     } else if(point.name == "joinTwoHandle") {
-      this.setBezierCurveControlPointPosition([[2,5],[2,6]],point.left,point.top);
+      this.setTrackCurve([[2,5],[2,6]],point.left,point.top);
     }
   }
 
   /*
     TODO explain this mess
   */
-  setBezierCurveControlPointPosition(controlPoints, left, top){
+  setTrackCurve(controlPoints,left,top){
     for(i=0;i<this.paths.length;i++){
       this.paths[i].path[controlPoints[0][0]][controlPoints[0][1]] = left;
       this.paths[i].path[controlPoints[1][0]][controlPoints[1][1]] = top;
-      // if line is straight and entry or end is being manipulated have
-      // rotate path function, otherwise interpolate path
       this.interpolatePath(this.paths[i].path);
     }
+  }
+
+  setTrackTransformation(controlPoints,left,top){
+    //create vector from origin (end point of track not being dragged) to end (end point of track being dragged) before it is dragged, this is v1
+    var x1 = this.paths[i].path[controlPoints[0][0][0]][controlPoints[0][0][1]] - this.paths[i].path[controlPoints[1][0][0]][controlPoints[1][0][1]];
+    var y1 = this.paths[i].path[controlPoints[0][1][0]][controlPoints[0][1][1]] - this.paths[i].path[controlPoints[1][1][0]][controlPoints[1][1][1]];
+    var v1 = [x1,y1];
+    //create vector from origin (end point of track not being dragged) to end (end point of track being dragged) after it is dragged, this is v2
+    var x2 = this.paths[i].path[controlPoints[0][0][0]][controlPoints[0][0][1]] - left;
+    var y2 = this.paths[i].path[controlPoints[0][1][0]][controlPoints[0][1][1]] - top;
+    var v2 = [x2,y2];
+    // find magnitude of the v1 from origin (end point of track not being dragged) to end (end point of track being dragged) before it is dragged, this is mv1
+
+    // find magnitude of the v2 from origin (end point of track not being dragged) to end (end point of track being dragged) after it is dragged, this is mv2
+
+    // using cos(theta) = (v1 • v2)/(mv1 x mv2) solve for theta
+
+    // transform all the rest of the points in the track using the rotational matrix, if a scaling component can also be used that is rad
   }
 
   /*
@@ -164,6 +185,10 @@ class TrackEditor {
     }
   }
 
+
+  /*
+    TODO remove if not needed
+  */
   checkTrackLinearity(){
     var x1 = this.paths[0].path[0][1];
     var y1 = this.paths[0].path[0][2];
