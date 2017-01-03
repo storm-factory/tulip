@@ -156,23 +156,38 @@ class TrackEditor {
       this.interpolatePath(this.paths[i].path);
     }
   }
-
+  // TODO try to explain all the BS we go through to overcome to translate left top to cartesian coordinates
   setTrackTransformation(controlPoints,left,top){
-    //create vector from origin (end point of track not being dragged) to end (end point of track being dragged) before it is dragged, this is v1
-    var x1 = this.paths[i].path[controlPoints[0][0][0]][controlPoints[0][0][1]] - this.paths[i].path[controlPoints[1][0][0]][controlPoints[1][0][1]];
-    var y1 = this.paths[i].path[controlPoints[0][1][0]][controlPoints[0][1][1]] - this.paths[i].path[controlPoints[1][1][0]][controlPoints[1][1][1]];
-    var v1 = [x1,y1];
-    //create vector from origin (end point of track not being dragged) to end (end point of track being dragged) after it is dragged, this is v2
-    var x2 = this.paths[i].path[controlPoints[0][0][0]][controlPoints[0][0][1]] - left;
-    var y2 = this.paths[i].path[controlPoints[0][1][0]][controlPoints[0][1][1]] - top;
-    var v2 = [x2,y2];
-    // find magnitude of the v1 from origin (end point of track not being dragged) to end (end point of track being dragged) before it is dragged, this is mv1
+    var x1 = this.paths[0].path[controlPoints[1][0][0]][controlPoints[1][0][1]]- left;
+    var y1 = this.paths[0].path[controlPoints[1][1][0]][controlPoints[1][1][1]]-top;
+    console.log("left: "+left);
+    console.log("top: "+top);
+    console.log("x: "+x1);
+    console.log("y: "+y1);
 
-    // find magnitude of the v2 from origin (end point of track not being dragged) to end (end point of track being dragged) after it is dragged, this is mv2
-
-    // using cos(theta) = (v1 • v2)/(mv1 x mv2) solve for theta
-
+    // var theta = Math.atan(y1/x1)
+    var theta = Math.atan(x1/y1)
+    console.log("theta: "+theta);
     // transform all the rest of the points in the track using the rotational matrix, if a scaling component can also be used that is rad
+
+    for(var i=0;i<this.paths.length;i++){
+      this.paths[i].path[controlPoints[0][0][0]][controlPoints[0][0][1]] = left;
+      this.paths[i].path[controlPoints[0][1][0]][controlPoints[0][1][1]] = top;
+      for(var j=1;j<this.paths[i].path.length;j++){
+        console.log("j: " + j);
+        for(var k=1;k<this.paths[i].path[j].length;k++){
+          if(k%2 == 1){
+            console.log("k: " + k);
+            // xp=x*Math.cos(theta) - y*Math.sin(theta)
+            var x = this.paths[0].path[controlPoints[1][0][0]][controlPoints[1][0][1]] - this.paths[i].path[j][k]
+            var y = this.paths[0].path[controlPoints[1][1][0]][controlPoints[1][1][1]] - this.paths[i].path[j][k+1]
+            console.log("x: "+x);
+            console.log("xp: "+(x*(Math.cos(theta)) - y*(Math.sin(theta))) + this.paths[0].path[controlPoints[1][0][0]][controlPoints[1][0][1]]);
+            this.paths[i].path[j][k] = x*(Math.cos(theta)) - y*(Math.sin(theta)) + this.paths[0].path[controlPoints[1][0][0]][controlPoints[1][0][1]]
+          }
+        }
+      }
+    }
   }
 
   /*
