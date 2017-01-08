@@ -158,36 +158,73 @@ class TrackEditor {
   }
   // TODO try to explain all the BS we go through to overcome to translate left top to cartesian coordinates
   setTrackTransformation(controlPoints,left,top){
-    var x1 = this.paths[0].path[controlPoints[1][0][0]][controlPoints[1][0][1]]- left;
-    var y1 = this.paths[0].path[controlPoints[1][1][0]][controlPoints[1][1][1]]-top;
-    console.log("left: "+left);
-    console.log("top: "+top);
-    console.log("x: "+x1);
-    console.log("y: "+y1);
+    // get the vectors from the screen coordinate systems and make them nice to deal with
+    var screenTailX = Math.round(this.paths[0].path[controlPoints[1][0][0]][controlPoints[1][0][1]]);
+    var screenTailY = Math.round(this.paths[0].path[controlPoints[1][1][0]][controlPoints[1][1][1]]);
 
-    // var theta = Math.atan(y1/x1)
-    var theta = Math.atan(x1/y1)
-    console.log("theta: "+theta);
-    // transform all the rest of the points in the track using the rotational matrix, if a scaling component can also be used that is rad
+    var screenStartHeadPosX = Math.round(this.paths[0].path[controlPoints[0][0][0]][controlPoints[0][0][1]]);
+    var screenStartHeadPosY = Math.round(this.paths[0].path[controlPoints[0][1][0]][controlPoints[0][1][1]]);
 
+    var screenEndHeadPosX = left;
+    var screenEndHeadPosY = top;
+
+    // translate them to cartesian
+    var cartTailX = screenTailX - 90;
+    var cartTailY = -screenTailX + 90;
+
+    var cartStartHeadPosX = screenStartHeadPosX - 90;
+    var cartStartHeadPosY = -screenStartHeadPosY + 90;
+
+    var cartEndHeadPosX = screenEndHeadPosX - 90;
+    var cartEndHeadPosY = -screenEndHeadPosY + 90;
+
+    // find component parts of each
+    var x1 = cartStartHeadPosX - cartTailX;
+    var y1 = cartStartHeadPosY - cartTailY;
+
+    var x2 = cartEndHeadPosX - cartTailX;
+    var y2 = cartEndHeadPosY - cartTailY;
+
+    var theta = Math.atan2( x1*y2 - y1*x2, x1*x2 + y1*y2 );
+
+    // then translate everything else to cartesian, rotate it (and eventually scale) then translate back to screen coordinates
     for(var i=0;i<this.paths.length;i++){
-      this.paths[i].path[controlPoints[0][0][0]][controlPoints[0][0][1]] = left;
-      this.paths[i].path[controlPoints[0][1][0]][controlPoints[0][1][1]] = top;
       for(var j=1;j<this.paths[i].path.length;j++){
-        console.log("j: " + j);
         for(var k=1;k<this.paths[i].path[j].length;k++){
           if(k%2 == 1){
-            console.log("k: " + k);
-            // xp=x*Math.cos(theta) - y*Math.sin(theta)
-            var x = this.paths[0].path[controlPoints[1][0][0]][controlPoints[1][0][1]] - this.paths[i].path[j][k]
-            var y = this.paths[0].path[controlPoints[1][1][0]][controlPoints[1][1][1]] - this.paths[i].path[j][k+1]
-            console.log("x: "+x);
-            console.log("xp: "+(x*(Math.cos(theta)) - y*(Math.sin(theta))) + this.paths[0].path[controlPoints[1][0][0]][controlPoints[1][0][1]]);
-            this.paths[i].path[j][k] = x*(Math.cos(theta)) - y*(Math.sin(theta)) + this.paths[0].path[controlPoints[1][0][0]][controlPoints[1][0][1]]
+            // translate to cartesian
+            var x = this.paths[i].path[j][k] - 90;
+            var y = -this.paths[i].path[j][k+1] + 90;
+            // rotate
+            var xp = x*Math.cos(theta) - y*Math.sin(theta);
+            var yp = x*Math.sin(theta) + y*Math.cos(theta);
+            // translate back and assign
+            this.paths[i].path[j][k] = xp + 90;
+            this.paths[i].path[j][k+1] = 90 - yp;
+            if(j == 1 && k == 5){
+              this.joinOneHandle.setLeft(xp + 90);
+              this.joinOneHandle.setTop(90- yp);
+            }
+            if(j == 2 && k == 5){
+              this.joinTwoHandle.setLeft(xp + 90);
+              this.joinTwoHandle.setTop(90- yp);
+            }
           }
         }
       }
+      // set these after otherwise some of the math gets messed up
+      this.paths[i].path[controlPoints[0][0][0]][controlPoints[0][0][1]] = left;
+      this.paths[i].path[controlPoints[0][1][0]][controlPoints[0][1][1]] = top;
     }
+    // TODO figure out how to update the listener position, this is kinda hacky
+    this.canvas.remove(this.joinOneHandle);
+    this.canvas.remove(this.joinTwoHandle);
+    this.joinOneHandle = this.makeMidPoint(this.paths[0].path[1][5], this.paths[0].path[1][6]);
+    this.joinTwoHandle = this.makeMidPoint(this.paths[0].path[2][5], this.paths[0].path[2][6]);
+    this.joinOneHandle.name = "joinOneHandle";
+    this.joinTwoHandle.name = "joinTwoHandle";
+    this.canvas.add(this.joinOneHandle);
+    this.canvas.add(this.joinTwoHandle);
   }
 
   /*
@@ -283,7 +320,7 @@ class ExitTrackEditor extends TrackEditor {
     var opp = x1 - x2;
     var adj = y1 - y2;
     var hyp = Math.sqrt(Math.pow(opp,2)+Math.pow(adj,2));
-    var theta = Math.asin(opp/hyp) * (180/3.14);
+    var theta = Math.asin(opp/hyp) * (180/Math.PI);
     if(adj > 0) {
       theta = 180 - theta
     }
