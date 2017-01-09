@@ -168,42 +168,35 @@ class TrackEditor {
     var screenEndHeadPosX = left;
     var screenEndHeadPosY = top;
 
-    // TODO make screen to cartesian method
     // translate them to cartesian
-    var cartTailX = 0;
-    var cartTailY = 0;
+    var startCoords = this.translateScreenToCartesian(screenStartHeadPosX,screenStartHeadPosY,screenTailX,screenTailY)
+    var endCoords = this.translateScreenToCartesian(screenEndHeadPosX,screenEndHeadPosY,screenTailX,screenTailY)
+    //find theta
+    var theta = Math.atan2( startCoords.x*endCoords.y - startCoords.y*endCoords.x, startCoords.x*endCoords.x + startCoords.y*endCoords.y);
 
-    var cartStartHeadPosX = screenStartHeadPosX - screenTailX;
-    var cartStartHeadPosY = -screenStartHeadPosY + screenTailY;
-
-    var cartEndHeadPosX = screenEndHeadPosX - screenTailX;
-    var cartEndHeadPosY = -screenEndHeadPosY + screenTailY;
-
-    var theta = Math.atan2( cartStartHeadPosX*cartEndHeadPosY - cartStartHeadPosY*cartEndHeadPosX, cartStartHeadPosX*cartEndHeadPosX + cartStartHeadPosY*cartEndHeadPosY );
-
-    // then translate everything else to cartesian, rotate it (and eventually scale) then translate back to screen coordinates
+    // translate all intermediary points to cartesian, rotate them (and eventually scale)
+    // then translate back to screen coordinates
     for(var i=0;i<this.paths.length;i++){
-
       // TODO these loops could be their own method
       for(var j=1;j<this.paths[i].path.length;j++){
         for(var k=1;k<this.paths[i].path[j].length;k++){
           if(k%2 == 1){
             // translate to cartesian
-            var x = this.paths[i].path[j][k] - screenTailX;
-            var y = -this.paths[i].path[j][k+1] + screenTailY;
+            var coords = this.translateScreenToCartesian(this.paths[i].path[j][k],this.paths[i].path[j][k+1],screenTailX,screenTailY)
             // rotate
-            var xp = x*Math.cos(theta) - y*Math.sin(theta);
-            var yp = x*Math.sin(theta) + y*Math.cos(theta);
+            var xp = coords.x*Math.cos(theta) - coords.y*Math.sin(theta);
+            var yp = coords.x*Math.sin(theta) + coords.y*Math.cos(theta);
             // translate back and assign
-            this.paths[i].path[j][k] = xp + screenTailX;
-            this.paths[i].path[j][k+1] = screenTailY - yp;
+            coords = this.translateCartesianToScreen(xp,yp,screenTailX,screenTailY);
+            this.paths[i].path[j][k] = coords.x;
+            this.paths[i].path[j][k+1] = coords.y;
             if(j == 1 && k == 5){
-              this.joinOneHandle.setLeft(xp + screenTailX);
-              this.joinOneHandle.setTop(screenTailY- yp);
+              this.joinOneHandle.setLeft(coords.x);
+              this.joinOneHandle.setTop(coords.y);
             }
             if(j == 2 && k == 5){
-              this.joinTwoHandle.setLeft(xp + screenTailX);
-              this.joinTwoHandle.setTop(screenTailY- yp);
+              this.joinTwoHandle.setLeft(coords.x);
+              this.joinTwoHandle.setTop(coords.y);
             }
           }
         }
@@ -232,6 +225,20 @@ class TrackEditor {
       this.track[capType].left = left;
       this.track[capType].top = top;
     }
+  }
+
+  translateScreenToCartesian(headX,headY,tailX,tailY){
+    return {
+      x: (headX - tailX),
+      y: (-headY + tailY)
+    };
+  }
+
+  translateCartesianToScreen(headX,headY,tailX,tailY){
+    return {
+      x: headX + tailX,
+      y: tailY - headY
+    };
   }
 
 
