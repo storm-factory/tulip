@@ -6,13 +6,7 @@ class TrackEditor {
     this.paths = track.paths;
     this.handleColor = handleColor
     this.canvas = canvas
-    this.joinOneHandle = this.makeMidPoint(this.paths[0].path[1][5], this.paths[0].path[1][6]);
-    this.joinOneHandle.name = "joinOneHandle";
-    this.canvas.add(this.joinOneHandle);
-
-    this.joinTwoHandle = this.makeMidPoint(this.paths[0].path[2][5], this.paths[0].path[2][6]);
-    this.joinTwoHandle.name = "joinTwoHandle";
-    this.canvas.add(this.joinTwoHandle);
+    this.renderJoinHandles();
   }
 
   destroy(){
@@ -168,11 +162,16 @@ class TrackEditor {
     var screenEndHeadPosX = left;
     var screenEndHeadPosY = top;
 
+
     // translate them to cartesian
     var startCoords = this.translateScreenToCartesian(screenStartHeadPosX,screenStartHeadPosY,screenTailX,screenTailY)
     var endCoords = this.translateScreenToCartesian(screenEndHeadPosX,screenEndHeadPosY,screenTailX,screenTailY)
+    // find scaling factor
+    var m1=Math.sqrt(Math.pow(startCoords.x,2)+Math.pow(startCoords.y,2));
+    var m2=Math.sqrt(Math.pow(endCoords.x,2)+Math.pow(endCoords.y,2));
+    var deltaM = m2/m1;
     //find theta
-    var theta = Math.atan2( startCoords.x*endCoords.y - startCoords.y*endCoords.x, startCoords.x*endCoords.x + startCoords.y*endCoords.y);
+    var theta = Math.atan2(startCoords.x*endCoords.y - startCoords.y*endCoords.x, startCoords.x*endCoords.x + startCoords.y*endCoords.y);
 
     // translate all intermediary points to cartesian, rotate them (and eventually scale)
     // then translate back to screen coordinates
@@ -183,6 +182,9 @@ class TrackEditor {
           if(k%2 == 1){
             // translate to cartesian
             var coords = this.translateScreenToCartesian(this.paths[i].path[j][k],this.paths[i].path[j][k+1],screenTailX,screenTailY)
+            //scale
+            coords.x = coords.x*deltaM;
+            coords.y = coords.y*deltaM;
             // rotate
             var xp = coords.x*Math.cos(theta) - coords.y*Math.sin(theta);
             var yp = coords.x*Math.sin(theta) + coords.y*Math.cos(theta);
@@ -206,15 +208,9 @@ class TrackEditor {
       this.paths[i].path[controlPoints[0][1][0]][controlPoints[0][1][1]] = top;
     }
     // TODO figure out how to update the listener position, this is kinda hacky
-    // if nothing else encapsulate it in a method that can be called from here and constructor
     this.canvas.remove(this.joinOneHandle);
     this.canvas.remove(this.joinTwoHandle);
-    this.joinOneHandle = this.makeMidPoint(this.paths[0].path[1][5], this.paths[0].path[1][6]);
-    this.joinTwoHandle = this.makeMidPoint(this.paths[0].path[2][5], this.paths[0].path[2][6]);
-    this.joinOneHandle.name = "joinOneHandle";
-    this.joinTwoHandle.name = "joinTwoHandle";
-    this.canvas.add(this.joinOneHandle);
-    this.canvas.add(this.joinTwoHandle);
+    this.renderJoinHandles();
   }
 
   /*
@@ -241,7 +237,14 @@ class TrackEditor {
     };
   }
 
-
+  renderJoinHandles(){
+    this.joinOneHandle = this.makeMidPoint(this.paths[0].path[1][5], this.paths[0].path[1][6]);
+    this.joinTwoHandle = this.makeMidPoint(this.paths[0].path[2][5], this.paths[0].path[2][6]);
+    this.joinOneHandle.name = "joinOneHandle";
+    this.joinTwoHandle.name = "joinTwoHandle";
+    this.canvas.add(this.joinOneHandle);
+    this.canvas.add(this.joinTwoHandle);
+  }
   /*
     TODO remove if not needed
   */
