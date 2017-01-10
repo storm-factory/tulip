@@ -97,7 +97,7 @@ class Track{
     this.types.offPiste = [{
                                     fill: '',
                                     stroke: '#000',
-                                    strokeWidth: 5,
+                                    strokeWidth: 4,
                                     strokeDashArray: [10, 5],
                                     hasControls: false,
                                     lockMovementX: true,
@@ -108,7 +108,7 @@ class Track{
     this.types.track = [{
                                     fill: '',
                                     stroke: '#000',
-                                    strokeWidth: 5,
+                                    strokeWidth: 4,
                                     strokeDashArray: [],
                                     hasControls: false,
                                     lockMovementX: true,
@@ -119,7 +119,7 @@ class Track{
     this.types.road = [{
                                     fill: '',
                                     stroke: '#000',
-                                    strokeWidth: 8,
+                                    strokeWidth: 6,
                                     strokeDashArray: [],
                                     hasControls: false,
                                     lockMovementX: true,
@@ -131,7 +131,7 @@ class Track{
     this.types.mainRoad = [{
                                     fill: '',
                                     stroke: '#000',
-                                    strokeWidth: 8,
+                                    strokeWidth: 6,
                                     strokeDashArray: [],
                                     hasControls: false,
                                     lockMovementX: true,
@@ -142,7 +142,7 @@ class Track{
                                   {
                                     fill: '',
                                     stroke: '#fff',
-                                    strokeWidth: 6,
+                                    strokeWidth: 4,
                                     strokeDashArray: [],
                                     hasControls: false,
                                     lockMovementX: true,

@@ -107,6 +107,7 @@ var Roadbook = Class({
     // TODO loop until the track type changes
     if(waypointIndex > 0){
       this.waypoints()[waypointIndex-1].changeExitTrackType(type);
+      this.waypoints()[waypointIndex-1].tulip.finishEdit();
     }
   },
 
@@ -118,6 +119,7 @@ var Roadbook = Class({
     // TODO loop until the track type changes
     if((waypointIndex+1 < this.waypoints().length)){
       this.waypoints()[waypointIndex+1].changeEntryTrackType(type);
+      this.waypoints()[waypointIndex+1].tulip.finishEdit();
     }
   },
 

@@ -63,7 +63,12 @@ var Waypoint = Class({
       for(i=0;i<glyphs.length;i++){
         // grab the glyph name from the file name, agnostic to the path.
         this.notification = new Notification(glyphs[i]);
-        app.mapEditor.addWaypointBubble(this.routePointIndex, this.notification.bubble, this.notification.fill)
+        if(this.notification.type == null){
+          this.notification = null
+        }else {
+          app.mapEditor.addWaypointBubble(this.routePointIndex, this.notification.bubble, this.notification.fill)
+        }
+
       }
     }else{
       // see if we need to set a speed zone limit
