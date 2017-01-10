@@ -200,22 +200,11 @@ var App = Class({
   },
 
   attemptGeolocation: function(){
-
     var _this = this;
-    navigator.geolocation.getCurrentPosition(function(position) {
-      var pos = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
-      };
-      _this.setMapCenter(pos);
+    var url = "https://www.googleapis.com/geolocation/v1/geolocate?key="+ api_keys.google_maps;
+    $.post(url,function(data){
+      _this.setMapCenter(data.location);
       _this.setMapZoom(14);
-    }, function(err) {
-      var url = "https://www.googleapis.com/geolocation/v1/geolocate?key="+ api_keys.google_maps;
-      console.log('Geolocation failed, using fallback');
-      $.post(url,function(data){
-        _this.setMapCenter(data.location);
-        _this.setMapZoom(14);
-      });
     });
   },
 
@@ -363,7 +352,9 @@ var App = Class({
     });
 
     // TODO change to object literal lookup
-    $('.track-selector').click(function() {
+    $('.track-selector').click(function(e) {
+      console.log("kerblam!");
+      e.preventDefault();
       if('off-piste-added' == $(this).attr('id')){
         _this.roadbook.changeEditingWaypointAdded('offPiste')
       }else if('track-added' == $(this).attr('id')){
@@ -395,7 +386,9 @@ var App = Class({
       }else if('dcw-exit' == $(this).attr('id')){
         _this.roadbook.changeEditingWaypointExit('dcw')
       }
-      $('#track-selection-modal').foundation('reveal', 'close');
+      if(!e.shiftKey){
+        $('#track-selection-modal').foundation('reveal', 'close');
+      }
     });
 
     /*
