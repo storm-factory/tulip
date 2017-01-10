@@ -112,27 +112,15 @@ class TrackEditor {
     path[2][2] = controlPoints[3];
   }
 
-  // TODO this could be an object literal (maybe)
-  // TODO refactor to be more SOLID/DRY
   // TODO explain the significance of the 2D and 3D arrays and how they are derived from the fabric.js path object
   pointMoving(point){
     var linear;
     if (point.name == "originHandle") {
-      linear = this.checkTrackLinearity();
-
-      this.setTrackTransformation([[[0,1],[0,2]],[[3,5],[3,6]]],point.left,point.top)
-
-      // this.setTrackCurve([[0,1],[0,2]],point.left,point.top);
+      this.transformPath([[[0,1],[0,2]],[[3,5],[3,6]]],point.left,point.top)
       this.setTrackCapPosition("origin", point.left, point.top);
-
     }else if(point.name == "endHandle"){
-      linear = this.checkTrackLinearity();
-
-      this.setTrackTransformation([[[3,5],[3,6]],[[0,1],[0,2]]],point.left,point.top)
-
-      // this.setTrackCurve([[3,5],[3,6]],point.left,point.top);
+      this.transformPath([[[3,5],[3,6]],[[0,1],[0,2]]],point.left,point.top)
       this.setTrackCapPosition("end", point.left, point.top);
-
     } else if(point.name == "joinOneHandle") {
       this.setTrackCurve([[1,5],[1,6]],point.left,point.top);
     } else if(point.name == "joinTwoHandle") {
@@ -151,7 +139,7 @@ class TrackEditor {
     }
   }
   // TODO try to explain all the BS we go through to overcome to translate left top to cartesian coordinates
-  setTrackTransformation(controlPoints,left,top){
+  transformPath(controlPoints,left,top){
     // get the vectors from the screen coordinate systems and make them nice to deal with
     var screenTailX = this.paths[0].path[controlPoints[1][0][0]][controlPoints[1][0][1]];
     var screenTailY = this.paths[0].path[controlPoints[1][1][0]][controlPoints[1][1][1]];
@@ -316,13 +304,22 @@ class ExitTrackEditor extends TrackEditor {
 
   interpolatePath(path){
     super.interpolatePath(path);
-    /*
-      figure out the angle of the end cap USING VECTORS AND TRIG!
-    */
-    var x1 = path[3][5];
-    var y1 = path[3][6];
-    var x2 = path[3][1];
-    var y2 = path[3][2];
+    this.adjustEndAngle();
+  }
+
+  transformPath(controlPoints,left,top){
+    super.transformPath(controlPoints,left,top);
+    this.adjustEndAngle();
+  }
+
+  /*
+    figure out the angle of the end cap USING VECTORS AND TRIG!
+  */
+  adjustEndAngle(){
+    var x1 = this.paths[0].path[3][5];
+    var y1 = this.paths[0].path[3][6];
+    var x2 = this.paths[0].path[3][1];
+    var y2 = this.paths[0].path[3][2];
 
     var opp = x1 - x2;
     var adj = y1 - y2;
