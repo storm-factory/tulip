@@ -353,7 +353,6 @@ var App = Class({
 
     // TODO change to object literal lookup
     $('.track-selector').click(function(e) {
-      console.log("kerblam!");
       e.preventDefault();
       if('off-piste-added' == $(this).attr('id')){
         _this.roadbook.changeEditingWaypointAdded('offPiste')

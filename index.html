@@ -631,14 +631,20 @@
     }
 
     // TODO put in window resizing listener
-    var width = window.innerWidth;
-    var height = window.innerHeight;
-    var hypotenuse = Math.sqrt(Math.pow(width,2)+Math.pow(height,2));
+    function setMapSize(){
+      var width = window.innerWidth;
+      var height = window.innerHeight;
+      var hypotenuse = Math.sqrt(Math.pow(width,2)+Math.pow(height,2));
 
-    $('#map').css('height', hypotenuse);
-    $('#map').css('width', hypotenuse);
-    $('#map').css('left', (width/2)-(hypotenuse/2));
-    $('#map').css('top', (height/2)-(hypotenuse/2));
+      $('#map').css('height', hypotenuse);
+      $('#map').css('width', hypotenuse);
+      $('#map').css('left', (width/2)-(hypotenuse/2));
+      $('#map').css('top', (height/2)-(hypotenuse/2));
+    }
+    setMapSize();
+    $(window).resize(function(){
+      setMapSize();
+    })
   });
   </script>
 </html>
