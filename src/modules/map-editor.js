@@ -476,9 +476,9 @@ var MapEditor = Class({
           this.waypoint = app.roadbook.addWaypoint(_this.addWaypoint(this));
           $('#roadbook').scrollTop(0);
           $('#roadbook').scrollTop(($(this.waypoint.element).offset().top-100));
-          //recompute distances between waypoints
-          _this.updateRoute();
         }
+        //recompute distances between waypoints
+        _this.updateRoute();
       }
     });
 
