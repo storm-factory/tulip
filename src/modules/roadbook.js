@@ -44,7 +44,7 @@ var Roadbook = Class({
        check the exit track of the one before it
        and set this one's exit and entry to have the same track type
     */
-    if(index > 0) {
+    if(index > 0 && (wptData.entryTrackType == undefined)) {
       wptData.entryTrackType = this.waypoints()[index-1].exitTrackType;
       wptData.exitTrackType = wptData.entryTrackType;
     }
@@ -77,6 +77,8 @@ var Roadbook = Class({
       if(point.waypoint){
         var opts = app.mapEditor.addWaypoint(routePoint); //this returns distance opts but if we already have that saved then why do we care?
         opts.tulipJson = point.tulipJson;
+        opts.entryTrackType = point.entryTrackType
+        opts.exitTrackType = point.exitTrackType
         opts.angles.heading = point.heading;
         opts.angles.relativeAngle = undefined;
 

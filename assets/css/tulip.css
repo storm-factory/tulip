@@ -349,6 +349,11 @@ textarea.waypoint-palette{
   display:block;
 }
 
+.track-grid.undo i,
+.glyph-grid.undo i  {
+  transform: scale(-1, 1);
+}
+
 .tl {left: 15; top: 0; border-top-left-radius: 10px;}
 .tm {left: 54px; top: 0;}
 .tr {left: 93px; top: 0; border-top-right-radius: 10px;}

@@ -9,6 +9,7 @@ var MapEditor = Class({
     this.initMap();
     this.initRoute();
     this.initRouteListeners();
+    this.dialog = require('electron').remote.dialog;
     /*
       displayEdge is a instance variable which tracks whether a handle should be shown when the user hovers the mouse over the route.
     */
@@ -536,7 +537,12 @@ var MapEditor = Class({
     });
 
     this.map.addListener('rightclick', function(evt){
-      if(app.canEditMap && !app.pointDeleteMode){
+
+      var autotrace = _this.dialog.showMessageBox({type: "question",
+                                                   buttons: ["Cancel","Ok"],
+                                                  defaultId: 1,
+                                                  message: "About to auto-trace roads to your route, Are you sure?"});
+      if(app.canEditMap && !app.pointDeleteMode && (autotrace == 1)){
         if(_this.routePoints.length >0){
           var startSnap = _this.routePoints.getArray().slice(-1).pop();
           var endSnap = evt.latLng;
