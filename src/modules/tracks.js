@@ -191,6 +191,8 @@ class Track{
     for(var i=0;i<this.paths.length;i++){
       canvas.remove(this.paths[i]);
     }
+    // clear out old values
+    this.paths.length = 0;
 
     var typeOptions = this.types[type];
     for(var i=0;i<typeOptions.length;i++){
@@ -274,6 +276,7 @@ class ExitTrack extends Track {
   }
 
   changeType(type,canvas){
+    console.log("exit track change type");
     super.changeType(type,canvas);
     this.end.bringToFront();
   }

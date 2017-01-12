@@ -37,8 +37,6 @@ var Waypoint = Class({
 
     this.roadbook = roadbook;
     this.routePointIndex = wptJson.routePointIndex == undefined ? null : wptJson.routePointIndex;
-    // console.log("waypointJSON: " + this.routePointIndex + " - " + wptJson.exitTrackType);
-    // console.log("waypoint: " + this.routePointIndex + " - " + this.exitTrackType);
     // TODO refactor to make this one line
     this.notification = wptJson.notification;
     if(this.notification){

@@ -27,6 +27,7 @@ var Tulip = Class({
     this.activeEditors = [];
     this.activeRemovers = [];
     this.addedTrackType = 'track';
+    // TODO should this be checking JSON for this?
     this.exitTrackEdited = false;
     this.initTulip(angle, trackTypes, json);
   },
