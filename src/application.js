@@ -195,6 +195,7 @@ var App = Class({
   initMap: function(){
     this.mapEditor = new MapEditor();
     this.map = this.mapEditor.map;
+    this.mapOptimizer = new MapOptimizer();
     this.placeMapAttribution();
     this.attemptGeolocation();
   },
