@@ -82,6 +82,7 @@ var Roadbook = Class({
         opts.entryTrackType = point.entryTrackType
         opts.exitTrackType = point.exitTrackType
         opts.angles.heading = point.heading;
+        opts.showHeading = point.showHeading;
         opts.angles.relativeAngle = undefined;
 
         opts.notes = point.notes;
@@ -224,6 +225,7 @@ var Roadbook = Class({
       $('#save-roadbook').removeClass('secondary');
       this.currentlyEditingWaypoint = waypoint;
       this.noteTextEditor.setHTML(waypoint.noteHTML());
+      $('#note-editor-container').toggleClass('hideCap',!this.currentlyEditingWaypoint.showHeading());
       this.waypointShowHeading(this.currentlyEditingWaypoint.showHeading());
       app.glyphControls.bindNoteGlyphResizable();
       var latLng = new google.maps.LatLng(waypoint.lat(), waypoint.lng());
@@ -300,7 +302,7 @@ var Roadbook = Class({
           kmFromStart: points[i].waypoint ? points[i].waypoint.kmFromStart() : null,
           kmFromPrev: points[i].waypoint ? points[i].waypoint.kmFromPrev() : null,
           heading: points[i].waypoint ? points[i].waypoint.exactHeading() : null,
-          showHeading: points[i].waypoint ? points[i].waypoint.showHeading : null,
+          showHeading: points[i].waypoint ? points[i].waypoint.showHeading() : null,
           entryTrackType: points[i].waypoint ? points[i].waypoint.entryTrackType : null,
           exitTrackType: points[i].waypoint ? points[i].waypoint.exitTrackType : null,
           notification: points[i].waypoint && points[i].waypoint.notification  ? points[i].waypoint.notification : null,
@@ -335,6 +337,7 @@ var Roadbook = Class({
           kmFromStart: points[i].waypoint.kmFromStart(),
           kmFromPrev: points[i].waypoint.kmFromPrev(),
           heading: points[i].waypoint.exactHeading(),
+          showHeading: points[i].waypoint.showHeading(),
           notes: {
             text: points[i].waypoint.noteHTML(),
           },

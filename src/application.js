@@ -340,6 +340,7 @@ var App = Class({
     });
 
     $('#toggle-heading').change(function(){
+      $('#note-editor-container').toggleClass('hideCap',!_this.roadbook.waypointShowHeading())
       _this.roadbook.currentlyEditingWaypoint.showHeading(_this.roadbook.waypointShowHeading());
     });
 

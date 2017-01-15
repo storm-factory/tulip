@@ -74,6 +74,9 @@ textarea.waypoint-palette{
   position: relative;
   top: -245px;
 }
+#note-editor-container.hideCap {
+  top: -197px;
+}
 #note-editor {
   width: 100%;
   height: 135px;
