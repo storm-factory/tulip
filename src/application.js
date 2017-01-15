@@ -257,7 +257,7 @@ var App = Class({
           alert('You gpx has been exported to the same directory you saved your roadbook')
         });
       } else {
-        alert('You must save your roadbook before you can export GPX tracks');
+        alert('F@#k1ng Kamaz! You must save your roadbook before you can export GPX tracks');
       }
     });
 
@@ -337,6 +337,10 @@ var App = Class({
           _this.mapControls.enableMapInteraction();
         }
       }
+    });
+
+    $('#toggle-heading').change(function(){
+      _this.roadbook.currentlyEditingWaypoint.showHeading(_this.roadbook.waypointShowHeading());
     });
 
     $('.track-grid').click(function(e){

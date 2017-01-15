@@ -11,7 +11,6 @@ class MapOptimizer{
     function showMarkers(){
       _this.showMarkers();
     }
-
     google.maps.event.addListener(app.map, 'zoom_changed', showMarkers);
   }
 

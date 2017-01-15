@@ -222,6 +222,15 @@
                         </datalist>
                       </div>
                     </div>
+                    <div class="row">
+                      <div class="left large-12 column">
+                        Show CAP:
+                        <div class="switch round tiny">
+                          <input id="toggle-heading" type="checkbox" name="toggle-heading" data-bind="checked: waypointShowHeading">
+                          <label for="toggle-heading"></label>
+                        </div>
+                      </div>
+                    </div>
                   </div>
               </div>
             </div>
@@ -254,7 +263,7 @@
       </div>
       <div class='waypoint-note'>
         <p data-bind="html: noteHTML"></p>
-        <div class='heading' >
+        <div class='heading' data-bind="visible: showHeading">
           <label>CAP </label><span data-bind="text: heading"></span>
         </div>
       </div>
@@ -508,6 +517,7 @@
                 <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/sand-pit.svg"></a><p>sand pit</p></li>
                 <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/hole.svg"></a><p>hole</p></li>
                 <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/bump.svg"></a><p>bump</p></li>
+                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/collapse.svg"></a><p>collapse</p></li>
                 <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/compression.svg"></a><p>compression</p></li>
                 <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/dip.svg"></a><p>dip</p></li>
                 <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/ditch.svg"></a><p>ditch</p></li>

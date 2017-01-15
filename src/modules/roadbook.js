@@ -16,6 +16,8 @@ var Roadbook = Class({
     this.totalDistance = ko.observable('0.00');
     this.waypoints = ko.observableArray([]);
 
+
+    this.waypointShowHeading = ko.observable(true);
     /*
       Declare some internal variables
     */
@@ -222,6 +224,7 @@ var Roadbook = Class({
       $('#save-roadbook').removeClass('secondary');
       this.currentlyEditingWaypoint = waypoint;
       this.noteTextEditor.setHTML(waypoint.noteHTML());
+      this.waypointShowHeading(this.currentlyEditingWaypoint.showHeading());
       app.glyphControls.bindNoteGlyphResizable();
       var latLng = new google.maps.LatLng(waypoint.lat(), waypoint.lng());
       app.setMapCenter(latLng);
@@ -263,16 +266,6 @@ var Roadbook = Class({
     return true;
   },
 
-  // DEPRICATED?
-  // finishNameDescEdit: function(){
-  //   if(this.editingNameDesc == true){
-  //     this.editingNameDesc = false;
-  //     $('#roadbook-desc, #roadbook-name').find('a').show('fast')
-  //     $('#roadbook-desc, #roadbook-name').find(':input').hide('fast');
-  //     return true;
-  //   }
-  // },
-
   updateTotalDistance: function(){
     // this.finishWaypointEdit();
     if(this.waypoints().length > 0 ){
@@ -307,6 +300,7 @@ var Roadbook = Class({
           kmFromStart: points[i].waypoint ? points[i].waypoint.kmFromStart() : null,
           kmFromPrev: points[i].waypoint ? points[i].waypoint.kmFromPrev() : null,
           heading: points[i].waypoint ? points[i].waypoint.exactHeading() : null,
+          showHeading: points[i].waypoint ? points[i].waypoint.showHeading : null,
           entryTrackType: points[i].waypoint ? points[i].waypoint.entryTrackType : null,
           exitTrackType: points[i].waypoint ? points[i].waypoint.exitTrackType : null,
           notification: points[i].waypoint && points[i].waypoint.notification  ? points[i].waypoint.notification : null,

@@ -18,18 +18,19 @@ var Waypoint = Class({
     }
   */
   create: function(roadbook, wptJson){
-    this.kmFromStart  = ko.observable(wptJson.distances.kmFromStart);
-    this.kmFromPrev   = ko.observable(wptJson.distances.kmFromPrev);
-    this.exactHeading = ko.observable(wptJson.angles.heading);
-    this.lat = ko.observable(wptJson.lat);
-    this.lng = ko.observable(wptJson.lng);
+    this.kmFromStart    = ko.observable(wptJson.distances.kmFromStart);
+    this.kmFromPrev     = ko.observable(wptJson.distances.kmFromPrev);
+    this.exactHeading   = ko.observable(wptJson.angles.heading);
+    this.lat            = ko.observable(wptJson.lat);
+    this.lng            = ko.observable(wptJson.lng);
 
     this.distFromPrev   = ko.computed(this.computedDistanceFromPrev, this);
     this.totalDistance  = ko.computed(this.computedTotalDistance, this);
     this.heading        = ko.computed(this.computedHeading, this);
 
+    this.showHeading    = ko.observable((wptJson.showHeading == undefined ? true : wptJson.showHeading));
     this.entryTrackType = wptJson.entryTrackType == undefined ? 'track' : wptJson.entryTrackType;
-    this.exitTrackType = wptJson.exitTrackType == undefined ? 'track' : wptJson.exitTrackType;
+    this.exitTrackType  = wptJson.exitTrackType == undefined ? 'track' : wptJson.exitTrackType;
 
     // waypoints don't get any note info when they are added via UI so intialize them to blank
     var text = wptJson.notes == undefined ? '' : wptJson.notes.text;

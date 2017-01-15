@@ -96,7 +96,7 @@ ipcMain.on('print-pdf', (event, arg) => {
         throw error;
       printWindow.close();
 
-      dialog.showMessageBox(mainWindow, {message: "Your PDF has been exported to the same directory you saved your roadbook",buttons: ['ok']})
+      dialog.showMessageBox(mainWindow, {message: "Your PDF has been exported to the same directory you saved your roadbook. Gas a la burra!",buttons: ['ok']})
     });
   });
 });
