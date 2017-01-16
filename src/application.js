@@ -408,5 +408,12 @@ var App = Class({
       path += _this.roadbook.name() == 'Name your roadbook' ? 'Untitled' : _this.roadbook.name().replace(/\s/, '-')
       _this.showSaveDialog('Save roadbook', path)
     });
+
+    window.addEventListener("beforeunload", function (event) {
+      var save = _this.dialog.showMessageBox({message: "Would you like to save before closing? All unsaved changes will be lost.", buttons: ['ok', 'nope'], type: 'question'});
+      if(save == 0){
+        _this.saveRoadBook();
+      }
+    });
   },
 });
