@@ -397,6 +397,22 @@ var App = Class({
     });
 
     /*
+      escape key exits delete modes
+    */
+    $(document).keyup(function(e) {
+      if(e.keyCode == 27){
+        if(_this.roadbook.currentlyEditingWaypoint){
+          _this.roadbook.currentlyEditingWaypoint.tulip.finishRemove();
+        }
+        if(_this.pointDeleteMode == true){
+          var marker = _this.mapEditor.routeMarkers[_this.mapEditor.deleteQueue.pop()];
+          _this.mapEditor.returnPointToNaturalColor(marker);
+          _this.pointDeleteMode = false
+        }
+      }
+    })
+
+    /*
       We're adding IPC listeners in here I guess eh?
 
       This super duper needs to be cleaned up
@@ -410,9 +426,11 @@ var App = Class({
     });
 
     window.addEventListener("beforeunload", function (event) {
-      var save = _this.dialog.showMessageBox({message: "Would you like to save before closing? All unsaved changes will be lost.", buttons: ['ok', 'nope'], type: 'question'});
-      if(save == 0){
-        _this.saveRoadBook();
+      if(_this.roadbook.filePath){
+        var save = _this.dialog.showMessageBox({message: "Would you like to save before closing? All unsaved changes will be lost.", buttons: ['ok', 'nope'], type: 'question'});
+        if(save == 0){
+          _this.saveRoadBook();
+        }
       }
     });
   },
