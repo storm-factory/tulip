@@ -11,7 +11,7 @@ class MapOptimizer{
     function showMarkers(){
       _this.showMarkers();
     }
-    google.maps.event.addListener(app.map, 'zoom_changed', showMarkers);
+    google.maps.event.addListener(app.map, 'idle', showMarkers);
   }
 
   showMarkers(){
@@ -28,7 +28,9 @@ class MapOptimizer{
     var map = app.map;
     for(var i=0;i<markers.length;i++){
       if(bounds.contains(markers[i].getPosition())){
-        markers[i].setMap(map);
+        if(markers[i].getMap() == null){
+          markers[i].setMap(map);
+        }
       }else {
         markers[i].setMap(null);
       }
@@ -41,7 +43,9 @@ class MapOptimizer{
 
     for(var i=0;i<markers.length;i++){
       if(markers[i].waypoint){
-        markers[i].setMap(map);
+        if(markers[i].getMap() == null){
+          markers[i].setMap(map);
+        }
       }else{
         markers[i].setMap(null);
       }
