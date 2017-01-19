@@ -48,6 +48,12 @@ textarea.waypoint-palette{
 #glyph-search-results li a {
   width: 100px;
 }
+#glyph-search-clear {
+  position: relative;
+  left: 97%;
+  top: -45px;
+  cursor: pointer;
+}
 
 #loading {
   display: none;

@@ -25,8 +25,7 @@ var GlyphControls = Class({
     if(!e.shiftKey){
       $('#glyphs').foundation('reveal', 'close');
     }
-    $('#glyph-search').val('');
-    $('#glyph-search-results').html('');
+    $('#glyph-search').focus();
   },
 
   populateResults: function(results){
@@ -62,6 +61,12 @@ var GlyphControls = Class({
         _this.populateResults(results);
       }
     });
+
+    $('#glyph-search-clear').click(function(){
+      $('#glyph-search').val('');
+      $('#glyph-search-results').html('');
+      $('#glyph-search').focus();
+    })
 
     $('.glyph').click(function(e){
       _this.handleGlyphSelectUI(e);
