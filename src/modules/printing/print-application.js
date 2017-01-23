@@ -49,8 +49,11 @@ var PrintApp = Class({
     if(size == "Roll"){
       size = {height: $(document).height()*265, width: $(document).width()*265};
     }
-    if(!(size == "A5")){
+    if((size == "Letter")){
       $('body').css('margin-left', '-60px');
+    }
+    if((size == "Roll")){
+      $('body').css('margin-left', '-30px');
     }
     var data = {'filepath': this.filePath, 'opts': {'pageSize': size, 'marginsType' : '1'}};
 

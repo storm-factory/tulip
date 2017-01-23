@@ -262,7 +262,8 @@ var Roadbook = Class({
       this.noteTextEditor.setHTML('');
       if(!app.canEditMap){
         app.mapControls.reorient();
-        app.mapControls.enableMapInteraction();
+        // app.mapControls.enableMapInteraction();
+        app.mapControls.restoreMapLock();
       }
     }
     return true;

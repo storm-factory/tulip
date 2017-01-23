@@ -326,15 +326,17 @@ var App = Class({
 
     $('#orient-map').click(function(){
       var i = _this.roadbook.currentlyEditingWaypoint.routePointIndex;
+      _this.mapControls.lockedBeforeWaypointEdit = !app.canEditMap;
+      !app.canEditMap ? _this.mapControls.enableMapInteraction() : null;
       if(i > 0){
         var heading = google.maps.geometry.spherical.computeHeading(_this.mapEditor.routePoints.getAt(i-1), _this.mapEditor.routePoints.getAt(i));
         if(_this.mapControls.rotation == 0){
-          _this.mapControls.disableMapInteraction();
+          _this.mapControls.disableMapInteraction(); //Do we need this?
           _this.mapControls.rotation = 360-heading
           _this.mapControls.rotateNumDegrees(_this.mapControls.rotation);
         }else {
           _this.mapControls.reorient();
-          _this.mapControls.enableMapInteraction();
+          _this.mapControls.enableMapInteraction(); //Do we need this?
         }
       }
     });
@@ -427,9 +429,10 @@ var App = Class({
 
     window.addEventListener("beforeunload", function (event) {
       if(_this.roadbook.filePath){
+        var rb = JSON.stringify(this.roadbook.statefulJSON(), null, 2);
         var save = _this.dialog.showMessageBox({message: "Would you like to save before closing? All unsaved changes will be lost.", buttons: ['ok', 'nope'], type: 'question'});
         if(save == 0){
-          _this.saveRoadBook();
+          _this.fs.writeFile(_this.roadbook.filePath, rb, function (err) {});
         }
       }
     });

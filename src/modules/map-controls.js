@@ -6,26 +6,33 @@ var MapControls = Class({
 
   create: function() {
     this.rotation = 0;
+    this.lockedBeforeWaypointEdit = false;
     this.initListeners();
   },
 
+  // TODO depricate
   disableMapInteraction: function(){
     // app.canEditMap = false;
-    app.map.setOptions({draggable: false});
+    // app.map.setOptions({draggable: false});
     $('#draw-route').click();
-    $('#draw-route').hide();
-    $('#remove-route').hide();
-    $('.map-rotate-notice').show();
-    $('.map-rotate-notice').fadeTo('slow', 0.25).fadeTo('slow', 1.0);
+    // $('#draw-route').hide();
+    // $('#remove-route').hide();
+    // $('.map-rotate-notice').show();
+    // $('.map-rotate-notice').fadeTo('slow', 0.25).fadeTo('slow', 1.0);
   },
-
+  // TODO depricate
   enableMapInteraction: function(){
     // app.canEditMap = true;
-    app.map.setOptions({draggable: true});
+    // app.map.setOptions({draggable: true});
     $('#draw-route').click();
-    $('#draw-route').show('slow');
-    $('#remove-route').show('slow');
-    $('.map-rotate-notice').hide();
+    // $('#draw-route').show('slow');
+    // $('#remove-route').show('slow');
+    // $('.map-rotate-notice').hide();
+  },
+
+  restoreMapLock: function(){
+    console.log(this.lockedBeforeWaypointEdit);
+    // TODO do the thing
   },
 
   zin: function(){
@@ -38,11 +45,18 @@ var MapControls = Class({
 
   rotateNumDegrees: function(degrees){
     $('#map').css({'-webkit-transform' : 'rotate('+ degrees +'deg)'});
+    $('#draw-route').hide();
+    $('.map-rotate-notice').show();
+    $('.map-rotate-notice').fadeTo('slow', 0.25).fadeTo('slow', 1.0);
+    app.map.setOptions({draggable: false});
   },
 
   reorient: function(){
     this.rotation = 0;
     $('#map').css({'-webkit-transform' : 'rotate(0deg)'});
+    $('.map-rotate-notice').hide();
+    $('#draw-route').show('slow');
+    app.map.setOptions({draggable: true});
   },
 
   initListeners: function(){
@@ -99,8 +113,10 @@ var MapControls = Class({
       for(i=0;i<markers.length;i++){
         if(app.canEditMap){
           markers[i].setDraggable(true);
+          this.lockedBeforeWaypointEdit = false;
         } else {
           markers[i].setDraggable(false);
+          this.lockedBeforeWaypointEdit = true;
         }
       }
     });
