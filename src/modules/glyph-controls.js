@@ -128,7 +128,9 @@ var GlyphControls = Class({
     var src = $(element).attr('src');
 
     if(this.addToNote){
-      app.roadbook.noteTextEditor.insertEmbed(app.roadbook.noteTextEditor.getLength(),'image',src);
+      // app.roadbook.noteTextEditor.insertEmbed(app.roadbook.noteTextEditor.getLength(),'image',src);
+      app.roadbook.noteTextEditor.append($('<div>').html($('<img>').attr('src', src).addClass('normal')));
+
       this.bindNoteGlyphResizable();
     } else {
       app.roadbook.currentlyEditingWaypoint.tulip.addGlyph(app.glyphPlacementPosition,src);
