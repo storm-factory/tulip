@@ -196,16 +196,17 @@
                     <div id="note-editor-container">
                       <div id="note-toolbar" style="height:40px;margin-top: 10px;">
                         <!-- Add font size dropdown -->
-                        <select class="ql-size" style="width:55%;float: left;">
+                        <select class="note-size" style="width:55%;float: left;">
                           <option value="13px">Small</option>
                           <option value="18px" selected>Normal</option>
                           <option value="24px">Large</option>
                           <option value="32px">Huge</option>
                         </select>
                         <!-- Add a bold button -->
-                        <button class="ql-bold tiny secondary" style="margin-top:2px;margin-left:12px;"><i class="fi-bold"></i></button>
+                        <button class="note-bold tiny secondary" style="margin-top:2px;margin-left:12px;"><i class="fi-bold"></i></button>
                       </div>
-                      <div id="note-editor" contenteditable="true"></div>
+                      <div id="note-editor" contenteditable="true">
+                      </div>
                     </div>
                     <!--
                        END This gets repositioned over the waypoint note in edit mode
@@ -606,8 +607,7 @@
   <script src="assets/libs/knockout-3.4.0.js"></script>
   <script src='assets/libs/fabric.min.js'></script>
   <script src='assets/libs/simplify.js'></script>
-  <!-- <script src='assets/libs/quill/quill.min.js'></script> -->
-  <!-- <script src="http://cdn.quilljs.com/1.2.0/quill.js"></script> -->
+  <script src='assets/libs/quill/quill.min.js'></script>
   <script src='assets/libs/foundation-5.5.3/js/foundation.min.js'></script>
   <script src='assets/libs/foundation-5.5.3/js/foundation/foundation.tooltip.js'></script>
   <script src='assets/libs/foundation-5.5.3/js/vendor/modernizr.js'></script>

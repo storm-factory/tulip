@@ -92,40 +92,51 @@ textarea.waypoint-palette{
   display: inline-block;
   overflow: hidden;
 }
-
-#note-editor div div img.resizable {
+/*#note-editor div {
+  float: left;
+}*/
+#note-editor div img.resizable,
+#note-editor img.resizable {
   border: 3px solid #ff4200;
 }
 
-#note-editor div img:active {
+#note-editor div img:active,
+#note-editor img:active {
   cursor: -webkit-grabbing;
 }
 
-#note-editor div img {
+#note-editor div img,
+#note-editor img {
   cursor: -webkit-grab;
 }
 
 .waypoint-note p div img.small,
-#note-editor div img.small {
+.waypoint-note p img.small,
+#note-editor div img.small,
+#note-editor img.small {
   height: 35px;
 }
 
 .waypoint-note p div img,
+.waypoint-note p img,
 #note-editor div img,
-#note-editor div img.normal {
-  /*width: 55px;*/
+#note-editor img,
+#note-editor div img.normal,
+#note-editor img.normal {
   height: 55px;
 }
 
 .waypoint-note p div img.large,
-#note-editor div img.large {
-  /*width: 75px;*/
+.waypoint-note p img.large,
+#note-editor div img.large,
+#note-editor img.large {
   height: 75px;
 }
 
 .waypoint-note p div img.huge,
-#note-editor div img.huge {
-  /*width: 95px;*/
+.waypoint-note p img.huge,
+#note-editor div img.huge,
+#note-editor img.huge {
   height: 95px;
 }
 

@@ -28,7 +28,7 @@ var Roadbook = Class({
       and also for the roadbook description
     */
     this.initWaypointNoteEditor();
-    // this.descriptionInputListener();
+    this.descriptionInputListener();
   },
 
   /*
@@ -186,10 +186,10 @@ var Roadbook = Class({
   */
   initWaypointNoteEditor: function(){
     this.noteTextEditor = $('#note-editor');
-    
+
     var _this = this;
     this.noteTextEditor.on('text-change', function() {
-      $('#note-editor div img').removeClass('resizable');
+      $('#note-editor img').removeClass('resizable');
       $('#note-glyph-range').val(1);
       /*
         Here we check the note section for WPM glyphs, !!! glyphs, and eventually speed zone glyphs

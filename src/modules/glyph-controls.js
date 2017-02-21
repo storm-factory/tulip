@@ -101,7 +101,7 @@ var GlyphControls = Class({
     $('#note-glyph-range').change(function(e){
       var sizes = {0: 'small', 1: 'normal', 2: 'large', 3: 'huge'}
       var size = sizes[$(this).val()];
-      var images = $('#note-editor div.ql-editor img.resizable')
+      var images = $('#note-editor img.resizable')
       images.removeClass();
       images.addClass(size);
       images.addClass('resizable');
@@ -109,12 +109,12 @@ var GlyphControls = Class({
   },
 
   bindNoteGlyphResizable: function(){
-    $('#note-editor div.ql-editor img').unbind();
-    $('#note-editor div.ql-editor img').click(function(){
+    $('#note-editor img').unbind();
+    $('#note-editor img').click(function(){
       var size = $(this).attr('class');
       size = ((size !== undefined) ? size.replace('resizable', '').trim() : 'normal');
       size = ((size == '') ? 'normal' : size);
-      if($('#note-editor div.ql-editor img.resizable').length != $('#note-editor div.ql-editor img.resizable.'+size).length){
+      if($('#note-editor img.resizable').length != $('#note-editor img.resizable.'+size).length){
         $('#note-glyph-range').val(1);
       }else {
         var sizes = {'small':0, 'normal':1, 'large':2, 'huge':3}
@@ -128,8 +128,7 @@ var GlyphControls = Class({
     var src = $(element).attr('src');
 
     if(this.addToNote){
-      // app.roadbook.noteTextEditor.insertEmbed(app.roadbook.noteTextEditor.getLength(),'image',src);
-      app.roadbook.noteTextEditor.append($('<div>').html($('<img>').attr('src', src).addClass('normal')));
+      app.roadbook.noteTextEditor.append($('<img>').attr('src', src).addClass('normal'));
 
       this.bindNoteGlyphResizable();
     } else {
