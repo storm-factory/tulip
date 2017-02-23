@@ -78,10 +78,12 @@ textarea.waypoint-palette{
 
 #note-editor-container {
   position: relative;
-  top: -245px;
+  /*top: -245px;*/
+  top: -185px;
 }
 #note-editor-container.hideCap {
-  top: -197px;
+  /*top: -197px;*/
+  top: -137px;
 }
 #note-editor {
   width: 100%;
@@ -95,7 +97,7 @@ textarea.waypoint-palette{
 /*#note-editor div {
   float: left;
 }*/
-#note-editor div img.resizable,
+/*#note-editor div img.resizable,
 #note-editor img.resizable {
   border: 3px solid #ff4200;
 }
@@ -108,7 +110,7 @@ textarea.waypoint-palette{
 #note-editor div img,
 #note-editor img {
   cursor: -webkit-grab;
-}
+}*/
 
 .waypoint-note p div img.small,
 .waypoint-note p img.small,

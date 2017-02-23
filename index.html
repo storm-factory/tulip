@@ -194,17 +194,17 @@
                       START This gets repositioned over the waypoint note in edit mode
                     -->
                     <div id="note-editor-container">
-                      <div id="note-toolbar" style="height:40px;margin-top: 10px;">
+                      <!-- <div id="note-toolbar" style="height:40px;margin-top: 10px;"> -->
                         <!-- Add font size dropdown -->
-                        <select class="note-size" style="width:55%;float: left;">
+                        <!-- <select class="note-size" style="width:55%;float: left;">
                           <option value="13px">Small</option>
                           <option value="18px" selected>Normal</option>
                           <option value="24px">Large</option>
                           <option value="32px">Huge</option>
-                        </select>
+                        </select> -->
                         <!-- Add a bold button -->
-                        <button class="note-bold tiny secondary" style="margin-top:2px;margin-left:12px;"><i class="fi-bold"></i></button>
-                      </div>
+                        <!-- <button class="note-bold tiny secondary" style="margin-top:2px;margin-left:12px;"><i class="fi-bold"></i></button> -->
+                      <!-- </div> -->
                       <div id="note-editor" contenteditable="true">
                       </div>
                     </div>
@@ -214,12 +214,12 @@
                     <div class="row">
                       <div class="left large-12 column glyph-selection note-selection">
                         <div class="note-grid" data-target="add"><i class="fi-plus"></i></i></div>
-                        <input type="range" min="0" max="3" value="1" id="note-glyph-range" style="margin-top:10px;width:60%;float: right;" list="note-glyph-sizes">
+                        <input type="range" min="3" max="6" value="4" id="note-glyph-range" style="margin-top:10px;width:60%;float: right;" list="note-glyph-sizes">
                         <datalist id="note-glyph-sizes">
-                        	<option>0</option>
-                        	<option>1</option>
-                        	<option>2</option>
                         	<option>3</option>
+                        	<option>4</option>
+                        	<option>5</option>
+                        	<option>6</option>
                         </datalist>
                       </div>
                     </div>

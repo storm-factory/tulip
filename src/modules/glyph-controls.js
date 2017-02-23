@@ -99,12 +99,10 @@ var GlyphControls = Class({
     });
 
     $('#note-glyph-range').change(function(e){
-      var sizes = {0: 'small', 1: 'normal', 2: 'large', 3: 'huge'}
+      document.execCommand('fontSize',null,$(this).val());
+      var sizes = {3: 'small', 4: 'normal', 5: 'large', 6: 'huge'}
       var size = sizes[$(this).val()];
-      var images = $('#note-editor img.resizable')
-      images.removeClass();
-      images.addClass(size);
-      images.addClass('resizable');
+      _this.doMagic(size);
     });
   },
 
@@ -122,6 +120,37 @@ var GlyphControls = Class({
       }
       $(this).toggleClass("resizable");
     });
+  },
+
+  doMagic: function(size){
+    // this wraps images in a font tag which makes them look weird
+
+    // NOTE this works good for images
+    var sel = window.getSelection();
+    var images = $('#note-editor img')
+
+    for(var i=0;i<images.length;i++){
+      if(sel.containsNode(images[i])){
+        $(images[i]).removeClass();
+        $(images[i]).addClass(size);
+        // $(images[i]).unwrap(); TODO maybe do this when you close the editor
+      }
+    }
+
+    // try{var frag=sel.getRangeAt(0).cloneContents()}catch(e){return(false);}
+    // var tempspan = document.createElement("span");
+    // tempspan.appendChild(frag);
+    // // console.log(sel.getRangeAt(0));
+    // window.selnodes = tempspan.childNodes;
+    //
+    // for(var i=0;i<selnodes.length;i++){
+    //     if (typeof selnodes[i].tagName !== 'undefined'){
+    //       var image = $(selnodes[i]);
+    //       console.log(image);
+    //       // image.removeClass();
+    //       // image.addClass(size);
+    //     }
+    // }
   },
 
   addGlyphToInstruction: function(element){
