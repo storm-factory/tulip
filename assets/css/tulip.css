@@ -3,8 +3,15 @@
   src:url(../fonts/bellybeans.ttf);
 }
 a.track-selector {
-  height: 40px !important;
+  height: 25px !important;
+  background-color: #fff !important;
+  margin: 0
 }
+
+a.track-selector.active {
+  background-color: #008CBA !important;
+}
+
 h2 {
   font-family: bellybeans;
   font-size: 1.5rem !important;
@@ -342,8 +349,17 @@ textarea.waypoint-palette{
   background-color: rgba(255,144,0,1);
 }
 
+#waypoint-palette .switch {
+  margin-bottom: 0;
+}
+
+
+ul.track-selection li.accordion-navigation a {
+  padding: 0.25rem;
+}
+
 .track-selection, .glyph-selection {min-height: 130px;}
-.glyph-selection.note-selection {min-height: 40px;margin-bottom: 5px;}
+.note-glyph-selection {min-height: 40px;margin-bottom: 5px;}
 .track-grid, .glyph-grid {
   width: 40px;
   height: 40px;
@@ -416,6 +432,10 @@ nav.top-bar {
 
 .total-distance div {
   margin-top: 20px
+}
+
+.hidden {
+  visibility: hidden;
 }
 
 .waypoint {
