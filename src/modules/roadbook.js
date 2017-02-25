@@ -225,7 +225,7 @@ var Roadbook = Class({
       this.noteTextEditor.html(waypoint.noteHTML());
       $('#note-editor-container').toggleClass('hideCap',!this.currentlyEditingWaypoint.showHeading());
       this.waypointShowHeading(this.currentlyEditingWaypoint.showHeading());
-      app.glyphControls.bindNoteGlyphResizable();
+      // app.glyphControls.bindNoteGlyphResizable();
       var latLng = new google.maps.LatLng(waypoint.lat(), waypoint.lng());
       app.setMapCenter(latLng);
       if(app.getMapZoom() < 18){
@@ -247,7 +247,6 @@ var Roadbook = Class({
     if(this.currentlyEditingWaypoint !== null){
       $('.waypoint.row').show();
       $('#waypoint-palette').find('.note-tools').append($('#note-editor-container'));
-      $('#note-editor div.ql-editor img').removeClass('resizable');
       $('#waypoint-palette').slideUp('slow');
       // TODO make into waypoint function
       $('#roadbook').css('padding-bottom', '150%');

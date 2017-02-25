@@ -54,8 +54,11 @@ var App = Class({
       initialize UI listeners
     */
     this.initListeners();
+    // TODO singletons are bad mmmmkay. Refactor to ES6 syntax
     this.mapControls = MapControls.instance();
     this.glyphControls = GlyphControls.instance();
+
+    this.noteControls = new NoteControls();
   },
 
   /*
@@ -393,9 +396,11 @@ var App = Class({
       }else if('dcw-exit' == $(this).attr('id')){
         _this.roadbook.changeEditingWaypointExit('dcw')
       }
-      if(!e.shiftKey){
-        $('#track-selection-modal').foundation('reveal', 'close');
-      }
+    });
+
+    $('[name="toggle-insert-type"]').change(function(){
+      $('.track-selection').toggleClass('hidden');
+      $('.glyph-selection').toggleClass('hidden');
     });
 
     /*

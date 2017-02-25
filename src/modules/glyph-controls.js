@@ -98,59 +98,12 @@ var GlyphControls = Class({
       return false
     });
 
-    $('#note-glyph-range').change(function(e){
-      document.execCommand('fontSize',null,$(this).val());
-      var sizes = {3: 'small', 4: 'normal', 5: 'large', 6: 'huge'}
-      var size = sizes[$(this).val()];
-      _this.doMagic(size);
-    });
-  },
-
-  bindNoteGlyphResizable: function(){
-    $('#note-editor img').unbind();
-    $('#note-editor img').click(function(){
-      var size = $(this).attr('class');
-      size = ((size !== undefined) ? size.replace('resizable', '').trim() : 'normal');
-      size = ((size == '') ? 'normal' : size);
-      if($('#note-editor img.resizable').length != $('#note-editor img.resizable.'+size).length){
-        $('#note-glyph-range').val(1);
-      }else {
-        var sizes = {'small':0, 'normal':1, 'large':2, 'huge':3}
-        $('#note-glyph-range').val(sizes[size]);
-      }
-      $(this).toggleClass("resizable");
-    });
-  },
-
-  doMagic: function(size){
-    // this wraps images in a font tag which makes them look weird
-
-    // NOTE this works good for images
-    var sel = window.getSelection();
-    var images = $('#note-editor img')
-
-    for(var i=0;i<images.length;i++){
-      if(sel.containsNode(images[i])){
-        $(images[i]).removeClass();
-        $(images[i]).addClass(size);
-        // $(images[i]).unwrap(); TODO maybe do this when you close the editor
-      }
-    }
-
-    // try{var frag=sel.getRangeAt(0).cloneContents()}catch(e){return(false);}
-    // var tempspan = document.createElement("span");
-    // tempspan.appendChild(frag);
-    // // console.log(sel.getRangeAt(0));
-    // window.selnodes = tempspan.childNodes;
-    //
-    // for(var i=0;i<selnodes.length;i++){
-    //     if (typeof selnodes[i].tagName !== 'undefined'){
-    //       var image = $(selnodes[i]);
-    //       console.log(image);
-    //       // image.removeClass();
-    //       // image.addClass(size);
-    //     }
-    // }
+    // $('#note-glyph-range').change(function(e){
+    //   document.execCommand('fontSize',null,$(this).val());
+    //   var sizes = {3: 'small', 4: 'normal', 5: 'large', 6: 'huge'}
+    //   var size = sizes[$(this).val()];
+    //   _this.doMagic(size);
+    // });
   },
 
   addGlyphToInstruction: function(element){
@@ -158,8 +111,6 @@ var GlyphControls = Class({
 
     if(this.addToNote){
       app.roadbook.noteTextEditor.append($('<img>').attr('src', src).addClass('normal'));
-
-      this.bindNoteGlyphResizable();
     } else {
       app.roadbook.currentlyEditingWaypoint.tulip.addGlyph(app.glyphPlacementPosition,src);
     }

@@ -185,7 +185,7 @@
                   </div>
                   <div class="large-4 column selection-label">
                     <h5>
-                      <span data-tooltip aria-haspopup="true" class="has-tip" title="Add glyphs to the the note section using the button below. Click on glyphs to resize them using the slider below. Note text can be edited by typing directly into the note section and modified with the controls above">
+                      <span data-tooltip aria-haspopup="true" class="has-tip" title="Insert glyphs into the note and modify glyphs and text using the buttons and slider">
                         Waypoint notes
                       </span>
                     </h5>
@@ -311,20 +311,28 @@
                     -->
                     <div class="row">
                       <div class="left large-12 column note-glyph-selection">
-                        Insert into note
-                        <div class="note-grid" data-target="add" style="width:100%;"><i class="fi-plus"></i></i></div>
+                        <span data-tooltip aria-haspopup="true" class="has-tip" title="Click to add glyphs to the end of the note.">
+                          Insert glyph
+                        </span>
+                        <div class="note-grid" data-target="add"><i class="fi-plus"></i></i></div>
                       </div>
                     </div>
                     <div class="row">
                       <div class="left large-12 column">
-                        Resize selection
-                        <input type="range" min="3" max="6" value="4" id="note-glyph-range" style="margin-top:10px;width:100%;" list="note-glyph-sizes">
+                        <span data-tooltip aria-haspopup="true" class="has-tip" title="Use the slider to resize selected glyhs and text. Click the style buttons to restyle selected text.">
+                          Modify selection
+                        </span>
+                        <input type="range" min="3" max="6" value="4" id="note-selection-size-range" style="margin-top:10px;width:100%;" list="note-glyph-sizes">
                         <datalist id="note-glyph-sizes">
                         	<option>3</option>
                         	<option>4</option>
                         	<option>5</option>
                         	<option>6</option>
                         </datalist>
+
+                        <button id="note-selection-bold" class="tiny secondary"><i class="fi-bold"></i></button>
+                        <button id="note-selection-italic" class="tiny secondary "><i class="fi-italic"></i></button>
+                        <button id="note-selection-underline" class="tiny secondary"><i class="fi-underline"></i></button>
                       </div>
                     </div>
                   </div>
@@ -639,6 +647,7 @@
   <script src='src/modules/map-controls.js'></script>
   <script src='src/modules/map-viewport-optimizer.js'></script>
   <script src='src/modules/glyph-controls.js'></script>
+  <script src='src/modules/note-controls.js'></script>
   <script src='src/modules/tracks.js'></script>
   <script src='src/modules/track-editors.js'></script>
   <script src='src/modules/track-remover.js'></script>
