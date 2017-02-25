@@ -451,7 +451,7 @@ nav.top-bar {
   overflow: hidden;
   word-wrap: break-word;
   line-height: 1;
-  font-size: 13px;
+  font-size: medium;
 }
 
 .waypoint-tulip {

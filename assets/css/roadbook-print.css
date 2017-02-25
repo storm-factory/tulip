@@ -175,7 +175,7 @@ body {
 }
 .waypoint-note p {
   height: 135px;
-  font-size: 13px;
+  font-size: medium;
   width: 100%;
   margin: 0;
   overflow: hidden;

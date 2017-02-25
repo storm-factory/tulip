@@ -396,6 +396,8 @@ var App = Class({
       }else if('dcw-exit' == $(this).attr('id')){
         _this.roadbook.changeEditingWaypointExit('dcw')
       }
+      $('.track-selector').removeClass('active');
+      $(this).addClass('active');
     });
 
     $('[name="toggle-insert-type"]').change(function(){
@@ -430,6 +432,22 @@ var App = Class({
       var path = arg+'/';
       path += _this.roadbook.name() == 'Name your roadbook' ? 'Untitled' : _this.roadbook.name().replace(/\s/, '-')
       _this.showSaveDialog('Save roadbook', path)
+    });
+
+    this.ipc.on('save-roadbook', function(event, arg){
+      _this.saveRoadBook();
+    });
+
+    this.ipc.on('save-roadbook-as', function(event, arg){
+      _this.saveRoadBookAs();
+    });
+
+    this.ipc.on('open-roadbook', function(event, arg){
+      _this.openRoadBook();
+    });
+
+    this.ipc.on('reload-roadbook', function(event, arg){
+      location.reload();
     });
 
     window.addEventListener("beforeunload", function (event) {

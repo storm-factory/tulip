@@ -1,12 +1,7 @@
 const ipcMain = require('electron').ipcMain;
 const fs = require('fs');
+const {electron, Menu,app,BrowserWindow,dialog} = require('electron');
 
-const electron = require('electron');
-// Module to control application life.
-const {app} = electron;
-// Module to create native browser window.
-const {BrowserWindow} = electron;
-const {dialog} = electron;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -37,7 +32,58 @@ app.on('activate', () => {
   }
 });
 
+function saveRoadBook(){
+  mainWindow.webContents.send('save-roadbook');
+}
+function saveRoadBookAs(){
+  mainWindow.webContents.send('save-roadbook-as');
+}
+function openRoadBook(){
+  mainWindow.webContents.send('open-roadbook');
+}
+function reloadRoadBook(){
+  mainWindow.webContents.send('reload-roadbook');
+}
+
+
 function createWindow () {
+  const template = [
+    {label: "Tulip",
+    submenu: [
+      { label: "Quit", accelerator: "CmdOrCtrl+Q", click: function() { app.quit(); }},
+      { label: "Save", accelerator: "CmdOrCtrl+S", click: function() { saveRoadBook(); }},
+      { label: "Save As", accelerator: "CmdOrCtrl+Shift+S", click: function() { saveRoadBookAs(); }},
+      { label: "Open", accelerator: "CmdOrCtrl+O", click: function() { openRoadBook(); }}
+    ]},
+    {label: "Edit",
+    submenu: [
+      { label: "Undo text", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
+      { label: "Redo text", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
+      { type: "separator" },
+      { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
+      { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
+      { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
+      { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
+    ]
+    },
+    {label: "View",
+    submenu: [
+      { label: "Reload", accelerator: "CmdOrCtrl+R", click: function() { reloadRoadBook(); }},
+      {
+        label: 'Toggle Developer Tools',
+        accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
+        click (item, focusedWindow) {
+          if (focusedWindow) focusedWindow.webContents.toggleDevTools()
+        }
+      },
+    ]
+    }
+
+  ];
+
+  const menu = Menu.buildFromTemplate(template)
+  Menu.setApplicationMenu(menu)
+
   // Create the browser window.
   mainWindow = new BrowserWindow({width: 1500, height: 1000, 'min-height': 700});
 

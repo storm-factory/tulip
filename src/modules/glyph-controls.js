@@ -97,13 +97,6 @@ var GlyphControls = Class({
       setTimeout(function() { $('#glyph-search').focus(); }, 600); //we have to wait for the modal to be visible before we can assign focus
       return false
     });
-
-    // $('#note-glyph-range').change(function(e){
-    //   document.execCommand('fontSize',null,$(this).val());
-    //   var sizes = {3: 'small', 4: 'normal', 5: 'large', 6: 'huge'}
-    //   var size = sizes[$(this).val()];
-    //   _this.doMagic(size);
-    // });
   },
 
   addGlyphToInstruction: function(element){
