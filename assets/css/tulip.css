@@ -2,13 +2,15 @@
   font-family:bellybeans;
   src:url(../fonts/bellybeans.ttf);
 }
-a.track-selector {
+a.added-track-selector,
+a.entry-track-selector,
+a.exit-track-selector {
   height: 25px !important;
   background-color: #fff !important;
   margin: 0
 }
 
-a.track-selector.active {
+a.added-track-selector.active {
   background-color: #008CBA !important;
 }
 
@@ -24,6 +26,8 @@ canvas {
   width: 180px;
   height: 180px;
 }
+div.switch label {box-shadow: 2px 2px 5px -2px rgba(0,0,0,0.60);}
+a.button {box-shadow: 2px 2px 5px -2px rgba(0,0,0,0.60);}
 aside {
   padding:15px;
 }

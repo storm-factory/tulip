@@ -106,11 +106,16 @@ var App = Class({
     });
   },
 
-  exportGPX: function(callback){
-    var gpx = this.io.exportGPX();
-    var filename = this.roadbook.filePath.replace('tlp','gpx');
-    this.fs.writeFile(filename, gpx, function (err) {});
-    callback();
+  exportGPX: function(){
+    if(this.canExport()){
+      var gpx = this.io.exportGPX();
+      var filename = this.roadbook.filePath.replace('tlp','gpx');
+      this.fs.writeFile(filename, gpx, function (err) {});
+      $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
+      alert('You gpx has been exported to the same directory you saved your roadbook');
+    } else {
+      alert('F@#k1ng Kamaz! You must save your roadbook before you can export GPX tracks');
+    }
   },
 
   importGPX: function(){
@@ -129,9 +134,13 @@ var App = Class({
     });
   },
 
-  printRoadbook: function(callback){
-    this.ipc.send('ignite-print',app.roadbook.statelessJSON());
-    callback();
+  printRoadbook: function(){
+    if(this.canExport()){
+      $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
+      this.ipc.send('ignite-print',app.roadbook.statelessJSON());
+    } else {
+      alert('You must save your roadbook before you can export it as a PDF');
+    }
   },
 
   saveRoadBook: function(){
@@ -231,6 +240,14 @@ var App = Class({
     });
   },
 
+  toggleRoadbook: function(){
+    $('.roadbook-container').toggleClass('collapsed');
+    $('.roadbook-container').toggleClass('expanded');
+
+    $('#toggle-roadbook i').toggleClass('fi-arrow-down');
+    $('#toggle-roadbook i').toggleClass('fi-arrow-up');
+  },
+
   /*
     ---------------------------------------------------------------------------
     Roadbook Listeners
@@ -245,23 +262,12 @@ var App = Class({
     });
 
     $('#toggle-roadbook').click(function(){
-      $('.roadbook-container').toggleClass('collapsed');
-      $('.roadbook-container').toggleClass('expanded');
-
-      $('#toggle-roadbook i').toggleClass('fi-arrow-down');
-      $('#toggle-roadbook i').toggleClass('fi-arrow-up');
+      _this.toggleRoadbook();
       $(this).blur();
     });
 
     $('#export-gpx').click(function(){
-      if(_this.canExport()){
-        _this.exportGPX(function(){
-          $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
-          alert('You gpx has been exported to the same directory you saved your roadbook')
-        });
-      } else {
-        alert('F@#k1ng Kamaz! You must save your roadbook before you can export GPX tracks');
-      }
+      _this.exportGPX();
     });
 
     $('#new-roadbook').click(function(){
@@ -274,13 +280,7 @@ var App = Class({
     });
 
     $('#print-roadbook').click(function(){
-      if(_this.canExport()){
-        _this.printRoadbook(function(){
-          $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
-        });
-      } else {
-        alert('You must save your roadbook before you can export it as a PDF');
-      }
+      _this.printRoadbook();
     });
 
     $('#save-roadbook').click(function(e){
@@ -362,8 +362,8 @@ var App = Class({
       _this.roadbook.currentlyEditingWaypoint.tulip.addTrack(angle);
     });
 
-    // TODO change to object literal lookup
-    $('.track-selector').click(function(e) {
+    // TODO change to object literal lookup, split into three methods for each category
+    $('.added-track-selector').click(function(e) {
       e.preventDefault();
       if('off-piste-added' == $(this).attr('id')){
         _this.roadbook.changeEditingWaypointAdded('offPiste')
@@ -375,7 +375,15 @@ var App = Class({
         _this.roadbook.changeEditingWaypointAdded('mainRoad')
       }else if('dcw-added' == $(this).attr('id')){
         _this.roadbook.changeEditingWaypointAdded('dcw')
-      }else if('off-piste-entry' == $(this).attr('id')){
+      }
+
+      $('.added-track-selector').removeClass('active');
+      $(this).addClass('active');
+    });
+
+    $('.entry-track-selector').click(function(e) {
+      e.preventDefault();
+      if('off-piste-entry' == $(this).attr('id')){
         _this.roadbook.changeEditingWaypointEntry('offPiste')
       }else if('track-entry' == $(this).attr('id')){
         _this.roadbook.changeEditingWaypointEntry('track')
@@ -385,7 +393,12 @@ var App = Class({
         _this.roadbook.changeEditingWaypointEntry('mainRoad')
       }else if('dcw-entry' == $(this).attr('id')){
         _this.roadbook.changeEditingWaypointEntry('dcw')
-      }else if('off-piste-exit' == $(this).attr('id')){
+      }
+    });
+
+    $('.exit-track-selector').click(function(e) {
+      e.preventDefault();
+      if('off-piste-exit' == $(this).attr('id')){
         _this.roadbook.changeEditingWaypointExit('offPiste')
       }else if('track-exit' == $(this).attr('id')){
         _this.roadbook.changeEditingWaypointExit('track')
@@ -396,8 +409,6 @@ var App = Class({
       }else if('dcw-exit' == $(this).attr('id')){
         _this.roadbook.changeEditingWaypointExit('dcw')
       }
-      $('.track-selector').removeClass('active');
-      $(this).addClass('active');
     });
 
     $('[name="toggle-insert-type"]').change(function(){
@@ -448,6 +459,118 @@ var App = Class({
 
     this.ipc.on('reload-roadbook', function(event, arg){
       location.reload();
+    });
+
+    this.ipc.on('toggle-roadbook', function(event, arg){
+      _this.toggleRoadbook();
+    });
+
+    this.ipc.on('import-gpx', function(event, arg){
+      _this.importGPX();
+    });
+
+    this.ipc.on('export-gpx', function(event, arg){
+      _this.exportGPX();
+    });
+
+    this.ipc.on('export-pdf', function(event, arg){
+      _this.printRoadbook();
+    });
+
+    this.ipc.on('add-glyph', function(event, arg){
+      if(_this.roadbook.currentlyEditingWaypoint){
+        _this.glyphControls.showGlyphModal(30,30);
+      }
+    });
+
+    this.ipc.on('add-track-0', function(event, arg){
+      if(_this.roadbook.currentlyEditingWaypoint){
+        _this.roadbook.currentlyEditingWaypoint.tulip.addTrack(0);
+      }
+    });
+
+    this.ipc.on('add-track-45', function(event, arg){
+      if(_this.roadbook.currentlyEditingWaypoint){
+        _this.roadbook.currentlyEditingWaypoint.tulip.addTrack(45);
+      }
+    });
+
+    this.ipc.on('add-track-90', function(event, arg){
+      console.log('pew');
+      if(_this.roadbook.currentlyEditingWaypoint){
+        _this.roadbook.currentlyEditingWaypoint.tulip.addTrack(90);
+      }
+    });
+
+    this.ipc.on('add-track-135', function(event, arg){
+      if(_this.roadbook.currentlyEditingWaypoint){
+        _this.roadbook.currentlyEditingWaypoint.tulip.addTrack(135);
+      }
+    });
+
+    this.ipc.on('add-track-180', function(event, arg){
+      if(_this.roadbook.currentlyEditingWaypoint){
+        _this.roadbook.currentlyEditingWaypoint.tulip.addTrack(180);
+      }
+    });
+
+    this.ipc.on('add-track-225', function(event, arg){
+      if(_this.roadbook.currentlyEditingWaypoint){
+        _this.roadbook.currentlyEditingWaypoint.tulip.addTrack(225);
+      }
+    });
+
+    this.ipc.on('add-track-270', function(event, arg){
+      if(_this.roadbook.currentlyEditingWaypoint){
+        _this.roadbook.currentlyEditingWaypoint.tulip.addTrack(270);
+      }
+    });
+
+    this.ipc.on('add-track-315', function(event, arg){
+      if(_this.roadbook.currentlyEditingWaypoint){
+        _this.roadbook.currentlyEditingWaypoint.tulip.addTrack(315);
+      }
+    });
+
+    this.ipc.on('set-track-hp', function(event, arg){
+      if(_this.roadbook.currentlyEditingWaypoint){
+        _this.roadbook.changeEditingWaypointAdded('offPiste');
+        $('.added-track-selector').removeClass('active');
+        $($('.added-track-selector')[0]).addClass('active');
+      }
+    });
+
+    this.ipc.on('set-track-p', function(event, arg){
+      if(_this.roadbook.currentlyEditingWaypoint){
+        _this.roadbook.changeEditingWaypointAdded('track');
+        $('.added-track-selector').removeClass('active');
+        $($('.added-track-selector')[1]).addClass('active');
+      }
+    });
+
+    this.ipc.on('set-track-pp', function(event, arg){
+      if(_this.roadbook.currentlyEditingWaypoint){
+        _this.roadbook.changeEditingWaypointAdded('road');
+        $('.added-track-selector').removeClass('active');
+        $($('.added-track-selector')[2]).addClass('active');
+      }
+    });
+
+    this.ipc.on('set-track-ro', function(event, arg){
+      if(_this.roadbook.currentlyEditingWaypoint){
+        _this.roadbook.changeEditingWaypointAdded('mainRoad');
+        $('.added-track-selector').removeClass('active');
+        console.log($('.added-track-selector')[3]);
+        $($('.added-track-selector')[3]).addClass('active');
+      }
+    });
+
+    this.ipc.on('set-track-dcw', function(event, arg){
+      if(_this.roadbook.currentlyEditingWaypoint){
+        _this.roadbook.changeEditingWaypointAdded('dcw');
+        $('.added-track-selector').removeClass('active');
+        $($('.added-track-selector')[4]).addClass('active');
+      }
     });
 
     window.addEventListener("beforeunload", function (event) {

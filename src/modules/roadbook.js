@@ -245,13 +245,17 @@ var Roadbook = Class({
 
   finishWaypointEdit: function(){
     if(this.currentlyEditingWaypoint !== null){
+      // TODO make into a update palette function
       $('.waypoint.row').show();
       $('#waypoint-palette').find('.note-tools').append($('#note-editor-container'));
       $('#waypoint-palette').slideUp('slow');
-      // TODO make into waypoint function
+      $('.added-track-selector').removeClass('active');
+      $($('.added-track-selector')[1]).addClass('active');
       $('#roadbook').css('padding-bottom', '150%');
       $('#roadbook').find('.roadbook-info').show();
       $('#roadbook').scrollTop(this.currentlyEditingWaypoint.element.position().top - 80)
+      // TODO make into waypoint function
+      this.currentlyEditingWaypoint.changeAddedTrackType('track');
       this.currentlyEditingWaypoint.noteHTML(this.noteTextEditor.html());
       this.currentlyEditingWaypoint.tulip.finishEdit();
       this.currentlyEditingWaypoint.tulip.finishRemove();

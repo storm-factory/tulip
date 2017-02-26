@@ -91,17 +91,23 @@ var GlyphControls = Class({
         }
         return false
       }
-      app.glyphPlacementPosition = {top: $(this).data('top'), left: $(this).data('left')};
-      _this.addToNote = false;
-      $('#glyphs').foundation('reveal', 'open');
-      setTimeout(function() { $('#glyph-search').focus(); }, 600); //we have to wait for the modal to be visible before we can assign focus
+      _this.showGlyphModal($(this).data('top'),$(this).data('left'));
       return false
     });
   },
 
+  showGlyphModal: function(top,left){
+    console.log(top);
+    console.log(left);
+    app.glyphPlacementPosition = {top: top, left: left};
+    this.addToNote = false;
+    $('#glyphs').foundation('reveal', 'open');
+    setTimeout(function() { $('#glyph-search').focus(); }, 600); //we have to wait for the modal to be visible before we can assign focus
+    return false
+  },
+
   addGlyphToInstruction: function(element){
     var src = $(element).attr('src');
-
     if(this.addToNote){
       app.roadbook.noteTextEditor.append($('<img>').attr('src', src).addClass('normal'));
     } else {
