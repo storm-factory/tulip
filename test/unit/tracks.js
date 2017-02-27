@@ -28,7 +28,6 @@ test( 'Builds rotates a point about an origin', function( assert ) {
 
   assert.equal(set[0], 96, "It rotates the first X component of the magnitude about the origin");
   assert.equal(set[1], 84, "It rotates the first Y component of the magnitude about the origin");
-  assert.equal(1,2, "what happens");
 
   assert.end();
 });

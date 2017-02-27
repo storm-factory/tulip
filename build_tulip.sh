@@ -1,5 +1,5 @@
 #!/bin/bash
-./run_unit_tests.sh
+tap test/unit/*.js
 
 echo "what is the build version?"
 read VERSION
