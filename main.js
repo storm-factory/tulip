@@ -107,6 +107,8 @@ function createWindow () {
     submenu: [
       { label: "Reload", accelerator: "CmdOrCtrl+R", click: function() { mainWindow.webContents.send('reload-roadbook'); }},
       { label: "Toggle Roadbook", accelerator: "CmdOrCtrl+B", click: function() { mainWindow.webContents.send('toggle-roadbook'); }},
+      { label: "Zoom in", accelerator: "CmdOrCtrl+Plus", click: function() { mainWindow.webContents.send('zoom-in'); }},
+      { label: "Zoom out", accelerator: "CmdOrCtrl+-", click: function() { mainWindow.webContents.send('zoom-out'); }},
       {
         label: 'Toggle Developer Tools',
         accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',

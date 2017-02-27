@@ -477,6 +477,16 @@ var App = Class({
       _this.printRoadbook();
     });
 
+    this.ipc.on('zoom-in', function(event, arg){
+      var zoom = _this.getMapZoom()+1;
+      _this.setMapZoom(zoom);
+    });
+
+    this.ipc.on('zoom-out', function(event, arg){
+      var zoom = _this.getMapZoom()-1;
+      _this.setMapZoom(zoom);
+    });
+
     this.ipc.on('add-glyph', function(event, arg){
       if(_this.roadbook.currentlyEditingWaypoint){
         _this.glyphControls.showGlyphModal(30,30);
