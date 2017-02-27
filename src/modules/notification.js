@@ -1,3 +1,4 @@
+'use strict';
 /*
   This class provides a structured data format to store
   and modify notifications which can be exported via GPX
@@ -82,3 +83,9 @@ class Notification{
     return (this.mapFileNameToType(name) == type);
   }
 }
+
+/*
+  Node exports for test suite
+*/
+module.exports.mapFileNameToType = Notification.mapFileNameToType;
+module.exports.buildNotification = Notification.buildNotification;

@@ -153,6 +153,7 @@ var Tulip = Class({
       });
     }
   },
+  
   buildEntryTrackFromJson(entry){
     var paths = this.buildPaths(entry.paths);
     var point = new fabric.Circle(entry.point)

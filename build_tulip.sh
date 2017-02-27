@@ -1,4 +1,6 @@
 #!/bin/bash
+./run_unit_tests.sh
+
 echo "what is the build version?"
 read VERSION
 echo "building tulip $VERSION for OSX"

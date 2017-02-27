@@ -71,6 +71,7 @@ var GlyphControls = Class({
     $('.glyph').click(function(e){
       _this.handleGlyphSelectUI(e);
       _this.addGlyphToInstruction(this);
+      app.noteControls.checkForNotification();
     });
 
     $('.note-grid').click(function(e){
@@ -97,8 +98,6 @@ var GlyphControls = Class({
   },
 
   showGlyphModal: function(top,left){
-    console.log(top);
-    console.log(left);
     app.glyphPlacementPosition = {top: top, left: left};
     this.addToNote = false;
     $('#glyphs').foundation('reveal', 'open');

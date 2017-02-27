@@ -1,6 +1,11 @@
 class NoteControls {
   constructor() {
     var _this = this;
+
+    $('#note-editor').on('input', function() {
+      _this.checkForNotification()
+    });
+
     $('#note-selection-size-range').change(function(e){
       document.execCommand('fontSize',null,$(this).val());
       var sizes = {3: 'small', 4: 'normal', 5: 'large', 6: 'huge'}
@@ -37,6 +42,17 @@ class NoteControls {
         $(images[i]).removeClass();
         $(images[i]).addClass(size);
       }
+    }
+  }
+  /*
+    Here we check the note section for WPM glyphs, !!! glyphs, and eventually speed zone glyphs
+    so that we can capture data for rally blitz or rally comp exports
+  */
+  checkForNotification(){
+    if(app.roadbook.currentlyEditingWaypoint){
+      // reduce DOM image objects in the text editor to a collection of glyph names
+      var glyphs = $('#note-editor').find("img").toArray().map(function(g){return $(g).attr('src').match(/\/([a-z0-9,-]*)\./)[1]})
+      app.roadbook.currentlyEditingWaypoint.manageNotifications(glyphs);
     }
   }
 }

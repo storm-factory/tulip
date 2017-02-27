@@ -27,7 +27,7 @@ var Roadbook = Class({
       initialize rich text editors for waypoint note instructions
       and also for the roadbook description
     */
-    this.initWaypointNoteEditor();
+    this.noteTextEditor = $('#note-editor');
     this.descriptionInputListener();
   },
 
@@ -177,30 +177,6 @@ var Roadbook = Class({
     this.descriptionTextEditor.on('text-change', function(delta, source) {
       newValue = _this.descriptionTextEditor.getHTML()
       _this.desc(newValue);
-    });
-  },
-
-  /*
-    This function handles' listening to input on the waypoint palette
-    and persisting text/glyphs/notifications to the waypoint object
-  */
-  initWaypointNoteEditor: function(){
-    this.noteTextEditor = $('#note-editor');
-
-    var _this = this;
-    this.noteTextEditor.on('text-change', function() {
-      $('#note-editor img').removeClass('resizable');
-      $('#note-glyph-range').val(1);
-      /*
-        Here we check the note section for WPM glyphs, !!! glyphs, and eventually speed zone glyphs
-        so that we can capture data for rally blitz or rally comp exports
-      */
-      if(_this.currentlyEditingWaypoint){
-        // reduce DOM image objects in the text editor to a collection of glyph names
-        var glyphs = $(this.getHTML()).find("img").toArray().map(function(g){return $(g).attr('src').match(/\/([a-z0-9,-]*)\./)[1]})
-        _this.currentlyEditingWaypoint.manageNotifications(glyphs);
-      }
-      app.glyphControls.bindNoteGlyphResizable();
     });
   },
 

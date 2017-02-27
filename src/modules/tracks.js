@@ -28,7 +28,8 @@ class Track{
     }
   }
 
-  buildTrackPaths(angle,origin,type='track'){
+  buildTrackPaths(angle,origin,type){
+    type = (type !== undefined ? type : 'track')
     var paths = [];
     var typeOptions = this.types[type];
     for(var i=0;i<typeOptions.length;i++){
@@ -204,7 +205,7 @@ class Track{
 }
 
 class EntryTrack extends Track {
-  constructor(type,canvas,objects=null){
+  constructor(type,canvas,objects){
     super();
     if(objects){
       this.origin = objects.origin
@@ -215,7 +216,8 @@ class EntryTrack extends Track {
 
   }
 
-  buildTrackObjects(type='track',canvas) {
+  buildTrackObjects(type,canvas) {
+    type = (type !== undefined ? type : 'track');
     var paths = super.buildTrackPaths(0,[90,171], type)
     var point = new fabric.Circle({
       left: paths[0].path[0][1],
@@ -238,7 +240,7 @@ class EntryTrack extends Track {
 }
 
 class ExitTrack extends Track {
-  constructor(angle,type,canvas,objects=null){
+  constructor(angle,type,canvas,objects){
     super();
     if(objects){
       this.end = objects.end
@@ -283,7 +285,7 @@ class ExitTrack extends Track {
 }
 
 class AddedTrack extends Track {
-  constructor(angle,type,canvas,objects=null){
+  constructor(angle,type,canvas,objects){
     super();
     if(objects){
       Track.disableDefaults(objects.track[0])
@@ -297,3 +299,10 @@ class AddedTrack extends Track {
   }
 
 }
+/*
+  Node exports for test suite
+*/
+/*
+  Node exports for test suite
+*/
+module.exports.track = Track;
