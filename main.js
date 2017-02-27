@@ -32,29 +32,6 @@ app.on('activate', () => {
   }
 });
 
-// function saveRoadBook(){
-//   mainWindow.webContents.send('save-roadbook');
-// }
-// function saveRoadBookAs(){
-//   mainWindow.webContents.send('save-roadbook-as');
-// }
-// function openRoadBook(){
-//   mainWindow.webContents.send('open-roadbook');
-// }
-// function reloadRoadBook(){
-//   mainWindow.webContents.send('reload-roadbook');
-// }
-// function importGPX(){
-//   mainWindow.webContents.send('import-gpx');
-// }
-// function exportGPX(){
-//   mainWindow.webContents.send('import-gpx');
-// }
-// function exportPDF(){
-//   mainWindow.webContents.send('import-gpx');
-// }
-
-
 function createWindow () {
   const template = [
     {label: "Tulip",
@@ -63,6 +40,16 @@ function createWindow () {
       { label: "Save", accelerator: "CmdOrCtrl+S", click: function() { mainWindow.webContents.send('save-roadbook'); }},
       { label: "Save As", accelerator: "CmdOrCtrl+Shift+S", click: function() { mainWindow.webContents.send('save-roadbook-as'); }},
       { label: "Open", accelerator: "CmdOrCtrl+O", click: function() { mainWindow.webContents.send('open-roadbook'); }},
+    ]},
+    {label: "Edit",
+    submenu: [
+      { label: "Undo Text", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
+      { label: "Redo Text", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
+      { type: "separator" },
+      { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
+      { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
+      { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
+      { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" },
       { type: "separator" },
       {
         label: "Tracks",
@@ -83,17 +70,7 @@ function createWindow () {
         { label: "Set Track DCW", accelerator: "CmdOrCtrl+Option+5", click: function() { mainWindow.webContents.send('set-track-dcw'); }},
       ]},
       { type: "separator" },
-      { label: "Add Glyph", accelerator: "CmdOrCtrl+Shift+G", click: function() { mainWindow.webContents.send('add-glyph'); }},
-    ]},
-    {label: "Edit",
-    submenu: [
-      { label: "Undo Text", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
-      { label: "Redo Text", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
-      { type: "separator" },
-      { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
-      { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
-      { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
-      { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
+      { label: "Add Glyph", accelerator: "CmdOrCtrl+Option+G", click: function() { mainWindow.webContents.send('add-glyph'); }},
     ]
     },
     {label: "Io",
@@ -106,9 +83,12 @@ function createWindow () {
     {label: "View",
     submenu: [
       { label: "Reload", accelerator: "CmdOrCtrl+R", click: function() { mainWindow.webContents.send('reload-roadbook'); }},
+      { type: "separator" },
       { label: "Toggle Roadbook", accelerator: "CmdOrCtrl+B", click: function() { mainWindow.webContents.send('toggle-roadbook'); }},
+      { type: "separator" },
       { label: "Zoom in", accelerator: "CmdOrCtrl+Plus", click: function() { mainWindow.webContents.send('zoom-in'); }},
       { label: "Zoom out", accelerator: "CmdOrCtrl+-", click: function() { mainWindow.webContents.send('zoom-out'); }},
+      { type: "separator" },
       {
         label: 'Toggle Developer Tools',
         accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
