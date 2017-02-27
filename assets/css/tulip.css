@@ -2,9 +2,18 @@
   font-family:bellybeans;
   src:url(../fonts/bellybeans.ttf);
 }
-a.track-selector {
-  height: 40px !important;
+a.added-track-selector,
+a.entry-track-selector,
+a.exit-track-selector {
+  height: 25px !important;
+  background-color: #fff !important;
+  margin: 0
 }
+
+a.added-track-selector.active {
+  background-color: #008CBA !important;
+}
+
 h2 {
   font-family: bellybeans;
   font-size: 1.5rem !important;
@@ -17,6 +26,8 @@ canvas {
   width: 180px;
   height: 180px;
 }
+div.switch label {box-shadow: 2px 2px 5px -2px rgba(0,0,0,0.60);}
+a.button {box-shadow: 2px 2px 5px -2px rgba(0,0,0,0.60);}
 aside {
   padding:15px;
 }
@@ -78,10 +89,10 @@ textarea.waypoint-palette{
 
 #note-editor-container {
   position: relative;
-  top: -245px;
+  top: -185px;
 }
 #note-editor-container.hideCap {
-  top: -197px;
+  top: -137px;
 }
 #note-editor {
   width: 100%;
@@ -89,41 +100,43 @@ textarea.waypoint-palette{
   box-shadow: 0px 2px 6px 1px rgba(255,144,0,0.60);
   background: #fff;
   padding:0;
+  display: inline-block;
+  overflow: hidden;
 }
 
-#note-editor div.ql-editor div img.resizable {
-  border: 3px solid #ff4200;
-}
-
-#note-editor div.ql-editor img:active {
-  cursor: -webkit-grabbing;
-}
-
-#note-editor div.ql-editor img {
-  cursor: -webkit-grab;
+#note-selection-bold.active,
+#note-selection-italic.active,
+#note-selection-underline.active {
+  background-color: #b9b9b9;
 }
 
 .waypoint-note p div img.small,
-#note-editor div.ql-editor img.small {
+.waypoint-note p img.small,
+#note-editor div img.small,
+#note-editor img.small {
   height: 35px;
 }
 
 .waypoint-note p div img,
-#note-editor div.ql-editor img,
-#note-editor div.ql-editor img.normal {
-  /*width: 55px;*/
+.waypoint-note p img,
+#note-editor div img,
+#note-editor img,
+#note-editor div img.normal,
+#note-editor img.normal {
   height: 55px;
 }
 
 .waypoint-note p div img.large,
-#note-editor div.ql-editor img.large {
-  /*width: 75px;*/
+.waypoint-note p img.large,
+#note-editor div img.large,
+#note-editor img.large {
   height: 75px;
 }
 
 .waypoint-note p div img.huge,
-#note-editor div.ql-editor img.huge {
-  /*width: 95px;*/
+.waypoint-note p img.huge,
+#note-editor div img.huge,
+#note-editor img.huge {
   height: 95px;
 }
 
@@ -263,7 +276,7 @@ textarea.waypoint-palette{
   margin-right: 4px;
 }
 .note-grid {
-  width: 35px !important;
+  width: 100% !important;
   height: 35px;
   float: left;
   border-radius: 10px;
@@ -274,6 +287,7 @@ textarea.waypoint-palette{
   text-shadow: -1px 1px 4px rgba(0,0,0, 1);
   background-color: #efefef;
   margin-right: 10px;
+  margin-top: 5px;
 }
 .note-grid i {
   display: none;
@@ -327,8 +341,17 @@ textarea.waypoint-palette{
   background-color: rgba(255,144,0,1);
 }
 
+#waypoint-palette .switch {
+  margin-bottom: 0;
+}
+
+
+ul.track-selection li.accordion-navigation a {
+  padding: 0.25rem;
+}
+
 .track-selection, .glyph-selection {min-height: 130px;}
-.glyph-selection.note-selection {min-height: 40px;margin-bottom: 5px;}
+.note-glyph-selection {min-height: 40px;margin-bottom: 5px;}
 .track-grid, .glyph-grid {
   width: 40px;
   height: 40px;
@@ -403,6 +426,10 @@ nav.top-bar {
   margin-top: 20px
 }
 
+.hidden {
+  visibility: hidden;
+}
+
 .waypoint {
   width:500px !important;
   border: 2px solid #000;
@@ -428,7 +455,7 @@ nav.top-bar {
   overflow: hidden;
   word-wrap: break-word;
   line-height: 1;
-  font-size: 13px;
+  font-size: medium;
 }
 
 .waypoint-tulip {

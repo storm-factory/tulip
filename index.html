@@ -50,7 +50,6 @@
     <!-- END NAV -->
     <!--  START ADVANCED MENU -->
     <aside class="right-off-canvas-menu">
-        <!-- whatever you want goes here -->
         <h2>
           Menu:
         </h2>
@@ -134,7 +133,7 @@
             <!--  palette for editing waypoint content -->
             <div id="waypoint-palette">
               <div class="row">
-                <div class="large-12 column text-right">
+                <div class="large-12 columns text-right">
                   <span data-tooltip aria-haspopup="true" class="map-rotate-notice has-tip button tiny radius alert" style="display: none;" title="Map interaction other than zoom is disabled when map is rotated.">
                     <i class="fi-alert"></i>
                   </span>
@@ -144,91 +143,196 @@
               </div>
               <div id="waypoint-tulip-controls" class="content active">
                 <div class="row">
-                  <div class="large-4 column selection-label">
-                    <span data-tooltip aria-haspopup="true" class="has-tip" title="Add tracks to the tulip radiating from the center in the selected direction. Change the drawn type using the track menu">
-                      Tulip tracks
-                    </span>
-                    <a href="#" class="button tiny radius secondary" id="track-selection" data-reveal-id="track-selection-modal"><i class="fi-list"></i></a>
+                  <div class="large-4 columns selection-label">
+                    <h5>
+                      <span data-tooltip aria-haspopup="true" class="has-tip track-selection" title="Select the type of tracks added to the tulip, the track type the rider will enter the tulip on, and the track type the rider will exit the tulip on.">
+                        Tulip track types
+                      </span>
+                    </h5>
+                  </div>
+                  <div class="large-4 columns selection-label">
+                    <h5>
+                      <span data-tooltip aria-haspopup="true" class="has-tip" title="Insert tracks and glyphs into the tulip using the placement grid.">
+                        Insert into tulip
+                      </span>
+                    </h5>
+                    <div class="row">
+                      <div class="large-6 columns">
+                        <span data-tooltip aria-haspopup="true" class="has-tip" title="Click to add tracks to the tulip radiating from the center in the selected direction using the placement grid.">
+                          Tracks
+                        </span>
+                      </div>
+                      <div class="large-6 columns">
+                        <div class="switch round tiny">
+                          <input id="toggle-insert-track" type="radio" checked name="toggle-insert-type">
+                          <label for="toggle-insert-track"></label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="large-6 columns">
+                        <span data-tooltip aria-haspopup="true" class="has-tip" title="Click to add glyphs to the tulip in the selected position using the placement grid.">
+                          Glyphs
+                        </span>
+                      </div>
+                      <div class="large-6 columns">
+                        <div class="switch round tiny">
+                          <input id="toggle-insert-glyph" type="radio" name="toggle-insert-type">
+                          <label for="toggle-insert-glyph"></label>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <div class="large-4 column selection-label">
-                    <span data-tooltip aria-haspopup="true" class="has-tip" title="Add glyphs to the tulip in the selected position">
-                      Tulip glyphs
-                    </span>
-                  </div>
-                  <div class="large-4 column selection-label">
-                    <span data-tooltip aria-haspopup="true" class="has-tip" title="Add glyphs to the the note section using the button below. Click on glyphs to resize them using the slider below. Note text can be edited by typing directly into the note section and modified with the controls above">
-                      Waypoint notes
-                    </span>
+                    <h5>
+                      <span data-tooltip aria-haspopup="true" class="has-tip" title="Insert glyphs into the note and modify glyphs and text using the buttons and slider">
+                        Waypoint notes
+                      </span>
+                    </h5>
+                    <div class="row">
+                      <div class="large-6 columns">
+                        <span data-tooltip aria-haspopup="true" class="has-tip" title="Click to add show or hide the CAP heading for this instruction">
+                          CAP
+                        </span>
+                      </div>
+                      <div class="large-6 columns">
+                        <div class="switch round tiny">
+                          <input id="toggle-heading" type="checkbox" name="toggle-heading" data-bind="checked: waypointShowHeading">
+                          <label for="toggle-heading"></label>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <hr>
                 </div>
                 <div class="row">
-                  <div class="large-4 column track-selection">
-                    <div class="tl track-grid" data-angle="-45"><div><i class="fi-arrow-up"></i></div></div>
-                    <div class="tm track-grid" data-angle="0"><i class="fi-arrow-up"></i></div>
-                    <div class="tr track-grid" data-angle="45"><div><i class="fi-arrow-up"></i></div></div>
-
-                    <div class="ml track-grid" data-angle="-90"><i class="fi-arrow-left"></i></div>
-                    <div class="mm track-grid undo"><i class="fi-refresh"></i></div>
-                    <div class="mr track-grid" data-angle="90"><i class="fi-arrow-right"></i></div>
-
-                    <div class="ll track-grid" data-angle="-135"><div><i class="fi-arrow-down"></i></div></div>
-                    <div class="lm track-grid"data-angle="180"><i class="fi-arrow-down"></i></div>
-                    <div class="lr track-grid" data-angle="135"><div><i class="fi-arrow-down"></i></div></div>
+                  <div class="large-4 column">
+                    <ul class="accordion track-selection" data-accordion>
+                      <li class="accordion-navigation">
+                        <a href="#added-track-tab">Add as</a>
+                        <div id="added-track-tab" class="content active">
+                          <a title="off piste" href="#" class="button tiny radius secondary added-track-selector" id="off-piste-added">
+                            <img  src="assets/off-piste-added.png">
+                          </a>
+                          <a title="track" href="#" class="button tiny radius secondary added-track-selector active" id="track-added">
+                            <img  src="assets/track-added.png">
+                          </a>
+                          <a title="road" href="#" class="button tiny radius secondary added-track-selector" id="road-added">
+                            <img src="assets/road-added.png">
+                          </a>
+                          <a title="main road" href="#" class="button tiny radius secondary added-track-selector" id="main-road-added">
+                            <img src="assets/main-road-added.png">
+                          </a>
+                          <a title="divided road" href="#" class="button tiny radius secondary added-track-selector" id="dcw-added">
+                            <img src="assets/dcw-added.png">
+                          </a>
+                        </div>
+                      </li>
+                      <li class="accordion-navigation">
+                        <a href="#entry-track-tab">Enter on</a>
+                        <div id="entry-track-tab" class="content">
+                          <a title="off piste" href="#" class="button tiny radius secondary entry-track-selector" id="off-piste-entry">
+                            <img  src="assets/off-piste-entry.png">
+                          </a>
+                          <a title="track" href="#" class="button tiny radius secondary entry-track-selector" id="track-entry">
+                            <img  src="assets/track-entry.png">
+                          </a>
+                          <a title="road" href="#" class="button tiny radius secondary entry-track-selector" id="road-entry">
+                            <img src="assets/road-entry.png">
+                          </a>
+                          <a title="main road" href="#" class="button tiny radius secondary entry-track-selector" id="main-road-entry">
+                            <img src="assets/main-road-entry.png">
+                          </a>
+                          <a title="divided road" href="#" class="button tiny radius secondary entry-track-selector" id="dcw-entry">
+                            <img src="assets/dcw-entry.png">
+                          </a>
+                        </div>
+                      </li>
+                      <li class="accordion-navigation">
+                        <a href="#exit-track-tab">Exit on</a>
+                        <div id="exit-track-tab" class="content">
+                          <a title="off piste" href="#" class="button tiny radius secondary exit-track-selector" id="off-piste-exit">
+                            <img  src="assets/off-piste-exit.png">
+                          </a>
+                          <a title="track" href="#" class="button tiny radius secondary exit-track-selector" id="track-exit">
+                            <img  src="assets/track-exit.png">
+                          </a>
+                          <a title="road" href="#" class="button tiny radius secondary exit-track-selector" id="road-exit">
+                            <img src="assets/road-exit.png">
+                          </a>
+                          <a title="main road" href="#" class="button tiny radius secondary exit-track-selector" id="main-road-exit">
+                            <img src="assets/main-road-exit.png">
+                          </a>
+                          <a title="divided road" href="#" class="button tiny radius secondary exit-track-selector" id="dcw-exit">
+                            <img src="assets/dcw-exit.png">
+                          </a>
+                        </div>
+                      </li>
+                    </ul>
                   </div>
-                  <div class="left large-4 column glyph-selection">
-                    <div class="tl glyph-grid" data-top="30" data-left="30"><i class="fi-plus"></i></div>
-                    <div class="tm glyph-grid" data-top="30" data-left="85"><i class="fi-plus"></i></div>
-                    <div class="tr glyph-grid" data-top="30" data-left="145"><i class="fi-plus"></i></div>
+                  <div class="left large-4 column">
+                    <div class="glyph-selection hidden">
+                      <div class="tl glyph-grid" data-top="30" data-left="30"><i class="fi-plus"></i></div>
+                      <div class="tm glyph-grid" data-top="30" data-left="85"><i class="fi-plus"></i></div>
+                      <div class="tr glyph-grid" data-top="30" data-left="145"><i class="fi-plus"></i></div>
 
-                    <div class="ml glyph-grid" data-top="95" data-left="30"><i class="fi-plus"></i></div>
-                    <div class="mm glyph-grid undo"><i class="fi-refresh"></i></div>
-                    <div class="mr glyph-grid" data-top="95" data-left="145"><i class="fi-plus"></i></div>
+                      <div class="ml glyph-grid" data-top="95" data-left="30"><i class="fi-plus"></i></div>
+                      <div class="mm glyph-grid undo"><i class="fi-refresh"></i></div>
+                      <div class="mr glyph-grid" data-top="95" data-left="145"><i class="fi-plus"></i></div>
 
-                    <div class="ll glyph-grid" data-top="140" data-left="30"><i class="fi-plus"></i></div>
-                    <div class="lm glyph-grid" data-top="140" data-left="85"><i class="fi-plus"></i></div>
-                    <div class="lr glyph-grid" data-top="140" data-left="145"><i class="fi-plus"></i></div>
+                      <div class="ll glyph-grid" data-top="140" data-left="30"><i class="fi-plus"></i></div>
+                      <div class="lm glyph-grid" data-top="140" data-left="85"><i class="fi-plus"></i></div>
+                      <div class="lr glyph-grid" data-top="140" data-left="145"><i class="fi-plus"></i></div>
+                    </div>
+                    <div class="track-selection">
+                      <div class="tl track-grid" data-angle="-45"><div><i class="fi-arrow-up"></i></div></div>
+                      <div class="tm track-grid" data-angle="0"><i class="fi-arrow-up"></i></div>
+                      <div class="tr track-grid" data-angle="45"><div><i class="fi-arrow-up"></i></div></div>
+
+                      <div class="ml track-grid" data-angle="-90"><i class="fi-arrow-left"></i></div>
+                      <div class="mm track-grid undo"><i class="fi-refresh"></i></div>
+                      <div class="mr track-grid" data-angle="90"><i class="fi-arrow-right"></i></div>
+
+                      <div class="ll track-grid" data-angle="-135"><div><i class="fi-arrow-down"></i></div></div>
+                      <div class="lm track-grid"data-angle="180"><i class="fi-arrow-down"></i></div>
+                      <div class="lr track-grid" data-angle="135"><div><i class="fi-arrow-down"></i></div></div>
+                    </div>
                   </div>
                   <div class="left large-4 column note-tools">
                     <!--
                       START This gets repositioned over the waypoint note in edit mode
                     -->
                     <div id="note-editor-container">
-                      <div id="note-toolbar" style="height:40px;margin-top: 10px;">
-                        <!-- Add font size dropdown -->
-                        <select class="ql-size" style="width:55%;float: left;">
-                          <option value="10px">Small</option>
-                          <option value="13px" selected>Normal</option>
-                          <option value="18px">Large</option>
-                          <option value="24px">Huge</option>
-                        </select>
-                        <!-- Add a bold button -->
-                        <button class="ql-bold tiny secondary" style="margin-top:2px;margin-left:12px;"><i class="fi-bold"></i></button>
+                      <div id="note-editor" contenteditable="true">
                       </div>
-                      <div id="note-editor"></div>
                     </div>
                     <!--
                        END This gets repositioned over the waypoint note in edit mode
                     -->
                     <div class="row">
-                      <div class="left large-12 column glyph-selection note-selection">
+                      <div class="left large-12 column note-glyph-selection">
+                        <span data-tooltip aria-haspopup="true" class="has-tip" title="Click to add glyphs to the end of the note.">
+                          Insert glyph
+                        </span>
                         <div class="note-grid" data-target="add"><i class="fi-plus"></i></i></div>
-                        <input type="range" min="0" max="3" value="1" id="note-glyph-range" style="margin-top:10px;width:60%;float: right;" list="note-glyph-sizes">
-                        <datalist id="note-glyph-sizes">
-                        	<option>0</option>
-                        	<option>1</option>
-                        	<option>2</option>
-                        	<option>3</option>
-                        </datalist>
                       </div>
                     </div>
                     <div class="row">
                       <div class="left large-12 column">
-                        Show CAP:
-                        <div class="switch round tiny">
-                          <input id="toggle-heading" type="checkbox" name="toggle-heading" data-bind="checked: waypointShowHeading">
-                          <label for="toggle-heading"></label>
-                        </div>
+                        <span data-tooltip aria-haspopup="true" class="has-tip" title="Use the slider to resize selected glyhs and text. Click the style buttons to restyle selected text.">
+                          Modify selection
+                        </span>
+                        <input type="range" min="3" max="6" value="4" id="note-selection-size-range" style="margin-top:10px;width:100%;" list="note-glyph-sizes">
+                        <datalist id="note-glyph-sizes">
+                        	<option>3</option>
+                        	<option>4</option>
+                        	<option>5</option>
+                        	<option>6</option>
+                        </datalist>
+
+                        <button id="note-selection-bold" class="tiny secondary"><i class="fi-bold"></i></button>
+                        <button id="note-selection-italic" class="tiny secondary "><i class="fi-italic"></i></button>
+                        <button id="note-selection-underline" class="tiny secondary"><i class="fi-underline"></i></button>
                       </div>
                     </div>
                   </div>
@@ -269,86 +373,6 @@
       </div>
     </div>
   </script>
-  <!--
-    Track Modal
-  -->
-  <div id="track-selection-modal" class="reveal-modal" data-reveal aria-hidden="true" role="dialog">
-    <h3>
-      <span data-tooltip aria-haspopup="true" class="has-tip" title="Use the grid below to select the type of tracks added to the tulip, the track type the rider will enter the tulip on, and the track type the rider will exit the tulip on">
-        Track Options
-      </span>
-      <a class="close-reveal-modal" aria-label="Close">&#215;</a>
-    </h3>
-    <hr>
-    <div class="row">
-      <div class="large-3 columns">
-        <br>
-        <h4>Off piste</h4>
-        <br>
-        <h4>Track</h4>
-        <br>
-        <h4>Road</h4>
-        <br>
-        <h4>Main Road</h4>
-        <br>
-        <h4>Divided Road</h4>
-      </div>
-      <div class="large-3 columns">
-        <h4>Enter on:</h4>
-          <a href="#" class="button tiny radius secondary track-selector" id="off-piste-entry">
-            <img src="assets/off-piste-entry.png">
-          </a>
-          <a href="#" class="button tiny radius secondary track-selector" id="track-entry">
-            <img src="assets/track-entry.png">
-          </a>
-          <a href="#" class="button tiny radius secondary track-selector" id="road-entry">
-            <img src="assets/road-entry.png">
-          </a>
-          <a href="#" class="button tiny radius secondary track-selector" id="main-road-entry">
-            <img src="assets/main-road-entry.png">
-          </a>
-          <a href="#" class="button tiny radius secondary track-selector" id="dcw-entry">
-            <img src="assets/dcw-entry.png">
-          </a>
-      </div>
-      <div class="large-3 columns">
-        <h4>Exit on:</h4>
-          <a href="#" class="button tiny radius secondary track-selector" id="off-piste-exit">
-            <img src="assets/off-piste-exit.png">
-          </a>
-          <a href="#" class="button tiny radius secondary track-selector" id="track-exit">
-            <img src="assets/track-exit.png">
-          </a>
-          <a href="#" class="button tiny radius secondary track-selector" id="road-exit">
-            <img src="assets/road-exit.png">
-          </a>
-          <a href="#" class="button tiny radius secondary track-selector" id="main-road-exit">
-            <img src="assets/main-road-exit.png">
-          </a>
-          <a href="#" class="button tiny radius secondary track-selector" id="dcw-exit">
-            <img src="assets/dcw-exit.png">
-          </a>
-      </div>
-      <div class="large-3 columns">
-        <h4>Add as:</h4>
-          <a href="#" class="button tiny radius secondary track-selector" id="off-piste-added">
-            <img src="assets/off-piste-added.png">
-          </a>
-          <a href="#" class="button tiny radius secondary track-selector" id="track-added">
-            <img src="assets/track-added.png">
-          </a>
-          <a href="#" class="button tiny radius secondary track-selector" id="road-added">
-            <img src="assets/road-added.png">
-          </a>
-          <a href="#" class="button tiny radius secondary track-selector" id="main-road-added">
-            <img src="assets/main-road-added.png">
-          </a>
-          <a href="#" class="button tiny radius secondary track-selector" id="dcw-added">
-            <img src="assets/dcw-added.png">
-          </a>
-      </div>
-    </div>
-  </div>
   <!--
     Glyph Modal
   -->
@@ -464,6 +488,7 @@
                 <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/pointy-sign.svg"></a><p>pointy sign</p></li>
                 <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/post.svg"></a><p>post</p></li>
                 <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/buildings.svg"></a><p>buildings</p></li>
+                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/bridge.svg"></a><p>bridge</p></li>
                 <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/house.svg"></a><p>house</p></li>
                 <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cemetery.svg"></a><p>cemetery</p></li>
                 <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/ruins.svg"></a><p>ruins</p></li>
@@ -482,6 +507,7 @@
                 <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/railroad.svg"></a><p>railroad</p></li>
                 <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/electric-line.svg"></a><p>electric line</p></li>
                 <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/electric-pole.svg"></a><p>electric pole</p></li>
+                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/electric-pole2.svg"></a><p>second electric pole</p></li>
                 <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/high-voltage-line.svg"></a><p>high voltage line</p></li>
                 <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/water-trough.svg"></a><p>water trough</p></li>
               </ul>
@@ -508,6 +534,15 @@
                 <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/hill2.svg"></a><p>hill two</p></li>
                 <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/dunes1.svg"></a><p>dune one</p></li>
                 <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/dunes2.svg"></a><p>dune two</p></li>
+                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cliff.svg"></a><p>cliff</p></li>
+                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cliff1.svg"></a><p>cliff two</p></li>
+                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cliff2.svg"></a><p>cliff too</p></li>
+                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cliff3.svg"></a><p>another cliff</p></li>
+                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cliff4.svg"></a><p>don't fall off this cliff</p></li>
+                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cliff5.svg"></a><p>cliff five</p></li>
+                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cliff6.svg"></a><p>cliff tannen</p></li>
+                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cliff7.svg"></a><p>an eyelash. sike! it's a cliff</p></li>
+                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cliff8.svg"></a><p>cliff8</p></li>
               </ul>
             </div>
             <div class="content" id="symbols-feature">
@@ -623,6 +658,7 @@
   <script src='src/modules/map-controls.js'></script>
   <script src='src/modules/map-viewport-optimizer.js'></script>
   <script src='src/modules/glyph-controls.js'></script>
+  <script src='src/modules/note-controls.js'></script>
   <script src='src/modules/tracks.js'></script>
   <script src='src/modules/track-editors.js'></script>
   <script src='src/modules/track-remover.js'></script>

@@ -91,45 +91,25 @@ var GlyphControls = Class({
         }
         return false
       }
-      app.glyphPlacementPosition = {top: $(this).data('top'), left: $(this).data('left')};
-      _this.addToNote = false;
-      $('#glyphs').foundation('reveal', 'open');
-      setTimeout(function() { $('#glyph-search').focus(); }, 600); //we have to wait for the modal to be visible before we can assign focus
+      _this.showGlyphModal($(this).data('top'),$(this).data('left'));
       return false
-    });
-
-    $('#note-glyph-range').change(function(e){
-      var sizes = {0: 'small', 1: 'normal', 2: 'large', 3: 'huge'}
-      var size = sizes[$(this).val()];
-      var images = $('#note-editor div.ql-editor img.resizable')
-      images.removeClass();
-      images.addClass(size);
-      images.addClass('resizable');
     });
   },
 
-  bindNoteGlyphResizable: function(){
-    $('#note-editor div.ql-editor img').unbind();
-    $('#note-editor div.ql-editor img').click(function(){
-      var size = $(this).attr('class');
-      size = ((size !== undefined) ? size.replace('resizable', '').trim() : 'normal');
-      size = ((size == '') ? 'normal' : size);
-      if($('#note-editor div.ql-editor img.resizable').length != $('#note-editor div.ql-editor img.resizable.'+size).length){
-        $('#note-glyph-range').val(1);
-      }else {
-        var sizes = {'small':0, 'normal':1, 'large':2, 'huge':3}
-        $('#note-glyph-range').val(sizes[size]);
-      }
-      $(this).toggleClass("resizable");
-    });
+  showGlyphModal: function(top,left){
+    console.log(top);
+    console.log(left);
+    app.glyphPlacementPosition = {top: top, left: left};
+    this.addToNote = false;
+    $('#glyphs').foundation('reveal', 'open');
+    setTimeout(function() { $('#glyph-search').focus(); }, 600); //we have to wait for the modal to be visible before we can assign focus
+    return false
   },
 
   addGlyphToInstruction: function(element){
     var src = $(element).attr('src');
-
     if(this.addToNote){
-      app.roadbook.noteTextEditor.insertEmbed(app.roadbook.noteTextEditor.getLength(),'image',src);
-      this.bindNoteGlyphResizable();
+      app.roadbook.noteTextEditor.append($('<img>').attr('src', src).addClass('normal'));
     } else {
       app.roadbook.currentlyEditingWaypoint.tulip.addGlyph(app.glyphPlacementPosition,src);
     }

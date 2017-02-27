@@ -185,13 +185,11 @@ var Roadbook = Class({
     and persisting text/glyphs/notifications to the waypoint object
   */
   initWaypointNoteEditor: function(){
-    this.noteTextEditor = new Quill('#note-editor');
-    this.noteTextEditor.addModule('toolbar', {
-      container: '#note-toolbar'     // Selector for toolbar container
-    });
+    this.noteTextEditor = $('#note-editor');
+
     var _this = this;
     this.noteTextEditor.on('text-change', function() {
-      $('#note-editor div.ql-editor img').removeClass('resizable');
+      $('#note-editor img').removeClass('resizable');
       $('#note-glyph-range').val(1);
       /*
         Here we check the note section for WPM glyphs, !!! glyphs, and eventually speed zone glyphs
@@ -224,10 +222,10 @@ var Roadbook = Class({
       this.finishWaypointEdit(); //clear any existing UI just to be sure
       $('#save-roadbook').removeClass('secondary');
       this.currentlyEditingWaypoint = waypoint;
-      this.noteTextEditor.setHTML(waypoint.noteHTML());
+      this.noteTextEditor.html(waypoint.noteHTML());
       $('#note-editor-container').toggleClass('hideCap',!this.currentlyEditingWaypoint.showHeading());
       this.waypointShowHeading(this.currentlyEditingWaypoint.showHeading());
-      app.glyphControls.bindNoteGlyphResizable();
+      // app.glyphControls.bindNoteGlyphResizable();
       var latLng = new google.maps.LatLng(waypoint.lat(), waypoint.lng());
       app.setMapCenter(latLng);
       if(app.getMapZoom() < 18){
@@ -247,22 +245,24 @@ var Roadbook = Class({
 
   finishWaypointEdit: function(){
     if(this.currentlyEditingWaypoint !== null){
+      // TODO make into a update palette function
       $('.waypoint.row').show();
       $('#waypoint-palette').find('.note-tools').append($('#note-editor-container'));
-      $('#note-editor div.ql-editor img').removeClass('resizable');
       $('#waypoint-palette').slideUp('slow');
-      // TODO make into waypoint function
+      $('.added-track-selector').removeClass('active');
+      $($('.added-track-selector')[1]).addClass('active');
       $('#roadbook').css('padding-bottom', '150%');
       $('#roadbook').find('.roadbook-info').show();
       $('#roadbook').scrollTop(this.currentlyEditingWaypoint.element.position().top - 80)
-      this.currentlyEditingWaypoint.noteHTML(this.noteTextEditor.getHTML());
+      // TODO make into waypoint function
+      this.currentlyEditingWaypoint.changeAddedTrackType('track');
+      this.currentlyEditingWaypoint.noteHTML(this.noteTextEditor.html());
       this.currentlyEditingWaypoint.tulip.finishEdit();
       this.currentlyEditingWaypoint.tulip.finishRemove();
       this.currentlyEditingWaypoint = null;
-      this.noteTextEditor.setHTML('');
+      this.noteTextEditor.html('');
       if(!app.canEditMap){
         app.mapControls.reorient();
-        // app.mapControls.enableMapInteraction();
         app.mapControls.restoreMapLock();
       }
     }
@@ -270,7 +270,6 @@ var Roadbook = Class({
   },
 
   updateTotalDistance: function(){
-    // this.finishWaypointEdit();
     if(this.waypoints().length > 0 ){
       this.totalDistance(this.waypoints()[this.waypoints().length - 1].totalDistance());
     } else{
