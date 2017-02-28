@@ -188,19 +188,25 @@ class Track{
 
   changeType(type,canvas){
     var pathSVG = $(this.paths[0].toSVG()).attr('d')
+    this.clearPathsFromCanvas(canvas);
+    var typeOptions = this.types[type];
+    this.setPaths(pathSVG, typeOptions, canvas);
+  }
 
+  setPaths(svg, typeOptions, canvas){
+    for(var i=0;i<typeOptions.length;i++){
+      var path = new fabric.Path(svg,typeOptions[i])
+      canvas.add(path);
+      this.paths.push(path);
+    }
+  }
+
+  clearPathsFromCanvas(canvas){
     for(var i=0;i<this.paths.length;i++){
       canvas.remove(this.paths[i]);
     }
     // clear out old values
     this.paths.length = 0;
-
-    var typeOptions = this.types[type];
-    for(var i=0;i<typeOptions.length;i++){
-      var path = new fabric.Path(pathSVG,typeOptions[i])
-      canvas.add(path);
-      this.paths.push(path);
-    }
   }
 }
 
