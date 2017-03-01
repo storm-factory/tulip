@@ -15,6 +15,20 @@ test( 'Map glyph filename to notification type', function( assert ) {
   assert.end();
 } );
 
+test('Checks file name against type', function(assert){
+  assert.ok( notifications.nameMatchesClass("waypoint-masked", "wpm"), 'Matches waypoint-masked with wpm' );
+  assert.ok( notifications.nameMatchesClass("waypoint-eclipsed", "wpe"), 'Matches waypoint-eclipsed with wpe' );
+  assert.ok( notifications.nameMatchesClass("waypoint-safety", "wps"), 'Matches waypoint-safety with wps' );
+  assert.ok( notifications.nameMatchesClass("danger-3", "wps"), 'Matches danger-3 with wps' );
+  assert.ok( notifications.nameMatchesClass("start", "dss"), 'Matches start with dss' );
+  assert.ok( notifications.nameMatchesClass("finish", "fss"), 'Matches finish with fss' );
+  assert.ok( notifications.nameMatchesClass("finish-of-selective-section", "fss"), 'Matches finish-of-selective-section with fss' );
+  assert.ok( notifications.nameMatchesClass("speed-start", "dsz"), 'Matches speed-start with dsz' );
+  assert.ok( notifications.nameMatchesClass("speed-end", "fsz"), 'Matches speed-end with fsz' );
+
+  assert.end();
+});
+
 test( 'Builds a WPM notification type', function( assert ) {
   var notification = notifications.buildNotification('wpm');
 

@@ -159,3 +159,35 @@ test('Builds a propperly stubbed dcw type', function(assert){
   assert.deepLooseEqual(validDCW,dcw, "It creates a propperly formatted dcw type object");
   assert.end();
 });
+
+test('Adds objects to canvas', function(assert){
+  var track = new tracks.track();
+  //stub a canvas
+  var canvas = {add: function(object){this.array.push(object)}, array: []}
+  //stub objects
+  var objects = [{name: 1}, {name: 2}, {name: 3}];
+  track.addObjectsToCanvas(objects,canvas);
+  assert.deepLooseEqual(canvas.array, objects, "It adds the array of objects to the canvas");
+  assert.end();
+});
+
+
+test('Disables fabric object defaults', function(assert){
+  var object = {
+    hasBorders: true,
+    selectable: true,
+    hasControls: true,
+    lockMovementX: false,
+    lockMovementY: false,
+  }
+
+  tracks.disableDefaults(object);
+
+  assert.notOk(object.hasBorders, "Disables borders");
+  assert.notOk(object.selectable, "Disables selectable");
+  assert.notOk(object.hasControls, "Disables hasControls");
+  assert.ok(object.lockMovementX, "Locks movement x");
+  assert.ok(object.lockMovementY, "Locks movement y");
+
+  assert.end();
+});

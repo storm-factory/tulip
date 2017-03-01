@@ -14,10 +14,10 @@ class Track{
     this.initTypes();
   }
 
-  addGroupToCanvas(group, canvas){
-    Track.disableDefaults(group);
-    canvas.add(group);
-  }
+  // addGroupToCanvas(group, canvas){
+  //   Track.disableDefaults(group);
+  //   canvas.add(group);
+  // }
 
   addObjectsToCanvas(objectsArray, canvas){
     if(objectsArray.length){
@@ -284,7 +284,6 @@ class ExitTrack extends Track {
   }
 
   changeType(type,canvas){
-    console.log("exit track change type");
     super.changeType(type,canvas);
     this.end.bringToFront();
   }
@@ -312,3 +311,4 @@ class AddedTrack extends Track {
   Node exports for test suite
 */
 module.exports.track = Track;
+module.exports.disableDefaults = Track.disableDefaults;
