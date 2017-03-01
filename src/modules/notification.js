@@ -69,7 +69,7 @@ class Notification{
           bubble: 50,
       },
       fss: {
-          type: "ass",
+          type: "fss",
           fill: '#ffba29',
           bubble: 50,
       },
@@ -92,7 +92,7 @@ class Notification{
   }
 
   static nameMatchesClass(name,type){
-    return (this.mapFileNameToType(name) == type);
+    return (Notification.mapFileNameToType(name) == type);
   }
 }
 

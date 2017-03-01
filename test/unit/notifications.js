@@ -57,7 +57,7 @@ test( 'Builds a DSS notification type', function( assert ) {
 test( 'Builds a FSS notification type', function( assert ) {
   var notification = notifications.buildNotification('fss');
 
-  assert.equal(notification.type, 'ass', 'The type is correct');
+  assert.equal(notification.type, 'fss', 'The type is correct');
   assert.equal(notification.bubble, 50, 'The bubble is the right size');
   assert.equal(notification.modifier, undefined, 'There is no modifier');
 

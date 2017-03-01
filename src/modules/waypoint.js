@@ -81,7 +81,7 @@ var Waypoint = Class({
       }
       // see if we need to remove the notification using the notification class
       var _this = this;
-      var contains = glyphs.map(function(g){return Notification.nameMatchesClass(g,_this.notification.type)})
+      var contains = glyphs.map(function(g){return Notification.nameMatchesClass(g,_this.notification.type)});
       // if the glyphs array contains our notification keep it and update the bubble
 
       if(contains.includes(true)){

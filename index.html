@@ -337,10 +337,11 @@
                     </div>
                     <div class="row hidden" id="notification-options"  >
                       <div class="left large-12 columns">
-                        <span data-tooltip aria-haspopup="true" class="has-tip" title="Use the slider to resize selected glyhs and text. Click the style buttons to restyle selected text.">
+                        <span data-tooltip aria-haspopup="true" class="has-tip" title="Change the waypoint bubble radius and modifier.">
                           Waypoint options
                         </span>
-                        <a href="#" id="show-notification-options" class="button tiny radius" data-reveal-id="notification-modal"><i class="fi-target-two"></i></a>
+                        <br>
+                        <a href="#" id="show-notification-options" class="button tiny secondary radius" data-reveal-id="notification-modal"><i class="fi-target-two"></i></a>
                       </div>
                     </div>
                   </div>
@@ -386,16 +387,23 @@
   -->
   <div id="notification-modal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog" style="width:400px;">
     <h3>Notification options:  <a class="close-reveal-modal" aria-label="Close">&#215;</a></h3>
-    <div class="row">
-      <div class="middle large-12 columns">
-        <label for="notification-bubble">bubble:</label>
+    <div class="row collapse">
+      <div class="large-4 columns">
+        <span data-tooltip aria-haspopup="true" class="has-tip prefix" title="Waypoint bubble radius for RallyComp or RallyBlitz. Please be sure the device your riders are using is compatible with adjustable waypoints.">
+          bubble:
+        </span>
+      </div>
+      <div class="large-8 columns">
         <input type="number" id="notification-bubble" min="50" max="800" step="50">
       </div>
     </div>
-    <div class="row">
-      <div class="middle large-12 columns">
-        <!-- bubble modifier -->
-        <label for="notification-modifier">modifier:</label>
+    <div class="row collapse">
+      <div class="large-4 columns">
+        <span data-tooltip aria-haspopup="true" class="has-tip prefix" title="Waypoint modifier for RallyComp or RallyBlitz waypoints, please refer to their documentation for the effects of using this modifier on a particular type of waypoint.">
+          modifier:
+        </span>
+      </div>
+      <div class="large-8 columns">
         <input type="number" id="notification-modifier">
       </div>
     </div>
