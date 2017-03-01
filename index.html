@@ -77,10 +77,10 @@
         <!-- </div> -->
         <div class='roadbook-container collapsed'>
           <div class="row" id="roadbook-header">
-            <div class="large-3 column title">
+            <div class="large-3 columns title">
               Tulip
             </div>
-            <div class="large-5 column menu">
+            <div class="large-5 columns menu">
               <a href="#" class="button tiny radius secondary" id="save-roadbook" data-tooltip aria-haspopup="true" class="has-tip button tiny radius alert" title="Click to save. Shift+click to 'Save as'">
                 <i class="fi-save"></i>
               </a>
@@ -91,11 +91,11 @@
           <div id="roadbook">
             <div class="row roadbook-info">
               <hr>
-              <div id="roadbook-total-distance" class="large-4 column">
+              <div id="roadbook-total-distance" class="large-4 columns">
                 Total Kilometers:
                 <p data-bind="text: app.roadbook.totalDistance"></p>
               </div>
-              <div id="roadbook-name" class="large-8 column">
+              <div id="roadbook-name" class="large-8 columns">
                 <a class="button tiny round alert hide-editor" title="Hide editor.">&#215;</a>
                 <a href=# class="button tiny radius secondary show-editor rb-name"><i class="fi-pencil"></i></a>
                 <p href="#" data-bind="text: app.roadbook.name"></p>
@@ -106,7 +106,7 @@
             </div>
             <div class="row roadbook-info">
               <hr>
-              <div id="roadbook-desc" class="large-12 column">
+              <div id="roadbook-desc" class="large-12 columns">
                 <a class="button tiny round alert hide-editor rb-desc" title="Hide editor.">&#215;</a>
                 <a href=# class="button tiny radius secondary show-editor rb-desc"><i class="fi-pencil"></i></a>
                 <p data-bind="html: app.roadbook.desc"></p>
@@ -206,7 +206,7 @@
                   <hr>
                 </div>
                 <div class="row">
-                  <div class="large-4 column">
+                  <div class="large-4 columns">
                     <ul class="accordion track-selection" data-accordion>
                       <li class="accordion-navigation">
                         <a href="#added-track-tab">Add as</a>
@@ -270,7 +270,7 @@
                       </li>
                     </ul>
                   </div>
-                  <div class="left large-4 column">
+                  <div class="left large-4 columns">
                     <div class="glyph-selection hidden">
                       <div class="tl glyph-grid" data-top="30" data-left="30"><i class="fi-plus"></i></div>
                       <div class="tm glyph-grid" data-top="30" data-left="85"><i class="fi-plus"></i></div>
@@ -298,7 +298,7 @@
                       <div class="lr track-grid" data-angle="135"><div><i class="fi-arrow-down"></i></div></div>
                     </div>
                   </div>
-                  <div class="left large-4 column note-tools">
+                  <div class="left large-4 columns note-tools">
                     <!--
                       START This gets repositioned over the waypoint note in edit mode
                     -->
@@ -310,7 +310,7 @@
                        END This gets repositioned over the waypoint note in edit mode
                     -->
                     <div class="row">
-                      <div class="left large-12 column note-glyph-selection">
+                      <div class="left large-12 columns note-glyph-selection">
                         <span data-tooltip aria-haspopup="true" class="has-tip" title="Click to add glyphs to the end of the note.">
                           Insert glyph
                         </span>
@@ -318,7 +318,7 @@
                       </div>
                     </div>
                     <div class="row">
-                      <div class="left large-12 column">
+                      <div class="left large-12 columns">
                         <span data-tooltip aria-haspopup="true" class="has-tip" title="Use the slider to resize selected glyhs and text. Click the style buttons to restyle selected text.">
                           Modify selection
                         </span>
@@ -333,6 +333,14 @@
                         <button id="note-selection-bold" class="tiny secondary"><i class="fi-bold"></i></button>
                         <button id="note-selection-italic" class="tiny secondary "><i class="fi-italic"></i></button>
                         <button id="note-selection-underline" class="tiny secondary"><i class="fi-underline"></i></button>
+                      </div>
+                    </div>
+                    <div class="row hidden" id="notification-options"  >
+                      <div class="left large-12 columns">
+                        <span data-tooltip aria-haspopup="true" class="has-tip" title="Use the slider to resize selected glyhs and text. Click the style buttons to restyle selected text.">
+                          Waypoint options
+                        </span>
+                        <a href="#" id="show-notification-options" class="button tiny radius" data-reveal-id="notification-modal"><i class="fi-target-two"></i></a>
                       </div>
                     </div>
                   </div>
@@ -373,6 +381,26 @@
       </div>
     </div>
   </script>
+  <!--
+    Notification Modal
+  -->
+  <div id="notification-modal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog" style="width:400px;">
+    <h3>Notification options:  <a class="close-reveal-modal" aria-label="Close">&#215;</a></h3>
+    <div class="row">
+      <div class="middle large-12 columns">
+        <label for="notification-bubble">bubble:</label>
+        <input type="number" id="notification-bubble" min="50" max="800" step="50">
+      </div>
+    </div>
+    <div class="row">
+      <div class="middle large-12 columns">
+        <!-- bubble modifier -->
+        <label for="notification-modifier">modifier:</label>
+        <input type="number" id="notification-modifier">
+      </div>
+    </div>
+    <a id="save-notification-options" class="button tiny radius">Save</a>
+  </div>
   <!--
     Glyph Modal
   -->

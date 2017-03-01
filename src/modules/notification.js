@@ -14,6 +14,9 @@ class Notification{
       this.type = notification.type;
       this.bubble = notification.bubble;
       this.modifier = notification.modifier;
+      this.modMin = notification.modMin;
+      this.modMax = notification.modMax;
+      this.modStep = notification.modStep;
       this.fill = notification.fill;
     }
   }
@@ -42,6 +45,9 @@ class Notification{
           fill: '#008CBA',
           bubble: 400,
           modifier: 400,
+          modMin: 100,
+          modMax: 800,
+          modStep: 100,
       },
       wpe: {
           type: "wpe",
@@ -53,6 +59,9 @@ class Notification{
           fill: '#ff4200',
           bubble: 200,
           modifier: 200,
+          modMin: 10,
+          modMax: 400,
+          modStep: 10,
       },
       dss: {
           type: "dss",
@@ -68,7 +77,10 @@ class Notification{
           type: "dsz",
           fill: '#ffba29',
           bubble: 200,
-          modifier: 0,
+          modifier: 5,
+          modMin: 5,
+          modMax: 200,
+          modStep: 5,
       },
       fsz: {
           type: "fsz",

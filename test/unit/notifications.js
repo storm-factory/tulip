@@ -69,7 +69,7 @@ test( 'Builds a DSZ notification type', function( assert ) {
 
   assert.equal(notification.type, 'dsz', 'The type is correct');
   assert.equal(notification.bubble, 200, 'The bubble is the right size');
-  assert.equal(notification.modifier, 0, 'The modifier is the right number');
+  assert.equal(notification.modifier, 5, 'The modifier is the right number');
 
   assert.end() ;
 } );

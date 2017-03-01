@@ -114,9 +114,10 @@ var MapEditor = Class({
             strokeWeight: 2,
             fillColor: fill,
             fillOpacity: 0.2,
+            clickable: false,
             map: this.map,
             center: center,
-            radius: radius
+            radius: Number(radius)
           });
   },
 
@@ -419,6 +420,12 @@ var MapEditor = Class({
   */
   getEdgeTolerance: function(){
     return Math.pow(this.map.getZoom(), -(this.map.getZoom()/5));
+  },
+
+  updateWaypointBubble: function(routePointIndex,bubble){
+    if(this.routeMarkers[routePointIndex].bubble){
+      this.routeMarkers[routePointIndex].bubble.setRadius(Number(bubble));
+    }
   },
 
   updateRoute: function() {

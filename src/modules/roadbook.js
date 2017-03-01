@@ -215,6 +215,9 @@ var Roadbook = Class({
       $(waypoint.element).find('.waypoint-note').append($('#note-editor-container'));
       $('#roadbook').css('padding-bottom', '0');
       $('#roadbook').find('.roadbook-info').hide();
+      if(waypoint.notification){
+        $('#notification-options').removeClass('hidden');
+      }
       return true;
     }
   },
@@ -229,7 +232,8 @@ var Roadbook = Class({
       $($('.added-track-selector')[1]).addClass('active');
       $('#roadbook').css('padding-bottom', '150%');
       $('#roadbook').find('.roadbook-info').show();
-      $('#roadbook').scrollTop(this.currentlyEditingWaypoint.element.position().top - 80)
+      $('#notification-options').addClass('hidden');
+      $('#roadbook').scrollTop(this.currentlyEditingWaypoint.element.position().top - 80);
       // TODO make into waypoint function
       this.currentlyEditingWaypoint.changeAddedTrackType('track');
       this.currentlyEditingWaypoint.noteHTML(this.noteTextEditor.html());

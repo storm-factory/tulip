@@ -44,6 +44,7 @@ var Waypoint = Class({
       app.mapEditor.addWaypointBubble(this.routePointIndex, this.notification.bubble, this.notification.fill)
     }
 
+
     var _this = this;
     var angle = wptJson.angles.relativeAngle;
     var json = wptJson.tulipJson;
@@ -67,6 +68,8 @@ var Waypoint = Class({
           this.notification = null
         }else {
           app.mapEditor.addWaypointBubble(this.routePointIndex, this.notification.bubble, this.notification.fill)
+          // show notification options
+          $('#notification-options').removeClass('hidden');
         }
 
       }
@@ -79,14 +82,20 @@ var Waypoint = Class({
       // see if we need to remove the notification using the notification class
       var _this = this;
       var contains = glyphs.map(function(g){return Notification.nameMatchesClass(g,_this.notification.type)})
-      // if the glyphs array contains our notification keep it
-      //otherwise nullify our current notification
-      if(!contains.includes(true) || (glyphs.length < 1)){
+      // if the glyphs array contains our notification keep it and update the bubble
+
+      if(contains.includes(true)){
+        app.mapEditor.updateWaypointBubble(this.routePointIndex,this.notification.bubble);
+      }else{ //otherwise nullify our current notification
         this.notification = null;
+        $('#notification-options').addClass('hidden');
         app.mapEditor.deleteWaypointBubble(this.routePointIndex);
       }
-
     }
+  },
+
+  hasNotification(){
+    return this.notification != null;
   },
 
   changeAddedTrackType(type){
