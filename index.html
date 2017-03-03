@@ -209,7 +209,7 @@
                   <div class="large-4 columns">
                     <ul class="accordion track-selection" data-accordion>
                       <li class="accordion-navigation">
-                        <a href="#added-track-tab">Add as</a>
+                        <a href="#added-track-tab" class='track-tab-title'>Add as</a>
                         <div id="added-track-tab" class="content active">
                           <a title="off piste" href="#" class="button tiny radius secondary added-track-selector" id="off-piste-added">
                             <img  src="assets/off-piste-added.png">
@@ -229,7 +229,7 @@
                         </div>
                       </li>
                       <li class="accordion-navigation">
-                        <a href="#entry-track-tab">Enter on</a>
+                        <a href="#entry-track-tab" class='track-tab-title'>Enter on</a>
                         <div id="entry-track-tab" class="content">
                           <a title="off piste" href="#" class="button tiny radius secondary entry-track-selector" id="off-piste-entry">
                             <img  src="assets/off-piste-entry.png">
@@ -249,7 +249,7 @@
                         </div>
                       </li>
                       <li class="accordion-navigation">
-                        <a href="#exit-track-tab">Exit on</a>
+                        <a href="#exit-track-tab" class='track-tab-title'>Exit on</a>
                         <div id="exit-track-tab" class="content">
                           <a title="off piste" href="#" class="button tiny radius secondary exit-track-selector" id="off-piste-exit">
                             <img  src="assets/off-piste-exit.png">
@@ -341,7 +341,29 @@
                           Waypoint options
                         </span>
                         <br>
-                        <a href="#" id="show-notification-options" class="button tiny secondary radius" data-reveal-id="notification-modal"><i class="fi-target-two"></i></a>
+                        <!-- <a href="#" id="show-notification-options" class="button tiny secondary radius" data-reveal-id="notification-modal"><i class="fi-target-two"></i></a> -->
+                        <div>
+                          <div class="row collapse">
+                            <div class="large-6 columns">
+                              <span data-tooltip aria-haspopup="true" class="has-tip prefix" title="Waypoint bubble radius for RallyComp or RallyBlitz. Please be sure the device your riders are using is compatible with adjustable waypoints.">
+                                bubble:
+                              </span>
+                            </div>
+                            <div class="large-6 columns">
+                              <input type="number" id="notification-bubble" min="50" max="800" step="50">
+                            </div>
+                          </div>
+                          <div class="row collapse">
+                            <div class="large-6 columns">
+                              <span data-tooltip aria-haspopup="true" class="has-tip prefix" title="Waypoint modifier for RallyComp or RallyBlitz waypoints, please refer to their documentation for the effects of using this modifier on a particular type of waypoint.">
+                                modifier:
+                              </span>
+                            </div>
+                            <div class="large-6 columns">
+                              <input type="number" id="notification-modifier">
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -382,34 +404,6 @@
       </div>
     </div>
   </script>
-  <!--
-    Notification Modal
-    TODO why isn't this just directly on the palette?
-  -->
-  <div id="notification-modal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog" style="width:400px;">
-    <h3>Notification options:  <a class="close-reveal-modal" aria-label="Close">&#215;</a></h3>
-    <div class="row collapse">
-      <div class="large-4 columns">
-        <span data-tooltip aria-haspopup="true" class="has-tip prefix" title="Waypoint bubble radius for RallyComp or RallyBlitz. Please be sure the device your riders are using is compatible with adjustable waypoints.">
-          bubble:
-        </span>
-      </div>
-      <div class="large-8 columns">
-        <input type="number" id="notification-bubble" min="50" max="800" step="50">
-      </div>
-    </div>
-    <div class="row collapse">
-      <div class="large-4 columns">
-        <span data-tooltip aria-haspopup="true" class="has-tip prefix" title="Waypoint modifier for RallyComp or RallyBlitz waypoints, please refer to their documentation for the effects of using this modifier on a particular type of waypoint.">
-          modifier:
-        </span>
-      </div>
-      <div class="large-8 columns">
-        <input type="number" id="notification-modifier">
-      </div>
-    </div>
-    <a id="save-notification-options" class="button tiny radius">Save</a>
-  </div>
   <!--
     Glyph Modal
   -->

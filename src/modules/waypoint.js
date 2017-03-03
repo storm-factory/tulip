@@ -57,7 +57,7 @@ var Waypoint = Class({
       }
     };
   },
-
+  //TODO This needs refactored
   manageNotifications(glyphs){
     if(this.notification == null){
       // create a new notification
@@ -70,6 +70,7 @@ var Waypoint = Class({
           app.mapEditor.addWaypointBubble(this.routePointIndex, this.notification.bubble, this.notification.fill)
           // show notification options
           $('#notification-options').removeClass('hidden');
+          app.noteControls.updateNotificationControls(this.notification);
         }
 
       }

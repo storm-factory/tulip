@@ -49,6 +49,7 @@ textarea.waypoint-palette{
   height: 75px !important;
   width: 120px !important;
 }
+
 #content {
   height: 100%;
 }
@@ -140,6 +141,11 @@ textarea.waypoint-palette{
   height: 95px;
 }
 
+#notification-bubble,
+#notification-modifier {
+  box-shadow: 2px 2px 5px -2px rgba(0,0,0,0.60);
+}
+
 #roadbook {
   padding-top: 1.2rem;
   padding-bottom: 150%;
@@ -204,7 +210,7 @@ textarea.waypoint-palette{
 }
 
 #roadbook-waypoints {
-  padding-top: 25px;
+  /*padding-top: 25px;*/
   padding-bottom: 20px;
 }
 
@@ -345,9 +351,13 @@ textarea.waypoint-palette{
   margin-bottom: 0;
 }
 
+ul.track-selection li.accordion-navigation a.track-tab-title {
+  padding: 9px;
+}
 
 ul.track-selection li.accordion-navigation a {
-  padding: 0.25rem;
+  padding: 6px;
+  box-shadow: none;
 }
 
 .track-selection, .glyph-selection {min-height: 130px;}
@@ -362,6 +372,10 @@ ul.track-selection li.accordion-navigation a {
   color: #ffba29;
   text-shadow: -1px 1px 4px rgba(0,0,0, 1);
   background-color: #efefef;
+}
+
+.track-selection li.accordion-navigation {
+  box-shadow: 2px 2px 5px -2px rgba(0,0,0,0.60);
 }
 
 .track-grid.undo, .glyph-grid.undo {color: #000}

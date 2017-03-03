@@ -199,8 +199,10 @@ var Roadbook = Class({
       $('#save-roadbook').removeClass('secondary');
       this.currentlyEditingWaypoint = waypoint;
       this.noteTextEditor.html(waypoint.noteHTML());
-      $('#note-editor-container').toggleClass('hideCap',!this.currentlyEditingWaypoint.showHeading());
-      this.waypointShowHeading(this.currentlyEditingWaypoint.showHeading());
+      $('#notification-bubble').val((waypoint.notification ? waypoint.notification.bubble : null));
+      $('#notification-modifier').val((waypoint.notification ? waypoint.notification.modifier : null));
+      $('#note-editor-container').toggleClass('hideCap',!waypoint.showHeading());
+      this.waypointShowHeading(waypoint.showHeading());
       // app.glyphControls.bindNoteGlyphResizable();
       var latLng = new google.maps.LatLng(waypoint.lat(), waypoint.lng());
       app.setMapCenter(latLng);
@@ -237,6 +239,8 @@ var Roadbook = Class({
       // TODO make into waypoint function
       this.currentlyEditingWaypoint.changeAddedTrackType('track');
       this.currentlyEditingWaypoint.noteHTML(this.noteTextEditor.html());
+      this.currentlyEditingWaypoint.notification.bubble = $('#notification-bubble').val();
+      this.currentlyEditingWaypoint.notification.modifier = $('#notification-modifier').val();
       this.currentlyEditingWaypoint.tulip.finishEdit();
       this.currentlyEditingWaypoint.tulip.finishRemove();
       this.currentlyEditingWaypoint = null;

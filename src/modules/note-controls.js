@@ -2,7 +2,6 @@ class NoteControls {
   constructor() {
     var _this = this;
 
-    // var currentlyEditingWaypoint = app.roadbook.currentlyEditingWaypoint.notification;
     $('#note-editor').on('input', function() {
       _this.checkForNotification()
     });
@@ -35,21 +34,27 @@ class NoteControls {
     $('#show-notification-options').click(function(){
       var notification = app.roadbook.currentlyEditingWaypoint.notification;
       $('#notification-bubble').val(notification.bubble);
-
       $('#notification-modifier').val(notification.modifier);
       $('#notification-modifier').attr('min', notification.modMin);
       $('#notification-modifier').attr('max', notification.modMax);
       $('#notification-modifier').attr('step', notification.modStep);
     });
 
-    $('#save-notification-options').click(function(){
+    $('#notification-bubble, #notification-modifier').change(function(){
       var notification = app.roadbook.currentlyEditingWaypoint.notification;
       notification.bubble = $('#notification-bubble').val();
       notification.modifier = $('#notification-modifier').val();
-      $('#notification-modal').foundation('reveal', 'close');
-      _this.checkForNotification();
+      _this.checkForNotification(); //TODO This needs refactored
     });
 
+  }
+
+  updateNotificationControls(notification){
+    $('#notification-bubble').val(notification.bubble);
+    $('#notification-modifier').val(notification.modifier);
+    $('#notification-modifier').attr('min', notification.modMin);
+    $('#notification-modifier').attr('max', notification.modMax);
+    $('#notification-modifier').attr('step', notification.modStep);
   }
 
   resizeSelection(size){
