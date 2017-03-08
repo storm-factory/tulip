@@ -1,3 +1,4 @@
+// TODO refactor this to use MVC pattern and act as a model for the roadbook all UI interaction should be moved to an application controller, also change to ES6 syntax
 var Roadbook = Class({
   create: function(){
     /*
