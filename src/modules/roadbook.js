@@ -27,7 +27,6 @@ var Roadbook = Class({
       initialize rich text editors for waypoint note instructions
       and also for the roadbook description
     */
-    this.noteTextEditor = $('#note-editor');
     this.descriptionInputListener();
   },
 
@@ -100,6 +99,10 @@ var Roadbook = Class({
     app.mapEditor.map.setZoom(14);
   },
 
+  appendGlyphToNoteTextEditor: function(image){
+    $('#note-editor').append(image);
+  },
+
   changeEditingWaypointAdded: function(type){
     this.currentlyEditingWaypoint.changeAddedTrackType(type);
   },
@@ -145,16 +148,16 @@ var Roadbook = Class({
     var maxIndex = this.waypoints().length - 1;
     var currentIndex;
     var midpoint = this.waypoints().length/2 | 0;
-    var currentElement;
+    var currentWaypoint;
 
     while (minIndex <= maxIndex) {
       currentIndex = (minIndex + maxIndex) / 2 | 0;
-      currentElement = this.waypoints()[currentIndex];
+      currentWaypoint = this.waypoints()[currentIndex];
 
-      if (currentElement.kmFromStart() < kmFromStart) {
+      if (currentWaypoint.kmFromStart() < kmFromStart) {
         minIndex = currentIndex + 1;
       }
-      else if (currentElement.kmFromStart() > kmFromStart) {
+      else if (currentWaypoint.kmFromStart() > kmFromStart) {
         maxIndex = currentIndex - 1;
       }
       else {
@@ -198,7 +201,7 @@ var Roadbook = Class({
       this.finishWaypointEdit(); //clear any existing UI just to be sure
       $('#save-roadbook').removeClass('secondary');
       this.currentlyEditingWaypoint = waypoint;
-      this.noteTextEditor.html(waypoint.noteHTML());
+      $('#note-editor').html(waypoint.noteHTML());
       $('#notification-bubble').val((waypoint.notification ? waypoint.notification.bubble : null));
       $('#notification-modifier').val((waypoint.notification ? waypoint.notification.modifier : null));
       $('#note-editor-container').toggleClass('hideCap',!waypoint.showHeading());
@@ -226,31 +229,38 @@ var Roadbook = Class({
 
   finishWaypointEdit: function(){
     if(this.currentlyEditingWaypoint !== null){
-      // TODO make into a update palette function
-      $('.waypoint.row').show();
-      $('#waypoint-palette').find('.note-tools').append($('#note-editor-container'));
-      $('#waypoint-palette').slideUp('slow');
-      $('.added-track-selector').removeClass('active');
-      $($('.added-track-selector')[1]).addClass('active');
-      $('#roadbook').css('padding-bottom', '150%');
-      $('#roadbook').find('.roadbook-info').show();
-      $('#notification-options').addClass('hidden');
-      $('#roadbook').scrollTop(this.currentlyEditingWaypoint.element.position().top - 80);
-      // TODO make into waypoint function
-      this.currentlyEditingWaypoint.changeAddedTrackType('track');
-      this.currentlyEditingWaypoint.noteHTML(this.noteTextEditor.html());
-      this.currentlyEditingWaypoint.notification.bubble = $('#notification-bubble').val();
-      this.currentlyEditingWaypoint.notification.modifier = $('#notification-modifier').val();
-      this.currentlyEditingWaypoint.tulip.finishEdit();
-      this.currentlyEditingWaypoint.tulip.finishRemove();
+      this.resetWaypointPalette(this.currentlyEditingWaypoint);
+      this.updateWaypointAfterEdit(this.currentlyEditingWaypoint);
       this.currentlyEditingWaypoint = null;
-      this.noteTextEditor.html('');
+      $('#note-editor').html('');
       if(!app.canEditMap){
         app.mapControls.reorient();
-        app.mapControls.restoreMapLock();
       }
     }
     return true;
+  },
+
+  resetWaypointPalette: function(waypoint){
+    $('.waypoint.row').show();
+    $('#waypoint-palette').find('.note-tools').append($('#note-editor-container'));
+    $('#waypoint-palette').slideUp('slow');
+    $('.added-track-selector').removeClass('active');
+    $($('.added-track-selector')[1]).addClass('active');
+    $('#roadbook').css('padding-bottom', '150%');
+    $('#roadbook').find('.roadbook-info').show();
+    $('#notification-options').addClass('hidden');
+    $('#roadbook').scrollTop(waypoint.element.position().top - 80);
+  },
+
+  updateWaypointAfterEdit: function(waypoint){
+    waypoint.changeAddedTrackType('track');
+    waypoint.noteHTML($('#note-editor').html());
+    if(waypoint.notification){
+      waypoint.notification.bubble = $('#notification-bubble').val();
+      waypoint.notification.modifier = $('#notification-modifier').val();
+    }
+    waypoint.tulip.finishEdit();
+    waypoint.tulip.finishRemove();
   },
 
   updateTotalDistance: function(){

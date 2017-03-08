@@ -1,15 +1,13 @@
-var GlyphControls = Class({
-  singleton: true,
+class GlyphControls{
 
-  create: function(){
+  constructor(){
     this.fs = require('fs');
     this.process = require('electron').remote.process;
     this.files = [];
     this.getGylphNames();
     this.initListeners();
     this.addToNote = false;
-  },
-
+  }
 
   getGylphNames(){
     try {
@@ -18,17 +16,17 @@ var GlyphControls = Class({
       console.log("using unpackaged filesys");
       this.files = this.fs.readdirSync('assets/svg/glyphs');
     }
-  },
+  }
 
-  handleGlyphSelectUI: function(e){
+  handleGlyphSelectUI(e){
     e.preventDefault();
     if(!e.shiftKey){
       $('#glyphs').foundation('reveal', 'close');
     }
     $('#glyph-search').focus();
-  },
+  }
 
-  populateResults: function(results){
+  populateResults(results){
     var _this = this;
     $.each(results, function(i,result){
       var img = $('<img>').addClass('glyph').attr('src', result.path)
@@ -40,19 +38,19 @@ var GlyphControls = Class({
       })
       $('#glyph-search-results').append(showResult);
     });
-  },
+  }
 
-  searchGlyphNames: function(query){
-    results=[];
+  searchGlyphNames(query){
+    var results=[];
     $.each(this.files, function(i,file){
       if(file.indexOf(query) != -1){
         results.push({name: file.replace('.svg', ''), path: 'assets/svg/glyphs/'+file})
       }
     });
     return results;
-  },
+  }
 
-  initListeners: function(){
+  initListeners(){
     var _this = this;
     $('#glyph-search').keyup(function(){
       $('#glyph-search-results').html('');
@@ -95,23 +93,24 @@ var GlyphControls = Class({
       _this.showGlyphModal($(this).data('top'),$(this).data('left'));
       return false
     });
-  },
+  }
 
-  showGlyphModal: function(top,left){
+  showGlyphModal(top,left){
     app.glyphPlacementPosition = {top: top, left: left};
     this.addToNote = false;
     $('#glyphs').foundation('reveal', 'open');
     setTimeout(function() { $('#glyph-search').focus(); }, 600); //we have to wait for the modal to be visible before we can assign focus
     return false
-  },
+  }
 
-  addGlyphToInstruction: function(element){
+  addGlyphToInstruction(element){
     var src = $(element).attr('src');
     if(this.addToNote){
-      app.roadbook.noteTextEditor.append($('<img>').attr('src', src).addClass('normal'));
+      app.roadbook.appendGlyphToNoteTextEditor($('<img>').attr('src', src).addClass('normal'));
     } else {
+      // TODO pass this through stack in order to reduce coupling
       app.roadbook.currentlyEditingWaypoint.tulip.addGlyph(app.glyphPlacementPosition,src);
     }
   }
 
-});
+};

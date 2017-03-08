@@ -1,65 +1,39 @@
 /*
   A module for providing the application with the means to control the map via the UI
 */
-var MapControls = Class({
-  singleton: true,
+class MapControls{
 
-  create: function() {
+  constructor(){
     this.rotation = 0;
     this.lockedBeforeWaypointEdit = false;
     this.initListeners();
-  },
+  }
 
-  // TODO depricate
-  disableMapInteraction: function(){
-    // app.canEditMap = false;
-    // app.map.setOptions({draggable: false});
-    $('#draw-route').click();
-    // $('#draw-route').hide();
-    // $('#remove-route').hide();
-    // $('.map-rotate-notice').show();
-    // $('.map-rotate-notice').fadeTo('slow', 0.25).fadeTo('slow', 1.0);
-  },
-  // TODO depricate
-  enableMapInteraction: function(){
-    // app.canEditMap = true;
-    // app.map.setOptions({draggable: true});
-    $('#draw-route').click();
-    // $('#draw-route').show('slow');
-    // $('#remove-route').show('slow');
-    // $('.map-rotate-notice').hide();
-  },
-
-  restoreMapLock: function(){
-    console.log(this.lockedBeforeWaypointEdit);
-    // TODO do the thing
-  },
-
-  zin: function(){
+  zin(){
     app.map.setZoom(app.map.getZoom() + 1);
-  },
+  }
 
-  zout: function(){
+  zout(){
     app.map.setZoom(app.map.getZoom() - 1);
-  },
+  }
 
-  rotateNumDegrees: function(degrees){
+  rotateNumDegrees(degrees){
     $('#map').css({'-webkit-transform' : 'rotate('+ degrees +'deg)'});
     $('#draw-route').hide();
     $('.map-rotate-notice').show();
     $('.map-rotate-notice').fadeTo('slow', 0.25).fadeTo('slow', 1.0);
     app.map.setOptions({draggable: false});
-  },
+  }
 
-  reorient: function(){
+  reorient(){
     this.rotation = 0;
     $('#map').css({'-webkit-transform' : 'rotate(0deg)'});
     $('.map-rotate-notice').hide();
     $('#draw-route').show('slow');
     app.map.setOptions({draggable: true});
-  },
+  }
 
-  initListeners: function(){
+  initListeners(){
     /*
         Map Listeners
     */
@@ -121,5 +95,5 @@ var MapControls = Class({
       }
     });
 
-  },
-});
+  }
+};

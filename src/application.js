@@ -55,8 +55,8 @@ var App = Class({
     */
     this.initListeners();
     // TODO singletons are bad mmmmkay. Refactor to ES6 syntax
-    this.mapControls = MapControls.instance();
-    this.glyphControls = GlyphControls.instance();
+    this.mapControls = new MapControls();
+    this.glyphControls = new GlyphControls();
 
     this.noteControls = new NoteControls();
   },
@@ -330,16 +330,15 @@ var App = Class({
     $('#orient-map').click(function(){
       var i = _this.roadbook.currentlyEditingWaypoint.routePointIndex;
       _this.mapControls.lockedBeforeWaypointEdit = !app.canEditMap;
-      !app.canEditMap ? _this.mapControls.enableMapInteraction() : null;
       if(i > 0){
         var heading = google.maps.geometry.spherical.computeHeading(_this.mapEditor.routePoints.getAt(i-1), _this.mapEditor.routePoints.getAt(i));
         if(_this.mapControls.rotation == 0){
-          _this.mapControls.disableMapInteraction(); //Do we need this?
+          $('#draw-route').click();
           _this.mapControls.rotation = 360-heading
           _this.mapControls.rotateNumDegrees(_this.mapControls.rotation);
         }else {
           _this.mapControls.reorient();
-          _this.mapControls.enableMapInteraction(); //Do we need this?
+          $('#draw-route').click();
         }
       }
     });
@@ -362,7 +361,7 @@ var App = Class({
       _this.roadbook.currentlyEditingWaypoint.tulip.addTrack(angle);
     });
 
-    // TODO change to object literal lookup, split into three methods for each category
+    // TODO change to object literal lookup
     $('.added-track-selector').click(function(e) {
       e.preventDefault();
       if('off-piste-added' == $(this).attr('id')){
