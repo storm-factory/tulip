@@ -1,0 +1,3 @@
+I've tried tape and qunit and can't seem to ever make meaningful progress towards good testing. A lot of this has to do with my inexperience with electron and JS in general. I want to have good tests, I really do, but I also don't want to spend the little free time I have trying to figure out how to get some test framework geared for node or for browser testing to work on Electron. Or how to resolve dependencies with the fabric library or.... Yeah excuses I know... Bad code I know... Bad architecture I know... :-(
+
+Better luck next time I hope, maybe Selectron integration testing will be enough. 
