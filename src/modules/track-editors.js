@@ -1,3 +1,4 @@
+// TODO in some senses this is a pure utility module, but is also a bit of a model. see if that can be seperated at all
 class TrackEditor {
   constructor(canvas, track, handleColor='#296EFF') {
 

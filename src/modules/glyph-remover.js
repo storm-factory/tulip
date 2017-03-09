@@ -1,3 +1,4 @@
+// TODO refactor this to use MVC pattern and act as a controller for the tulip of the currentlyEditingWaypoint for the roadbook
 var GlyphRemover = Class({
 
   create: function(tulip,glyph,index){

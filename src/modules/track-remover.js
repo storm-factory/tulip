@@ -1,3 +1,4 @@
+// TODO refactor this to use MVC pattern and act as a controller for the tulip of the currentlyEditingWaypoint for the roadbook
 class TrackRemover {
   constructor(tulip,track,index){
       fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';

@@ -1,5 +1,6 @@
 /*
   Creates a tulip canvas object from either UI interaction or the loading of a saved file
+  // TODO seperate into tulip model and tulip controller to seperate UI interaction from state the tulip canvas would be the view
 */
 fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
 
@@ -153,7 +154,7 @@ var Tulip = Class({
       });
     }
   },
-  
+
   buildEntryTrackFromJson(entry){
     var paths = this.buildPaths(entry.paths);
     var point = new fabric.Circle(entry.point)

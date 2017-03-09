@@ -5,6 +5,8 @@
   for use in RallyBlitz and RallyComp.
 
   Any other parties interested in integrating should also be accomodated.
+
+  // NOTE this is a straight up model and the simplicity of such is beautiful
 */
 class Notification{
   constructor(name){
@@ -95,10 +97,3 @@ class Notification{
     return (Notification.mapFileNameToType(name) == type);
   }
 }
-
-/*
-  Node exports for test suite
-*/
-// module.exports.nameMatchesClass = Notification.nameMatchesClass;
-// module.exports.mapFileNameToType = Notification.mapFileNameToType;
-// module.exports.buildNotification = Notification.buildNotification;

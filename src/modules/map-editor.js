@@ -1,7 +1,8 @@
 /*
   PROBLEM: This class does map stuff... It should be broken into more specific classes
   SOLUTIONS: map-util, map route object, map waypoint object.. something along those lines
-
+  // TODO is it possible to sepereate this into a model object which keeps track of data structures and a controller object which interfaces with the UI?
+  the model object will have to know about the app and the roadbook. not sure how we want to interface that? maybe route everything through the app?
 */
 var MapEditor = Class({
 
@@ -14,6 +15,7 @@ var MapEditor = Class({
       displayEdge is a instance variable which tracks whether a handle should be shown when the user hovers the mouse over the route.
     */
     this.displayEdge = true;
+    this.mapUnlocked = true;
     this.deleteQueue = [];
   },
 
@@ -258,6 +260,7 @@ var MapEditor = Class({
         var latLng = new google.maps.LatLng(points[j].lat, points[j].lng);
         var marker = this.pushRoutePoint(latLng);
         if(j == points.length-1){
+          // TODO how can we abstract this?
           marker.waypoint = app.roadbook.addWaypoint(this.addWaypoint(marker));
         }
 
@@ -310,7 +313,7 @@ var MapEditor = Class({
 
   deleteWaypoint: function(marker){
     //remove the waypoint from the roadbook
-    app.roadbook.deleteWaypoint(marker.waypoint.id);
+    app.roadbook.deleteWaypoint(marker.waypoint.id); //TODO how can we abstract this?
     //update the point's icon and remove its waypoint object
     marker.setIcon(this.vertexIcon());
     this.deleteWaypointBubble(marker.routePointIndex);
@@ -439,15 +442,16 @@ var MapEditor = Class({
     app.roadbook.updateTotalDistance();
   },
 
+  // TODO this would be in some map controller module
   initMarkerListeners: function(marker){
-    var _this = this;
+    var _this = this; //NOTE this will end up being some sort of abstraction of the map model
 
     /*
       When two items are in the queue, all points in between are deleted.
     */
     google.maps.event.addListener(marker, 'click', function(evt) {
       if(this.waypoint && !app.pointDeleteMode){
-        // TODO make into waypoint function
+        // TODO make into waypoint function and abstract it from here
         $('#roadbook').scrollTop(0);
         $('#roadbook').scrollTop(($(this.waypoint.element).offset().top-100));
       }
@@ -524,11 +528,36 @@ var MapEditor = Class({
     });
   },
 
+
+  // TODO this would be in some map controller module
+  lockMap: function(){
+    this.mapUnlocked = false;
+    this.lockMarkers();
+  },
+  // TODO this would be in some map controller module
+  unlockMap: function(){
+    this.mapUnlocked = true;
+    this.unlockMarkers();
+  },
+  // TODO this would be in some map controller module
+  lockMarkers: function(){
+    for(var i=0;i<this.routeMarkers.length;i++){
+      this.routeMarkers[i].setDraggable(false);
+    }
+  },
+  // TODO this would be in some map controller module
+  unlockMarkers: function(){
+    for(var i=0;i<this.routeMarkers.length;i++){
+      this.routeMarkers[i].setDraggable(true);
+    }
+  },
+  // TODO this would be in some map controller module (basically change out this for model and move the map initialize to the controller)
   initRouteListeners: function() {
     var _this = this;
     // Add a listener for the map's click event
     this.map.addListener('click', function(evt){
-      if(app.canEditMap && !app.pointDeleteMode){
+      if(_this.mapUnlocked && !app.pointDeleteMode){
+        // TODO this stays in the model as wrapped in a method
         var marker = _this.pushRoutePoint(evt.latLng)
 
         //if this is the first point on the route make it a waypoint
@@ -549,7 +578,8 @@ var MapEditor = Class({
                                                    buttons: ["Cancel","Ok"],
                                                   defaultId: 1,
                                                   message: "About to auto-trace roads to your route, Are you sure?"});
-      if(app.canEditMap && !app.pointDeleteMode && (autotrace == 1)){
+      // TODO this stays in the model as wrapped in a method
+      if(_this.mapUnlocked && !app.pointDeleteMode && (autotrace == 1)){
         if(_this.routePoints.length >0){
           var startSnap = _this.routePoints.getArray().slice(-1).pop();
           var endSnap = evt.latLng;
@@ -574,12 +604,14 @@ var MapEditor = Class({
 
     /*
       hovering over the route between verticies will display a handle, which if clicked on will add a point to the route
+      // TODO put me in a map polyline listeners wrapper
     */
     google.maps.event.addListener(this.route, 'mouseover', function(evt){
       /*
         If we aren't over a point display a handle to add a new route point if the map is editable
       */
-      if(_this.displayEdge && !app.pointDeleteMode){
+      if(_this.displayEdge && !app.pointDeleteMode){ //these two guys need moved to the map controller since they monitor UI state
+        // TODO this stays in the model as wrapped in a method
         var dragging = false;
         var loc;
         var handle = new google.maps.Marker({
@@ -590,7 +622,7 @@ var MapEditor = Class({
                                 zIndex: -1,
                               });
         google.maps.event.addListener(_this.route, 'mousemove', function(evt){
-          if(_this.displayEdge && app.canEditMap){
+          if(_this.displayEdge && _this.mapUnlocked){
             handle.setPosition(evt.latLng);
           } else {
             handle.setMap(null);

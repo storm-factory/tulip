@@ -5,6 +5,7 @@
   At lower zoom levels only waypoint markers will be rendered
   At higher zoom levels only point and waypoint markers within the viewport will be rendered
 */
+// TODO This is a module that only interfaces with the app, refactor to make that the only coupling
 class MapOptimizer{
   constructor(){
     var _this = this;

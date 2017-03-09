@@ -1,3 +1,4 @@
+// TODO seperate into tulip model and controller and try to abstract the waypoint UI element from the data state
 var Waypoint = Class({
   /*
 
@@ -18,6 +19,7 @@ var Waypoint = Class({
     }
   */
   create: function(roadbook, wptJson){
+    // can all this knockout stuff be at the controller level then model data is updated when controller starts up or shuts down
     this.kmFromStart    = ko.observable(wptJson.distances.kmFromStart);
     this.kmFromPrev     = ko.observable(wptJson.distances.kmFromPrev);
     this.exactHeading   = ko.observable(wptJson.angles.heading);
@@ -113,6 +115,7 @@ var Waypoint = Class({
     this.tulip.changeExitTrackType(type)
   },
 
+  // definitelty needs to be put at controller level
   initTulip: function(element, angle, trackTypes, json){
     this.tulip = new Tulip(element, angle, trackTypes, json);
   },

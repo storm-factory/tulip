@@ -1,3 +1,4 @@
+// TODO This is a controller from the waypoint palette view to the roadbook model's currentlyEditingWaypoint
 class NoteControls {
   constructor() {
     var _this = this;

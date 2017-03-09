@@ -1,5 +1,5 @@
 /*
-  NOTE this class uses ES6 class syntax which is how all other classes should be rewritten moving forward
+  TODO make this a model for track objects using the track editor as the controller and the tulip as the view
 */
 'use strict';
 class Track{
@@ -13,11 +13,6 @@ class Track{
     this.types = {};
     this.initTypes();
   }
-
-  // addGroupToCanvas(group, canvas){
-  //   Track.disableDefaults(group);
-  //   canvas.add(group);
-  // }
 
   addObjectsToCanvas(objectsArray, canvas){
     if(objectsArray.length){

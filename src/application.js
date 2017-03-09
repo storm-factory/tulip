@@ -54,8 +54,7 @@ var App = Class({
       initialize UI listeners
     */
     this.initListeners();
-    // TODO singletons are bad mmmmkay. Refactor to ES6 syntax
-    this.mapControls = new MapControls();
+
     this.glyphControls = new GlyphControls();
 
     this.noteControls = new NoteControls();
@@ -164,12 +163,10 @@ var App = Class({
 
   setMapCenter: function(latLng){
     this.map.setCenter(latLng);
-    // google.maps.event.trigger(this.map,'resize')
   },
 
   setMapZoom: function(zoom){
     this.map.setZoom(zoom);
-    // google.maps.event.trigger(this.map,'resize')
   },
 
   getMapZoom: function(){
@@ -197,7 +194,7 @@ var App = Class({
 
   startLoading: function(){
     $('#loading').show();
-    google.maps.event.addListener(this.map, 'idle', this.stopLoading);
+    google.maps.event.addListener(this.map, 'idle', this.stopLoading); //TODO pass to map model with callback
   },
 
   stopLoading: function(){
@@ -206,8 +203,9 @@ var App = Class({
 
   initMap: function(){
     this.mapEditor = new MapEditor();
+    new MapController(this.mapEditor);
     this.map = this.mapEditor.map;
-    this.mapOptimizer = new MapOptimizer();
+    new MapOptimizer();
     this.placeMapAttribution();
     this.attemptGeolocation();
   },
@@ -327,22 +325,6 @@ var App = Class({
       _this.roadbook.finishWaypointEdit();
     });
 
-    $('#orient-map').click(function(){
-      var i = _this.roadbook.currentlyEditingWaypoint.routePointIndex;
-      _this.mapControls.lockedBeforeWaypointEdit = !app.canEditMap;
-      if(i > 0){
-        var heading = google.maps.geometry.spherical.computeHeading(_this.mapEditor.routePoints.getAt(i-1), _this.mapEditor.routePoints.getAt(i));
-        if(_this.mapControls.rotation == 0){
-          $('#draw-route').click();
-          _this.mapControls.rotation = 360-heading
-          _this.mapControls.rotateNumDegrees(_this.mapControls.rotation);
-        }else {
-          _this.mapControls.reorient();
-          $('#draw-route').click();
-        }
-      }
-    });
-
     $('#toggle-heading').change(function(){
       $('#note-editor-container').toggleClass('hideCap',!_this.roadbook.waypointShowHeading())
       _this.roadbook.currentlyEditingWaypoint.showHeading(_this.roadbook.waypointShowHeading());
@@ -424,6 +406,7 @@ var App = Class({
           _this.roadbook.currentlyEditingWaypoint.tulip.finishRemove();
         }
         if(_this.pointDeleteMode == true){
+          // TODO move this to the map model
           var marker = _this.mapEditor.routeMarkers[_this.mapEditor.deleteQueue.pop()];
           _this.mapEditor.returnPointToNaturalColor(marker);
           _this.pointDeleteMode = false

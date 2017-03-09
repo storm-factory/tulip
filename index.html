@@ -684,23 +684,28 @@
   <script src='src/application.js'></script>
   <script src='api_keys.js'></script>
   <!--
-    Load modules
-    TODO move to required calls in app?
+    Load Modules
   -->
-  <script src='src/modules/map-editor.js'></script>
-  <script src='src/modules/map-controls.js'></script>
   <script src='src/modules/map-viewport-optimizer.js'></script>
-  <script src='src/modules/glyph-controls.js'></script>
-  <script src='src/modules/note-controls.js'></script>
-  <script src='src/modules/tracks.js'></script>
   <script src='src/modules/track-editors.js'></script>
   <script src='src/modules/track-remover.js'></script>
   <script src='src/modules/glyph-remover.js'></script>
+  <script src='src/modules/io.js'></script>
+  <!--
+    Load Controllers
+  -->
+  <script src='src/controllers/map-controller.js'></script>
+  <script src='src/modules/glyph-controls.js'></script>
+  <script src='src/modules/note-controls.js'></script>
+  <!--
+    Load Models
+  -->
+  <script src='src/modules/map-editor.js'></script>
+  <script src='src/modules/tracks.js'></script>
   <script src='src/modules/tulip.js'></script>
   <script src='src/modules/notification.js'></script>
   <script src='src/modules/roadbook.js'></script>
   <script src='src/modules/waypoint.js'></script>
-  <script src='src/modules/io.js'></script>
   <script>
   /*
     ---------------------------------------------------------------------------

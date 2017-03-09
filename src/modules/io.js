@@ -1,3 +1,4 @@
+// TODO This is a module that only interfaces with the app, refactor to make that the only coupling
 var Io = Class({
 
   importGPX: function(gpx){

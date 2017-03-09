@@ -234,9 +234,6 @@ var Roadbook = Class({
       this.updateWaypointAfterEdit(this.currentlyEditingWaypoint);
       this.currentlyEditingWaypoint = null;
       $('#note-editor').html('');
-      if(!app.canEditMap){
-        app.mapControls.reorient();
-      }
     }
     return true;
   },
