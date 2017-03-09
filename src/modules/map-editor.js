@@ -1,7 +1,9 @@
 /*
   PROBLEM: This class does map stuff... It should be broken into more specific classes
   SOLUTIONS: map-util, map route object, map waypoint object.. something along those lines
-  // TODO is it possible to sepereate this into a model object which keeps track of data structures and a controller object which interfaces with the UI?
+
+  // TODO is it possible to extract all UI elements to the controller and have this just maintain state and perform computations?
+
   the model object will have to know about the app and the roadbook. not sure how we want to interface that? maybe route everything through the app?
 */
 var MapEditor = Class({
@@ -10,7 +12,6 @@ var MapEditor = Class({
     this.initMap();
     this.initRoute();
     this.initRouteListeners();
-    this.dialog = require('electron').remote.dialog;
     /*
       displayEdge is a instance variable which tracks whether a handle should be shown when the user hovers the mouse over the route.
     */
@@ -166,7 +167,7 @@ var MapEditor = Class({
     /*
       Creates a google maps marker to denote a vertex or point on the route polyline and
     */
-    var marker = this.routeMarker(latLng, index);
+    var marker = this.routeMarker(latLng);
 
     /*
       Bind the listeners for this point
@@ -187,7 +188,24 @@ var MapEditor = Class({
   },
 
   /*
-    Add a waypoint to the route waypoints array in the proper spot with accurate distance measurements
+    Adds a point to the route points array at the end, and makes the first waypoint if this is the first point on the route
+  */
+  addPointToRoute: function(latLng){
+    var marker = this.pushRoutePoint(latLng)
+
+    //if this is the first point on the route make it a waypoint
+    if(this.routeMarkers.length == 1 && this.routePoints.length == 1) {
+      marker.kmFromStart = 0;
+      marker.kmFromPrev = 0;
+      // TODO how to refactor this? perhaps this should be two methods?s
+      marker.waypoint = app.roadbook.addWaypoint(this.addWaypoint(marker));
+    }
+
+    this.updateRoute();
+  },
+
+  /*
+    Adds a waypoint to the route waypoints array in the proper spot with accurate distance measurements
     and notify the roadbook observer that there is a new waypoint to render
 
     Returns distance options so a new roadbook waypoint can be built from it.
@@ -239,6 +257,34 @@ var MapEditor = Class({
     }
     return index;
   },
+
+  /*
+    Make an API request to google and get the autorouted path between the last point in the route
+    and the lat long of the click event passed from the controller
+  */
+  getGoogleDirections: function(latLng){
+    var _this = this;
+    if(this.routePoints.length >0){
+      var startSnap = this.routePoints.getArray().slice(-1).pop();
+      var endSnap = latLng;
+      var url = "https://maps.googleapis.com/maps/api/directions/json?"
+                  + "origin="+startSnap.lat()+","
+                  + startSnap.lng()
+                  + "&destination=" + endSnap.lat()+","
+                  + endSnap.lng()
+                  + "&key=" + api_keys.google_directions
+      $.get(url,function(data){
+        if(data.status == "OK"){
+          _this.appendGoogleDirectionsToMap(data);
+        }
+      });
+    }else {
+      this.pushRoutePoint(latLng)
+      this.updateRoute();
+    }
+  },
+
+
   /*
     takes a response from google maps directions API and appends it to the route
     NOTE needs refactored to be more SOLID and testable
@@ -425,6 +471,13 @@ var MapEditor = Class({
     return Math.pow(this.map.getZoom(), -(this.map.getZoom()/5));
   },
 
+  getWaypointBearing: function(){
+    var i = app.roadbook.currentlyEditingWaypoint.routePointIndex; //TODO how to abstract this
+    if(i){
+      return google.maps.geometry.spherical.computeHeading(this.routePoints.getAt(i-1), this.routePoints.getAt(i)); //TODO get this from the model
+    }
+  },
+
   updateWaypointBubble: function(routePointIndex,bubble){
     if(this.routeMarkers[routePointIndex].bubble){
       this.routeMarkers[routePointIndex].bubble.setRadius(Number(bubble));
@@ -554,54 +607,6 @@ var MapEditor = Class({
   // TODO this would be in some map controller module (basically change out this for model and move the map initialize to the controller)
   initRouteListeners: function() {
     var _this = this;
-    // Add a listener for the map's click event
-    this.map.addListener('click', function(evt){
-      if(_this.mapUnlocked && !app.pointDeleteMode){
-        // TODO this stays in the model as wrapped in a method
-        var marker = _this.pushRoutePoint(evt.latLng)
-
-        //if this is the first point on the route make it a waypoint
-        if(_this.routeMarkers.length == 1 && _this.routePoints.length == 1) {
-          marker.kmFromStart = 0;
-          marker.kmFromPrev = 0;
-          // TODO how to refactor this? perhaps this should be two methods?s
-          marker.waypoint = app.roadbook.addWaypoint(_this.addWaypoint(marker));
-        }
-
-        _this.updateRoute();
-      }
-    });
-
-    this.map.addListener('rightclick', function(evt){
-
-      var autotrace = _this.dialog.showMessageBox({type: "question",
-                                                   buttons: ["Cancel","Ok"],
-                                                  defaultId: 1,
-                                                  message: "About to auto-trace roads to your route, Are you sure?"});
-      // TODO this stays in the model as wrapped in a method
-      if(_this.mapUnlocked && !app.pointDeleteMode && (autotrace == 1)){
-        if(_this.routePoints.length >0){
-          var startSnap = _this.routePoints.getArray().slice(-1).pop();
-          var endSnap = evt.latLng;
-          var url = "https://maps.googleapis.com/maps/api/directions/json?"
-                      + "origin="+startSnap.lat()+","
-                      + startSnap.lng()
-                      + "&destination=" + endSnap.lat()+","
-                      + endSnap.lng()
-                      + "&key=" + api_keys.google_directions
-          $.get(url,function(data){
-            if(data.status == "OK"){
-              _this.appendGoogleDirectionsToMap(data);
-            }
-          });
-        }else {
-          _this.pushRoutePoint(evt.latLng)
-          _this.updateRoute();
-        }
-
-      }
-    });
-
     /*
       hovering over the route between verticies will display a handle, which if clicked on will add a point to the route
       // TODO put me in a map polyline listeners wrapper

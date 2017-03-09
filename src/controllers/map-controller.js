@@ -6,12 +6,13 @@ class MapController{
 
   constructor(model){
     //NOTE dependencies app.map[setZoom,setOptions,setMapTypeId], app, app.mapEditor[routePoints,routeMarkers,]
-    // TODO reduce this to only publishing to the MapModel the map should be moved to live here.
+    // TODO reduce this to only publishing to the MapModel the map should be moved to live here(maybe).
     this.model = model;
     this.map = model.map;
     this.rotation = 0;
     this.lockedBeforeWaypointEdit = false;
     this.canEditMap = true;
+    this.dialog = require('electron').remote.dialog;
 
     this.bindToUI();
     this.bindToMapSurface();
@@ -46,7 +47,6 @@ class MapController{
   toggleMapLock(element){
     this.canEditMap = !this.canEditMap;
      element ? $(element).toggleClass('secondary') : null;
-    //TODO this should go in the MapModel because it alters state
     if(this.canEditMap){
       this.model.unlockMap();
       this.lockedBeforeWaypointEdit = false;
@@ -57,7 +57,18 @@ class MapController{
   }
 
   orientMap(){
-
+    this.lockedBeforeWaypointEdit = !this.canEditMap;
+    var bearing = this.model.getWaypointBearing();
+    if(bearing){
+      if(this.rotation == 0){
+        this.toggleMapLock();
+        this.rotation = 360-bearing
+        this.rotateNumDegrees(this.rotation);
+      }else {
+        this.reorient();
+        this.toggleMapLock();
+      }
+    }
   }
 
   updateLayerDropdown(element){
@@ -68,15 +79,33 @@ class MapController{
   }
 
   bindToMapSurface(){
-    console.log("i need implimented (surface)");;
+    var _this = this;
+    // Add a listener for the map's click event
+    this.map.addListener('click', function(evt){
+      if(_this.canEditMap && !app.pointDeleteMode){
+        _this.model.addPointToRoute(evt.latLng);
+      }
+    });
+
+    this.map.addListener('rightclick', function(evt){
+
+      var autotrace = _this.dialog.showMessageBox({type: "question",
+                                                   buttons: ["Cancel","Ok"],
+                                                  defaultId: 1,
+                                                  message: "About to auto-trace roads to your route, Are you sure?"});
+      
+      if(_this.canEditMap && !app.pointDeleteMode && (autotrace == 1)){
+        _this.model.getGoogleDirections(evt.latLng);
+      }
+    });
   }
 
   bindToMapMarker(){
-    console.log("i need implimented (marker)");;
+    console.log("i need implimented (marker)");
   }
 
   bindToMapPolyline(){
-    console.log("i need implimented (polyline)");;
+    console.log("i need implimented (polyline)");
   }
 
 
@@ -123,19 +152,7 @@ class MapController{
         Waypoint Palette
     */
     $('#orient-map').click(function(){
-      var i = app.roadbook.currentlyEditingWaypoint.routePointIndex; //TODO get this from the model
-      _this.lockedBeforeWaypointEdit = !_this.canEditMap;
-      if(i > 0){
-        var heading = google.maps.geometry.spherical.computeHeading(_this.model.routePoints.getAt(i-1), _this.model.routePoints.getAt(i)); //TODO get this from the model
-        if(_this.rotation == 0){
-          _this.toggleMapLock();
-          _this.rotation = 360-heading
-          _this.rotateNumDegrees(_this.rotation);
-        }else {
-          _this.reorient();
-          _this.toggleMapLock();
-        }
-      }
+      _this.orientMap();
     });
 
     $('#hide-palette').click(function(){
