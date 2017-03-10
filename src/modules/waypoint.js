@@ -43,7 +43,7 @@ var Waypoint = Class({
     // TODO refactor to make this one line
     this.notification = wptJson.notification;
     if(this.notification){
-      app.mapEditor.addWaypointBubble(this.routePointIndex, this.notification.bubble, this.notification.fill)
+      app.mapModel.addWaypointBubble(this.routePointIndex, this.notification.bubble, this.notification.fill)
     }
 
 
@@ -69,7 +69,7 @@ var Waypoint = Class({
         if(this.notification.type == null){
           this.notification = null
         }else {
-          app.mapEditor.addWaypointBubble(this.routePointIndex, this.notification.bubble, this.notification.fill)
+          app.mapModel.addWaypointBubble(this.routePointIndex, this.notification.bubble, this.notification.fill)
           // show notification options
           $('#notification-options').removeClass('hidden');
           app.noteControls.updateNotificationControls(this.notification);
@@ -88,11 +88,11 @@ var Waypoint = Class({
       // if the glyphs array contains our notification keep it and update the bubble
 
       if(contains.includes(true)){
-        app.mapEditor.updateWaypointBubble(this.routePointIndex,this.notification.bubble);
+        app.mapModel.updateWaypointBubble(this.routePointIndex,this.notification.bubble);
       }else{ //otherwise nullify our current notification
         this.notification = null;
         $('#notification-options').addClass('hidden');
-        app.mapEditor.deleteWaypointBubble(this.routePointIndex);
+        app.mapModel.deleteWaypointBubble(this.routePointIndex);
       }
     }
   },

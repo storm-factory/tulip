@@ -25,7 +25,7 @@ class MapOptimizer{
 
   showMarkersInViewport() {
     var bounds = app.map.getBounds();
-    var markers = app.mapEditor.routeMarkers;
+    var markers = app.mapModel.routeMarkers;
     var map = app.map;
     for(var i=0;i<markers.length;i++){
       if(bounds.contains(markers[i].getPosition())){
@@ -39,7 +39,7 @@ class MapOptimizer{
   }
 
   showOnlyWaypointsAtZoom(){
-    var markers = app.mapEditor.routeMarkers;
+    var markers = app.mapModel.routeMarkers;
     var map = app.map;
 
     for(var i=0;i<markers.length;i++){

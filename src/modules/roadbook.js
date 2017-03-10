@@ -75,9 +75,9 @@ var Roadbook = Class({
     // NOTE: For some strange reason, due to canvas rendering, a for loop causes points and waypoints to be skipped, hence for...of in
     for(point of points){
       var latLng = new google.maps.LatLng(point.lat, point.long)
-      var routePoint = app.mapEditor.pushRoutePoint(latLng); //this returns a point
+      var routePoint = app.mapModel.pushRoutePoint(latLng); //this returns a point
       if(point.waypoint){
-        var opts = app.mapEditor.addWaypoint(routePoint); //this returns distance opts but if we already have that saved then why do we care?
+        var opts = app.mapModel.addWaypoint(routePoint); //this returns distance opts but if we already have that saved then why do we care?
         opts.tulipJson = point.tulipJson;
         opts.entryTrackType = point.entryTrackType
         opts.exitTrackType = point.exitTrackType
@@ -96,8 +96,8 @@ var Roadbook = Class({
     }
 
     var latLng = new google.maps.LatLng(points[0].lat, points[0].long);
-    app.mapEditor.map.setCenter(latLng);
-    app.mapEditor.map.setZoom(14);
+    app.mapModel.map.setCenter(latLng);
+    app.mapModel.map.setZoom(14);
   },
 
   appendGlyphToNoteTextEditor: function(image){
@@ -209,9 +209,9 @@ var Roadbook = Class({
       this.waypointShowHeading(waypoint.showHeading());
       // app.glyphControls.bindNoteGlyphResizable();
       var latLng = new google.maps.LatLng(waypoint.lat(), waypoint.lng());
-      app.setMapCenter(latLng);
-      if(app.getMapZoom() < 18){
-        app.setMapZoom(18);
+      app.mapPresenter.setMapCenter(latLng);
+      if(app.mapPresenter.getMapZoom() < 18){
+        app.mapPresenter.setMapZoom(18);
       }
 
       $('#roadbook-waypoints').children().hide();
@@ -284,7 +284,7 @@ var Roadbook = Class({
       filePath: this.filePath,
       waypoints: [],
     }
-    points = app.mapEditor.routeMarkers
+    points = app.mapModel.routeMarkers
     // TODO fold waypoint into object instead of boolean so we aren't saving nulls
     for(i = 0; i < points.length; i++){
         var waypointJSON = {
@@ -318,7 +318,7 @@ var Roadbook = Class({
       filePath: this.filePath,
       waypoints: [],
     }
-    points = app.mapEditor.routeMarkers
+    points = app.mapModel.routeMarkers
     // TODO fold waypoint into object instead of boolean so we aren't saving nulls
     for(i = 0; i < points.length; i++){
       if(points[i].waypoint){

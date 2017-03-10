@@ -161,18 +161,6 @@ var App = Class({
     }
   },
 
-  setMapCenter: function(latLng){
-    this.map.setCenter(latLng);
-  },
-
-  setMapZoom: function(zoom){
-    this.map.setZoom(zoom);
-  },
-
-  getMapZoom: function(){
-    return this.map.getZoom();
-  },
-
   showSaveDialog: function(title,path) {
     var _this = this;
     this.dialog.showSaveDialog({
@@ -202,21 +190,12 @@ var App = Class({
   },
 
   initMap: function(){
-    this.mapEditor = new MapEditor();
-    new MapController(this.mapEditor);
-    this.map = this.mapEditor.map;
-    new MapOptimizer();
-    this.placeMapAttribution();
-    this.attemptGeolocation();
-  },
+    this.mapModel = new MapModel();
+    this.mapPresenter = new MapPresenter(this.mapModel);
 
-  attemptGeolocation: function(){
-    var _this = this;
-    var url = "https://www.googleapis.com/geolocation/v1/geolocate?key="+ api_keys.google_maps;
-    $.post(url,function(data){
-      _this.setMapCenter(data.location);
-      _this.setMapZoom(14);
-    });
+    // this.map = this.mapPresenter.map;
+    // new MapOptimizer();
+    // this.placeMapAttribution();
   },
 
   /*
@@ -407,8 +386,8 @@ var App = Class({
         }
         if(_this.pointDeleteMode == true){
           // TODO move this to the map model
-          var marker = _this.mapEditor.routeMarkers[_this.mapEditor.deleteQueue.pop()];
-          _this.mapEditor.returnPointToNaturalColor(marker);
+          var marker = _this.mapModel.routeMarkers[_this.mapModel.deleteQueue.pop()];
+          _this.mapModel.returnPointToNaturalColor(marker);
           _this.pointDeleteMode = false
         }
       }
@@ -460,13 +439,13 @@ var App = Class({
     });
 
     this.ipc.on('zoom-in', function(event, arg){
-      var zoom = _this.getMapZoom()+1;
-      _this.setMapZoom(zoom);
+      var zoom = _this.mapPresenter.getMapZoom()+1;
+      _this.mapPresenter.setMapZoom(zoom);
     });
 
     this.ipc.on('zoom-out', function(event, arg){
-      var zoom = _this.getMapZoom()-1;
-      _this.setMapZoom(zoom);
+      var zoom = _this.mapPresenter.getMapZoom()-1;
+      _this.mapPresenter.setMapZoom(zoom);
     });
 
     this.ipc.on('add-glyph', function(event, arg){
