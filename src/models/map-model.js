@@ -9,15 +9,15 @@
 
   the model object will have to know about the app and the roadbook. not sure how we want to interface that? maybe route everything through the app?
 */
-var MapModel = Class({
+class MapModel {
 
-  create: function(){
+  constructor(){
     this.route;
-    this.markers;
+    this.markers=[];
     this.presenter;
-  },
+  }
 
-  getWaypointGeodata: function(marker){
+  getWaypointGeodata(marker){
     var prevWaypointIndex = this.getPrevWaypointRoutePointIndex(marker.routePointIndex,this.markers);
     var heading = this.computeHeading(marker, this.route);
     return {
@@ -34,9 +34,9 @@ var MapModel = Class({
       }
 
     }
-  },
+  }
 
-  getPrevWaypointRoutePointIndex: function(routePointIndex,markersArray){
+  getPrevWaypointRoutePointIndex(routePointIndex,markersArray){
     var index = 0;
     for(var i=routePointIndex-1;i>0;i--){
       if(markersArray[i].waypoint){
@@ -45,13 +45,13 @@ var MapModel = Class({
       }
     }
     return index;
-  },
+  }
 
   /*
     Make an API request to google and get the autorouted path between the last point in the route
     and the lat long of the click event passed from the controller
   */
-  getGoogleDirections: function(latLng){
+  getGoogleDirections(latLng){
     var _this = this;
     var startSnap = this.route.getArray().slice(-1).pop();
     var endSnap = latLng;
@@ -66,14 +66,14 @@ var MapModel = Class({
         _this.appendGoogleDirectionsToMap(data);
       }
     });
-  },
+  }
 
 
   /*
     takes a response from google maps directions API and appends it to the route
     NOTE needs refactored to be more SOLID and testable
   */
-  appendGoogleDirectionsToMap: function(data){
+  appendGoogleDirectionsToMap(data){
     var steps = data.routes[0].legs[0].steps
     for(var i=0;i<steps.length;i++){
       var stepPoints = google.maps.geometry.encoding.decodePath(steps[i].polyline.points);
@@ -90,22 +90,49 @@ var MapModel = Class({
         var latLng = new google.maps.LatLng(points[j].lat, points[j].lng);
         var marker = this.presenter.pushRoutePoint(latLng); //NOTE move to presenter
         if(j == points.length-1){
-          // TODO how can we abstract this?
-          marker.waypoint = app.roadbook.addWaypoint(this.presenter.addWaypoint(marker));
+          marker.waypoint = this.addWaypoint(marker);
         }
 
       }
     }
     this.updateRoute();
-  },
+  }
 
-  deleteWaypoint: function(marker){
-    //remove the waypoint from the roadbook
+  deleteWaypoint(marker){
     app.roadbook.deleteWaypoint(marker.waypoint.id);
-  },
+  }
 
-  // NOTE this can stay
-  computeDistanceBetweenPoints: function(beginMarkerRoutePointIndex, endMarkerRoutePointIndex){
+  /*
+    Removes a route point from the route and decrement the pointIndex of each point on the route after the point being
+    removed by one.
+  */
+  deletePointFromRoute(marker){
+    var pointIndex = marker.routePointIndex;
+    this.deleteWaypointBubble(pointIndex);
+    this.route.removeAt(pointIndex)
+    this.markers.splice(pointIndex,1);
+    this.decrementRouteVertexIndecies(pointIndex);
+    marker.setMap(null);
+  }
+
+  deleteWaypointBubble(routePointIndex){
+    if(this.markers[routePointIndex].bubble){
+      this.markers[routePointIndex].bubble.setMap(null);
+    }
+  }
+
+  addWaypoint(marker){
+    marker.setIcon(this.buildWaypointIcon());
+    marker.waypoint = app.roadbook.addWaypoint(this.getWaypointGeodata(marker));
+  }
+
+  addWaypointBubble(routePointIndex,radius,fill) {
+    var marker = this.markers[routePointIndex];
+    var bubble = this.buildWaypointBubble(radius, marker.getPosition(), fill, this.map);
+    marker.bubble = bubble;
+  }
+
+  computeDistanceBetweenPoints(beginMarkerRoutePointIndex, endMarkerRoutePointIndex){
     var routePoints = this.route.getArray();
     var points = [];
     for(var i=beginMarkerRoutePointIndex;i<endMarkerRoutePointIndex+1;i++){
@@ -113,12 +140,12 @@ var MapModel = Class({
     }
     //do some conversions and return the results
     return google.maps.geometry.spherical.computeLength(points)/1000;
-  },
+  }
 
   /*
     Compute the cap heading of this waypoint
   */
-  computeHeading: function(marker, routePoints){
+  computeHeading(marker, routePoints){
     var pointIndex = marker.routePointIndex;
     var nextPointIndex = pointIndex+1 < routePoints.getLength() ? pointIndex + 1 : pointIndex;
 
@@ -129,12 +156,12 @@ var MapModel = Class({
       heading = 360 + heading;
     }
     return heading;
-  },
+  }
 
   /*
     Compute the angle of the turn from the previous heading to this one
   */
-  computeRelativeAngle: function(marker,routePoints,heading){
+  computeRelativeAngle(marker,routePoints,heading){
     var pointIndex = marker.routePointIndex;
     var prevPointIndex = pointIndex-1 > 0 ? pointIndex - 1 : 0;
     var relativeAngle = ((0 == pointIndex) || (routePoints.getLength()-1 == pointIndex)) ? 0 : heading - google.maps.geometry.spherical.computeHeading(routePoints.getAt(prevPointIndex), routePoints.getAt(pointIndex));
@@ -145,37 +172,37 @@ var MapModel = Class({
       relativeAngle = (360 + relativeAngle); //right turn
     }
     return relativeAngle;
-  },
+  }
 
   /*
     increments the route vertex index of each point along the route after the passed in index
   */
-  incrementRouteVertexIndecies: function(startIndex) {
+  incrementRouteVertexIndecies(startIndex) {
     startIndex++;
     for(i = startIndex; i < this.markers.length; i++){
       var marker = this.markers[i];
       marker.routePointIndex = marker.routePointIndex + 1;
     }
-  },
+  }
 
   /*
     decrements the route vertex index of each point along the route after the passed in index
   */
-  decrementRouteVertexIndecies: function(startIndex) {
+  decrementRouteVertexIndecies(startIndex) {
     for(i = startIndex; i < this.markers.length; i++){
       var point = this.markers[i];
       point.routePointIndex = point.routePointIndex - 1;
     }
-  },
+  }
 
-  getWaypointBearing: function(){
+  getWaypointBearing(){
     var i = app.roadbook.currentlyEditingWaypoint.routePointIndex; //TODO how to abstract this
     if(i){
       return google.maps.geometry.spherical.computeHeading(this.route.getAt(i-1), this.route.getAt(i)); //TODO get this from the model
     }
-  },
+  }
 
-  updateRoute: function() {
+  updateRoute() {
     for(var i = 0; i < this.markers.length; i++) {
       var marker = this.markers[i];
       if(this.markers[i].waypoint) {
@@ -184,5 +211,87 @@ var MapModel = Class({
       }
     }
     app.roadbook.updateTotalDistance();
-  },
-});
+  }
+
+  updateMarkerPosition(index, latLng){
+    var marker = this.markers[index];
+    marker.setPosition(latLng);
+    this.route.setAt(marker.routePointIndex, latLng);
+  }
+
+  /*
+    an icon which marks a normal point (vertex) on the route Polyline
+  */
+  buildVertexIcon(){
+    return {
+              path: 'M-1,-1 1,-1 1,1 -1,1z',
+              scale: 7,
+              strokeWeight: 2,
+              strokeColor: '#ffba29',
+              fillColor: '#787878',
+              fillOpacity: 1
+            };
+  }
+
+  /*
+    an icon which marks a waypoint (vertex) on the route Polyline
+  */
+  buildWaypointIcon(){
+    return {
+              path: 'M-1.25,-1.25 1.25,-1.25 1.25,1.25 -1.25,1.25z',
+              scale: 7,
+              strokeWeight: 2,
+              strokeColor: '#ff9000',
+              fillColor: '#ff4200',
+              fillOpacity: 1
+            };
+  }
+
+  /*
+    an icon which marks a waypoint (vertex) on the route Polyline
+  */
+  buildDeleteQueueIcon(){
+    return {
+              path: 'M-1.25,-1.25 1.25,-1.25 1.25,1.25 -1.25,1.25z',
+              scale: 7,
+              strokeWeight: 2,
+              strokeColor: '#ff4200',
+              fillColor: '#ff9000',
+              fillOpacity: 1
+            };
+  }
+
+  buildRouteMarker(latLng, map){
+    return new google.maps.Marker({
+                      icon: this.buildVertexIcon(),
+                      map: map,
+                      position: latLng,
+                      draggable: true,
+                      routePointIndex: this.route.length > 0 ? this.route.indexOf(latLng) : 0,
+                    });
+  }
+
+  buildHandleMarker(latLng,map){
+    return new google.maps.Marker({
+                            icon: this.buildVertexIcon(),
+                            map: map,
+                            position: latLng,
+                            draggable: true,
+                            zIndex: -1,
+                          });
+  }
+
+  buildWaypointBubble(radius,center,fill,map){
+    return new google.maps.Circle({
+            strokeColor: fill,
+            strokeOpacity: 0.5,
+            strokeWeight: 2,
+            fillColor: fill,
+            fillOpacity: 0.2,
+            clickable: false,
+            map: map,
+            center: center,
+            radius: Number(radius)
+          });
+  }
+};

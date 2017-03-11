@@ -439,13 +439,11 @@ var App = Class({
     });
 
     this.ipc.on('zoom-in', function(event, arg){
-      var zoom = _this.mapPresenter.getMapZoom()+1;
-      _this.mapPresenter.setMapZoom(zoom);
+      _this.mapPresenter.zin();
     });
 
     this.ipc.on('zoom-out', function(event, arg){
-      var zoom = _this.mapPresenter.getMapZoom()-1;
-      _this.mapPresenter.setMapZoom(zoom);
+      _this.mapPresenter.zout();
     });
 
     this.ipc.on('add-glyph', function(event, arg){
