@@ -99,7 +99,11 @@ class MapModel {
   }
 
   deleteWaypoint(marker){
+    marker.setIcon(this.buildVertexIcon());
+    this.deleteWaypointBubble(marker.routePointIndex);
     app.roadbook.deleteWaypoint(marker.waypoint.id);
+    marker.waypoint = null;
+    this.updateRoute();
   }
 
   /*
@@ -121,9 +125,25 @@ class MapModel {
     }
   }
 
+  /*
+    Adds a point to the route array for manangement
+    Since the route array is an MVCArray bound to the route path
+    the new point will show up on the route Polyline automagically.
+
+    Listeners are bound to the point to allow it to be toggled as a waypoint or to be removed entirely
+  */
+  addRoutePoint(latLng,map){
+    this.route.push(latLng);
+    var marker = this.buildRouteMarker(latLng, map);
+    this.makeFirstRoutePointWaypoint(marker);
+    this.markers.push(marker);
+    this.updateRoute();
+  }
+
   addWaypoint(marker){
     marker.setIcon(this.buildWaypointIcon());
     marker.waypoint = app.roadbook.addWaypoint(this.getWaypointGeodata(marker));
+    this.updateRoute();
   }
 
   addWaypointBubble(routePointIndex,radius,fill) {
@@ -174,6 +194,41 @@ class MapModel {
     return relativeAngle;
   }
 
+  computeRoutePointInsertionIndex(latLng,map){
+    /*
+      Iterate through the point pairs on the segment
+      determine which edge the latLng falls upon
+      and insert a new point into route at the index of the edge point
+    */
+    var idx;
+
+    var tolerance = this.getEdgeTolerance(map); //this could be passed in
+    for(var i = 1; i < this.route.length; i++ ){
+      // does the event point fit in the bounds of the two reference points before and after the click
+      var path = [this.route.getArray()[i-1],this.route.getArray()[i]];
+      var line = new google.maps.Polyline({path: path});
+
+      if(google.maps.geometry.poly.isLocationOnEdge(latLng, line, tolerance)) {
+        idx = i;
+        // this.insertRoutePointAtIndex(latLng, i); //TODO have something else do this, just return the index value
+        break; //we found it, we're done here
+      }
+      //we haven't found it, increse the tolerance and start over
+      if(i == this.route.length - 1 ){
+        tolerance = tolerance*2;
+        i = 0;
+      }
+    }
+    return idx;
+  }
+
+  /*
+    calculates a tolerance for determining if a location falls on an edge based on map zoom level
+  */
+  getEdgeTolerance(map){
+    return Math.pow(map.getZoom(), -(map.getZoom()/5));
+  }
+
   /*
     increments the route vertex index of each point along the route after the passed in index
   */
@@ -202,6 +257,28 @@ class MapModel {
     }
   }
 
+  insertRoutePointBetweenPoints(latLng,map){
+    var index = this.computeRoutePointInsertionIndex(latLng,map);
+    var marker = this.insertRoutePointAtIndex(latLng,index,map);
+    return marker;
+  }
+
+  insertRoutePointAtIndex(latLng, index, map){
+    this.route.insertAt(index,latLng)
+    var marker = this.buildRouteMarker(latLng, map);
+    this.markers.splice(index,0,marker);
+    this.incrementRouteVertexIndecies(index);
+    return marker;
+  }
+
+  makeFirstRoutePointWaypoint(marker){
+    if(this.route.length == 1) {
+      marker.kmFromStart = 0;
+      marker.kmFromPrev = 0;
+      this.addWaypoint(marker);
+    }
+  }
+
   updateRoute() {
     for(var i = 0; i < this.markers.length; i++) {
       var marker = this.markers[i];
@@ -213,8 +290,7 @@ class MapModel {
     app.roadbook.updateTotalDistance();
   }
 
-  updateMarkerPosition(index, latLng){
-    var marker = this.markers[index];
+  updateMarkerPosition(marker, latLng){
     marker.setPosition(latLng);
     this.route.setAt(marker.routePointIndex, latLng);
   }
@@ -262,13 +338,15 @@ class MapModel {
   }
 
   buildRouteMarker(latLng, map){
-    return new google.maps.Marker({
+    var marker = new google.maps.Marker({
                       icon: this.buildVertexIcon(),
                       map: map,
                       position: latLng,
                       draggable: true,
                       routePointIndex: this.route.length > 0 ? this.route.indexOf(latLng) : 0,
                     });
+    this.presenter.bindToMapMarker(marker);
+    return marker;
   }
 
   buildHandleMarker(latLng,map){
