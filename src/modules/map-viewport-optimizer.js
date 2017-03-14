@@ -7,7 +7,7 @@
 */
 // TODO This is a module that only interfaces with the app, refactor to make that the only coupling
 class MapOptimizer{
-  constructor(){
+  constructor(presenter,model){
     var _this = this;
     function showMarkers(){
       _this.showMarkers();

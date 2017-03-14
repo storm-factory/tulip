@@ -150,22 +150,6 @@ class MapPresenter{
     this.model.addWaypointBubble(routePointIndex,radius,fill);
   }
 
-  /*
-    determines which points to delete between the user defined delete points
-    // TODO model logic
-  */
-  removeMarkersInQueueFromRoute(){
-    this.deleteQueue.sort(function(a,b){return a - b});
-    var start = this.deleteQueue[0];
-    var end = this.deleteQueue[1];
-    for(var i = end;i >= start;i--){
-      if(this.model.markers[i].waypoint){
-        this.deleteWaypoint(this.model.markers[i]);
-      }
-      this.deletePointFromRoute(this.model.markers[i]);
-    }
-  }
-
   deleteWaypoint(marker){
     this.model.deleteWaypoint(marker);
   }
@@ -198,7 +182,7 @@ class MapPresenter{
                                                   message: "About to auto-trace roads to your route, Are you sure?"});
       if(_this.mapUnlocked && !this.markerDeleteMode && (autotrace == 1)){
         if(_this.routePolyline.getPath().length >0){
-          _this.model.getGoogleDirections(evt.latLng);
+          _this.model.getGoogleDirections(evt.latLng,_this.map);
         }else {
           _this.model.addRoutePoint(evt.latLng,_this.map);
         }
@@ -225,18 +209,7 @@ class MapPresenter{
     */
     google.maps.event.addListener(marker, 'rightclick', function(evt) {
       _this.markerDeleteMode = true;
-      // TODO model logic
-      if(_this.deleteQueue.length == 0){
-        _this.deleteQueue.push(marker.routePointIndex);
-        marker.setIcon(_this.model.buildDeleteQueueIcon());
-      } else {
-        _this.deleteQueue.push(marker.routePointIndex);
-        _this.removeMarkersInQueueFromRoute();
-        _this.model.updateRoute();
-        _this.displayEdge = true; //we have to set this because the mouse out handler that usually handles this gets nuked in the delete
-        _this.deleteQueue = [];
-        _this.markerDeleteMode = false
-      }
+      _this.model.addMarkerToDeleteQueue(this);
     });
 
     /*
@@ -252,8 +225,6 @@ class MapPresenter{
           $('#roadbook').scrollTop(0);
           $('#roadbook').scrollTop(($(this.waypoint.element).offset().top-100));
         }
-        //recompute distances between waypoints
-        // _this.model.updateRoute(); TODO only the model should update itself
       }
     });
 
@@ -276,7 +247,7 @@ class MapPresenter{
     */
     google.maps.event.addListener(marker, 'mouseover', function(evt) {
       _this.displayEdge = false;
-      if(this.markerDeleteMode){
+      if(_this.markerDeleteMode){
         marker.setIcon(_this.model.buildDeleteQueueIcon())
       }
     });
@@ -286,7 +257,7 @@ class MapPresenter{
     */
     google.maps.event.addListener(marker, 'mouseout', function(evt) {
       _this.displayEdge = true;
-      if(this.markerDeleteMode && (marker.routePointIndex != _this.deleteQueue[0])){
+      if(_this.markerDeleteMode && (marker.routePointIndex != _this.model.deleteQueue[0])){
         _this.returnPointToNaturalColor(marker);
       }
     });
@@ -301,7 +272,7 @@ class MapPresenter{
       /*
         If we aren't over a point display a handle to add a new route point if the map is editable
       */
-      if(_this.displayEdge && !this.markerDeleteMode){
+      if(_this.displayEdge && !_this.markerDeleteMode){
         var dragging = false;
         var handle = _this.model.buildHandleMarker(evt.latLng, this.map)
         google.maps.event.addListener(_this.routePolyline, 'mousemove', function(evt){

@@ -303,5 +303,5 @@ class AddedTrack extends Track {
 /*
   Node exports for test suite
 */
-// module.exports.track = Track;
-// module.exports.disableDefaults = Track.disableDefaults;
+module.exports.track = Track;
+module.exports.disableDefaults = Track.disableDefaults;
