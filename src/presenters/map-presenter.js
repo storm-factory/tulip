@@ -1,4 +1,4 @@
-this.addWaypoint/*
+/*
   A module for providing the application with the means to control the map via the UI
 */
 class MapPresenter{
@@ -116,42 +116,14 @@ class MapPresenter{
     $(element).find('i').show();
   }
 
+  addWaypointBubble(index,bubble,fill){
+    this.model.addWaypointBubble(index,bubble,fill,this.map);
+  }
+
   updateWaypointBubble(index,bubble){
     if(this.model.markers[index].bubble){
       this.model.markers[index].bubble.setRadius(Number(bubble));
     }
-  }
-
-  /*
-    splices point into route
-  */
-  insertRoutePointAtIndex(latLng, index){
-    this.model.insertRoutePointAtIndex(latLng, index, this.map);
-  }
-
-  /*
-    Removes a point or waypoint from the route
-  */
-  deletePointFromRoute(marker){
-    this.model.deletePointFromRoute(marker);
-  }
-
-  /*
-    Adds a waypoint to the route waypoints array in the proper spot with accurate distance measurements, update the icon,
-    and notify the roadbook observer that there is a new waypoint to render
-  */
-  addWaypoint(marker) {
-    this.model.addWaypoint(marker);
-  }
-  /*
-    Add a bubble to a marker
-  */
-  addWaypointBubble(routePointIndex,radius,fill) {
-    this.model.addWaypointBubble(routePointIndex,radius,fill);
-  }
-
-  deleteWaypoint(marker){
-    this.model.deleteWaypoint(marker);
   }
 
   returnPointToNaturalColor(marker){
@@ -176,15 +148,14 @@ class MapPresenter{
     });
 
     this.map.addListener('rightclick', function(evt){
-      var autotrace = _this.dialog.showMessageBox({type: "question",
-                                                   buttons: ["Cancel","Ok"],
-                                                  defaultId: 1,
-                                                  message: "About to auto-trace roads to your route, Are you sure?"});
-      if(_this.mapUnlocked && !this.markerDeleteMode && (autotrace == 1)){
-        if(_this.routePolyline.getPath().length >0){
-          _this.model.getGoogleDirections(evt.latLng,_this.map);
-        }else {
-          _this.model.addRoutePoint(evt.latLng,_this.map);
+      if(_this.routePolyline.getPath().length >0){
+        var autotrace = _this.dialog.showMessageBox({type: "question",
+                                                     buttons: ["Cancel","Ok"],
+                                                    defaultId: 1,
+                                                    message: "About to auto-trace roads to your route, Are you sure?"});
+        if(_this.mapUnlocked && !this.markerDeleteMode && (autotrace == 1)){
+            // TODO figure out how to use a callback
+            _this.model.requestGoogleDirections(evt.latLng,_this.map, _this.model.appendGoogleDirectionsToMap);
         }
       }
     });
@@ -219,9 +190,9 @@ class MapPresenter{
       //If the point has a waypoint remove it, otherwise add one
       if(!this.markerDeleteMode){
         if(this.waypoint){
-          _this.deleteWaypoint(this);
+          _this.model.deleteWaypoint(this);
         } else {
-          _this.addWaypoint(this);
+          _this.model.addWaypoint(this);
           $('#roadbook').scrollTop(0);
           $('#roadbook').scrollTop(($(this.waypoint.element).offset().top-100));
         }

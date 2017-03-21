@@ -2,10 +2,8 @@
   PROBLEM: This class does map stuff... It should be broken into more specific classes
   SOLUTIONS: map-util, map route object, map waypoint object.. something along those lines
 
-  // TODO is it possible to extract all UI elements to the controller and have this just maintain state and perform computations?
-  move markers and polyline to controller along with listener
-  explore moving route points to the controller as it mainly is for the polyline
-  keep route markers here as that is the roadbook state but maybe rename it
+  // TODO utilize dependency injection wherever possible to reduce side effects
+  // TODO utilize composing to chain methods together
 
   the model object will have to know about the app and the roadbook. not sure how we want to interface that? maybe route everything through the app?
 */
@@ -25,7 +23,7 @@ class MapModel {
   appendGoogleDirectionsToMap(data,map){
     var steps = data.routes[0].legs[0].steps
     for(var i=0;i<steps.length;i++){
-      var stepPoints = google.maps.geometry.encoding.decodePath(steps[i].polyline.points);
+      var stepPoints = this.googleMapsDecodePath(steps[i].polyline.points);
       // NOTE if we change the simplified lib and also the io module to just use google maps LatLng objects instead of literals we could skip this.
       var points = []
       for(var k=0;k<stepPoints.length;k++){
@@ -69,10 +67,8 @@ class MapModel {
     this.updateRoute();
   }
 
-  addWaypointBubble(routePointIndex,radius,fill) {
-    var marker = this.markers[routePointIndex];
-    var bubble = this.buildWaypointBubble(radius, marker.getPosition(), fill, this.map);
-    marker.bubble = bubble;
+  addWaypointBubble(index,radius,fill,map) {
+    marker.bubble = this.buildWaypointBubble(radius, this.markers[index].getPosition(), fill, map);
   }
 
   // TODO this whole process could be more elegant
@@ -247,31 +243,10 @@ class MapModel {
     return index;
   }
 
-  /*
-    Make an API request to google and get the autorouted path between the last point in the route
-    and the lat long of the click event passed from the controller
-  */
-  getGoogleDirections(latLng,map){
-    var _this = this;
-    var startSnap = this.route.getArray().slice(-1).pop();
-    var endSnap = latLng;
-    var url = "https://maps.googleapis.com/maps/api/directions/json?"
-                + "origin="+startSnap.lat()+","
-                + startSnap.lng()
-                + "&destination=" + endSnap.lat()+","
-                + endSnap.lng()
-                + "&key=" + api_keys.google_directions
-    $.get(url,function(data){
-      if(data.status == "OK"){
-        _this.appendGoogleDirectionsToMap(data,map);
-      }
-    });
-  }
-
   getWaypointBearing(){
-    var i = app.roadbook.currentlyEditingWaypoint.routePointIndex; //TODO how to abstract this
+    var i = app.roadbook.currentlyEditingWaypoint.routePointIndex; //TODO inject this dependency
     if(i){
-      return google.maps.geometry.spherical.computeHeading(this.route.getAt(i-1), this.route.getAt(i)); //TODO get this from the model
+      return this.googleMapsComputeHeading(this.route.getAt(i-1), this.route.getAt(i));
     }
   }
 
@@ -325,8 +300,32 @@ class MapModel {
   }
 
   /*
-    TODO move the below into a static service class
+    Make an API request to google and get the autorouted path between the last point in the route
+    and the lat long of the click event passed from the controller
+    // TODO further distill this
   */
+  requestGoogleDirections(latLng,map,callback){
+    var _this = this;
+    var url = this.buildDirectionsRequest(latLng); //TODO pass in results as param
+    $.get(url,function(data){
+      if(data.status == "OK" && typeof callback === "function"){
+        callback.call(_this,data,map); //just return data
+      }
+    });
+  }
+
+  /*
+    TODO move the below into a static service/interface class or maybe leave it here...
+  */
+
+  buildDirectionsRequest(latLng){
+    var origin = this.route.getArray().slice(-1).pop();
+    var destination = latLng;
+    return "https://maps.googleapis.com/maps/api/directions/json?"
+              + "origin="+origin.lat()+","+ origin.lng()
+              + "&destination=" + destination.lat()+","+ destination.lng()
+              + "&key=" + api_keys.google_directions
+  }
 
   /*
     an icon which marks a normal point (vertex) on the route Polyline
@@ -405,6 +404,15 @@ class MapModel {
             radius: Number(radius)
           });
   }
+
+  googleMapsDecodePath(points){
+    return google.maps.geometry.encoding.decodePath(points);
+  }
+
+  googleMapsComputeHeading(a,b){
+    return google.maps.geometry.spherical.computeHeading(a, b);
+  }
+
 };
 
 
