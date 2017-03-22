@@ -79,22 +79,21 @@ class MapModel {
     } else {
       this.deleteQueue.push(marker.routePointIndex);
       this.deletePointsBetweenMarkersInQueueFromRoute();
-      this.updateRoute();
       this.deleteQueue = [];
+
+      this.updateRoute();
       // TODO could we have a dynamic presenter property update function?
       this.presenter.markerDeleteMode = false
       this.presenter.displayEdge = true; //we have to set this because the mouse out handler that usually handles this gets nuked in the delete
     }
   }
 
-  computeDistanceBetweenPoints(beginMarkerRoutePointIndex, endMarkerRoutePointIndex){
-    var routePoints = this.route.getArray();
+  computeDistanceOnRouteBetweenPoints(beginIndex, endIndex, routePointsArray){
     var points = [];
-    for(var i=beginMarkerRoutePointIndex;i<endMarkerRoutePointIndex+1;i++){
-      points.push(routePoints[i]);
+    for(var i=beginIndex;i<endIndex+1;i++){
+      points.push(routePointsArray[i]);
     }
-    //do some conversions and return the results
-    return google.maps.geometry.spherical.computeLength(points)/1000;
+    return this.googleMapsComputeDistanceInKM(points);
   }
 
   /*
@@ -214,15 +213,15 @@ class MapModel {
   }
 
   getWaypointGeodata(marker){
-    var prevWaypointIndex = this.getPrevWaypointRoutePointIndex(marker.routePointIndex,this.markers);
-    var heading = this.computeHeading(marker, this.route);
+    var prevWaypointIndex = this.getPrevWaypointRoutePointIndex(marker.routePointIndex,this.markers); //TODO pass in markers?
+    var heading = this.computeHeading(marker, this.route); //TODO pass in route?
     return {
       lat: marker.getPosition().lat(),
       lng: marker.getPosition().lng(),
       routePointIndex: marker.routePointIndex,
       distances: {
-                    kmFromStart: this.computeDistanceBetweenPoints(0,marker.routePointIndex),
-                    kmFromPrev: this.computeDistanceBetweenPoints(prevWaypointIndex,marker.routePointIndex)
+                    kmFromStart: this.computeDistanceOnRouteBetweenPoints(0,marker.routePointIndex, this.route.getArray()), //TODO pass in route?
+                    kmFromPrev: this.computeDistanceOnRouteBetweenPoints(prevWaypointIndex, marker.routePointIndex, this.route.getArray()) //TODO pass in route?
                   },
       angles: {
         heading: heading,
@@ -302,14 +301,12 @@ class MapModel {
   /*
     Make an API request to google and get the autorouted path between the last point in the route
     and the lat long of the click event passed from the controller
-    // TODO further distill this
   */
   requestGoogleDirections(latLng,map,callback){
     var _this = this;
-    var url = this.buildDirectionsRequest(latLng); //TODO pass in results as param
-    $.get(url,function(data){
-      if(data.status == "OK" && typeof callback === "function"){
-        callback.call(_this,data,map); //just return data
+    $.get(this.buildDirectionsRequestURL(latLng),function(data){
+      if(data.status == "OK"){
+        callback.call(_this,data,map);
       }
     });
   }
@@ -318,7 +315,7 @@ class MapModel {
     TODO move the below into a static service/interface class or maybe leave it here...
   */
 
-  buildDirectionsRequest(latLng){
+  buildDirectionsRequestURL(latLng){
     var origin = this.route.getArray().slice(-1).pop();
     var destination = latLng;
     return "https://maps.googleapis.com/maps/api/directions/json?"
@@ -411,6 +408,10 @@ class MapModel {
 
   googleMapsComputeHeading(a,b){
     return google.maps.geometry.spherical.computeHeading(a, b);
+  }
+
+  googleMapsComputeDistanceInKM(pointsArray){
+    return google.maps.geometry.spherical.computeLength(pointsArray)/1000;
   }
 
 };
