@@ -1,3 +1,4 @@
+'use strict';
 /*
   PROBLEM: This class does map stuff... It should be broken into more specific classes
   SOLUTIONS: map-util, map route object, map waypoint object.. something along those lines
@@ -55,7 +56,7 @@ class MapModel {
   addRoutePoint(latLng,map){
     this.route.push(latLng);
     var marker = this.buildRouteMarker(latLng, map);
-    this.makeFirstRoutePointWaypoint(marker);
+    this.makeFirstRoutePointWaypoint(marker, this.addWaypoint);
     this.markers.push(marker);
     this.updateRoute();
     return marker;
@@ -104,7 +105,7 @@ class MapModel {
     var nextPointIndex = pointIndex+1 < routePoints.getLength() ? pointIndex + 1 : pointIndex;
 
     //the heading is from this point to the next one
-    var heading = google.maps.geometry.spherical.computeHeading(routePoints.getAt(pointIndex), routePoints.getAt(nextPointIndex));
+    var heading = this.googleMapsComputeHeading(routePoints.getAt(pointIndex), routePoints.getAt(nextPointIndex));
     //google maps headings are between [-180,180] so convert them to a compass bearing
     if(heading < 0){
       heading = 360 + heading;
@@ -118,7 +119,7 @@ class MapModel {
   computeRelativeAngle(marker,routePoints,heading){
     var pointIndex = marker.routePointIndex;
     var prevPointIndex = pointIndex-1 > 0 ? pointIndex - 1 : 0;
-    var relativeAngle = ((0 == pointIndex) || (routePoints.getLength()-1 == pointIndex)) ? 0 : heading - google.maps.geometry.spherical.computeHeading(routePoints.getAt(prevPointIndex), routePoints.getAt(pointIndex));
+    var relativeAngle = ((0 == pointIndex) || (routePoints.getLength()-1 == pointIndex)) ? 0 : heading - this.googleMapsComputeHeading(routePoints.getAt(prevPointIndex), routePoints.getAt(pointIndex));
     // we want to limit what we return to being 0 < angle < 180 for right turns and 0 > angle > -180 for left turns
     if(relativeAngle > 180) {
       relativeAngle = -(360 - relativeAngle); //left turn
@@ -142,7 +143,7 @@ class MapModel {
       var path = [this.route.getArray()[i-1],this.route.getArray()[i]];
       var line = new google.maps.Polyline({path: path});
 
-      if(google.maps.geometry.poly.isLocationOnEdge(latLng, line, tolerance)) {
+      if(this.googleMapsIsLocationOnEdge(latLng, line, tolerance)) {
         idx = i;
         // this.insertRoutePointAtIndex(latLng, i); //TODO have something else do this, just return the index value
         break; //we found it, we're done here
@@ -245,7 +246,7 @@ class MapModel {
   getWaypointBearing(){
     var i = app.roadbook.currentlyEditingWaypoint.routePointIndex; //TODO inject this dependency
     if(i){
-      return this.googleMapsComputeHeading(this.route.getAt(i-1), this.route.getAt(i));
+      return googleMapsComputeHeading(this.route.getAt(i-1),this.route.getAt(i))
     }
   }
 
@@ -274,11 +275,13 @@ class MapModel {
     return marker;
   }
 
-  makeFirstRoutePointWaypoint(marker){
+  makeFirstRoutePointWaypoint(marker, callback){
     if(this.route.length == 1) {
       marker.kmFromStart = 0;
       marker.kmFromPrev = 0;
-      this.addWaypoint(marker);
+      if(typeof callback === "function"){
+        callback(marker);
+      }
     }
   }
 
@@ -304,7 +307,7 @@ class MapModel {
   */
   requestGoogleDirections(latLng,map,callback){
     var _this = this;
-    $.get(this.buildDirectionsRequestURL(latLng),function(data){
+    $.get(this.buildDirectionsRequestURL(this.getLastPointInRoute(),latLng),function(data){
       if(data.status == "OK"){
         callback.call(_this,data,map);
       }
@@ -312,12 +315,18 @@ class MapModel {
   }
 
   /*
-    TODO move the below into a static service/interface class or maybe leave it here...
+    utility methods
   */
 
-  buildDirectionsRequestURL(latLng){
-    var origin = this.route.getArray().slice(-1).pop();
-    var destination = latLng;
+  getLastPointInRoute(){
+    return this.route.getArray().slice(-1).pop();
+  }
+
+  /*
+    TODO move the below into a static google maps service/interface class or maybe leave it here...
+  */
+
+  buildDirectionsRequestURL(origin,destination){
     return "https://maps.googleapis.com/maps/api/directions/json?"
               + "origin="+origin.lat()+","+ origin.lng()
               + "&destination=" + destination.lat()+","+ destination.lng()
@@ -412,6 +421,10 @@ class MapModel {
 
   googleMapsComputeDistanceInKM(pointsArray){
     return google.maps.geometry.spherical.computeLength(pointsArray)/1000;
+  }
+
+  googleMapsIsLocationOnEdge(latLng, line, tolerance){
+    return google.maps.geometry.poly.isLocationOnEdge(latLng, line, tolerance);
   }
 
 };
