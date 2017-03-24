@@ -36,9 +36,9 @@ class MapModel {
 
       for (var j=1;j<points.length;j++){
         var latLng = new google.maps.LatLng(points[j].lat, points[j].lng);
-        var marker = this.addRoutePoint(latLng,map);
+        this.addRoutePoint(latLng,map,this.updateRoute);
         if(j == points.length-1){
-          this.addWaypoint(marker);
+          this.addWaypoint(this.getLastMarker())
         }
 
       }
@@ -53,13 +53,25 @@ class MapModel {
 
     Listeners are bound to the point to allow it to be toggled as a waypoint or to be removed entirely
   */
-  addRoutePoint(latLng,map){
+  addRoutePoint(latLng,map,callback){
+    this.addLatLngToRoutePolyline(latLng);
+    this.addRoutePointMarker(latLng,map);
+    if(typeof callback === "function"){
+      callback.call(this);
+    }
+  }
+
+  /*
+    pushing a latLng into the the route array will automagically add it to the controllers polyline because it is a google MVC array
+  */
+  addLatLngToRoutePolyline(latLng){
     this.route.push(latLng);
+  }
+
+  addRoutePointMarker(latLng,map){
     var marker = this.buildRouteMarker(latLng, map);
     this.makeFirstRoutePointWaypoint(marker, this.addWaypoint);
     this.markers.push(marker);
-    this.updateRoute();
-    return marker;
   }
 
   addWaypoint(marker){
@@ -280,7 +292,7 @@ class MapModel {
       marker.kmFromStart = 0;
       marker.kmFromPrev = 0;
       if(typeof callback === "function"){
-        callback(marker);
+        callback.call(this,marker);
       }
     }
   }
@@ -320,6 +332,10 @@ class MapModel {
 
   getLastPointInRoute(){
     return this.route.getArray().slice(-1).pop();
+  }
+
+  getLastMarker(){
+    return this.markers.slice(-1).pop();
   }
 
   /*

@@ -20,3 +20,26 @@ test( 'Makes the first point added to the route a waypoint', function( assert ) 
 
   assert.end();
 } );
+
+
+test( 'Adds a point to the route by updating the polyline and puting a marker over that vertex on the polyline', function(assert){
+  var mapModel = new model();
+  var polylineLatLng, markerLatLng, markerMap, callbackRan;
+  var testLatLng = {lat: 123, lng: 456};
+
+  mapModel.addLatLngToRoutePolyline = function(latLng){ polylineLatLng = latLng; };
+  mapModel.addRoutePointMarker = function(latLng,map){ markerLatLng = latLng; markerMap = map; };
+
+  mapModel.addRoutePoint(testLatLng,"i'm a map", function(){ callbackRan = true; });
+
+  assert.deepEqual(testLatLng,polylineLatLng, "It adds the lat lng to the polyline");
+  assert.deepEqual(markerLatLng,markerLatLng, "It creates a marker at the correct lat lng");
+  assert.ok(markerMap,"i'm a map", "It passes the map to the route marker");
+  assert.ok(callbackRan, "It runs a callback if it is a function");
+
+  callbackRan = false;
+  mapModel.addRoutePoint(testLatLng,"i'm a map", "i'm not a function");
+  assert.equal(callbackRan, false, "Does not run the callback if it is not a function")
+
+  assert.end();
+});
