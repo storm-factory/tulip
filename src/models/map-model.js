@@ -42,7 +42,8 @@ class MapModel {
 
       }
     }
-    this.updateRoute();
+    this.updateAllMarkersWaypointGeoData();
+    this.this.updateRoadbookTotalDistance();
   }
 
   /*
@@ -55,7 +56,8 @@ class MapModel {
   addRoutePoint(latLng,map){
     this.addLatLngToRoutePolyline(latLng);
     this.addRoutePointMarker(latLng,map);
-    this.updateRoute();
+    this.updateAllMarkersWaypointGeoData();
+    this.updateRoadbookTotalDistance();
   }
 
   /*
@@ -74,7 +76,8 @@ class MapModel {
   addWaypoint(marker){
     marker.setIcon(this.buildWaypointIcon());
     marker.waypoint = app.roadbook.addWaypoint(this.getWaypointGeodata(marker, this.route, this.markers));
-    this.updateRoute();
+    this.updateAllMarkersWaypointGeoData();
+    this.updateRoadbookTotalDistance();
   }
 
   addWaypointBubble(index,radius,fill,map) {
@@ -91,7 +94,8 @@ class MapModel {
       this.deletePointsBetweenMarkersInQueueFromRoute();
       this.deleteQueue = [];
 
-      this.updateRoute();
+      this.updateAllMarkersWaypointGeoData();
+      this.updateRoadbookTotalDistance();
       // TODO could we have a dynamic presenter property update function?
       this.presenter.markerDeleteMode = false
       this.presenter.displayEdge = true; //we have to set this because the mouse out handler that usually handles this gets nuked in the delete
@@ -171,7 +175,8 @@ class MapModel {
     this.deleteWaypointBubble(marker.routePointIndex);
     app.roadbook.deleteWaypoint(marker.waypoint.id);
     marker.waypoint = null;
-    this.updateRoute();
+    this.updateAllMarkersWaypointGeoData();
+    this.updateRoadbookTotalDistance();
   }
 
   /*
@@ -295,21 +300,26 @@ class MapModel {
     }
   }
 
-  // TODO this might be doing too many things
-  updateRoute() {
+  updateAllMarkersWaypointGeoData() {
     for(var i = 0; i < this.markers.length; i++) {
       var marker = this.markers[i];
-      if(this.markers[i].waypoint) {
-        var geoData = this.getWaypointGeodata(marker, this.route, this.markers);
-        marker.waypoint.updateWaypoint(geoData, marker.routePointIndex);
+      if(marker.waypoint) {
+        this.updateMarkerWaypointGeoData(marker, this.route, this.markers, this.getWaypointGeodata(marker, route, markers));
       }
     }
-    app.roadbook.updateTotalDistance();
   }
 
   updateMarkerPosition(marker, latLng){
-    marker.setPosition(latLng);
-    this.route.setAt(marker.routePointIndex, latLng);
+    this.googleMapsMarkerSetPosition(marker,latLng)
+    this.googleMapsPolylineSetPositionAtIndex(this.route,marker.routePointIndex, latLng)
+  }
+
+  updateMarkerWaypointGeoData(marker, route, markers, geoData){
+    marker.waypoint.updateWaypoint(geoData, marker.routePointIndex); //TODO make this a function
+  }
+
+  updateRoadbookTotalDistance(){
+    app.roadbook.updateTotalDistance(); //NOTE this shouldn't be in this model
   }
 
   /*
@@ -436,6 +446,14 @@ class MapModel {
 
   googleMapsIsLocationOnEdge(latLng, line, tolerance){
     return google.maps.geometry.poly.isLocationOnEdge(latLng, line, tolerance);
+  }
+
+  googleMapsMarkerSetPosition(marker,latLng){
+    marker.setPosition(latLng);
+  }
+
+  googleMapsMvcArraySetPositionAtIndex(mvcArray,index,latLng){
+    mvcArray.setAt(marker.routePointIndex, latLng);
   }
 
 };
