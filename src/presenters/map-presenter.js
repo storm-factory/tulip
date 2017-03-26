@@ -143,7 +143,7 @@ class MapPresenter{
     var _this = this;
     this.map.addListener('click', function(evt){
       if(_this.mapUnlocked && !this.markerDeleteMode){
-        _this.model.addRoutePoint(evt.latLng,_this.map,_this.model.updateRoute);
+        _this.model.addRoutePoint(evt.latLng,_this.map);
       }
     });
 

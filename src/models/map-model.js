@@ -3,8 +3,7 @@
   PROBLEM: This class does map stuff... It should be broken into more specific classes
   SOLUTIONS: map-util, map route object, map waypoint object.. something along those lines
 
-  // TODO utilize dependency injection wherever possible to reduce side effects
-  // TODO utilize composing to chain methods together
+  // TODO rewrite latLng as prototype so we can store all the marker stuff in there and only have to track one array
 
   the model object will have to know about the app and the roadbook. not sure how we want to interface that? maybe route everything through the app?
 */
@@ -36,9 +35,9 @@ class MapModel {
 
       for (var j=1;j<points.length;j++){
         var latLng = new google.maps.LatLng(points[j].lat, points[j].lng);
-        this.addRoutePoint(latLng,map,this.updateRoute);
+        this.addRoutePoint(latLng,map);
         if(j == points.length-1){
-          this.addWaypoint(this.getLastMarker())
+          this.addWaypoint(this.getLastItemInArray(this.markers))
         }
 
       }
@@ -53,12 +52,10 @@ class MapModel {
 
     Listeners are bound to the point to allow it to be toggled as a waypoint or to be removed entirely
   */
-  addRoutePoint(latLng,map,callback){
+  addRoutePoint(latLng,map){
     this.addLatLngToRoutePolyline(latLng);
     this.addRoutePointMarker(latLng,map);
-    if(typeof callback === "function"){
-      callback.call(this);
-    }
+    this.updateRoute();
   }
 
   /*
@@ -76,7 +73,7 @@ class MapModel {
 
   addWaypoint(marker){
     marker.setIcon(this.buildWaypointIcon());
-    marker.waypoint = app.roadbook.addWaypoint(this.getWaypointGeodata(marker));
+    marker.waypoint = app.roadbook.addWaypoint(this.getWaypointGeodata(marker, this.route, this.markers));
     this.updateRoute();
   }
 
@@ -225,22 +222,22 @@ class MapModel {
     return Math.pow(map.getZoom(), -(map.getZoom()/5));
   }
 
-  getWaypointGeodata(marker){
-    var prevWaypointIndex = this.getPrevWaypointRoutePointIndex(marker.routePointIndex,this.markers); //TODO pass in markers?
-    var heading = this.computeHeading(marker, this.route); //TODO pass in route?
+  getWaypointGeodata(marker, route, markers){
+    var prevWaypointIndex = this.getPrevWaypointRoutePointIndex(marker.routePointIndex, markers); //TODO pass in markers?
+    var heading = this.computeHeading(marker, route);
+    var relativeAngle = this.computeRelativeAngle(marker,route,heading);
     return {
       lat: marker.getPosition().lat(),
       lng: marker.getPosition().lng(),
       routePointIndex: marker.routePointIndex,
       distances: {
-                    kmFromStart: this.computeDistanceOnRouteBetweenPoints(0,marker.routePointIndex, this.route.getArray()), //TODO pass in route?
-                    kmFromPrev: this.computeDistanceOnRouteBetweenPoints(prevWaypointIndex, marker.routePointIndex, this.route.getArray()) //TODO pass in route?
+                    kmFromStart: this.computeDistanceOnRouteBetweenPoints(0,marker.routePointIndex, route.getArray()), //TODO pass in route?
+                    kmFromPrev: this.computeDistanceOnRouteBetweenPoints(prevWaypointIndex, marker.routePointIndex, route.getArray()) //TODO pass in route?
                   },
       angles: {
         heading: heading,
-        relativeAngle: this.computeRelativeAngle(marker,this.route,heading)
+        relativeAngle: relativeAngle
       }
-
     }
   }
 
@@ -256,9 +253,9 @@ class MapModel {
   }
 
   getWaypointBearing(){
-    var i = app.roadbook.currentlyEditingWaypoint.routePointIndex; //TODO inject this dependency
+    var i = app.roadbook.currentlyEditingWaypoint.routePointIndex; //TODO inject this dependency and wrap it in a function
     if(i){
-      return googleMapsComputeHeading(this.route.getAt(i-1),this.route.getAt(i))
+      return this.googleMapsComputeHeading(this.route.getAt(i-1),this.route.getAt(i))
     }
   }
 
@@ -287,6 +284,7 @@ class MapModel {
     return marker;
   }
 
+  // TODO make this get geoData like everyone else, NOTE will require modifying those functions
   makeFirstRoutePointWaypoint(marker, callback){
     if(this.route.length == 1) {
       marker.kmFromStart = 0;
@@ -297,11 +295,12 @@ class MapModel {
     }
   }
 
+  // TODO this might be doing too many things
   updateRoute() {
     for(var i = 0; i < this.markers.length; i++) {
       var marker = this.markers[i];
       if(this.markers[i].waypoint) {
-        var geoData = this.getWaypointGeodata(marker);
+        var geoData = this.getWaypointGeodata(marker, this.route, this.markers);
         marker.waypoint.updateWaypoint(geoData, marker.routePointIndex);
       }
     }
@@ -319,7 +318,7 @@ class MapModel {
   */
   requestGoogleDirections(latLng,map,callback){
     var _this = this;
-    $.get(this.buildDirectionsRequestURL(this.getLastPointInRoute(),latLng),function(data){
+    $.get(this.buildDirectionsRequestURL(this.getLastItemInArray(this.route.getArray()),latLng,api_keys.google_directions),function(data){
       if(data.status == "OK"){
         callback.call(_this,data,map);
       }
@@ -330,23 +329,19 @@ class MapModel {
     utility methods
   */
 
-  getLastPointInRoute(){
-    return this.route.getArray().slice(-1).pop();
-  }
-
-  getLastMarker(){
-    return this.markers.slice(-1).pop();
+  getLastItemInArray(array){
+    return array.slice(-1).pop();
   }
 
   /*
     TODO move the below into a static google maps service/interface class or maybe leave it here...
   */
 
-  buildDirectionsRequestURL(origin,destination){
+  buildDirectionsRequestURL(origin,destination,direction_api_key){
     return "https://maps.googleapis.com/maps/api/directions/json?"
               + "origin="+origin.lat()+","+ origin.lng()
               + "&destination=" + destination.lat()+","+ destination.lng()
-              + "&key=" + api_keys.google_directions
+              + "&key=" + direction_api_key
   }
 
   /*
