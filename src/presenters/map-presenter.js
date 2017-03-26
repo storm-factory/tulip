@@ -193,6 +193,7 @@ class MapPresenter{
           _this.model.deleteWaypoint(this);
         } else {
           _this.model.addWaypoint(this);
+          console.log(this);
           $('#roadbook').scrollTop(0);
           $('#roadbook').scrollTop(($(this.waypoint.element).offset().top-100));
         }

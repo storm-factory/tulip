@@ -51,12 +51,12 @@ class MapModel {
     Since the route array is an MVCArray bound to the route path
     the new point will show up on the route Polyline automagically.
 
-    Listeners are bound to the point to allow it to be toggled as a waypoint or to be removed entirely
+    Also creates a marker and overlays it on the route at that point
   */
   addRoutePoint(latLng,map){
     // TODO could we alter the latLng prototype here?
-    this.addLatLngToRoutePolyline(latLng);
-    this.addRoutePointMarker(latLng,map);
+    this.addLatLngToRouteMvcArray(latLng);
+    this.addMarkerToMarkersArray(this.buildRouteMarker(latLng, map));
     this.updateAllMarkersWaypointGeoData();
     this.updateRoadbookTotalDistance();
   }
@@ -64,21 +64,18 @@ class MapModel {
   /*
     pushing a latLng into the the route array will automagically add it to the controllers polyline because it is a google MVC array
   */
-  addLatLngToRoutePolyline(latLng){
+  addLatLngToRouteMvcArray(latLng){
     this.route.push(latLng);
   }
 
-  addRoutePointMarker(latLng,map){
-    var marker = this.buildRouteMarker(latLng, map);
-    this.makeFirstRoutePointWaypoint(marker, this.addWaypoint);
+  addMarkerToMarkersArray(marker){
+    this.makeFirstMarkerWaypoint(marker, this.addWaypoint);
     this.markers.push(marker);
   }
 
   addWaypoint(marker){
     marker.setIcon(this.buildWaypointIcon());
-    marker.waypoint = app.roadbook.addWaypoint(this.getWaypointGeodata(marker, this.route, this.markers));
-    this.updateAllMarkersWaypointGeoData();
-    this.updateRoadbookTotalDistance();
+    marker.waypoint = this.addWaypointToRoadbook(this.getWaypointGeodata(marker, this.route, this.markers),this.updateAllMarkersWaypointGeoData,this.updateRoadbookTotalDistance);
   }
 
   addWaypointBubble(index,radius,fill,map) {
@@ -291,7 +288,7 @@ class MapModel {
   }
 
   // TODO make this get geoData like everyone else, NOTE will require modifying those functions
-  makeFirstRoutePointWaypoint(marker, callback){
+  makeFirstMarkerWaypoint(marker, callback){
     if(this.route.length == 1) {
       marker.kmFromStart = 0;
       marker.kmFromPrev = 0;
@@ -315,12 +312,28 @@ class MapModel {
     this.googleMapsMvcArraySetPositionAtIndex(this.route,marker.routePointIndex, latLng)
   }
 
-  updateMarkerWaypointGeoData(marker, route, markers, geoData){
-    marker.waypoint.updateWaypoint(geoData, marker.routePointIndex); //TODO make this a function
-  }
+
+  /*
+    Roadbook functions
+  */
 
   updateRoadbookTotalDistance(){
     app.roadbook.updateTotalDistance(); //NOTE this shouldn't be in this model
+  }
+
+  addWaypointToRoadbook(geoDataJSON, callback1, callback2){
+    var roadbookWaypoint = app.roadbook.addWaypoint(geoDataJSON);
+    callback1.call(this)
+    callback2.call(this)
+    return roadbookWaypoint;
+  }
+
+  /*
+    Raypoint functions
+  */
+
+  updateMarkerWaypointGeoData(marker, route, markers, geoData){
+    marker.waypoint.updateWaypoint(geoData, marker.routePointIndex);
   }
 
   /*

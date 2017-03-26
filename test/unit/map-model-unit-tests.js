@@ -5,14 +5,14 @@ test( 'Makes the first point added to the route a waypoint', function( assert ) 
   var mapModel = new model();
   var waypoint;
   mapModel.route = [];
-  mapModel.makeFirstRoutePointWaypoint({}, function(marker){waypoint = marker;});
+  mapModel.makeFirstMarkerWaypoint({}, function(marker){waypoint = marker;});
   assert.equal(waypoint, undefined, "Does not run the callback if there are no points in the route")
 
   mapModel.route.push(1);
-  mapModel.makeFirstRoutePointWaypoint({}, "not a function");
+  mapModel.makeFirstMarkerWaypoint({}, "not a function");
   assert.equal(waypoint, undefined, "Does not run the callback if it is not a function")
 
-  mapModel.makeFirstRoutePointWaypoint({}, function(marker){waypoint = marker;});
+  mapModel.makeFirstMarkerWaypoint({}, function(marker){waypoint = marker;});
 
   assert.ok( waypoint, 'Runs the callback if it is a function and there are points in the route' );
   assert.equal(waypoint.kmFromStart, 0, 'Sets the distance from start to 0');
@@ -27,8 +27,9 @@ test( 'Adds a point to the route by updating the polyline and puting a marker ov
   var polylineLatLng, markerLatLng, markerMap, updatedMarkers, updatedRoadbook;
   var testLatLng = {lat: 123, lng: 456};
 
-  mapModel.addLatLngToRoutePolyline = function(latLng){ polylineLatLng = latLng; };
-  mapModel.addRoutePointMarker = function(latLng,map){ markerLatLng = latLng; markerMap = map; };
+  mapModel.addLatLngToRouteMvcArray = function(latLng){ polylineLatLng = latLng; };
+  mapModel.buildRouteMarker = function(latLng,map){ return {latLng: latLng, map: map}; };
+  mapModel.addMarkerToMarkersArray = function(marker){ markerLatLng = marker.latLng; markerMap = marker.map; };
   mapModel.updateAllMarkersWaypointGeoData = function(){updatedMarkers = true;}
   mapModel.updateRoadbookTotalDistance = function(){updatedRoadbook = true;}
 
@@ -87,6 +88,49 @@ test( 'Gets the geodata for a waypoint', function(assert){
   assert.equal(geoData.distances.kmFromPrev, 2.5, "It sets the geoData obj distances kmFromPrev");
   assert.equal(geoData.angles.heading, 360, "It sets the geoData obj angles heading");
   assert.equal(geoData.angles.relativeAngle, 45, "It sets the geoData obj angles relativeAngle");
+
+  assert.end();
+});
+
+test( 'Pushes a latLng on to the route MVC array', function(assert){
+  var mapModel = new model();
+  mapModel.route = []
+  mapModel.addLatLngToRouteMvcArray('a lat lng')
+  assert.equal(mapModel.route[0], 'a lat lng', "It pushes the latLng obj onto the array");
+  assert.end();
+});
+
+test( 'Adds a route marker to the markers array', function(assert){
+  var mapModel = new model();
+  var sentMarker, sentCallback;
+  mapModel.markers = []
+  mapModel.makeFirstMarkerWaypoint = function(marker, callback){sentMarker = (marker == 'a marker'); sentCallback = callback()};
+  mapModel.addWaypoint = function(){ return true };
+
+  mapModel.addMarkerToMarkersArray('a marker')
+
+  assert.equal(mapModel.markers[0], 'a marker', "It pushes the marker obj onto the array");
+  assert.ok(sentMarker, "It sends the marker to be checked if it is the first marker");
+  assert.ok(sentCallback, "It sends a callback to be executed if marker is the first marker");
+
+  assert.end();
+});
+
+test( 'Adds a route marker to the markers array', function(assert){
+  var mapModel = new model();
+  var callbacksSent=0, geoDataSent,marker={setIcon: function(icon){this.icon = icon;}}
+  mapModel.addWaypointToRoadbook = function(geoData,callback1,callback2){geoDataSent = geoData.amGeoData; callback1.call(); callback2.call(); return "i am a roadbook waypoint"};
+  mapModel.getWaypointGeodata = function(){ return {amGeoData: true}};
+  mapModel.updateAllMarkersWaypointGeoData = function(){callbacksSent += 1;};
+  mapModel.updateRoadbookTotalDistance = function(){callbacksSent += 1;};
+  mapModel.buildWaypointIcon = function(){return "waypoint icon"};
+
+  mapModel.addWaypoint(marker);
+
+  assert.equal(marker.icon, 'waypoint icon', "It sets the marker icon to a waypoint icon");
+  assert.equal(marker.waypoint, 'i am a roadbook waypoint', "It adds a reference to the corresponding roadbook waypoint");
+  assert.ok(geoDataSent,"It sends geodata to the roadbook for waypoint display");
+  assert.equal(callbacksSent, 2, "It sends two call backs to the roadbook waypoint function to update total distance and all waypoint geodata");
 
   assert.end();
 });
