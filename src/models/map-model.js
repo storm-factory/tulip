@@ -43,7 +43,7 @@ class MapModel {
       }
     }
     this.updateAllMarkersWaypointGeoData();
-    this.this.updateRoadbookTotalDistance();
+    this.updateRoadbookTotalDistance();
   }
 
   /*
@@ -54,6 +54,7 @@ class MapModel {
     Listeners are bound to the point to allow it to be toggled as a waypoint or to be removed entirely
   */
   addRoutePoint(latLng,map){
+    // TODO could we alter the latLng prototype here?
     this.addLatLngToRoutePolyline(latLng);
     this.addRoutePointMarker(latLng,map);
     this.updateAllMarkersWaypointGeoData();
@@ -304,14 +305,14 @@ class MapModel {
     for(var i = 0; i < this.markers.length; i++) {
       var marker = this.markers[i];
       if(marker.waypoint) {
-        this.updateMarkerWaypointGeoData(marker, this.route, this.markers, this.getWaypointGeodata(marker, route, markers));
+        this.updateMarkerWaypointGeoData(marker, this.route, this.markers, this.getWaypointGeodata(marker, this.route, this.markers));
       }
     }
   }
 
   updateMarkerPosition(marker, latLng){
     this.googleMapsMarkerSetPosition(marker,latLng)
-    this.googleMapsPolylineSetPositionAtIndex(this.route,marker.routePointIndex, latLng)
+    this.googleMapsMvcArraySetPositionAtIndex(this.route,marker.routePointIndex, latLng)
   }
 
   updateMarkerWaypointGeoData(marker, route, markers, geoData){
@@ -453,7 +454,7 @@ class MapModel {
   }
 
   googleMapsMvcArraySetPositionAtIndex(mvcArray,index,latLng){
-    mvcArray.setAt(marker.routePointIndex, latLng);
+    mvcArray.setAt(index, latLng);
   }
 
 };

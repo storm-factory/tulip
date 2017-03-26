@@ -210,7 +210,8 @@ class MapPresenter{
     });
 
     google.maps.event.addListener(marker, 'dragend', function(evt) {
-      _this.model.updateRoute();
+      _this.model.updateAllMarkersWaypointGeoData();
+      _this.model.updateRoadbookTotalDistance();
     });
 
     /*
@@ -283,7 +284,8 @@ class MapPresenter{
           */
           google.maps.event.addListener(handle, 'mouseup', function(evt){
             dragging = false;
-            _this.model.updateRoute();
+            _this.model.updateAllMarkersWaypointGeoData();
+            _this.model.updateRoadbookTotalDistance();
             this.setMap(null);
           });
         });
