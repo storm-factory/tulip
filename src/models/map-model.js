@@ -79,25 +79,28 @@ class MapModel {
   }
 
   addWaypointBubble(index,radius,fill,map) {
-    marker.bubble = this.buildWaypointBubble(radius, this.markers[index].getPosition(), fill, map);
+    this.markers[index].bubble = this.buildWaypointBubble(radius, this.markers[index].getPosition(), fill, map);
   }
 
   // TODO this whole process could be more elegant
-  addMarkerToDeleteQueue(marker){
+  processMarkerForDeletion(marker,callback1,callback2){
     if(this.deleteQueue.length == 0){
-      this.deleteQueue.push(marker.routePointIndex);
-      marker.setIcon(this.buildDeleteQueueIcon());
+      this.addMarkerIndexToDeleteQueue(marker.routePointIndex);
+      this.setMarkerIconToDeleteQueueIcon(marker);
     } else {
-      this.deleteQueue.push(marker.routePointIndex);
+      this.addMarkerIndexToDeleteQueue(marker.routePointIndex);
       this.deletePointsBetweenMarkersInQueueFromRoute();
-      this.deleteQueue = [];
-
-      this.updateAllMarkersWaypointGeoData();
-      this.updateRoadbookTotalDistance();
-      // TODO could we have a dynamic presenter property update function?
-      this.presenter.markerDeleteMode = false
-      this.presenter.displayEdge = true; //we have to set this because the mouse out handler that usually handles this gets nuked in the delete
+      callback1.call(this);
+      callback2.call(this);
     }
+  }
+
+  addMarkerIndexToDeleteQueue(index){
+    this.deleteQueue.push(index);
+  }
+
+  setMarkerIconToDeleteQueueIcon(marker){
+    marker.setIcon(this.buildDeleteQueueIcon());
   }
 
   computeDistanceOnRouteBetweenPoints(beginIndex, endIndex, routePointsArray){
@@ -198,8 +201,9 @@ class MapModel {
   // TODO this whole process could be more elegant
   deletePointsBetweenMarkersInQueueFromRoute(){
     this.deleteQueue.sort(function(a,b){return a - b});
-    var start = this.deleteQueue[0];
-    var end = this.deleteQueue[1];
+    var end = this.deleteQueue.pop();
+    var start = this.deleteQueue.pop();
+
     for(var i = end;i >= start;i--){
       if(this.markers[i].waypoint){
         this.deleteWaypoint(this.markers[i]);
@@ -312,6 +316,20 @@ class MapModel {
     this.googleMapsMvcArraySetPositionAtIndex(this.route,marker.routePointIndex, latLng)
   }
 
+  /*
+    presenter interface
+  */
+  exitPresenterDeleteMode(){
+    this.presenter.exitDeleteMode();
+  }
+
+  /*
+    Roadbook/Waypoint update catchall
+  */
+  updateRoadbookAndWaypoints(){
+    this.updateAllMarkersWaypointGeoData();
+    this.updateRoadbookTotalDistance();
+  }
 
   /*
     Roadbook functions
@@ -329,7 +347,7 @@ class MapModel {
   }
 
   /*
-    Raypoint functions
+    Waypoint functions
   */
 
   updateMarkerWaypointGeoData(marker, route, markers, geoData){

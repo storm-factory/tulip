@@ -120,6 +120,11 @@ class MapPresenter{
     this.model.addWaypointBubble(index,bubble,fill,this.map);
   }
 
+  exitDeleteMode(){
+    this.markerDeleteMode = false
+    this.displayEdge = true; //we have to set this because the mouse out handler that usually handles this gets nuked in the delete
+  }
+
   updateWaypointBubble(index,bubble){
     if(this.model.markers[index].bubble){
       this.model.markers[index].bubble.setRadius(Number(bubble));
@@ -180,7 +185,7 @@ class MapPresenter{
     */
     google.maps.event.addListener(marker, 'rightclick', function(evt) {
       _this.markerDeleteMode = true;
-      _this.model.addMarkerToDeleteQueue(this);
+      _this.model.processMarkerForDeletion(this,_this.model.updateRoadbookAndWaypoints,_this.model.exitPresenterDeleteMode);
     });
 
     /*
@@ -193,7 +198,6 @@ class MapPresenter{
           _this.model.deleteWaypoint(this);
         } else {
           _this.model.addWaypoint(this);
-          console.log(this);
           $('#roadbook').scrollTop(0);
           $('#roadbook').scrollTop(($(this.waypoint.element).offset().top-100));
         }

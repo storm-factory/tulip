@@ -134,3 +134,80 @@ test( 'Adds a route marker to the markers array', function(assert){
 
   assert.end();
 });
+
+test( 'Adds a waypoint bubble to a marker', function(assert){
+  var mapModel = new model();
+  mapModel.buildWaypointBubble = function(radius,latLng,fill,map){
+    return {radius: radius, latLng: latLng, fill: fill, map: map};
+  };
+  mapModel.markers = [
+    {bubble: null, getPosition: function(){return {lat: 321, lng: 654}}},
+    {bubble: null, getPosition: function(){return {lat: 789, lng: 987}}},
+    {bubble: null, getPosition: function(){return {lat: 123, lng: 456}}},
+  ];
+
+  mapModel.addWaypointBubble(2, 400, "blue", "map of narnia");
+
+  var marker = mapModel.markers[2];
+  assert.ok(marker.bubble, "It creates a bubble and gives its reference to the marker");
+  assert.equal(marker.bubble.radius, 400, "It sets the marker bubble radius");
+  assert.deepEqual(marker.bubble.latLng, {lat: 123, lng: 456}, "It sets the marker bubble position");
+  assert.equal(marker.bubble.fill, "blue", "It sets the marker bubble fill color");
+  assert.equal(marker.bubble.map, "map of narnia", "It sets the marker bubble map");
+
+  assert.end();
+});
+
+test( 'Adds a markers route index to the delete queue', function(assert){
+  var mapModel = new model();
+  mapModel.deleteQueue = [];
+  var marker = {routePointIndex: 11};
+
+  mapModel.addMarkerIndexToDeleteQueue(marker.routePointIndex);
+
+  assert.equal(mapModel.deleteQueue[0], 11, "It adds the marker index to the delete queue");
+  assert.end();
+});
+
+
+test( 'Sets a markers icon to a delete queue icon', function(assert){
+  var mapModel = new model();
+  var marker = {icon: "waypoint icon", setIcon: function(icon){this.icon = icon}};
+  mapModel.buildDeleteQueueIcon = function(){return "delete queue icon"};
+
+  mapModel.setMarkerIconToDeleteQueueIcon(marker);
+
+  assert.equal(marker.icon, "delete queue icon", "It sets the marker icon to a delete queue icon");
+  assert.end();
+});
+
+test( 'Adds a marker index to the delete queue if it is empty otherwise deletes all the markers between indecies in queue from the route', function(assert){
+  var mapModel = new model();
+  mapModel.deleteQueue = [];
+  mapModel.setMarkerIconToDeleteQueueIcon = function(marker){marker.icon = 'delete queue icon'};
+  var end, start;
+  mapModel.deletePointsBetweenMarkersInQueueFromRoute = function(){
+    end = mapModel.deleteQueue.pop();
+    start = mapModel.deleteQueue.pop();
+  }
+  var marker1 = {icon: "waypoint icon", setIcon: function(icon){this.icon = icon},routePointIndex: 11};
+  var marker2 = {icon: "waypoint icon", setIcon: function(icon){this.icon = icon},routePointIndex: 42};
+
+  var callback1Sent,callback2Sent;
+  var callback1 = function(){callback1Sent=true;};
+  var callback2 = function(){callback2Sent=true;};
+
+  mapModel.processMarkerForDeletion(marker1, callback1, callback2);
+  assert.ok(!callback1Sent, "callback1 doesn't run with when a marker is sent to an empty queue");
+  assert.ok(!callback2Sent, "callback2 doesn't run with when a marker is sent to an empty queue");
+  assert.equal(mapModel.deleteQueue[0], marker1.routePointIndex, "Inserts the marker's route point index into the queue");
+
+  mapModel.processMarkerForDeletion(marker2, callback1, callback2);
+  assert.ok(callback1Sent, "callback1 runs when a marker is sent to a queue with an index already in it");
+  assert.ok(callback2Sent, "callback2 runs when a marker is sent to a queue with an index already in it");
+  assert.equal(start, 11, "starts deletion at the correct index");
+  assert.equal(end, 42, "ends deletion at the correct index");
+  assert.equal(mapModel.deleteQueue.length, 0, "Empties the delete queue when a second index is added");
+
+  assert.end();
+});
