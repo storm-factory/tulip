@@ -105,23 +105,24 @@ class MapModel {
     marker.setIcon(this.buildDeleteQueueIcon());
   }
 
-  computeDistanceOnRouteBetweenPoints(beginIndex, endIndex, routePointsArray){
+  computeDistanceOnRouteBetweenPoints(beginIndex, endIndex, route){
     var points = [];
     for(var i=beginIndex;i<endIndex+1;i++){
-      points.push(routePointsArray[i]);
+      points.push(route[i]);
     }
     return this.googleMapsComputeDistanceInKM(points);
   }
 
   /*
     Compute the cap heading of this waypoint
+    // TODO doing too many tings
   */
-  computeHeading(marker, routePoints){
+  computeHeading(marker, route){
     var pointIndex = marker.routePointIndex;
-    var nextPointIndex = pointIndex+1 < routePoints.getLength() ? pointIndex + 1 : pointIndex;
+    var nextPointIndex = pointIndex+1 < route.getLength() ? pointIndex + 1 : pointIndex;
 
     //the heading is from this point to the next one
-    var heading = this.googleMapsComputeHeading(routePoints.getAt(pointIndex), routePoints.getAt(nextPointIndex));
+    var heading = this.googleMapsComputeHeading(route.getAt(pointIndex), route.getAt(nextPointIndex));
     //google maps headings are between [-180,180] so convert them to a compass bearing
     if(heading < 0){
       heading = 360 + heading;
@@ -131,11 +132,12 @@ class MapModel {
 
   /*
     Compute the angle of the turn from the previous heading to this one
+    // TODO doing too many tings
   */
-  computeRelativeAngle(marker,routePoints,heading){
+  computeRelativeAngle(marker,route,heading){
     var pointIndex = marker.routePointIndex;
     var prevPointIndex = pointIndex-1 > 0 ? pointIndex - 1 : 0;
-    var relativeAngle = ((0 == pointIndex) || (routePoints.getLength()-1 == pointIndex)) ? 0 : heading - this.googleMapsComputeHeading(routePoints.getAt(prevPointIndex), routePoints.getAt(pointIndex));
+    var relativeAngle = ((0 == pointIndex) || (route.getLength()-1 == pointIndex)) ? 0 : heading - this.googleMapsComputeHeading(route.getAt(prevPointIndex), route.getAt(pointIndex));
     // we want to limit what we return to being 0 < angle < 180 for right turns and 0 > angle > -180 for left turns
     if(relativeAngle > 180) {
       relativeAngle = -(360 - relativeAngle); //left turn
@@ -145,12 +147,12 @@ class MapModel {
     return relativeAngle;
   }
 
+  /*
+    Iterate through the point pairs on the segment
+    determine which edge the latLng falls upon
+    and insert a new point into route at the index of the edge point
+  */
   computeRoutePointInsertionIndex(latLng,map){
-    /*
-      Iterate through the point pairs on the segment
-      determine which edge the latLng falls upon
-      and insert a new point into route at the index of the edge point
-    */
     var idx;
 
     var tolerance = this.getEdgeTolerance(map); //this could be passed in
@@ -161,7 +163,6 @@ class MapModel {
 
       if(this.googleMapsIsLocationOnEdge(latLng, line, tolerance)) {
         idx = i;
-        // this.insertRoutePointAtIndex(latLng, i); //TODO have something else do this, just return the index value
         break; //we found it, we're done here
       }
       //we haven't found it, increse the tolerance and start over
@@ -261,7 +262,7 @@ class MapModel {
     }
     return index;
   }
-
+  // used for map orientation. make this fact for obvious
   getWaypointBearing(){
     var i = app.roadbook.currentlyEditingWaypoint.routePointIndex; //TODO inject this dependency and wrap it in a function
     if(i){

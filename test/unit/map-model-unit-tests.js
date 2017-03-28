@@ -116,7 +116,7 @@ test( 'Adds a route marker to the markers array', function(assert){
   assert.end();
 });
 
-test( 'Adds a route marker to the markers array', function(assert){
+test( 'Adds a waypoint marker to the markers array', function(assert){
   var mapModel = new model();
   var callbacksSent=0, geoDataSent,marker={setIcon: function(icon){this.icon = icon;}}
   mapModel.addWaypointToRoadbook = function(geoData,callback1,callback2){geoDataSent = geoData.amGeoData; callback1.call(); callback2.call(); return "i am a roadbook waypoint"};
@@ -208,6 +208,87 @@ test( 'Adds a marker index to the delete queue if it is empty otherwise deletes 
   assert.equal(start, 11, "starts deletion at the correct index");
   assert.equal(end, 42, "ends deletion at the correct index");
   assert.equal(mapModel.deleteQueue.length, 0, "Empties the delete queue when a second index is added");
+
+  assert.end();
+});
+
+test( 'Can take a beginning and end index and a route array and give the distance between points at the indecies', function(assert){
+  var mapModel = new model();
+  mapModel.googleMapsComputeDistanceInKM = function(array){
+    return array.reduce((a, b) => a + b, 0);
+  }
+  var route = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
+  var distance = mapModel.computeDistanceOnRouteBetweenPoints(4,12,route);
+
+  assert.equal(distance, 72, "It constructs an accurate sub-array of points between indecies to send to the google maps API then returns that measurement");
+  assert.end();
+});
+
+test( 'Can take a marker and a route array and give the heading to the next point on the route', function(assert){
+  var mapModel = new model();
+  mapModel.googleMapsComputeHeading = function(number1, number2){
+    if(number1 < number2){
+      return 135
+    }
+    if(number1 > number2){
+      return -45
+    }
+    return 0;
+  };
+  var marker = {routePointIndex: 1};
+  var route = {getLength: function(){return this.array.length;}, getAt: function(index){return this.array[index];}, array: [11,14,6,20]}
+  var heading = mapModel.computeHeading(marker,route);
+
+  assert.equal(heading, 315, "It corrects a heading between two points to be 0-360 if the input heading is negative")
+
+  marker = {routePointIndex: 2};
+  heading = mapModel.computeHeading(marker,route);
+  assert.equal(heading, 135, "It corrects returns the heading between two points if the input heading is positive")
+
+  marker = {routePointIndex: 3};
+  heading = mapModel.computeHeading(marker,route);
+  assert.equal(heading, 0, "It returns zero if the marker is the last point in the route")
+
+
+  marker = {routePointIndex: 0};
+  route = {getLength: function(){return this.array.length;}, getAt: function(index){return this.array[index];}, array: [11]}
+  heading = mapModel.computeHeading(marker,route);
+  assert.equal(heading, 0, "It returns zero if there is only one point in the route")
+
+  assert.end();
+});
+
+test( 'Can take a marker and a route array and give the relative angle from the next point on the route', function(assert){
+  var mapModel = new model();
+  mapModel.googleMapsComputeHeading = function(number1, number2){
+    if(number1 < number2){
+      return 135
+    }
+    if(number1 > number2){
+      return -45
+    }
+    return 0;
+  };
+  var marker = {routePointIndex: 0};
+  var route = {getLength: function(){return this.array.length;}, getAt: function(index){return this.array[index];}, array: [11,14,6,20]}
+  var relativeAngle = mapModel.computeRelativeAngle(marker, route, 45);
+  assert.equal(relativeAngle, 0, "It returns zero if the marker is the first point in the route")
+
+  marker = {routePointIndex: 3};
+  relativeAngle = mapModel.computeRelativeAngle(marker, route, 45);
+  assert.equal(relativeAngle, 0, "It returns zero if the marker is the last point in the route")
+
+  marker = {routePointIndex: 1};
+  relativeAngle = mapModel.computeRelativeAngle(marker, route, 45);
+  assert.equal(relativeAngle, -90, "It returns the relative angle if it is between -180 and 180")
+
+  marker = {routePointIndex: 1};
+  relativeAngle = mapModel.computeRelativeAngle(marker, route, -140);
+  assert.equal(relativeAngle, 85, "It returns corrects the relative angle to be between -180 and 180 if it is less the -180")
+
+  marker = {routePointIndex: 2};
+  relativeAngle = mapModel.computeRelativeAngle(marker, route, 180);
+  assert.equal(relativeAngle, -135, "It returns corrects the relative angle to be between -180 and 180 if it is greater than 180")
 
   assert.end();
 });
