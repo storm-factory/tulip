@@ -42,6 +42,7 @@ class MapModel {
 
       }
     }
+    // TODO replace with this.updateRoadbookAndWaypoints()
     this.updateAllMarkersWaypointGeoData();
     this.updateRoadbookTotalDistance();
   }
@@ -57,6 +58,7 @@ class MapModel {
     // TODO could we alter the latLng prototype here?
     this.addLatLngToRouteMvcArray(latLng);
     this.addMarkerToMarkersArray(this.buildRouteMarker(latLng, map));
+    // TODO replace with this.updateRoadbookAndWaypoints()
     this.updateAllMarkersWaypointGeoData();
     this.updateRoadbookTotalDistance();
   }
@@ -176,6 +178,7 @@ class MapModel {
     this.deleteWaypointBubble(marker.routePointIndex);
     app.roadbook.deleteWaypoint(marker.waypoint.id);
     marker.waypoint = null;
+    // TODO replace with this.updateRoadbookAndWaypoints()
     this.updateAllMarkersWaypointGeoData();
     this.updateRoadbookTotalDistance();
   }
