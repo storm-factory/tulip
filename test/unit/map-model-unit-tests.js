@@ -311,3 +311,11 @@ test( 'Can determine the index in the route array to insert an edge point at', f
 
   assert.end();
 });
+
+test( 'Can determine if a point is between two other points', function(assert){
+  var mapModel = new model();
+  mapModel.googleMapsNewPolyline = function(array){ return array instanceof(Array)};
+  mapModel.googleMapsIsLocationOnEdge = function(int1, bool, int2){ return typeof int1 == "number" && bool && typeof int1 == "number"};
+  assert.ok(mapModel.checkIsLocationBetweenPoints(1,2,3,4), "it routes the arguemnts correctly to the functions which actually perform the work and returns the result")
+  assert.end();
+});
