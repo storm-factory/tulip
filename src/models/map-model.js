@@ -152,26 +152,23 @@ class MapModel {
     determine which edge the latLng falls upon
     and insert a new point into route at the index of the edge point
   */
-  computeRoutePointInsertionIndex(latLng,map){
-    var idx;
-
+  computeRoutePointInsertionIndex(latLng,latLngArray,map){
     var tolerance = this.getEdgeTolerance(map); //this could be passed in
-    for(var i = 1; i < this.route.length; i++ ){
-      // does the event point fit in the bounds of the two reference points before and after the click
-      var path = [this.route.getArray()[i-1],this.route.getArray()[i]];
-      var line = new google.maps.Polyline({path: path});
-
-      if(this.googleMapsIsLocationOnEdge(latLng, line, tolerance)) {
-        idx = i;
-        break; //we found it, we're done here
+    for(var i = 1; i < latLngArray.length; i++ ){
+      if(this.checkIsLocationBetweenPoints(latLngArray[i-1], latLngArray[i], latLng, tolerance)) {
+        return i;
       }
       //we haven't found it, increse the tolerance and start over
-      if(i == this.route.length - 1 ){
+      if(i == latLngArray.length - 1 ){
         tolerance = tolerance*2;
         i = 0;
       }
     }
-    return idx;
+  }
+
+  checkIsLocationBetweenPoints(startLatLng, endLatLng, checkLatLng, tolerance){
+    var polyline = this.googleMapsNewPolyline([startLatLng,endLatLng]);
+    return this.googleMapsIsLocationOnEdge(checkLatLng, polyline, tolerance)
   }
 
   deleteWaypoint(marker){
@@ -262,7 +259,7 @@ class MapModel {
     }
     return index;
   }
-  // used for map orientation. make this fact for obvious
+  // used for map orientation. make this fact more obvious
   getWaypointBearing(){
     var i = app.roadbook.currentlyEditingWaypoint.routePointIndex; //TODO inject this dependency and wrap it in a function
     if(i){
@@ -282,7 +279,7 @@ class MapModel {
   }
 
   insertRoutePointBetweenPoints(latLng,map){
-    var index = this.computeRoutePointInsertionIndex(latLng,map);
+    var index = this.computeRoutePointInsertionIndex(latLng,this.route.getArray(),map);
     var marker = this.insertRoutePointAtIndex(latLng,index,map);
     return marker;
   }
@@ -490,6 +487,10 @@ class MapModel {
 
   googleMapsMvcArraySetPositionAtIndex(mvcArray,index,latLng){
     mvcArray.setAt(index, latLng);
+  }
+
+  googleMapsNewPolyline(pointsArray){
+    return new google.maps.Polyline({path: pointsArray});
   }
 
 };

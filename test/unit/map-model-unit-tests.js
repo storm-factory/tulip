@@ -284,11 +284,30 @@ test( 'Can take a marker and a route array and give the relative angle from the 
 
   marker = {routePointIndex: 1};
   relativeAngle = mapModel.computeRelativeAngle(marker, route, -140);
-  assert.equal(relativeAngle, 85, "It returns corrects the relative angle to be between -180 and 180 if it is less the -180")
+  assert.equal(relativeAngle, 85, "It returns and corrects the relative angle to be between -180 and 180 if it is less the -180")
 
   marker = {routePointIndex: 2};
   relativeAngle = mapModel.computeRelativeAngle(marker, route, 180);
-  assert.equal(relativeAngle, -135, "It returns corrects the relative angle to be between -180 and 180 if it is greater than 180")
+  assert.equal(relativeAngle, -135, "It returns and corrects the relative angle to be between -180 and 180 if it is greater than 180")
+
+  assert.end();
+});
+
+test( 'Can determine the index in the route array to insert an edge point at', function(assert){
+  var mapModel = new model();
+  var latLng = 4;
+  var latLngArray = [0,1,2,3,5,6,7,8,9];
+  mapModel.getEdgeTolerance = function(map){ return map == "i am a map" ? 2 : null;};
+  mapModel.checkIsLocationBetweenPoints = function(startLatLng, endLatLng, checkLatLng, tolerance){
+    return (startLatLng < checkLatLng && checkLatLng < endLatLng && tolerance >= 2);
+  };
+
+  var index = mapModel.computeRoutePointInsertionIndex(latLng,latLngArray,"i am a map");
+  assert.equal(index, 4, "It returns the correct index between two points in the array")
+
+  mapModel.getEdgeTolerance = function(map){ return map == "i am a map" ? 1 : null;};
+  var index = mapModel.computeRoutePointInsertionIndex(latLng,latLngArray,"i am a map");
+  assert.equal(index, 4, "It will increase the tolerance if the index is not found until it returns the correct index between two points in the array")
 
   assert.end();
 });
