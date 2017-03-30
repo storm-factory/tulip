@@ -133,9 +133,9 @@ var Roadbook = Class({
   },
 
 
-  deleteWaypoint: function(wptId){
+  deleteWaypoint: function(index){
     this.finishWaypointEdit();
-    this.waypoints.splice(wptId - 1,1);
+    this.waypoints.splice(index - 1,1);
     this.reindexWaypoints();
   },
 

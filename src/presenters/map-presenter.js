@@ -195,7 +195,7 @@ class MapPresenter{
       //If the point has a waypoint remove it, otherwise add one
       if(!this.markerDeleteMode){
         if(this.waypoint){
-          _this.model.deleteWaypoint(this);
+          _this.model.revertWaypointToRoutePoint(this);
         } else {
           _this.model.addWaypoint(this);
           $('#roadbook').scrollTop(0);

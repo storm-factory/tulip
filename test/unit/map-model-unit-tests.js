@@ -319,3 +319,45 @@ test( 'Can determine if a point is between two other points', function(assert){
   assert.ok(mapModel.checkIsLocationBetweenPoints(1,2,3,4), "it routes the arguemnts correctly to the functions which actually perform the work and returns the result")
   assert.end();
 });
+
+test( 'Can turn a waypoint back into routepoint', function(assert){
+  var mapModel = new model();
+  var paramsSent = true;
+  mapModel.buildVertexIcon = function(){return "vertex icon"};
+  mapModel.deleteWaypointBubble = function(index){paramsSent = paramsSent && index == 12};
+  mapModel.deleteWaypointFromRoadbook = function(index){paramsSent = paramsSent && index == 12};
+  mapModel.updateRoadbookAndWaypoints = function(){paramsSent = paramsSent && true;};
+  var marker = {setIcon: function(icon){this.icon = icon}, icon: "waypoint icon", routePointIndex: 12, waypoint: {id: 12}, bubble: "wpm bubble"}
+
+  mapModel.revertWaypointToRoutePoint(marker);
+
+  assert.equal(marker.waypoint, null, "It sets the markers waypoint to null");
+  assert.equal(marker.waypoint, null, "It sets the markers bubble to null");
+  assert.ok(paramsSent, "It updates all dependencies with the correct params");
+  assert.equal(marker.icon, "vertex icon", "It sets the markers icon to a vertex icon");
+
+  assert.end();
+});
+
+
+test( 'Can delete a point from the route', function(assert){
+  var mapModel = new model();
+  var paramsSent = true;
+  mapModel.decrementRouteVertexIndecies = function(index){paramsSent = paramsSent && index == 6};
+  mapModel.route = {removeAt: function(index){this.array.splice(index,1)}, array: [0,1,2,3,4,5,6,7,8,9,10]}
+  var marker = {setMap: function(map){this.map = map}, map: "i am a map", routePointIndex: 6}
+  mapModel.markers = [0,1,2,3,4,5,marker,7,8,9,10];
+
+
+  mapModel.deletePointFromRoute(marker.routePointIndex);
+
+  assert.equal(marker.map, null, "It sets the markers map to null");
+  assert.equal(mapModel.markers.length, 10, "It removes the marker from the markers array");
+  assert.equal(mapModel.route.array.length, 10, "It removes the route point from the route array");
+  assert.equal(mapModel.markers[6], 7, "It removes the correct marker from the markers array");
+  assert.equal(mapModel.route.array[6], 7, "It removes the correct route point from the route array");
+
+  assert.ok(paramsSent, "It updates all dependencies with the correct params");
+
+  assert.end();
+});

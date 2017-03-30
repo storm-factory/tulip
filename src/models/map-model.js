@@ -171,27 +171,23 @@ class MapModel {
     return this.googleMapsIsLocationOnEdge(checkLatLng, polyline, tolerance)
   }
 
-  deleteWaypoint(marker){
+  revertWaypointToRoutePoint(marker){
     marker.setIcon(this.buildVertexIcon());
     this.deleteWaypointBubble(marker.routePointIndex);
-    app.roadbook.deleteWaypoint(marker.waypoint.id);
+    this.deleteWaypointFromRoadbook(marker.waypoint.id);
     marker.waypoint = null;
-    // TODO replace with this.updateRoadbookAndWaypoints()
-    this.updateAllMarkersWaypointGeoData();
-    this.updateRoadbookTotalDistance();
+    marker.bubble = null;
+    this.updateRoadbookAndWaypoints()
   }
 
   /*
     Removes a route point from the route and decrement the pointIndex of each point on the route after the point being
     removed by one.
   */
-  deletePointFromRoute(marker){
-    var pointIndex = marker.routePointIndex;
-    this.deleteWaypointBubble(pointIndex);
-    this.route.removeAt(pointIndex)
-    this.markers.splice(pointIndex,1);
-    this.decrementRouteVertexIndecies(pointIndex);
-    marker.setMap(null);
+  deletePointFromRoute(index){
+    this.route.removeAt(index)
+    this.markers.splice(index,1)[0].setMap(null);
+    this.decrementRouteVertexIndecies(index);
   }
 
   deleteWaypointBubble(routePointIndex){
@@ -207,9 +203,9 @@ class MapModel {
 
     for(var i = end;i >= start;i--){
       if(this.markers[i].waypoint){
-        this.deleteWaypoint(this.markers[i]);
+        this.revertWaypointToRoutePoint(this.markers[i]);
       }
-      this.deletePointFromRoute(this.markers[i]);
+      this.deletePointFromRoute(this.markers[i].routePointIndex);
     }
   }
 
@@ -345,6 +341,10 @@ class MapModel {
     callback1.call(this)
     callback2.call(this)
     return roadbookWaypoint;
+  }
+
+  deleteWaypointFromRoadbook(wptIndex){
+    app.roadbook.deleteWaypoint(wptIndex);
   }
 
   /*
