@@ -361,3 +361,13 @@ test( 'Can delete a point from the route', function(assert){
 
   assert.end();
 });
+
+test( 'Can delete points between the indecies in the delete queue from the route', function(assert){
+  var mapModel = new model();
+  mapModel.deleteQueue = [];
+  mapModel.markers = []
+  mapModel.revertWaypointToRoutePoint = function(marker){};
+  mapModel.deletePointFromRoute = function(index){};
+
+  assert.end();
+});
