@@ -12,6 +12,7 @@ class Notification{
     if(type){
       var notification = Notification.buildNotification(type);
       this.type = notification.type;
+      this.openrallytype = notification.openrallytype;
       this.bubble = notification.bubble;
       this.modifier = notification.modifier;
       this.modMin = notification.modMin;
@@ -42,6 +43,7 @@ class Notification{
     var types = {
       wpm: {
           type: "wpm",
+		  openrallytype: "wpm",
           fill: '#008CBA',
           bubble: 400,
           modifier: 400,
@@ -51,11 +53,13 @@ class Notification{
       },
       wpe: {
           type: "wpe",
+		  openrallytype: "wpe",
           fill: '#008CBA',
           bubble: 50,
       },
       wps: {
           type: "wps",
+          openrallytype: "wps",
           fill: '#ff4200',
           bubble: 200,
           modifier: 200,
@@ -65,16 +69,19 @@ class Notification{
       },
       dss: {
           type: "dss",
+          openrallytype: "dss",
           fill: '#ffba29',
           bubble: 50,
       },
       fss: {
           type: "fss",
+          openrallytype: "ass",
           fill: '#ffba29',
           bubble: 50,
       },
       dsz: {
           type: "dsz",
+          openrallytype: "dz",
           fill: '#ffba29',
           bubble: 200,
           modifier: 5,
@@ -84,6 +91,7 @@ class Notification{
       },
       fsz: {
           type: "fsz",
+          openrallytype: "fz",
           fill: '#ffba29',
           bubble: 50,
       },

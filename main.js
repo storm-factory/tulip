@@ -77,6 +77,7 @@ function createWindow () {
     submenu: [
       { label: "Import GPX", accelerator: "CmdOrCtrl+I", click: function() { mainWindow.webContents.send('import-gpx'); }},
       { label: "Export GPX", accelerator: "CmdOrCtrl+E", click: function() { mainWindow.webContents.send('export-gpx'); }},
+      { label: "Export OpenRally GPX", click: function() { mainWindow.webContents.send('export-openrally-gpx'); }},
       { label: "Export PDF", accelerator: "CmdOrCtrl+P", click: function() { mainWindow.webContents.send('export-pdf'); }},
     ]
     },
