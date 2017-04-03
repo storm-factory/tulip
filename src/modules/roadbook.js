@@ -75,7 +75,7 @@ var Roadbook = Class({
     // NOTE: For some strange reason, due to canvas rendering, a for loop causes points and waypoints to be skipped, hence for...of in
     for(point of points){
       var latLng = new google.maps.LatLng(point.lat, point.long)
-      var marker = app.mapModel.addRoutePoint(latLng, app.mapPresenter.map)
+      var marker = app.mapModel.addRoutePoint(latLng, app.mapController.map)
       if(point.waypoint){
         app.mapModel.setMarkerIconToWaypointIcon(marker);
         point.routePointIndex = marker.routePointIndex; //refactor to persist this
@@ -89,8 +89,8 @@ var Roadbook = Class({
 
     var latLng = new google.maps.LatLng(points[0].lat, points[0].long);
 
-    app.mapPresenter.map.setCenter(latLng);
-    app.mapPresenter.map.setZoom(14);
+    app.mapController.map.setCenter(latLng);
+    app.mapController.map.setZoom(14);
   },
 
   appendGlyphToNoteTextEditor: function(image){
@@ -202,9 +202,9 @@ var Roadbook = Class({
       this.waypointShowHeading(waypoint.showHeading());
       // app.glyphControls.bindNoteGlyphResizable();
       var latLng = new google.maps.LatLng(waypoint.lat(), waypoint.lng());
-      app.mapPresenter.setMapCenter(latLng);
-      if(app.mapPresenter.getMapZoom() < 18){
-        app.mapPresenter.setMapZoom(18);
+      app.mapController.setMapCenter(latLng);
+      if(app.mapController.getMapZoom() < 18){
+        app.mapController.setMapZoom(18);
       }
 
       $('#roadbook-waypoints').children().hide();
@@ -277,7 +277,7 @@ var Roadbook = Class({
       filePath: this.filePath,
       waypoints: [],
     }
-    points = app.mapModel.routeMarkers
+    points = app.mapModel.markers
     // TODO fold waypoint into object instead of boolean so we aren't saving nulls
     for(i = 0; i < points.length; i++){
         var waypointJSON = {
@@ -311,7 +311,7 @@ var Roadbook = Class({
       filePath: this.filePath,
       waypoints: [],
     }
-    points = app.mapModel.routeMarkers
+    points = app.mapModel.markers
     // TODO fold waypoint into object instead of boolean so we aren't saving nulls
     for(i = 0; i < points.length; i++){
       if(points[i].waypoint){

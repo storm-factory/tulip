@@ -182,7 +182,7 @@ var App = Class({
 
   startLoading: function(){
     $('#loading').show();
-    google.maps.event.addListener(this.mapPresenter.map, 'idle', this.stopLoading); //TODO pass to map model with callback
+    google.maps.event.addListener(this.mapController.map, 'idle', this.stopLoading); //TODO pass to map controller with callback
   },
 
   stopLoading: function(){
@@ -191,16 +191,17 @@ var App = Class({
 
   initMap: function(){
     this.mapModel = new MapModel();
-    this.mapPresenter = new MapPresenter(this.mapModel);
+    this.mapController = new MapController(this.mapModel);
 
-    // this.map = this.mapPresenter.map;
-    // new MapOptimizer();
+    // this.map = this.mapController.map;
+    // new MapOptimizer(); TODO move to map controller
     // this.placeMapAttribution();
   },
 
   /*
     Get the Google Maps attribution elements and attaches them to the content container instead of the map container so that
     we can rotate the map and still appropriately display attribution
+    TODO move to map controller
   */
   placeMapAttribution: function(){
 
@@ -386,7 +387,7 @@ var App = Class({
         }
         if(_this.pointDeleteMode == true){
           // TODO move this to the map model
-          var marker = _this.mapModel.routeMarkers[_this.mapModel.deleteQueue.pop()];
+          var marker = _this.mapModel.markers[_this.mapModel.deleteQueue.pop()];
           _this.mapModel.returnPointToNaturalColor(marker);
           _this.pointDeleteMode = false
         }
@@ -439,11 +440,11 @@ var App = Class({
     });
 
     this.ipc.on('zoom-in', function(event, arg){
-      _this.mapPresenter.zin();
+      _this.mapController.zin();
     });
 
     this.ipc.on('zoom-out', function(event, arg){
-      _this.mapPresenter.zout();
+      _this.mapController.zout();
     });
 
     this.ipc.on('add-glyph', function(event, arg){

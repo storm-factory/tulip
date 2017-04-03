@@ -5,7 +5,7 @@ test( 'Makes the first point added to the route a waypoint', function( assert ) 
   var mapModel = new model();
   var waypoint;
   var markers = ["first marker", "second marker"];
-  mapModel.addWaypointFromUI = function(marker){waypoint =  marker;};
+  mapModel.addWaypoint = function(marker){waypoint =  marker;};
   mapModel.makeFirstMarkerWaypoint(markers);
   assert.equal(waypoint,"first marker", "It makes the first marker in the markers array a waypoint")
 
@@ -103,7 +103,7 @@ test( 'Adds a waypoint marker to the markers array', function(assert){
   mapModel.updateRoadbookAndWaypoints = function(){callbacksSent = true ;};
   mapModel.setMarkerIconToWaypointIcon = function(marker){marker.icon = "waypoint icon"};
 
-  mapModel.addWaypointFromUI(marker);
+  mapModel.addWaypoint(marker);
 
   assert.equal(marker.icon, 'waypoint icon', "It sets the marker icon to a waypoint icon");
   assert.equal(marker.waypoint, 'i am a roadbook waypoint', "It adds a reference to the corresponding roadbook waypoint");

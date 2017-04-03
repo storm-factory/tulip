@@ -7,7 +7,7 @@
 */
 // TODO This is a module that only interfaces with the app, refactor to make that the only coupling
 class MapOptimizer{
-  constructor(presenter,model){
+  constructor(controller,model){
     var _this = this;
     function showMarkers(){
       _this.showMarkers();
@@ -25,7 +25,7 @@ class MapOptimizer{
 
   showMarkersInViewport() {
     var bounds = app.map.getBounds();
-    var markers = app.mapModel.routeMarkers;
+    var markers = app.mapModel.markers;
     var map = app.map;
     for(var i=0;i<markers.length;i++){
       if(bounds.contains(markers[i].getPosition())){
@@ -39,7 +39,7 @@ class MapOptimizer{
   }
 
   showOnlyWaypointsAtZoom(){
-    var markers = app.mapModel.routeMarkers;
+    var markers = app.mapModel.markers;
     var map = app.map;
 
     for(var i=0;i<markers.length;i++){

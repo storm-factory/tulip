@@ -13,7 +13,7 @@ class MapModel {
     this.route;
     this.markers=[];
     this.deleteQueue = [];
-    this.presenter;
+    this.controller;
   }
 
   /*
@@ -29,7 +29,7 @@ class MapModel {
         var latLng = this.googleMapsNewLatLng(points[j].lat, points[j].lng)
         this.addRoutePoint(latLng,map);
         if(j == points.length-1){
-          this.addWaypointFromUI(this.getLastItemInArray(this.markers))
+          this.addWaypoint(this.getLastItemInArray(this.markers))
         }
       }
     }
@@ -62,7 +62,7 @@ class MapModel {
     this.markers.push(marker);
   }
 
-  addWaypointFromUI(marker){
+  addWaypoint(marker){
     this.setMarkerIconToWaypointIcon(marker);
     marker.waypoint = this.addWaypointToRoadbook(this.getWaypointGeodata(marker, this.route, this.markers),this.updateRoadbookAndWaypoints);
   }
@@ -169,15 +169,6 @@ class MapModel {
     return this.googleMapsIsLocationOnEdge(checkLatLng, polyline, tolerance)
   }
 
-  revertWaypointToRoutePoint(marker){
-    marker.setIcon(this.buildVertexIcon());
-    this.deleteWaypointBubble(marker.routePointIndex);
-    this.deleteWaypointFromRoadbook(marker.waypoint.id);
-    marker.waypoint = null;
-    marker.bubble = null;
-    this.updateRoadbookAndWaypoints()
-  }
-
   /*
     Removes a route point from the route and decrement the pointIndex of each point on the route after the point being
     removed by one.
@@ -277,7 +268,16 @@ class MapModel {
 
   makeFirstMarkerWaypoint(markers){
     var marker = markers[0];
-    this.addWaypointFromUI(marker);
+    this.addWaypoint(marker);
+  }
+
+  revertWaypointToRoutePoint(marker){
+    marker.setIcon(this.buildVertexIcon());
+    this.deleteWaypointBubble(marker.routePointIndex);
+    this.deleteWaypointFromRoadbook(marker.waypoint.id);
+    marker.waypoint = null;
+    marker.bubble = null;
+    this.updateRoadbookAndWaypoints()
   }
 
   updateAllMarkersWaypointGeoData() {
@@ -295,10 +295,10 @@ class MapModel {
   }
 
   /*
-    presenter interface
+    controller interface
   */
-  exitPresenterDeleteMode(){
-    this.presenter.exitDeleteMode();
+  exitControllerDeleteMode(){
+    this.controller.exitDeleteMode();
   }
 
   /*
@@ -421,7 +421,7 @@ class MapModel {
                       draggable: true,
                       routePointIndex: this.route.length > 0 ? this.route.indexOf(latLng) : 0,
                     });
-    this.presenter.bindToMapMarker(marker);
+    this.controller.bindToMapMarker(marker);
     return marker;
   }
 

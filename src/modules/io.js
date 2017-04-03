@@ -16,23 +16,20 @@ var Io = Class({
     this.importGPXWaypoints($.makeArray(this.gpx.find( "wpt" )));
 
     // TODO abstract this to the app as roadbookHasWaypoints
-    if(app.mapModel.routeMarkers[0].waypoint == null){
-      this.addWaypoint(app.mapModel.routeMarkers[0]);
+    if(app.mapModel.markers[0].waypoint == null){
+      this.addWaypoint(app.mapModel.markers[0]);
     }
     // TODO abstract this to the app
-    if(app.mapModel.routeMarkers[(app.mapModel.routeMarkers.length - 1)].waypoint == null){
-      this.addWaypoint(app.mapModel.routeMarkers[(app.mapModel.routeMarkers.length - 1)]);
+    if(app.mapModel.markers[(app.mapModel.markers.length - 1)].waypoint == null){
+      this.addWaypoint(app.mapModel.markers[(app.mapModel.markers.length - 1)]);
     }
-    // TODO abstract this to the app
-    app.mapModel.updateRoute();
-    // TODO abstract this to the app
-    app.roadbook.updateTotalDistance();
+    app.mapModel.updateRoadbookAndWaypoints();
   },
 
   addWaypoint: function(marker){
-    var geoData = app.mapModel.addWaypoint(marker);
-    // TODO pass in roadbook
-    marker.waypoint =  app.roadbook.addWaypoint(geoData);
+    if(marker){
+      app.mapModel.addWaypoint(marker);
+    }
   },
 
   exportGPX: function(){
@@ -41,7 +38,7 @@ var Io = Class({
     var waypoints = "";
     var trackPoints = "<trk><trkseg>";
     // TODO abstract this to the app
-    var points = app.mapModel.routeMarkers;
+    var points = app.mapModel.markers;
     var wptCount = 1;
     for(var i=0;i<points.length;i++){
       if(points[i].waypoint !== undefined){
@@ -98,12 +95,12 @@ var Io = Class({
 
         var latLng = new google.maps.LatLng(tracks[i].lat, tracks[i].lng);
         // TODO abstract this to the app
-        app.mapModel.pushRoutePoint(latLng); //this returns a point
+        app.mapController.addRoutePoint(latLng);
       }
     }
     var latLng = new google.maps.LatLng(tracks[0].lat, tracks[0].lng);
-    app.mapPresenter.setMapCenter(latLng);
-    app.mapPresenter.setMapZoom(14);
+    app.mapController.setMapCenter(latLng);
+    app.mapController.setMapZoom(14);
   },
 
 
@@ -115,12 +112,11 @@ var Io = Class({
 
         if(index == -1){
           var latLng = new google.maps.LatLng($(waypoint).attr('lat'), $(waypoint).attr('lon'));
-          // TODO abstract this to the map controller
-          index = app.mapModel.insertPointOnEdge(latLng, app.mapModel.routePoints.getArray());
+          index = app.mapController.insertLatLngIntoRoute(latLng);
         }
 
         if(index !== undefined){
-          this.addWaypoint(app.mapModel.routeMarkers[index]);
+          this.addWaypoint(app.mapModel.markers[index]);
         }
       }
     }
