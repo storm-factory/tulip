@@ -96,7 +96,7 @@ class MapPresenter{
 
   orientMap(){
     this.lockedBeforeWaypointEdit = !this.mapUnlocked;
-    var bearing = this.model.getWaypointBearing();
+    var bearing = this.model.computeMapOrientationAngle();
     if(bearing){
       if(this.rotation == 0){
         this.toggleMapLock();

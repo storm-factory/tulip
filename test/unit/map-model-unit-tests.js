@@ -371,3 +371,80 @@ test( 'Can delete points between the indecies in the delete queue from the route
 
   assert.end();
 });
+
+test( 'It can decrement all index references in the marker array when given an index to start at', function(assert){
+  var mapModel = new model();
+  mapModel.markers = [{routePointIndex: 1},
+                      {routePointIndex: 2},
+                      {routePointIndex: 3},
+                      {routePointIndex: 4},
+                      {routePointIndex: 5},
+                    ];
+  mapModel.decrementRouteVertexIndecies(2);
+  var result = "";
+  for(var i = 0;i < mapModel.markers.length;i++) {
+    result += mapModel.markers[i].routePointIndex;
+  }
+  assert.equal(result, "12234", "It decrements each route index after the given index by one")
+  assert.end();
+});
+
+test( 'It can increment all index references in the marker array when given an index to start at', function(assert){
+  var mapModel = new model();
+  mapModel.markers = [{routePointIndex: 1},
+                      {routePointIndex: 2},
+                      {routePointIndex: 3},
+                      {routePointIndex: 4},
+                      {routePointIndex: 5},
+                    ];
+  mapModel.incrementRouteVertexIndecies(2);
+  var result = "";
+  for(var i = 0;i < mapModel.markers.length;i++) {
+    result += mapModel.markers[i].routePointIndex;
+  }
+  assert.equal(result, "12356", "It increments each route index after the given index by one")
+  assert.end();
+});
+
+test( 'It can get the edge tolerance for the map at a given zoom', function(assert){
+  var mapModel = new model();
+  var map = {getZoom: function(){return this.zoom}, zoom: 11};
+  var result = mapModel.getEdgeTolerance(map);
+  assert.equal(result, 0.005116065460197068, "It returns the edge tolerance for the map at a given zoo")
+  assert.end();
+});
+
+test( 'It can get the previous waypoint in the markers arrays routePointIndex for a given marker', function(assert){
+  var mapModel = new model();
+  mapModel.markers = [{routePointIndex: 1, waypoint: true},
+                      {routePointIndex: 2},
+                      {routePointIndex: 3, waypoint: true},
+                      {routePointIndex: 4},
+                      {routePointIndex: 5, waypoint: true},
+                    ];
+  var result = mapModel.getPrevWaypointRoutePointIndex(4, mapModel.markers);
+  assert.equal(result, 2, "It returns route point index of the previous marker which is  awaypoint in the markers array")
+  assert.end();
+});
+
+test( 'It can get the waypoints bearing to orient the map with', function(assert){
+  var mapModel = new model();
+  mapModel.route = {getAt: function(index){return this.array[index];}, array: [11,14,6,20]}
+  mapModel.getRoadBookWaypointBeingEditedRoutePointIndex = function(){return 2;};
+  mapModel.googleMapsComputeHeading = function(num1, num2){ return num1 + num2;};
+  var result = mapModel.computeMapOrientationAngle();
+  assert.equal(result, 20, "It returns angle to orient the map with")
+  assert.end();
+});
+
+// test( 'It can insert a latLng between points on the route', function(assert){
+//   var mapModel = new model();
+//   mapModel.route = {getAt: function(index){return this.array[index];}, array: [11,14,6,20]}
+//   mapModel.computeRoutePointInsertionIndex = function(num, map){return (typeof num == "number" && map == "a map" ? num : null);};
+//   mapModel.insertRoutePointAtIndex = function(num1, num2, map){ return (num1 == num2 && map == "a map");};
+//
+//   var result = mapModel.insertRoutePointBetweenPoints(2, "a map");
+//
+//   assert.ok(result, "It returns a marker given the correct paramters")
+//   assert.end();
+// });

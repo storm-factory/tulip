@@ -147,6 +147,13 @@ class MapModel {
     return relativeAngle;
   }
 
+  computeMapOrientationAngle(){
+    var i = this.getRoadBookWaypointBeingEditedRoutePointIndex();
+    if(i){
+      return this.googleMapsComputeHeading(this.route.getAt(i-1),this.route.getAt(i))
+    }
+  }
+
   /*
     Iterate through the point pairs on the segment
     determine which edge the latLng falls upon
@@ -213,9 +220,9 @@ class MapModel {
     decrements the route vertex index of each point along the route after the passed in index
   */
   decrementRouteVertexIndecies(startIndex) {
-    for(i = startIndex; i < this.markers.length; i++){
-      var point = this.markers[i];
-      point.routePointIndex = point.routePointIndex - 1;
+    for(var i = startIndex; i < this.markers.length; i++){
+      var marker = this.markers[i];
+      marker.routePointIndex = marker.routePointIndex - 1;
     }
   }
 
@@ -255,25 +262,19 @@ class MapModel {
     }
     return index;
   }
-  // used for map orientation. make this fact more obvious
-  getWaypointBearing(){
-    var i = app.roadbook.currentlyEditingWaypoint.routePointIndex; //TODO inject this dependency and wrap it in a function
-    if(i){
-      return this.googleMapsComputeHeading(this.route.getAt(i-1),this.route.getAt(i))
-    }
-  }
 
   /*
     increments the route vertex index of each point along the route after the passed in index
   */
   incrementRouteVertexIndecies(startIndex) {
     startIndex++;
-    for(i = startIndex; i < this.markers.length; i++){
+    for(var i = startIndex; i < this.markers.length; i++){
       var marker = this.markers[i];
       marker.routePointIndex = marker.routePointIndex + 1;
     }
   }
 
+  // TODO resume testing here and pass in the route and rename better
   insertRoutePointBetweenPoints(latLng,map){
     var index = this.computeRoutePointInsertionIndex(latLng,this.route.getArray(),map);
     var marker = this.insertRoutePointAtIndex(latLng,index,map);
@@ -345,6 +346,10 @@ class MapModel {
 
   deleteWaypointFromRoadbook(wptIndex){
     app.roadbook.deleteWaypoint(wptIndex);
+  }
+
+  getRoadBookWaypointBeingEditedRoutePointIndex(){
+    return app.roadbook.currentlyEditingWaypoint.routePointIndex;
   }
 
   /*
