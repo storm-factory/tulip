@@ -88,20 +88,20 @@ var App = Class({
       ]},function (fileNames) {
       var fs = require('fs');
       if (fileNames === undefined) return;
-        _this.startLoading();
-        //TODO this needs to be passed to create when choice is added
-        //we need to figure out how to watch a file while it's being edited so if it's moved it gets saved to the right place ***fs.watch***
-        var fileName = fileNames[0];
-        _this.fs.readFile(fileName, 'utf-8', function (err, data) {
-          var json = JSON.parse(data);
-          // We need to ask whether they want to open a new roadbook or append an existing one to the currently
-          // being edited RB
-          _this.roadbook.appendRouteFromJSON(json,fileName); //TODO this needs to only pass json once choice is added
-        });
-        $('#toggle-roadbook').click();
-        $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
-        $('#print-roadbook').removeClass('disabled')
-        $('#export-gpx').removeClass('disabled')
+      // _this.startLoading();
+      //TODO this needs to be passed to create when choice is added
+      //we need to figure out how to watch a file while it's being edited so if it's moved it gets saved to the right place ***fs.watch***
+      var fileName = fileNames[0];
+      _this.fs.readFile(fileName, 'utf-8', function (err, data) {
+        var json = JSON.parse(data);
+        // We need to ask whether they want to open a new roadbook or append an existing one to the currently
+        // being edited RB
+        _this.roadbook.appendRouteFromJSON(json,fileName); //TODO this needs to only pass json once choice is added
+      });
+      $('#toggle-roadbook').click();
+      $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
+      $('#print-roadbook').removeClass('disabled')
+      $('#export-gpx').removeClass('disabled')
     });
   },
 

@@ -38,9 +38,10 @@ var Roadbook = Class({
   */
 
   addWaypoint: function(wptData){
+    // console.log(wptData);
     this.finishWaypointEdit();
     //determine index of waypoint based on distance from start
-    var index = this.determineWaypointInsertionIndex(wptData.distances.kmFromStart);
+    var index = this.determineWaypointInsertionIndex(wptData.kmFromStart);
     /*
       if a waypoint is inserted in between two waypoints,
        check the exit track of the one before it
@@ -75,19 +76,11 @@ var Roadbook = Class({
     // NOTE: For some strange reason, due to canvas rendering, a for loop causes points and waypoints to be skipped, hence for...of in
     for(point of points){
       var latLng = new google.maps.LatLng(point.lat, point.long)
-      var routePoint = app.mapModel.pushRoutePoint(latLng); //this returns a point
+      var marker = app.mapModel.addRoutePoint(latLng, app.mapPresenter.map)
       if(point.waypoint){
-        var opts = app.mapModel.addWaypoint(routePoint); //this returns distance opts but if we already have that saved then why do we care?
-        opts.tulipJson = point.tulipJson;
-        opts.entryTrackType = point.entryTrackType
-        opts.exitTrackType = point.exitTrackType
-        opts.angles.heading = point.heading;
-        opts.showHeading = point.showHeading;
-        opts.angles.relativeAngle = undefined;
-
-        opts.notes = point.notes;
-        opts.notification = point.notification;
-        routePoint.waypoint =  this.addWaypoint(opts);
+        app.mapModel.setMarkerIconToWaypointIcon(marker);
+        point.routePointIndex = marker.routePointIndex;
+        marker.waypoint =  this.addWaypoint(point);
       }
     }
     // NOTE this is less than ideal
@@ -96,8 +89,9 @@ var Roadbook = Class({
     }
 
     var latLng = new google.maps.LatLng(points[0].lat, points[0].long);
-    app.mapModel.map.setCenter(latLng);
-    app.mapModel.map.setZoom(14);
+
+    app.mapPresenter.map.setCenter(latLng);
+    app.mapPresenter.map.setZoom(14);
   },
 
   appendGlyphToNoteTextEditor: function(image){

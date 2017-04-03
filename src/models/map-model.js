@@ -20,31 +20,20 @@ class MapModel {
     takes a response from google maps directions API and appends it to the route
     NOTE needs refactored to be more SOLID and testable
   */
-  appendGoogleDirectionsToMap(data,map){
-    var steps = data.routes[0].legs[0].steps
+  appendGoogleDirectionsToMap(steps,map){
     for(var i=0;i<steps.length;i++){
       var stepPoints = this.googleMapsDecodePath(steps[i].polyline.points);
-      // NOTE if we change the simplified lib and also the io module to just use google maps LatLng objects instead of literals we could skip this.
-      var points = []
-      for(var k=0;k<stepPoints.length;k++){
-        var point = {lat: stepPoints[k].lat(), lng: stepPoints[k].lng()}
-        points.push(point);
-      }
-      var simplify = new Simplify();
-      points = simplify.simplifyDouglasPeucker(points, 7e-9);
+      var points = this.simplifyDouglasPeucker(stepPoints);
 
       for (var j=1;j<points.length;j++){
-        var latLng = new google.maps.LatLng(points[j].lat, points[j].lng);
+        var latLng = this.googleMapsNewLatLng(points[j].lat, points[j].lng)
         this.addRoutePoint(latLng,map);
         if(j == points.length-1){
-          this.addWaypoint(this.getLastItemInArray(this.markers))
+          this.addWaypointFromUI(this.getLastItemInArray(this.markers))
         }
-
       }
     }
-    // TODO replace with this.updateRoadbookAndWaypoints()
-    this.updateAllMarkersWaypointGeoData();
-    this.updateRoadbookTotalDistance();
+    this.updateRoadbookAndWaypoints();
   }
 
   /*
@@ -57,10 +46,10 @@ class MapModel {
   addRoutePoint(latLng,map){
     // TODO could we alter the latLng prototype here?
     this.addLatLngToRouteMvcArray(latLng);
-    this.addMarkerToMarkersArray(this.buildRouteMarker(latLng, map));
-    // TODO replace with this.updateRoadbookAndWaypoints()
-    this.updateAllMarkersWaypointGeoData();
-    this.updateRoadbookTotalDistance();
+    var marker = this.buildRouteMarker(latLng, map)
+    this.addMarkerToMarkersArray(marker);
+    this.updateRoadbookAndWaypoints();
+    return marker;
   }
 
   /*
@@ -71,13 +60,12 @@ class MapModel {
   }
 
   addMarkerToMarkersArray(marker){
-    this.makeFirstMarkerWaypoint(marker, this.addWaypoint);
     this.markers.push(marker);
   }
 
-  addWaypoint(marker){
-    marker.setIcon(this.buildWaypointIcon());
-    marker.waypoint = this.addWaypointToRoadbook(this.getWaypointGeodata(marker, this.route, this.markers),this.updateAllMarkersWaypointGeoData,this.updateRoadbookTotalDistance);
+  addWaypointFromUI(marker){
+    this.setMarkerIconToWaypointIcon(marker);
+    marker.waypoint = this.addWaypointToRoadbook(this.getWaypointGeodata(marker, this.route, this.markers),this.updateRoadbookAndWaypoints);
   }
 
   addWaypointBubble(index,radius,fill,map) {
@@ -103,6 +91,10 @@ class MapModel {
 
   setMarkerIconToDeleteQueueIcon(marker){
     marker.setIcon(this.buildDeleteQueueIcon());
+  }
+
+  setMarkerIconToWaypointIcon(marker){
+    marker.setIcon(this.buildWaypointIcon());
   }
 
   computeDistanceOnRouteBetweenPoints(beginIndex, endIndex, route){
@@ -241,14 +233,10 @@ class MapModel {
       lat: marker.getPosition().lat(),
       lng: marker.getPosition().lng(),
       routePointIndex: marker.routePointIndex,
-      distances: {
-                    kmFromStart: this.computeDistanceOnRouteBetweenPoints(0,marker.routePointIndex, route.getArray()), //TODO pass in route?
-                    kmFromPrev: this.computeDistanceOnRouteBetweenPoints(prevWaypointIndex, marker.routePointIndex, route.getArray()) //TODO pass in route?
-                  },
-      angles: {
-        heading: heading,
-        relativeAngle: relativeAngle
-      }
+      kmFromStart: this.computeDistanceOnRouteBetweenPoints(0,marker.routePointIndex, route.getArray()), //TODO pass in route?
+      kmFromPrev: this.computeDistanceOnRouteBetweenPoints(prevWaypointIndex, marker.routePointIndex, route.getArray()), //TODO pass in route?
+      heading: heading,
+      relativeAngle: relativeAngle
     }
   }
 
@@ -288,15 +276,9 @@ class MapModel {
     return marker;
   }
 
-  // TODO make this get geoData like everyone else, NOTE will require modifying those functions
-  makeFirstMarkerWaypoint(marker, callback){
-    if(this.route.length == 1) {
-      marker.kmFromStart = 0;
-      marker.kmFromPrev = 0;
-      if(typeof callback === "function"){
-        callback.call(this,marker);
-      }
-    }
+  makeFirstMarkerWaypoint(markers){
+    var marker = markers[0];
+    this.addWaypointFromUI(marker);
   }
 
   updateAllMarkersWaypointGeoData() {
@@ -336,10 +318,9 @@ class MapModel {
     app.roadbook.updateTotalDistance(); //NOTE this shouldn't be in this model
   }
 
-  addWaypointToRoadbook(geoDataJSON, callback1, callback2){
+  addWaypointToRoadbook(geoDataJSON, callback){
     var roadbookWaypoint = app.roadbook.addWaypoint(geoDataJSON);
-    callback1.call(this)
-    callback2.call(this)
+    callback.call(this)
     return roadbookWaypoint;
   }
 
@@ -367,7 +348,7 @@ class MapModel {
     var _this = this;
     $.get(this.buildDirectionsRequestURL(this.getLastItemInArray(this.route.getArray()),latLng,api_keys.google_directions),function(data){
       if(data.status == "OK"){
-        callback.call(_this,data,map);
+        callback.call(_this,data.routes[0].legs[0].steps,map);
       }
     });
   }
@@ -497,8 +478,26 @@ class MapModel {
     return new google.maps.Polyline({path: pointsArray});
   }
 
-};
+  googleMapsNewLatLng(lat,lng){
+    return new google.maps.LatLng(lat, lng);
+  }
 
+  /*
+    Simplify
+  */
+
+  simplifyDouglasPeucker(steps){
+    // TODO modify IO module and Simplify lib to use GM latLng object and we can get rid of this loop
+    var latLngs = []
+    for(var k=0;k<steps.length;k++){
+      var latLng = {lat: steps[k].lat(), lng: steps[k].lng()}
+      latLngs.push(latLng);
+    }
+    var simplify = new Simplify();
+    return simplify.simplifyDouglasPeucker(latLngs, 7e-9);
+  }
+
+};
 
 /*
   Node exports for test suite

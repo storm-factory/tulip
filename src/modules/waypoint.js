@@ -20,9 +20,9 @@ var Waypoint = Class({
   */
   create: function(roadbook, wptJson){
     // can all this knockout stuff be at the controller level then model data is updated when controller starts up or shuts down
-    this.kmFromStart    = ko.observable(wptJson.distances.kmFromStart);
-    this.kmFromPrev     = ko.observable(wptJson.distances.kmFromPrev);
-    this.exactHeading   = ko.observable(wptJson.angles.heading);
+    this.kmFromStart    = ko.observable(wptJson.kmFromStart);
+    this.kmFromPrev     = ko.observable(wptJson.kmFromPrev);
+    this.exactHeading   = ko.observable(wptJson.heading);
     this.lat            = ko.observable(wptJson.lat);
     this.lng            = ko.observable(wptJson.lng);
 
@@ -48,7 +48,7 @@ var Waypoint = Class({
 
 
     var _this = this;
-    var angle = wptJson.angles.relativeAngle;
+    var angle = wptJson.relativeAngle;
     var json = wptJson.tulipJson;
     var trackTypes = {entryTrackType: this.entryTrackType, exitTrackType: this.exitTrackType};
     ko.bindingHandlers.waypointCanvasRendered = {
@@ -121,13 +121,17 @@ var Waypoint = Class({
   },
 
   updateWaypoint: function (geoData,routePointIndex){
-    if(geoData.distances){
-      this.kmFromStart(geoData.distances.kmFromStart);
-      this.kmFromPrev(geoData.distances.kmFromPrev);
+    if(geoData.kmFromStart){
+      this.kmFromStart(geoData.kmFromStart);
     }
-    if(geoData.angles){
-      this.exactHeading(geoData.angles.heading);
-      this.tulip.changeExitAngle(geoData.angles.relativeAngle, this.exitTrackType);
+    if(geoData.kmFromPrev){
+      this.kmFromPrev(geoData.kmFromPrev);
+    }
+    if(geoData.heading){
+      this.exactHeading(geoData.heading);
+    }
+    if(geoData.relativeAngle){
+      this.tulip.changeExitAngle(geoData.relativeAngle, this.exitTrackType);
     }
     if(geoData.lat && geoData.lng){
       this.lat(geoData.lat);

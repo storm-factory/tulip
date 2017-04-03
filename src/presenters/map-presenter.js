@@ -149,6 +149,9 @@ class MapPresenter{
     this.map.addListener('click', function(evt){
       if(_this.mapUnlocked && !this.markerDeleteMode){
         _this.model.addRoutePoint(evt.latLng,_this.map);
+        if(_this.model.markers.length == 1){
+          _this.model.makeFirstMarkerWaypoint(_this.model.markers);
+        }
       }
     });
 
@@ -197,7 +200,7 @@ class MapPresenter{
         if(this.waypoint){
           _this.model.revertWaypointToRoutePoint(this);
         } else {
-          _this.model.addWaypoint(this);
+          _this.model.addWaypointFromUI(this);
           $('#roadbook').scrollTop(0);
           $('#roadbook').scrollTop(($(this.waypoint.element).offset().top-100));
         }
@@ -215,8 +218,7 @@ class MapPresenter{
     });
 
     google.maps.event.addListener(marker, 'dragend', function(evt) {
-      _this.model.updateAllMarkersWaypointGeoData();
-      _this.model.updateRoadbookTotalDistance();
+      _this.model.updateRoadbookAndWaypoints();
     });
 
     /*
