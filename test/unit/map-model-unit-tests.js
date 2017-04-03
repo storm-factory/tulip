@@ -302,11 +302,11 @@ test( 'Can determine the index in the route array to insert an edge point at', f
     return (startLatLng < checkLatLng && checkLatLng < endLatLng && tolerance >= 2);
   };
 
-  var index = mapModel.computeRoutePointInsertionIndex(latLng,latLngArray,"i am a map");
+  var index = mapModel.computeInsertionIndex(latLng,latLngArray,"i am a map");
   assert.equal(index, 4, "It returns the correct index between two points in the array")
 
   mapModel.getEdgeTolerance = function(map){ return map == "i am a map" ? 1 : null;};
-  var index = mapModel.computeRoutePointInsertionIndex(latLng,latLngArray,"i am a map");
+  var index = mapModel.computeInsertionIndex(latLng,latLngArray,"i am a map");
   assert.equal(index, 4, "It will increase the tolerance if the index is not found until it returns the correct index between two points in the array")
 
   assert.end();
@@ -437,14 +437,43 @@ test( 'It can get the waypoints bearing to orient the map with', function(assert
   assert.end();
 });
 
-// test( 'It can insert a latLng between points on the route', function(assert){
-//   var mapModel = new model();
-//   mapModel.route = {getAt: function(index){return this.array[index];}, array: [11,14,6,20]}
-//   mapModel.computeRoutePointInsertionIndex = function(num, map){return (typeof num == "number" && map == "a map" ? num : null);};
-//   mapModel.insertRoutePointAtIndex = function(num1, num2, map){ return (num1 == num2 && map == "a map");};
-//
-//   var result = mapModel.insertRoutePointBetweenPoints(2, "a map");
-//
-//   assert.ok(result, "It returns a marker given the correct paramters")
-//   assert.end();
-// });
+test( 'It can insert a latLng between points on the route', function(assert){
+  var mapModel = new model();
+  mapModel.route = {getArray: function(){return this.array;}, array: [11,14,6,20]}
+  mapModel.computeInsertionIndex = function(num, array, map){return (typeof num == "number" && map == "a map" && JSON.stringify(array) == "[11,14,6,20]" ? num : null);};
+  mapModel.insertLatLngAtIndex = function(num1, num2, map){ return (num1 == num2 && map == "a map");};
+
+  var result = mapModel.insertLatLngIntoRoute(2, "a map");
+
+  assert.ok(result, "It the result of the two child functions given the correct paramters")
+  assert.end();
+});
+
+test( 'It can insert a latLng into the route at a given index', function(assert){
+  var mapModel = new model();
+  var incremented;
+  mapModel.route = {insertAt: function(index, num){this.array.splice(index,0,num)}, array: [11,14,6,20]}
+  mapModel.markers = [11,14,6,20];
+  mapModel.buildRouteMarker = function(num, map){return (typeof num == "number" && map == "a map" ? num : null);};
+  mapModel.incrementRouteVertexIndecies = function(num){ incremented = (typeof num == "number" ? num : null);};
+
+  var result = mapModel.insertLatLngAtIndex(100, 2, "a map");
+
+  assert.ok(incremented, "It makes a call to increment the indecies of points following the given index")
+  assert.equal(JSON.stringify(mapModel.markers), "[11,14,100,6,20]", "It inserts the latLng into the markers array at the given index")
+  assert.equal(JSON.stringify(mapModel.route.array), "[11,14,100,6,20]", "It inserts the latLng into the route array at the given index")
+  assert.end();
+});
+
+test( 'It will update the position of a given maker and the route polyline vertex it covers', function(assert){
+  var mapModel = new model();
+  mapModel.route = [1,2,3,4,5]
+  var marker = {routePointIndex: 2, position: 3};
+  mapModel.googleMapsMarkerSetPosition = function(marker, num){marker.position = num};
+  mapModel.googleMapsMvcArraySetPositionAtIndex = function(route, index, position){route[index] = position;};
+
+  mapModel.updateMarkerPosition(marker, 10);
+  assert.equal(marker.position, 10, "It updates the marker position");
+  assert.equal(JSON.stringify(mapModel.route), "[1,2,10,4,5]", "It updates the route polyline");
+  assert.end();
+});

@@ -159,7 +159,7 @@ class MapModel {
     determine which edge the latLng falls upon
     and insert a new point into route at the index of the edge point
   */
-  computeRoutePointInsertionIndex(latLng,latLngArray,map){
+  computeInsertionIndex(latLng,latLngArray,map){
     var tolerance = this.getEdgeTolerance(map); //this could be passed in
     for(var i = 1; i < latLngArray.length; i++ ){
       if(this.checkIsLocationBetweenPoints(latLngArray[i-1], latLngArray[i], latLng, tolerance)) {
@@ -274,14 +274,13 @@ class MapModel {
     }
   }
 
-  // TODO resume testing here and pass in the route and rename better
-  insertRoutePointBetweenPoints(latLng,map){
-    var index = this.computeRoutePointInsertionIndex(latLng,this.route.getArray(),map);
-    var marker = this.insertRoutePointAtIndex(latLng,index,map);
+  insertLatLngIntoRoute(latLng,map){
+    var index = this.computeInsertionIndex(latLng,this.route.getArray(),map);
+    var marker = this.insertLatLngAtIndex(latLng,index,map);
     return marker;
   }
 
-  insertRoutePointAtIndex(latLng, index, map){
+  insertLatLngAtIndex(latLng, index, map){
     this.route.insertAt(index,latLng)
     var marker = this.buildRouteMarker(latLng, map);
     this.markers.splice(index,0,marker);

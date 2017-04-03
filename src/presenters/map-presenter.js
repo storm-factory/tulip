@@ -274,7 +274,7 @@ class MapPresenter{
         */
         google.maps.event.addListener(handle, 'mousedown', function(evt){
           dragging = true;
-          var marker = _this.model.insertRoutePointBetweenPoints(evt.latLng, _this.map);
+          var marker = _this.model.insertLatLngIntoRoute(evt.latLng, _this.map);
           /*
             Add listeners to move the new route point and the route to the mouse drag position of the handle
           */
