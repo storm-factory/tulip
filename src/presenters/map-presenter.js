@@ -149,6 +149,7 @@ class MapPresenter{
     this.map.addListener('click', function(evt){
       if(_this.mapUnlocked && !this.markerDeleteMode){
         _this.model.addRoutePoint(evt.latLng,_this.map);
+        _this.model.updateRoadbookAndWaypoints();
         if(_this.model.markers.length == 1){
           _this.model.makeFirstMarkerWaypoint(_this.model.markers);
         }

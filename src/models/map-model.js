@@ -48,7 +48,6 @@ class MapModel {
     this.addLatLngToRouteMvcArray(latLng);
     var marker = this.buildRouteMarker(latLng, map)
     this.addMarkerToMarkersArray(marker);
-    this.updateRoadbookAndWaypoints();
     return marker;
   }
 
@@ -285,7 +284,7 @@ class MapModel {
     for(var i = 0; i < this.markers.length; i++) {
       var marker = this.markers[i];
       if(marker.waypoint) {
-        this.updateMarkerWaypointGeoData(marker, this.route, this.markers, this.getWaypointGeodata(marker, this.route, this.markers));
+        this.updateMarkerWaypointGeoData(marker, this.getWaypointGeodata(marker, this.route, this.markers));
       }
     }
   }
@@ -336,7 +335,7 @@ class MapModel {
     Waypoint functions
   */
 
-  updateMarkerWaypointGeoData(marker, route, markers, geoData){
+  updateMarkerWaypointGeoData(marker, geoData){
     marker.waypoint.updateWaypoint(geoData, marker.routePointIndex);
   }
 

@@ -15,20 +15,18 @@ test( 'Makes the first point added to the route a waypoint', function( assert ) 
 
 test( 'Adds a point to the route by updating the polyline and puting a marker over that vertex on the polyline', function(assert){
   var mapModel = new model();
-  var polylineLatLng, markerLatLng, markerMap, updatedRoadbookAndWaypoints;
+  var polylineLatLng, markerLatLng, markerMap;
   var testLatLng = {lat: 123, lng: 456};
 
   mapModel.addLatLngToRouteMvcArray = function(latLng){ polylineLatLng = latLng; };
   mapModel.buildRouteMarker = function(latLng,map){ return {latLng: latLng, map: map}; };
   mapModel.addMarkerToMarkersArray = function(marker){ markerLatLng = marker.latLng; markerMap = marker.map; };
-  mapModel.updateRoadbookAndWaypoints = function(){updatedRoadbookAndWaypoints = true;}
 
   var marker = mapModel.addRoutePoint(testLatLng,"i'm a map");
   assert.deepEqual(marker, { latLng: { lat: 123, lng: 456 }, map: "i'm a map" }, "It returns a marker")
   assert.deepEqual(testLatLng,polylineLatLng, "It adds the lat lng to the polyline");
   assert.deepEqual(markerLatLng,markerLatLng, "It creates a marker at the correct lat lng");
   assert.equal(markerMap,"i'm a map", "It passes the map to the route marker");
-  assert.ok(updatedRoadbookAndWaypoints,"i updated all the roadbook total distance and all marker's waypoint geodata");
 
   assert.end();
 });

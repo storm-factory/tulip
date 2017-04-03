@@ -88,7 +88,7 @@ var App = Class({
       ]},function (fileNames) {
       var fs = require('fs');
       if (fileNames === undefined) return;
-      // _this.startLoading();
+      _this.startLoading();
       //TODO this needs to be passed to create when choice is added
       //we need to figure out how to watch a file while it's being edited so if it's moved it gets saved to the right place ***fs.watch***
       var fileName = fileNames[0];
@@ -182,7 +182,7 @@ var App = Class({
 
   startLoading: function(){
     $('#loading').show();
-    google.maps.event.addListener(this.map, 'idle', this.stopLoading); //TODO pass to map model with callback
+    google.maps.event.addListener(this.mapPresenter.map, 'idle', this.stopLoading); //TODO pass to map model with callback
   },
 
   stopLoading: function(){

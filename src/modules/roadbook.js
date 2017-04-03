@@ -38,7 +38,6 @@ var Roadbook = Class({
   */
 
   addWaypoint: function(wptData){
-    // console.log(wptData);
     this.finishWaypointEdit();
     //determine index of waypoint based on distance from start
     var index = this.determineWaypointInsertionIndex(wptData.kmFromStart);
@@ -79,7 +78,7 @@ var Roadbook = Class({
       var marker = app.mapModel.addRoutePoint(latLng, app.mapPresenter.map)
       if(point.waypoint){
         app.mapModel.setMarkerIconToWaypointIcon(marker);
-        point.routePointIndex = marker.routePointIndex;
+        point.routePointIndex = marker.routePointIndex; //refactor to persist this
         marker.waypoint =  this.addWaypoint(point);
       }
     }
