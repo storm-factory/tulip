@@ -1,32 +1,27 @@
+'use strict';
 /*
-  The problem is google maps performance becomes a major issue once there are more than about 5000 markers on a app.map.
+  The problem is google maps performance becomes a major issue once there are more than about 5000 markers on the map.
   Loading past 15000 markers from a GPX file makes the app almost unuseable.
   This module alleviates that by implmenting viewport rendering of the markers on the map.
   At lower zoom levels only waypoint markers will be rendered
   At higher zoom levels only point and waypoint markers within the viewport will be rendered
 */
-// TODO This is a module that only interfaces with the app, refactor to make that the only coupling
 class MapOptimizer{
-  constructor(controller,model){
+
+  bindToMap(map,markers){
     var _this = this;
-    function showMarkers(){
-      _this.showMarkers();
-    }
-    google.maps.event.addListener(app.map, 'idle', showMarkers);
+    google.maps.event.addListener(map, 'idle', function(){_this.showMarkers(map,markers)});
   }
 
-  showMarkers(){
-    if(app.map.getZoom() >= 14){
-      this.showMarkersInViewport();
+  showMarkers(map,markers){
+    if(map.getZoom() >= 14){
+      this.showMarkersInViewport(map,markers,map.getBounds());
     }else{
-      this.showOnlyWaypointsAtZoom();
+      this.showOnlyWaypointsAtZoom(map,markers);
     }
   }
 
-  showMarkersInViewport() {
-    var bounds = app.map.getBounds();
-    var markers = app.mapModel.markers;
-    var map = app.map;
+  showMarkersInViewport(map, markers, bounds) {
     for(var i=0;i<markers.length;i++){
       if(bounds.contains(markers[i].getPosition())){
         if(markers[i].getMap() == null){
@@ -38,10 +33,7 @@ class MapOptimizer{
     }
   }
 
-  showOnlyWaypointsAtZoom(){
-    var markers = app.mapModel.markers;
-    var map = app.map;
-
+  showOnlyWaypointsAtZoom(map, markers){
     for(var i=0;i<markers.length;i++){
       if(markers[i].waypoint){
         if(markers[i].getMap() == null){
@@ -54,3 +46,7 @@ class MapOptimizer{
   }
 
 }
+/*
+  Node exports for test suite
+*/
+module.exports.optimizer = MapOptimizer;

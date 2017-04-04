@@ -192,30 +192,7 @@ var App = Class({
   initMap: function(){
     this.mapModel = new MapModel();
     this.mapController = new MapController(this.mapModel);
-
-    // this.map = this.mapController.map;
-    // new MapOptimizer(); TODO move to map controller
-    // this.placeMapAttribution();
-  },
-
-  /*
-    Get the Google Maps attribution elements and attaches them to the content container instead of the map container so that
-    we can rotate the map and still appropriately display attribution
-    TODO move to map controller
-  */
-  placeMapAttribution: function(){
-
-    var _this = this;
-    this.missingAttribution = true;
-    google.maps.event.addListener(this.map, 'tilesloaded', function() {
-      if(_this.missingAttribution){
-        var m = $('#map div.gm-style').children('div'); //get the contents of the map container
-        m = m.toArray();
-        m.shift(); //remove the map but keep the attribution elements
-        $('.content-container').append($(m));
-        _this.missingAttribution = false;
-      }
-    });
+    this.mapController.placeMapAttribution();
   },
 
   toggleRoadbook: function(){
