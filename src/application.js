@@ -361,12 +361,13 @@ var App = Class({
       if(e.keyCode == 27){
         if(_this.roadbook.currentlyEditingWaypoint){
           _this.roadbook.currentlyEditingWaypoint.tulip.finishRemove();
+          _this.roadbook.currentlyEditingWaypoint.tulip.beginEdit();
         }
-        if(_this.pointDeleteMode == true){
-          // TODO move this to the map model
+        if(_this.mapController.markerDeleteMode == true){
+          // TODO move this to the map controller
           var marker = _this.mapModel.markers[_this.mapModel.deleteQueue.pop()];
-          _this.mapModel.returnPointToNaturalColor(marker);
-          _this.pointDeleteMode = false
+          _this.mapController.returnPointToNaturalColor(marker);
+          _this.mapController.markerDeleteMode = false;
         }
       }
     })

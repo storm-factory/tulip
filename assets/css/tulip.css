@@ -101,7 +101,7 @@ textarea.waypoint-palette{
   box-shadow: 0px 2px 6px 1px rgba(255,144,0,0.60);
   background: #fff;
   padding:0;
-  display: inline-block;
+  display: block;
   overflow: hidden;
 }
 
@@ -120,6 +120,8 @@ textarea.waypoint-palette{
 
 .waypoint-note p div img,
 .waypoint-note p img,
+.waypoint-note div img.normal,
+.waypoint-note img.normal
 #note-editor div img,
 #note-editor img,
 #note-editor div img.normal,

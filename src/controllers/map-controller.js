@@ -129,6 +129,10 @@ class MapController{
     this.model.addWaypointBubble(index,bubble,fill,this.map);
   }
 
+  deleteWaypointBubble(index){
+    this.model.deleteWaypointBubble(index);
+  }
+
   exitDeleteMode(){
     this.markerDeleteMode = false
     this.displayEdge = true; //we have to set this because the mouse out handler that usually handles this gets nuked in the delete
@@ -186,7 +190,7 @@ class MapController{
     */
     google.maps.event.addListener(marker, 'click', function(evt) {
       if(this.waypoint && !this.markerDeleteMode){
-        // TODO make into waypoint function and abstract it from here
+        // TODO make into waypoint controller function and abstract it from here
         $('#roadbook').scrollTop(0);
         $('#roadbook').scrollTop(($(this.waypoint.element).offset().top-100));
       }

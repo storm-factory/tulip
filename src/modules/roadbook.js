@@ -201,8 +201,7 @@ var Roadbook = Class({
       $('#note-editor-container').toggleClass('hideCap',!waypoint.showHeading());
       this.waypointShowHeading(waypoint.showHeading());
       // app.glyphControls.bindNoteGlyphResizable();
-      var latLng = new google.maps.LatLng(waypoint.lat(), waypoint.lng());
-      app.mapController.setMapCenter(latLng);
+      app.mapController.setMapCenter({lat: waypoint.lat(), lng: waypoint.lng()});
       if(app.mapController.getMapZoom() < 18){
         app.mapController.setMapZoom(18);
       }

@@ -12,10 +12,10 @@ class GlyphControls{
 
   getGylphNames(){
     try {
-      this.files = this.fs.readdirSync(this.process.resourcesPath + '/app/assets/svg/glyphs');
+      this.files = this.fs.readdirSync(this.process.resourcesPath + '/app/assets/svg/glyphs/').filter(function(val){ return val.endsWith('.svg')});
     } catch (e) {
       console.log("using unpackaged filesys");
-      this.files = this.fs.readdirSync('assets/svg/glyphs');
+      this.files = this.fs.readdirSync('assets/svg/glyphs').filter(function(val){ return val.endsWith('.svg')});
     }
   }
 
@@ -44,6 +44,7 @@ class GlyphControls{
   searchGlyphNames(query){
     var results=[];
     $.each(this.files, function(i,file){
+      console.log(file);
       if(file.indexOf(query) != -1){
         results.push({name: file.replace('.svg', ''), path: 'assets/svg/glyphs/'+file})
       }

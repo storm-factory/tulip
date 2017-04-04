@@ -47,19 +47,25 @@ body {
   font-size: 35px;
 }
 
-.waypoint-note p div img.small {
+.waypoint-note p div img.small,
+.waypoint-note p img.small{
   height: 35px;
 }
 
-.waypoint-note p div img {
+.waypoint-note p div img,
+.waypoint-note p img,
+.waypoint-note div img.normal,
+.waypoint-note img.normal {
   height: 55px;
 }
 
-.waypoint-note p div img.large {
+.waypoint-note p div img.large,
+.waypoint-note p img.large{
   height: 75px;
 }
 
-.waypoint-note p div img.huge {
+.waypoint-note p div img.huge,
+.waypoint-note p img.huge{
   height: 95px;
 }
 

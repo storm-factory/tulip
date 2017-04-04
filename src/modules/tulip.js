@@ -94,7 +94,7 @@ var Tulip = Class({
       var image = new fabric.Image(imgObj);
       image.top = position.top;
       image.left = position.left;
-      image.scaleToWidth(75);
+      image.scaleToHeight(75);
       _this.canvas.add(image);
       _this.glyphs.push(image);
     }

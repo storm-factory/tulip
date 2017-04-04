@@ -61,7 +61,7 @@ class NoteControls {
   resizeSelection(size){
     var sel = window.getSelection();
     var images = $('#note-editor img')
-
+    console.log($(images));
     for(var i=0;i<images.length;i++){
       if(sel.containsNode(images[i])){
         $(images[i]).removeClass();
