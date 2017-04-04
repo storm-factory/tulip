@@ -88,20 +88,21 @@ var App = Class({
       ]},function (fileNames) {
       var fs = require('fs');
       if (fileNames === undefined) return;
-      _this.startLoading();
-      //TODO this needs to be passed to create when choice is added
-      //we need to figure out how to watch a file while it's being edited so if it's moved it gets saved to the right place ***fs.watch***
-      var fileName = fileNames[0];
-      _this.fs.readFile(fileName, 'utf-8', function (err, data) {
-        var json = JSON.parse(data);
-        // We need to ask whether they want to open a new roadbook or append an existing one to the currently
-        // being edited RB
-        _this.roadbook.appendRouteFromJSON(json,fileName); //TODO this needs to only pass json once choice is added
-      });
-      $('#toggle-roadbook').click();
-      $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
-      $('#print-roadbook').removeClass('disabled')
-      $('#export-gpx').removeClass('disabled')
+        _this.startLoading();
+        //TODO this needs to be passed to create when choice is added
+        //we need to figure out how to watch a file while it's being edited so if it's moved it gets saved to the right place ***fs.watch***
+        var fileName = fileNames[0];
+        _this.fs.readFile(fileName, 'utf-8', function (err, data) {
+          var json = JSON.parse(data);
+          // We need to ask whether they want to open a new roadbook or append an existing one to the currently
+          // being edited RB
+          _this.roadbook.appendRouteFromJSON(json,fileName); //TODO this needs to only pass json once choice is added
+        });
+        $('#toggle-roadbook').click();
+        $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
+        $('#print-roadbook').removeClass('disabled')
+        $('#export-gpx').removeClass('disabled')
+        $('#export-openrally-gpx').removeClass('disabled')
     });
   },
 
@@ -109,6 +110,18 @@ var App = Class({
     if(this.canExport()){
       var gpx = this.io.exportGPX();
       var filename = this.roadbook.filePath.replace('tlp','gpx');
+      this.fs.writeFile(filename, gpx, function (err) {});
+      $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
+      alert('You gpx has been exported to the same directory you saved your roadbook');
+    } else {
+      alert('F@#k1ng Kamaz! You must save your roadbook before you can export GPX tracks');
+    }
+  },
+
+  exportOpenRallyGPX: function(){
+    if(this.canExport()){
+      var gpx = this.io.exportOpenRallyGPX();
+      var filename = (this.roadbook.filePath+'-openrally').replace('tlp','gpx');
       this.fs.writeFile(filename, gpx, function (err) {});
       $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
       alert('You gpx has been exported to the same directory you saved your roadbook');
@@ -223,6 +236,10 @@ var App = Class({
 
     $('#export-gpx').click(function(){
       _this.exportGPX();
+    });
+
+    $('#export-openrally-gpx').click(function(){
+      _this.exportOpenRallyGPX();
     });
 
     $('#new-roadbook').click(function(){
@@ -411,6 +428,10 @@ var App = Class({
 
     this.ipc.on('export-gpx', function(event, arg){
       _this.exportGPX();
+    });
+
+    this.ipc.on('export-openrally-gpx', function(event, arg){
+      _this.exportOpenRallyGPX();
     });
 
     this.ipc.on('export-pdf', function(event, arg){
