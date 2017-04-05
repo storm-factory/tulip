@@ -133,9 +133,9 @@ var Waypoint = Class({
     if(geoData.relativeAngle){
       this.tulip.changeExitAngle(geoData.relativeAngle, this.exitTrackType);
     }
-    if(geoData.lat && geoData.lng){
+    if(geoData.lat && geoData.long){
       this.lat(geoData.lat);
-      this.lng(geoData.lng);
+      this.lng(geoData.long);
     }
     if(routePointIndex) {
       this.routePointIndex = routePointIndex

@@ -69,7 +69,7 @@ test( 'Gets the geodata for a waypoint', function(assert){
   var geoData = mapModel.getWaypointGeodata(marker,route,markers);
 
   assert.equal(geoData.lat, 123, "It sets the geoData obj lat");
-  assert.equal(geoData.lng, 456, "It sets the geoData obj lng");
+  assert.equal(geoData.long, 456, "It sets the geoData obj lng");
   assert.equal(geoData.routePointIndex, 101, "It sets the geoData obj routePointIndex");
   assert.equal(geoData.kmFromStart, 12.1, "It sets the geoData obj distances kmFromStart");
   assert.equal(geoData.kmFromPrev, 2.5, "It sets the geoData obj distances kmFromPrev");

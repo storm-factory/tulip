@@ -7,6 +7,7 @@ class GlyphControls{
     this.files = [];
     this.getGylphNames();
     this.initListeners();
+    this.bindToGlyphImages();
     this.addToNote = false;
   }
 
@@ -44,12 +45,20 @@ class GlyphControls{
   searchGlyphNames(query){
     var results=[];
     $.each(this.files, function(i,file){
-      console.log(file);
       if(file.indexOf(query) != -1){
         results.push({name: file.replace('.svg', ''), path: 'assets/svg/glyphs/'+file})
       }
     });
     return results;
+  }
+
+  bindToGlyphImages(){
+    var _this = this;
+    $('.glyph').click(function(e){
+      _this.handleGlyphSelectUI(e);
+      _this.addGlyphToInstruction(this);
+      app.noteControls.checkForNotification();
+    });
   }
 
   initListeners(){
@@ -59,6 +68,8 @@ class GlyphControls{
       if($(this).val() != ''){
         var results = _this.searchGlyphNames($(this).val());
         _this.populateResults(results);
+        $('.glyph').off('click')
+        _this.bindToGlyphImages();
       }
     });
 
@@ -67,12 +78,6 @@ class GlyphControls{
       $('#glyph-search-results').html('');
       $('#glyph-search').focus();
     })
-
-    $('.glyph').click(function(e){
-      _this.handleGlyphSelectUI(e);
-      _this.addGlyphToInstruction(this);
-      app.noteControls.checkForNotification();
-    });
 
     $('.note-grid').click(function(e){
       e.preventDefault();

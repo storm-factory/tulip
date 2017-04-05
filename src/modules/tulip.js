@@ -271,12 +271,14 @@ var Tulip = Class({
 
   removeLastTrack: function(){
     var track = this.tracks.pop()
-    for(i = 0; i < track.paths.length; i++) {
-      this.canvas.remove(track.paths[i]);
-    }
-    for(i = 0; i < this.activeEditors.length; i++) {
-      if(this.activeEditors[i].track == track){
-        this.activeEditors[i].destroy();
+    if(track){
+      for(i = 0; i < track.paths.length; i++) {
+        this.canvas.remove(track.paths[i]);
+      }
+      for(i = 0; i < this.activeEditors.length; i++) {
+        if(this.activeEditors[i].track == track){
+          this.activeEditors[i].destroy();
+        }
       }
     }
   },

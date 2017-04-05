@@ -221,7 +221,7 @@ class MapModel {
     var relativeAngle = this.computeRelativeAngle(marker,route,heading);
     return {
       lat: marker.getPosition().lat(),
-      lng: marker.getPosition().lng(),
+      long: marker.getPosition().lng(),
       routePointIndex: marker.routePointIndex,
       kmFromStart: this.computeDistanceOnRouteBetweenPoints(0,marker.routePointIndex, route.getArray()), //TODO pass in route?
       kmFromPrev: this.computeDistanceOnRouteBetweenPoints(prevWaypointIndex, marker.routePointIndex, route.getArray()), //TODO pass in route?

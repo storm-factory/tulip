@@ -22,6 +22,11 @@ h2 {
   font-family: bellybeans !important;
   font-size: 30px;
 }
+img.glyph{
+  height: 100px;
+  margin: auto;
+  display: block;
+}
 canvas {
   width: 180px;
   height: 180px;

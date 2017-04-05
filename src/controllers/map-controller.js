@@ -91,8 +91,21 @@ class MapController{
   toggleMapLock(element){
     this.mapUnlocked = !this.mapUnlocked;
     this.lockedBeforeWaypointEdit = !this.mapUnlocked;
-    this.lockedBeforeWaypointEdit = !this.mapUnlocked;
     element ? $(element).toggleClass('secondary') : null;
+  }
+
+  lockMap(element){
+    this.lockedBeforeWaypointEdit = !this.mapUnlocked;
+    this.mapUnlocked = false
+    element ? $(element).removeClass('secondary') : null;
+  }
+
+  unlockMap(element){
+    if(!this.lockedBeforeWaypointEdit){
+      this.lockedBeforeWaypointEdit = !this.mapUnlocked;
+      this.mapUnlocked = true
+      element ? $(element).addClass('secondary') : null;
+    }
   }
 
   orientMap(){
@@ -100,12 +113,12 @@ class MapController{
     var bearing = this.model.computeMapOrientationAngle();
     if(bearing){
       if(this.rotation == 0){
-        this.toggleMapLock();
+        this.lockMap();
         this.rotation = 360-bearing
         this.rotateNumDegrees(this.rotation);
       }else {
         this.reorient();
-        this.toggleMapLock();
+        this.unlockMap();
       }
     }
   }
@@ -360,7 +373,7 @@ class MapController{
     });
 
     $('#hide-palette').click(function(){
-      // _this.toggleMapLock();
+      _this.unlockMap();
       _this.reorient();
     });
   }

@@ -121,7 +121,7 @@ var App = Class({
   exportOpenRallyGPX: function(){
     if(this.canExport()){
       var gpx = this.io.exportOpenRallyGPX();
-      var filename = (this.roadbook.filePath+'-openrally').replace('tlp','gpx');
+      var filename = ('openrally-'+this.roadbook.filePath).replace('tlp','gpx');
       this.fs.writeFile(filename, gpx, function (err) {});
       $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
       alert('You gpx has been exported to the same directory you saved your roadbook');
@@ -465,7 +465,6 @@ var App = Class({
     });
 
     this.ipc.on('add-track-90', function(event, arg){
-      console.log('pew');
       if(_this.roadbook.currentlyEditingWaypoint){
         _this.roadbook.currentlyEditingWaypoint.tulip.addTrack(90);
       }
