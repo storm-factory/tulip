@@ -9,19 +9,100 @@
   </head>
   <body>
     <div data-sticky-container>
-      <div class="title-bar" data-sticky data-options="marginTop:0;" style="width:100%;text-align:center;" data-top-anchor="1">
-        <h1 class="headline"><img src='img/tulip-logo.png' style="height:50px"> tulip</h1>
+      <div class="title-bar" data-sticky data-margin-top="0" style="width:100%;text-align:center;" data-top-anchor="1">
+        <h1 class="headline"><img src='img/tulip-logo.png' style="height:50px;cursor:pointer;"> tulip</h1>
       </div>
     </div>
     <div class="row" style="margin-top:15px;">
-      things
+      <div class="small-12 large-6 columns">
+        <div class="callout">
+          <h4>What is tulip?</h4>
+          <p>
+            Simply put, tulip is an open source software project for creating cross country roadbooks
+            designed to optimize the creation of routes in a simple, basic set of steps using an intuitive, fast, and visually succinct UI.
+          </p>
+          <h4>What do I need to use it?</h4>
+          <p>
+            Tulip currently uses the Google Maps API which requires an active internet connection for operation since it dynamically fetches the mapping data via the connection.
+            Even though an internet connection is required to run the app, all roadbook and gpx data files are stored locally.
+          </p>
+          <h4>What does it cost?</h4>
+          <p>
+            Tulip is, and always will be, free for personal use. Our primary purpose is to promote the growth of cross country rally.
+          </p>
+        </div>
+      </div>
+      <div class="small-12 large-6 columns">
+        <iframe width="570" height="420" src="https://www.youtube.com/embed/vn8Olw1CMTo" frameborder="0" allowfullscreen></iframe>
+      </div>
+    </div>
+    <div class="row" style="margin-top:15px;">
+      <div class="small-4 small-offset-4 columns">
+        <div id="contact">
+          <h5>Right now tulip is still in beta, hit us up if you want to take part.</h5>
+          <form>
+              <input type="hidden" name="_subject" value="New tulip submission!" />
+              <label for="name">name</label>
+              <input type="text" name="name">
+              <label for="_replyto">email</label>
+              <input type="email" name="_replyto">
+              <label for="comments">comments</label>
+              <textarea name="comments" rows="6"></textarea>
+              <input type="submit" class="button" value="Send">
+          </form>
+        </div>
+        <div id="thanks" style="display:none" class="callout success">
+          <h4>Thanks for reaching out, rally on!</h4>
+        </div>
+        <div id="thanks" style="display:none" class="callout alert">
+          <h4>Uh oh, there was an error. Hit us up on ADV</h4>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" id="faq" style="margin-top:15px;margin-bottom:100px;display:none;">
+      <div class="small-12 columns">
+        <h5>So how do I go from making a route on tulip to navigating a roadbook?</h5>
+        <p>
+          Tulip outputs roadbooks as a PDF file in Letter, A5, and Roll sizes. You can then use your PDF app of choice to modify this output to suit your needs.
+        </p>
+        <p>
+          Additionaly tulip can output a GPX file of your route for pre-running. This export is formatted so that when it is imported into devices and apps like Rally Comp and Rally Blitz
+          all WPM, WPS, DSZ, ASZ, DSS, and ASS route notifications are already baked in.
+        </p>
+      </div>
     </div>
 
     <script src="foundation/js/vendor/jquery.js"></script>
     <script src="foundation/js/vendor/foundation.js"></script>
     <script>
-      $(document).foundation();
-      var elem = new Foundation.Sticky($('.title-bar'));
+      $(document).ready(function(){
+        $(document).foundation();
+        new Foundation.Sticky($('.title-bar'));
+
+        $('.headline').click(function(){
+          $(document).scrollTop(0);
+        });
+
+        $('#contact').find('form').submit(function(e){
+          e.preventDefault();
+          $('#contact').hide();
+          $.ajax({
+              url: "https://formspree.io/jamesandrewmitchell@gmail.com",
+              method: "POST",
+              data: $(this).serialize(),
+              dataType: "json",
+              success: function(){
+                $('#thanks').show();
+                $('#faq').show();
+              },
+              error: function(){
+                $('#error').show();
+              }
+          });
+        })
+      });
+
     </script>
   </body>
 </html>
