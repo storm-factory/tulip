@@ -43,7 +43,7 @@ var Io = Class({
     var points = app.mapModel.markers;
     var wptCount = 1;
     for(var i=0;i<points.length;i++){
-      if(points[i].waypoint !== undefined){
+      if(points[i].waypoint){
         var name = this.buildNameString(wptCount,points[i].waypoint);
         var desc = this.buildDescString(wptCount,points[i].waypoint);
         var waypoint = "<wpt lat='" + points[i].getPosition().lat() + "' lon='" + points[i].getPosition().lng() + "'><name>" + name + "</name><desc>" + desc + "</desc></wpt>";
