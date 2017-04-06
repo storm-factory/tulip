@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>tulip</title>
     <link rel="stylesheet" href="foundation/css/foundation.css" />
+    <link rel="stylesheet" href="foundation-icons/foundation-icons.css" />
     <link rel="shortcut icon" type="image/png" href="favicon.ico"/>
   </head>
   <body>
@@ -34,11 +35,18 @@
         </div>
       </div>
       <div class="small-12 large-6 columns">
-        <iframe width="570" height="420" src="https://www.youtube.com/embed/vn8Olw1CMTo" frameborder="0" allowfullscreen></iframe>
+        <div class="show-for-large">
+          <iframe width="570" height="420" src="https://www.youtube.com/embed/vn8Olw1CMTo" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div class="hide-for-large">
+          <a href="https://youtu.be/vn8Olw1CMTo" style="margin:auto;width:50px;display:block;color:red;font-size:6em">
+            <i class="fi-social-youtube"></i>
+          </a>
+        </div>
       </div>
     </div>
     <div class="row" style="margin-top:15px;">
-      <div class="small-4 small-offset-4 columns">
+      <div class="small-12 large-4 large-offset-4 columns">
         <div id="contact">
           <h5>Right now tulip is still in beta, hit us up if you want to take part.</h5>
           <form>
@@ -61,7 +69,7 @@
       </div>
     </div>
 
-    <div class="row" id="faq" style="margin-top:15px;margin-bottom:100px;display:none;">
+    <div class="row" id="faq" style="margin-top:15px;display:none;">
       <div class="small-12 columns">
         <h5>More deets</h5>
         <p>
@@ -73,6 +81,26 @@
         </p>
       </div>
     </div>
+
+    <div class="row" id="footer" style="margin-top:15px;margin-bottom:100px">
+      <div class="medium-4 medium-offset-3 small-12 columns">
+        <h5>Our friends</h5>
+        <ul style="list-style:none;">
+          <li><a href="http://www.highwaydirtbikes.com">highway dirt bikes</a></li>
+          <li><a href="http://www.rallyblitz.com">rally blitz</a></li>
+          <li><a href="http://www.rallycomp.com">rally comp</a></li>
+          <li><a href="http://www.openrally.org">open rally</a></li>
+          <li><a href="http://www.advrider.com">ADVrider</a></li>
+        </ul>
+      </div>
+      <div class="medium-4 small-12 columns end">
+        <h5>Our Social Media</h5>
+        <ul style="list-style:none;font-size:2em;">
+          <li><a href="https://www.facebook.com/tuliptastic"><i class="fi-social-facebook"></i></a></li>
+        </ul>
+      </div>
+    </div>
+
 
     <script src="foundation/js/vendor/jquery.js"></script>
     <script src="foundation/js/vendor/foundation.js"></script>
