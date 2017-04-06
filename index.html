@@ -17,7 +17,7 @@
     </div>
     <div class="row" style="margin-top:15px;">
       <div class="small-12 large-6 columns">
-        <div class="callout">
+        <div>
           <h4>What is tulip?</h4>
           <p>
             Simply put, tulip is an open source software project for creating cross country roadbooks
@@ -38,17 +38,19 @@
         <div class="show-for-large">
           <iframe width="570" height="420" src="https://www.youtube.com/embed/vn8Olw1CMTo" frameborder="0" allowfullscreen></iframe>
         </div>
-        <div class="hide-for-large">
+        <div class="hide-for-large callout secondary">
+          <h4>Where can I see a demo?</h4>
           <a href="https://youtu.be/vn8Olw1CMTo" style="margin:auto;width:50px;display:block;color:red;font-size:6em">
             <i class="fi-social-youtube"></i>
           </a>
         </div>
       </div>
     </div>
+    <hr>
     <div class="row" style="margin-top:15px;">
       <div class="small-12 large-4 large-offset-4 columns">
         <div id="contact">
-          <h5>Right now tulip is still in beta, hit us up if you want to take part.</h5>
+          <h5>Right now, tulip is still in beta. Hit us up if you want to take part.</h5>
           <form>
               <input type="hidden" name="_subject" value="New tulip submission!" />
               <label for="name">name</label>
@@ -63,8 +65,8 @@
         <div id="thanks" style="display:none" class="callout success">
           <h4>Thanks for reaching out, rally on!</h4>
         </div>
-        <div id="thanks" style="display:none" class="callout alert">
-          <h4>Uh oh, there was an error. Hit us up on ADV</h4>
+        <div id="oops" style="display:none" class="callout alert">
+          <h4>Uh oh, there was an error. Hit us up on <a href="https://www.facebook.com/tuliptastic"><i class="fi-social-facebook"></i></a></h4>
         </div>
       </div>
     </div>
@@ -81,10 +83,10 @@
         </p>
       </div>
     </div>
-
+    <hr>
     <div class="row" id="footer" style="margin-top:15px;margin-bottom:100px">
-      <div class="medium-4 medium-offset-3 small-12 columns">
-        <h5>Our friends</h5>
+      <div class="medium-4 medium-offset-3 small-6 columns">
+        <h5>Friends</h5>
         <ul style="list-style:none;">
           <li><a href="http://www.highwaydirtbikes.com">highway dirt bikes</a></li>
           <li><a href="http://www.rallyblitz.com">rally blitz</a></li>
@@ -93,8 +95,8 @@
           <li><a href="http://www.advrider.com">ADVrider</a></li>
         </ul>
       </div>
-      <div class="medium-4 small-12 columns end">
-        <h5>Our Social Media</h5>
+      <div class="medium-4 small-6 columns end">
+        <h5>Social Media</h5>
         <ul style="list-style:none;font-size:2em;">
           <li><a href="https://www.facebook.com/tuliptastic"><i class="fi-social-facebook"></i></a></li>
           <li><a href="https://github.com/storm-factory/tulip"><i class="fi-social-github"></i></a></li>
@@ -111,7 +113,7 @@
         new Foundation.Sticky($('.title-bar'));
 
         $('.headline').click(function(){
-          $(document).scrollTop(0);
+          $('html, body').animate({scrollTop:0}, 'slow');
         });
 
         $('#contact').find('form').submit(function(e){
@@ -127,7 +129,7 @@
                 $('#faq').show();
               },
               error: function(){
-                $('#error').show();
+                $('#oops').show();
               }
           });
         })
