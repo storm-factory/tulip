@@ -1,35 +1,21 @@
+'use strict';
 // TODO refactor this to use MVC pattern and act as a model for the roadbook all UI interaction should be moved to an application controller, also change to ES6 syntax
-var Roadbook = Class({
-  create: function(){
+class RoadbookModel{
+  constructor(){
     /*
       declare some state instance variables
     */
     this.currentlyEditingWaypoint = null;
-
     this.editingNameDesc = false;
     this.newWaypoints = false;
 
-    /*
-      declare some observable instance variables
-    */
-    this.name = ko.observable('Name your roadbook');
-    this.desc = ko.observable('Describe your roadbook');
-    this.totalDistance = ko.observable('0.00');
-    this.waypoints = ko.observableArray([]);
-
-
-    this.waypointShowHeading = ko.observable(true);
     /*
       Declare some internal variables
     */
     // TODO how do we handle file name changes
     this.filePath = null;
-    /*
-      initialize rich text editors for waypoint note instructions
-      and also for the roadbook description
-    */
-    this.descriptionInputListener();
-  },
+    
+  }
 
   /*
     ---------------------------------------------------------------------------
@@ -37,7 +23,7 @@ var Roadbook = Class({
     ---------------------------------------------------------------------------
   */
 
-  addWaypoint: function(wptData){
+  addWaypoint(wptData){
     this.finishWaypointEdit();
     //determine index of waypoint based on distance from start
     var index = this.determineWaypointInsertionIndex(wptData.kmFromStart);
@@ -63,9 +49,9 @@ var Roadbook = Class({
     $('#save-roadbook').removeClass('secondary');
 
     return waypoint;
-  },
+  }
 
-  appendRouteFromJSON: function(json,fileName){
+  appendRouteFromJSON(json,fileName){
     this.name(json.name);
     this.desc(json.desc);
     this.totalDistance(json.totalDistance);
@@ -91,17 +77,28 @@ var Roadbook = Class({
 
     app.mapController.map.setCenter(latLng);
     app.mapController.map.setZoom(14);
-  },
+  }
 
-  appendGlyphToNoteTextEditor: function(image){
+  appendGlyphToNoteTextEditor(image){
     $('#note-editor').append(image);
-  },
+  }
 
-  changeEditingWaypointAdded: function(type){
+  bindToKnockout(){
+    /*
+      declare some observable instance variables
+    */
+    this.name = ko.observable('Name your roadbook');
+    this.desc = ko.observable('Describe your roadbook');
+    this.totalDistance = ko.observable('0.00');
+    this.waypoints = ko.observableArray([]);
+    this.waypointShowHeading = ko.observable(true);
+  }
+
+  changeEditingWaypointAdded(type){
     this.currentlyEditingWaypoint.changeAddedTrackType(type);
-  },
+  }
 
-  changeEditingWaypointEntry: function(type){
+  changeEditingWaypointEntry(type){
     var waypoint = this.currentlyEditingWaypoint;
     waypoint.changeEntryTrackType(type);
     var waypointIndex = this.waypoints().indexOf(waypoint)
@@ -111,9 +108,9 @@ var Roadbook = Class({
       this.waypoints()[waypointIndex-1].changeExitTrackType(type);
       this.waypoints()[waypointIndex-1].tulip.finishEdit();
     }
-  },
+  }
 
-  changeEditingWaypointExit: function(type){
+  changeEditingWaypointExit(type){
     var waypoint = this.currentlyEditingWaypoint;
     waypoint.changeExitTrackType(type);
     var waypointIndex = this.waypoints().indexOf(waypoint)
@@ -123,20 +120,20 @@ var Roadbook = Class({
       this.waypoints()[waypointIndex+1].changeEntryTrackType(type);
       this.waypoints()[waypointIndex+1].tulip.finishEdit();
     }
-  },
+  }
 
 
-  deleteWaypoint: function(index){
+  deleteWaypoint(index){
     this.finishWaypointEdit();
     this.waypoints.splice(index - 1,1);
     this.reindexWaypoints();
-  },
+  }
 
   /*
     Use a binary search algorithm to determine the index to insert the waypoint into the roadbook
     waypoints array
   */
-  determineWaypointInsertionIndex: function(kmFromStart){
+  determineWaypointInsertionIndex(kmFromStart){
     var minIndex = 0;
 
     var maxIndex = this.waypoints().length - 1;
@@ -159,38 +156,39 @@ var Roadbook = Class({
       }
     }
     return Math.abs(~maxIndex);
-  },
+  }
 
   /*
     This function handles' listening to input on the roadbook description
     and persisting it to the roadbook object
+    TODO controller function
   */
-  descriptionInputListener: function(){
+  descriptionInputListener(){
     var _this = this;
     this.descriptionTextEditor = new Quill('#description-editor');
     this.descriptionTextEditor.addModule('toolbar', {
       container: '#description-toolbar'     // Selector for toolbar container
     });
     this.descriptionTextEditor.on('text-change', function(delta, source) {
-      newValue = _this.descriptionTextEditor.getHTML()
+      var newValue = _this.descriptionTextEditor.getHTML()
       _this.desc(newValue);
     });
-  },
+  }
 
-  reindexWaypoints: function(){
-    for(i = 0; i < this.waypoints().length; i++){
-      waypoint = this.waypoints()[i];
+  reindexWaypoints(){
+    for(var i = 0; i < this.waypoints().length; i++){
+      var waypoint = this.waypoints()[i];
       waypoint.id = i + 1; //we don't need no zero index
     }
-  },
+  }
 
   /*
     ---------------------------------------------------------------------------
       Roadbook edit control flow
     ---------------------------------------------------------------------------
   */
-
-  requestWaypointEdit: function(waypoint){
+  // NOTE controller function
+  requestWaypointEdit(waypoint){
     if(waypoint != this.currentlyEditingWaypoint){ //we need this to discard click events fired from editing the waypoint tulip canvas
       this.finishWaypointEdit(); //clear any existing UI just to be sure
       $('#save-roadbook').removeClass('secondary');
@@ -218,9 +216,9 @@ var Roadbook = Class({
       }
       return true;
     }
-  },
+  }
 
-  finishWaypointEdit: function(){
+  finishWaypointEdit(){
     if(this.currentlyEditingWaypoint !== null){
       this.resetWaypointPalette(this.currentlyEditingWaypoint);
       this.updateWaypointAfterEdit(this.currentlyEditingWaypoint);
@@ -228,9 +226,9 @@ var Roadbook = Class({
       $('#note-editor').html('');
     }
     return true;
-  },
-
-  resetWaypointPalette: function(waypoint){
+  }
+  // NOTE controller function
+  resetWaypointPalette(waypoint){
     $('.waypoint.row').show();
     $('#waypoint-palette').find('.note-tools').append($('#note-editor-container'));
     $('#waypoint-palette').slideUp('slow');
@@ -240,9 +238,9 @@ var Roadbook = Class({
     $('#roadbook').find('.roadbook-info').show();
     $('#notification-options').addClass('hidden');
     $('#roadbook').scrollTop(waypoint.element.position().top - 80);
-  },
+  }
 
-  updateWaypointAfterEdit: function(waypoint){
+  updateWaypointAfterEdit(waypoint){
     waypoint.changeAddedTrackType('track');
     waypoint.noteHTML($('#note-editor').html());
     if(waypoint.notification){
@@ -251,15 +249,15 @@ var Roadbook = Class({
     }
     waypoint.tulip.finishEdit();
     waypoint.tulip.finishRemove();
-  },
+  }
 
-  updateTotalDistance: function(){
+  updateTotalDistance(){
     if(this.waypoints().length > 0 ){
       this.totalDistance(this.waypoints()[this.waypoints().length - 1].totalDistance());
     } else{
       this.totalDistance(0);
     }
-  },
+  }
 
   /*
     ---------------------------------------------------------------------------
@@ -268,7 +266,7 @@ var Roadbook = Class({
   */
   // Returns a json representation of the roadbook with all geographic data and elements which capture the edited state of the roadbook.
   // This can be reloaded into app for futher editing
-  statefulJSON:  function(){
+  statefulJSON(){
     var roadbookJSON = {
       name: this.name(),
       desc: this.desc(),
@@ -298,11 +296,11 @@ var Roadbook = Class({
         roadbookJSON.waypoints.push(waypointJSON);
     }
     return roadbookJSON;
-  },
+  }
 
   // Returns the roadbook with only neccessary information to display the roadbook
   // as the rider will see it.
-  statelessJSON: function(){
+  statelessJSON(){
     var roadbookJSON = {
       name: this.name(),
       desc: this.desc(),
@@ -332,6 +330,6 @@ var Roadbook = Class({
 
     }
     return roadbookJSON;
-  },
+  }
 
-});
+};

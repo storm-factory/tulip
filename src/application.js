@@ -15,7 +15,7 @@
 
     The Application handles bootstrapping the user interface and any non Mapping
     function. The UI is mainly composed of the UI Map which is managed by the
-    MapEditor object. The Map Editor creates Waypoints based off interaction.
+    MapController and MapModel objects. The MapController creates Waypoints based off interaction.
     Each Waypoint has a Tulip which is uses the TrackEditor class to handle the complexity
     of editing tracks.
   ---------------------------------------------------------------------------
@@ -34,8 +34,12 @@ var App = Class({
     this.dialog = require('electron').remote.dialog;
     /*
       instantiate the roadbook
+      TODO rename variable
     */
-    this.roadbook = new Roadbook();
+    this.roadbook = new RoadbookModel();
+    this.roadbook.bindToKnockout();
+
+    this.roadbookController = new RoadbookController(this.roadbook);
 
     /*
       instantiate import/export
@@ -266,104 +270,6 @@ var App = Class({
         }
       }
       $(this).blur();
-    });
-
-    $('#roadbook-desc, #roadbook-name').find('a.show-editor').click(function(){
-      $(this).hide();
-      $(this).siblings('.hide-editor').show();
-      $(this).siblings('.roadbook-header-input-container').slideDown('fast');
-      if($(this).hasClass('rb-name')){
-        $(this).parent('div').find(':input').focus();
-      }
-      if($(this).hasClass('rb-desc')){
-        $('#roadbook-desc p').slideUp('fast');
-        _this.roadbook.descriptionTextEditor.focus();
-      }
-      $('#save-roadbook').removeClass('secondary');
-      _this.roadbook.editingNameDesc = true;
-    });
-
-    $('#roadbook-desc, #roadbook-name').find('a.hide-editor').click(function(){
-      $(this).hide();
-      $(this).siblings('.show-editor').show();
-      $(this).siblings('.roadbook-header-input-container').slideUp('fast');
-      if($(this).hasClass('rb-desc')){
-        $('#roadbook-desc p').slideDown('fast');
-      }
-    });
-
-    /*
-      Waypoint palette
-    */
-    $('#hide-palette').click(function(){
-      _this.roadbook.finishWaypointEdit();
-    });
-
-    $('#toggle-heading').change(function(){
-      $('#note-editor-container').toggleClass('hideCap',!_this.roadbook.waypointShowHeading())
-      _this.roadbook.currentlyEditingWaypoint.showHeading(_this.roadbook.waypointShowHeading());
-    });
-
-    $('.track-grid').click(function(e){
-      if($(this).hasClass('undo')){
-        if(e.shiftKey){
-          _this.roadbook.currentlyEditingWaypoint.tulip.beginRemoveTrack();
-        }else{
-          _this.roadbook.currentlyEditingWaypoint.tulip.removeLastTrack();
-        }
-        return
-      }
-      var angle = $(this).data('angle');
-      _this.roadbook.currentlyEditingWaypoint.tulip.addTrack(angle);
-    });
-
-    // TODO change to object literal lookup
-    $('.added-track-selector').click(function(e) {
-      e.preventDefault();
-      if('off-piste-added' == $(this).attr('id')){
-        _this.roadbook.changeEditingWaypointAdded('offPiste')
-      }else if('track-added' == $(this).attr('id')){
-        _this.roadbook.changeEditingWaypointAdded('track')
-      }else if('road-added' == $(this).attr('id')){
-        _this.roadbook.changeEditingWaypointAdded('road')
-      }else if('main-road-added' == $(this).attr('id')){
-        _this.roadbook.changeEditingWaypointAdded('mainRoad')
-      }else if('dcw-added' == $(this).attr('id')){
-        _this.roadbook.changeEditingWaypointAdded('dcw')
-      }
-
-      $('.added-track-selector').removeClass('active');
-      $(this).addClass('active');
-    });
-
-    $('.entry-track-selector').click(function(e) {
-      e.preventDefault();
-      if('off-piste-entry' == $(this).attr('id')){
-        _this.roadbook.changeEditingWaypointEntry('offPiste')
-      }else if('track-entry' == $(this).attr('id')){
-        _this.roadbook.changeEditingWaypointEntry('track')
-      }else if('road-entry' == $(this).attr('id')){
-        _this.roadbook.changeEditingWaypointEntry('road')
-      }else if('main-road-entry' == $(this).attr('id')){
-        _this.roadbook.changeEditingWaypointEntry('mainRoad')
-      }else if('dcw-entry' == $(this).attr('id')){
-        _this.roadbook.changeEditingWaypointEntry('dcw')
-      }
-    });
-
-    $('.exit-track-selector').click(function(e) {
-      e.preventDefault();
-      if('off-piste-exit' == $(this).attr('id')){
-        _this.roadbook.changeEditingWaypointExit('offPiste')
-      }else if('track-exit' == $(this).attr('id')){
-        _this.roadbook.changeEditingWaypointExit('track')
-      }else if('road-exit' == $(this).attr('id')){
-        _this.roadbook.changeEditingWaypointExit('road')
-      }else if('main-road-exit' == $(this).attr('id')){
-        _this.roadbook.changeEditingWaypointExit('mainRoad')
-      }else if('dcw-exit' == $(this).attr('id')){
-        _this.roadbook.changeEditingWaypointExit('dcw')
-      }
     });
 
     $('[name="toggle-insert-type"]').change(function(){
