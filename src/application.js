@@ -40,7 +40,7 @@ var App = Class({
     this.roadbook.bindToKnockout();
 
     this.roadbookController = new RoadbookController(this.roadbook);
-
+    this.roadbook.controller = this.roadbookController;
     /*
       instantiate import/export
     */

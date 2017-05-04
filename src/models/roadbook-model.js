@@ -14,7 +14,7 @@ class RoadbookModel{
     */
     // TODO how do we handle file name changes
     this.filePath = null;
-    
+
   }
 
   /*
@@ -59,20 +59,20 @@ class RoadbookModel{
     var points = json.waypoints;
     var wpts = []
     // NOTE: For some strange reason, due to canvas rendering, a for loop causes points and waypoints to be skipped, hence for...of in
-    for(point of points){
+    for(var point of points){
       var latLng = new google.maps.LatLng(point.lat, point.long)
       var marker = app.mapModel.addRoutePoint(latLng, app.mapController.map)
       if(point.waypoint){
         app.mapModel.setMarkerIconToWaypointIcon(marker);
         point.routePointIndex = marker.routePointIndex; //refactor to persist this
-        marker.waypoint =  this.addWaypoint(point);
+        marker.waypoint =  this.appendWaypoint(point);
       }
     }
     // NOTE this is less than ideal
     if(this.desc() !== null){
-      this.descriptionTextEditor.setHTML(this.desc());
+      this.controller.descriptionTextEditor.setHTML(this.desc());
     }
-
+    app.mapModel.updateAllMarkersWaypointGeoData();
     var latLng = new google.maps.LatLng(points[0].lat, points[0].long);
 
     app.mapController.map.setCenter(latLng);
@@ -81,6 +81,12 @@ class RoadbookModel{
 
   appendGlyphToNoteTextEditor(image){
     $('#note-editor').append(image);
+  }
+
+  appendWaypoint(wptData){
+    var waypoint = new Waypoint(this, wptData);
+    this.waypoints.push(waypoint);
+    return waypoint;
   }
 
   bindToKnockout(){

@@ -87,17 +87,7 @@ class RoadbookController{
     var _this = this;
     $('.entry-track-selector').click(function(e) {
       e.preventDefault();
-      if('off-piste-entry' == $(this).attr('id')){
-        _this.model.changeEditingWaypointEntry('offPiste')
-      }else if('track-entry' == $(this).attr('id')){
-        _this.model.changeEditingWaypointEntry('track')
-      }else if('road-entry' == $(this).attr('id')){
-        _this.model.changeEditingWaypointEntry('road')
-      }else if('main-road-entry' == $(this).attr('id')){
-        _this.model.changeEditingWaypointEntry('mainRoad')
-      }else if('dcw-entry' == $(this).attr('id')){
-        _this.model.changeEditingWaypointEntry('dcw')
-      }
+      _this.model.changeEditingWaypointEntry($(this).data('track'));
     });
   }
 
@@ -105,17 +95,7 @@ class RoadbookController{
     var _this = this;
     $('.exit-track-selector').click(function(e) {
       e.preventDefault();
-      if('off-piste-exit' == $(this).attr('id')){
-        _this.model.changeEditingWaypointExit('offPiste')
-      }else if('track-exit' == $(this).attr('id')){
-        _this.model.changeEditingWaypointExit('track')
-      }else if('road-exit' == $(this).attr('id')){
-        _this.model.changeEditingWaypointExit('road')
-      }else if('main-road-exit' == $(this).attr('id')){
-        _this.model.changeEditingWaypointExit('mainRoad')
-      }else if('dcw-exit' == $(this).attr('id')){
-        _this.model.changeEditingWaypointExit('dcw')
-      }
+      _this.model.changeEditingWaypointExit($(this).data('track'));
     });
   }
 
@@ -123,17 +103,7 @@ class RoadbookController{
     var _this = this;
     $('.added-track-selector').click(function(e) {
       e.preventDefault();
-      if('off-piste-added' == $(this).attr('id')){
-        _this.model.changeEditingWaypointAdded('offPiste')
-      }else if('track-added' == $(this).attr('id')){
-        _this.model.changeEditingWaypointAdded('track')
-      }else if('road-added' == $(this).attr('id')){
-        _this.model.changeEditingWaypointAdded('road')
-      }else if('main-road-added' == $(this).attr('id')){
-        _this.model.changeEditingWaypointAdded('mainRoad')
-      }else if('dcw-added' == $(this).attr('id')){
-        _this.model.changeEditingWaypointAdded('dcw')
-      }
+      _this.model.changeEditingWaypointAdded($(this).data('track'));
 
       $('.added-track-selector').removeClass('active');
       $(this).addClass('active');
