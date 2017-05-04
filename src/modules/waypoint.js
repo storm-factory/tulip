@@ -1,4 +1,5 @@
 // TODO seperate into tulip model and controller and try to abstract the waypoint UI element from the data state
+//  also rename waypoint to instruction
 var Waypoint = Class({
   /*
 

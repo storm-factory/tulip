@@ -128,9 +128,9 @@
                 <hr>
               </div>
             </div>
-            <!-- render waypoint templates here -->
-            <div id="roadbook-waypoints" data-bind="template: { name: 'waypoint-template', foreach: app.roadbook.waypoints }"></div>
-            <!--  palette for editing waypoint content -->
+            <!-- render instruction templates here -->
+            <div id="roadbook-waypoints" data-bind="template: { name: 'waypoint-template', foreach: app.roadbook.instructions }"></div>
+            <!--  palette for editing instruction content -->
             <div id="waypoint-palette">
               <div class="row">
                 <div class="large-12 columns text-right">
@@ -197,7 +197,7 @@
                       </div>
                       <div class="large-6 columns">
                         <div class="switch round tiny">
-                          <input id="toggle-heading" type="checkbox" name="toggle-heading" data-bind="checked: waypointShowHeading">
+                          <input id="toggle-heading" type="checkbox" name="toggle-heading" data-bind="checked: instructionShowHeading">
                           <label for="toggle-heading"></label>
                         </div>
                       </div>
@@ -379,7 +379,7 @@
   <!--
     Define templates
   -->
-  <!--  waypoint template-->
+  <!--  instruction template-->
   <script type="text/html" id="waypoint-template">
     <div class='waypoint row'>
       <div class='waypoint-distance'>

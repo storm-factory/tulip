@@ -1,5 +1,6 @@
 'use strict';
 // TODO refactor this to use MVC pattern and act as a model for the roadbook all UI interaction should be moved to an application controller, also change to ES6 syntax
+// TODO rename instructions to instructions
 class RoadbookModel{
   constructor(){
     /*
@@ -23,32 +24,24 @@ class RoadbookModel{
     ---------------------------------------------------------------------------
   */
 
-  addWaypoint(wptData){
-    this.finishWaypointEdit();
-    //determine index of waypoint based on distance from start
-    var index = this.determineWaypointInsertionIndex(wptData.kmFromStart);
-    /*
-      if a waypoint is inserted in between two waypoints,
-       check the exit track of the one before it
-       and set this one's exit and entry to have the same track type
-    */
-    if(index > 0 && (wptData.entryTrackType == undefined)) {
-      wptData.entryTrackType = this.waypoints()[index-1].exitTrackType;
-      wptData.exitTrackType = wptData.entryTrackType;
-    }
+  addWaypoint(instructionData){
+    this.finishWaypointEdit(); //TODO make callback?
 
-    //create the waypoint
-    var waypoint = new Waypoint(this, wptData);
+    var index = this.determineInstructionInsertionIndex(instructionData.kmFromStart);
+    this.determineInstructionTrackTypes(index,instructionData);
 
-    this.waypoints.splice(index,0,waypoint);
+    //create the instruction
+    var instruction = new Waypoint(this, instructionData);
+
+    this.instructions.splice(index,0,instruction);
     this.reindexWaypoints();
 
     //persistence tracking
     // TODO how often is this used?
     this.newWaypoints = true;
-    $('#save-roadbook').removeClass('secondary');
+    $('#save-roadbook').removeClass('secondary'); //TODO this shouldn't be here
 
-    return waypoint;
+    return instruction;
   }
 
   appendRouteFromJSON(json,fileName){
@@ -56,16 +49,16 @@ class RoadbookModel{
     this.desc(json.desc);
     this.totalDistance(json.totalDistance);
     this.filePath = fileName
-    var points = json.waypoints;
+    var points = json.instructions;
     var wpts = []
-    // NOTE: For some strange reason, due to canvas rendering, a for loop causes points and waypoints to be skipped, hence for...of in
+    // NOTE: For some strange reason, due to canvas rendering, a for loop causes points and instructions to be skipped, hence for...of in
     for(var point of points){
       var latLng = new google.maps.LatLng(point.lat, point.long)
       var marker = app.mapModel.addRoutePoint(latLng, app.mapController.map)
-      if(point.waypoint){
+      if(point.instruction){
         app.mapModel.setMarkerIconToWaypointIcon(marker);
         point.routePointIndex = marker.routePointIndex; //refactor to persist this
-        marker.waypoint =  this.appendWaypoint(point);
+        marker.instruction =  this.appendWaypoint(point);
       }
     }
     // NOTE this is less than ideal
@@ -84,9 +77,9 @@ class RoadbookModel{
   }
 
   appendWaypoint(wptData){
-    var waypoint = new Waypoint(this, wptData);
-    this.waypoints.push(waypoint);
-    return waypoint;
+    var instruction = new Waypoint(this, wptData);
+    this.instructions.push(instruction);
+    return instruction;
   }
 
   bindToKnockout(){
@@ -96,8 +89,8 @@ class RoadbookModel{
     this.name = ko.observable('Name your roadbook');
     this.desc = ko.observable('Describe your roadbook');
     this.totalDistance = ko.observable('0.00');
-    this.waypoints = ko.observableArray([]);
-    this.waypointShowHeading = ko.observable(true);
+    this.instructions = ko.observableArray([]);
+    this.instructionShowHeading = ko.observable(true);
   }
 
   changeEditingWaypointAdded(type){
@@ -105,51 +98,51 @@ class RoadbookModel{
   }
 
   changeEditingWaypointEntry(type){
-    var waypoint = this.currentlyEditingWaypoint;
-    waypoint.changeEntryTrackType(type);
-    var waypointIndex = this.waypoints().indexOf(waypoint)
-    //if it's the first waypoint we can't change the previous waypoint exit
+    var instruction = this.currentlyEditingWaypoint;
+    instruction.changeEntryTrackType(type);
+    var instructionIndex = this.instructions().indexOf(instruction)
+    //if it's the first instruction we can't change the previous instruction exit
     // TODO loop until the track type changes
-    if(waypointIndex > 0){
-      this.waypoints()[waypointIndex-1].changeExitTrackType(type);
-      this.waypoints()[waypointIndex-1].tulip.finishEdit();
+    if(instructionIndex > 0){
+      this.instructions()[instructionIndex-1].changeExitTrackType(type);
+      this.instructions()[instructionIndex-1].tulip.finishEdit();
     }
   }
 
   changeEditingWaypointExit(type){
-    var waypoint = this.currentlyEditingWaypoint;
-    waypoint.changeExitTrackType(type);
-    var waypointIndex = this.waypoints().indexOf(waypoint)
-    //if it's the last waypoint we can't change the next waypoint entry
+    var instruction = this.currentlyEditingWaypoint;
+    instruction.changeExitTrackType(type);
+    var instructionIndex = this.instructions().indexOf(instruction)
+    //if it's the last instruction we can't change the next instruction entry
     // TODO loop until the track type changes
-    if((waypointIndex+1 < this.waypoints().length)){
-      this.waypoints()[waypointIndex+1].changeEntryTrackType(type);
-      this.waypoints()[waypointIndex+1].tulip.finishEdit();
+    if((instructionIndex+1 < this.instructions().length)){
+      this.instructions()[instructionIndex+1].changeEntryTrackType(type);
+      this.instructions()[instructionIndex+1].tulip.finishEdit();
     }
   }
 
 
   deleteWaypoint(index){
     this.finishWaypointEdit();
-    this.waypoints.splice(index - 1,1);
+    this.instructions.splice(index - 1,1);
     this.reindexWaypoints();
   }
 
   /*
-    Use a binary search algorithm to determine the index to insert the waypoint into the roadbook
-    waypoints array
+    Use a binary search algorithm to determine the index to insert the instruction into the roadbook
+    instructions array based on the distance from the start
   */
-  determineWaypointInsertionIndex(kmFromStart){
+  determineInstructionInsertionIndex(kmFromStart){
     var minIndex = 0;
 
-    var maxIndex = this.waypoints().length - 1;
+    var maxIndex = this.instructions().length - 1;
     var currentIndex;
-    var midpoint = this.waypoints().length/2 | 0;
+    var midpoint = this.instructions().length/2 | 0;
     var currentWaypoint;
 
     while (minIndex <= maxIndex) {
       currentIndex = (minIndex + maxIndex) / 2 | 0;
-      currentWaypoint = this.waypoints()[currentIndex];
+      currentWaypoint = this.instructions()[currentIndex];
 
       if (currentWaypoint.kmFromStart() < kmFromStart) {
         minIndex = currentIndex + 1;
@@ -162,6 +155,18 @@ class RoadbookModel{
       }
     }
     return Math.abs(~maxIndex);
+  }
+
+  /*
+    if a instruction is inserted in between two instructions,
+     check the exit track of the one before it
+     and set this one's exit and entry to have the same track type
+  */
+  determineInstructionTrackTypes(index,instructionData){
+    if(index > 0 && (instructionData.entryTrackType == undefined)) {
+      instructionData.entryTrackType = this.instructions()[index-1].exitTrackType;
+      instructionData.exitTrackType = instructionData.entryTrackType;
+    }
   }
 
   /*
@@ -182,9 +187,9 @@ class RoadbookModel{
   }
 
   reindexWaypoints(){
-    for(var i = 0; i < this.waypoints().length; i++){
-      var waypoint = this.waypoints()[i];
-      waypoint.id = i + 1; //we don't need no zero index
+    for(var i = 0; i < this.instructions().length; i++){
+      var instruction = this.instructions()[i];
+      instruction.id = i + 1; //we don't need no zero index
     }
   }
 
@@ -194,30 +199,30 @@ class RoadbookModel{
     ---------------------------------------------------------------------------
   */
   // NOTE controller function
-  requestWaypointEdit(waypoint){
-    if(waypoint != this.currentlyEditingWaypoint){ //we need this to discard click events fired from editing the waypoint tulip canvas
+  requestWaypointEdit(instruction){
+    if(instruction != this.currentlyEditingWaypoint){ //we need this to discard click events fired from editing the instruction tulip canvas
       this.finishWaypointEdit(); //clear any existing UI just to be sure
       $('#save-roadbook').removeClass('secondary');
-      this.currentlyEditingWaypoint = waypoint;
-      $('#note-editor').html(waypoint.noteHTML());
-      $('#notification-bubble').val((waypoint.notification ? waypoint.notification.bubble : null));
-      $('#notification-modifier').val((waypoint.notification ? waypoint.notification.modifier : null));
-      $('#note-editor-container').toggleClass('hideCap',!waypoint.showHeading());
-      this.waypointShowHeading(waypoint.showHeading());
+      this.currentlyEditingWaypoint = instruction;
+      $('#note-editor').html(instruction.noteHTML());
+      $('#notification-bubble').val((instruction.notification ? instruction.notification.bubble : null));
+      $('#notification-modifier').val((instruction.notification ? instruction.notification.modifier : null));
+      $('#note-editor-container').toggleClass('hideCap',!instruction.showHeading());
+      this.instructionShowHeading(instruction.showHeading());
       // app.glyphControls.bindNoteGlyphResizable();
-      app.mapController.setMapCenter({lat: waypoint.lat(), lng: waypoint.lng()});
+      app.mapController.setMapCenter({lat: instruction.lat(), lng: instruction.lng()});
       if(app.mapController.getMapZoom() < 18){
         app.mapController.setMapZoom(18);
       }
 
       $('#roadbook-waypoints').children().hide();
-      $(waypoint.element).show();
-      $('#roadbook').scrollTop(waypoint.element.position().top - 80)
+      $(instruction.element).show();
+      $('#roadbook').scrollTop(instruction.element.position().top - 80)
       $('#waypoint-palette').slideDown('slow');
-      $(waypoint.element).find('.waypoint-note').append($('#note-editor-container'));
+      $(instruction.element).find('.waypoint-note').append($('#note-editor-container'));
       $('#roadbook').css('padding-bottom', '0');
       $('#roadbook').find('.roadbook-info').hide();
-      if(waypoint.notification){
+      if(instruction.notification){
         $('#notification-options').removeClass('hidden');
       }
       return true;
@@ -234,7 +239,7 @@ class RoadbookModel{
     return true;
   }
   // NOTE controller function
-  resetWaypointPalette(waypoint){
+  resetWaypointPalette(instruction){
     $('.waypoint.row').show();
     $('#waypoint-palette').find('.note-tools').append($('#note-editor-container'));
     $('#waypoint-palette').slideUp('slow');
@@ -243,23 +248,23 @@ class RoadbookModel{
     $('#roadbook').css('padding-bottom', '150%');
     $('#roadbook').find('.roadbook-info').show();
     $('#notification-options').addClass('hidden');
-    $('#roadbook').scrollTop(waypoint.element.position().top - 80);
+    $('#roadbook').scrollTop(instruction.element.position().top - 80);
   }
 
-  updateWaypointAfterEdit(waypoint){
-    waypoint.changeAddedTrackType('track');
-    waypoint.noteHTML($('#note-editor').html());
-    if(waypoint.notification){
-      waypoint.notification.bubble = $('#notification-bubble').val();
-      waypoint.notification.modifier = $('#notification-modifier').val();
+  updateWaypointAfterEdit(instruction){
+    instruction.changeAddedTrackType('track');
+    instruction.noteHTML($('#note-editor').html());
+    if(instruction.notification){
+      instruction.notification.bubble = $('#notification-bubble').val();
+      instruction.notification.modifier = $('#notification-modifier').val();
     }
-    waypoint.tulip.finishEdit();
-    waypoint.tulip.finishRemove();
+    instruction.tulip.finishEdit();
+    instruction.tulip.finishRemove();
   }
 
   updateTotalDistance(){
-    if(this.waypoints().length > 0 ){
-      this.totalDistance(this.waypoints()[this.waypoints().length - 1].totalDistance());
+    if(this.instructions().length > 0 ){
+      this.totalDistance(this.instructions()[this.instructions().length - 1].totalDistance());
     } else{
       this.totalDistance(0);
     }
@@ -278,28 +283,28 @@ class RoadbookModel{
       desc: this.desc(),
       totalDistance: this.totalDistance(),
       filePath: this.filePath,
-      waypoints: [],
+      instructions: [],
     }
     points = app.mapModel.markers
-    // TODO fold waypoint into object instead of boolean so we aren't saving nulls
+    // TODO fold instruction into object instead of boolean so we aren't saving nulls
     for(i = 0; i < points.length; i++){
-        var waypointJSON = {
+        var instructionJSON = {
           lat: points[i].getPosition().lat(),
           long: points[i].getPosition().lng(),
-          waypoint: points[i].waypoint ? true : false,
-          kmFromStart: points[i].waypoint ? points[i].waypoint.kmFromStart() : null,
-          kmFromPrev: points[i].waypoint ? points[i].waypoint.kmFromPrev() : null,
-          heading: points[i].waypoint ? points[i].waypoint.exactHeading() : null,
-          showHeading: points[i].waypoint ? points[i].waypoint.showHeading() : null,
-          entryTrackType: points[i].waypoint ? points[i].waypoint.entryTrackType : null,
-          exitTrackType: points[i].waypoint ? points[i].waypoint.exitTrackType : null,
-          notification: points[i].waypoint && points[i].waypoint.notification  ? points[i].waypoint.notification : null,
+          instruction: points[i].instruction ? true : false,
+          kmFromStart: points[i].instruction ? points[i].instruction.kmFromStart() : null,
+          kmFromPrev: points[i].instruction ? points[i].instruction.kmFromPrev() : null,
+          heading: points[i].instruction ? points[i].instruction.exactHeading() : null,
+          showHeading: points[i].instruction ? points[i].instruction.showHeading() : null,
+          entryTrackType: points[i].instruction ? points[i].instruction.entryTrackType : null,
+          exitTrackType: points[i].instruction ? points[i].instruction.exitTrackType : null,
+          notification: points[i].instruction && points[i].instruction.notification  ? points[i].instruction.notification : null,
           notes: {
-            text: points[i].waypoint ? points[i].waypoint.noteHTML() : null,
+            text: points[i].instruction ? points[i].instruction.noteHTML() : null,
           },
-          tulipJson: points[i].waypoint ? points[i].waypoint.serializeTulip() : null,
+          tulipJson: points[i].instruction ? points[i].instruction.serializeTulip() : null,
         }
-        roadbookJSON.waypoints.push(waypointJSON);
+        roadbookJSON.instructions.push(instructionJSON);
     }
     return roadbookJSON;
   }
@@ -312,26 +317,26 @@ class RoadbookModel{
       desc: this.desc(),
       totalDistance: this.totalDistance(),
       filePath: this.filePath,
-      waypoints: [],
+      instructions: [],
     }
     points = app.mapModel.markers
-    // TODO fold waypoint into object instead of boolean so we aren't saving nulls
+    // TODO fold instruction into object instead of boolean so we aren't saving nulls
     for(i = 0; i < points.length; i++){
-      if(points[i].waypoint){
-        var waypointJSON = {
+      if(points[i].instruction){
+        var instructionJSON = {
           lat: points[i].getPosition().lat(),
           long: points[i].getPosition().lng(),
-          waypoint: points[i].waypoint ? true : false,
-          kmFromStart: points[i].waypoint.kmFromStart(),
-          kmFromPrev: points[i].waypoint.kmFromPrev(),
-          heading: points[i].waypoint.exactHeading(),
-          showHeading: points[i].waypoint.showHeading(),
+          instruction: points[i].instruction ? true : false,
+          kmFromStart: points[i].instruction.kmFromStart(),
+          kmFromPrev: points[i].instruction.kmFromPrev(),
+          heading: points[i].instruction.exactHeading(),
+          showHeading: points[i].instruction.showHeading(),
           notes: {
-            text: points[i].waypoint.noteHTML(),
+            text: points[i].instruction.noteHTML(),
           },
-          tulip: points[i].waypoint.tulipPNG(),
+          tulip: points[i].instruction.tulipPNG(),
         }
-        roadbookJSON.waypoints.push(waypointJSON);
+        roadbookJSON.instructions.push(instructionJSON);
       }
 
     }
