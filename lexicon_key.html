@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<script src="./assets/libs/jquery-2.1.4.min.js"></script>
+
+</head>
+
+<body>
+
+<div id="storage" style="display:none;"></div>
+<h4>Tulip lexicon</h4>
+
+<table id="lexiconTable" border = "1px">
+<tr id="lexiconTableRow"><td><p> &nbsp Table Loading ... &nbsp </p></td></tr>
+</table>
+
+
+<script>
+
+var tablewidth = 4;
+var glyphHeight = 30;
+
+$(document).ready(function(){
+
+$("#storage").load("index.html #glyphs",function(responseTxt,statusTxt,xhr){
+		if(statusTxt == "success") 
+			
+			var aGlyphs = $("#storage").find("li");
+			var j=-1;
+			var newrow;
+			for(var i = 0; i < aGlyphs.size();i++){
+				var aGlyph = aGlyphs.eq(i);
+				if($(aGlyph).children("a.th").size() > 0){
+					var glyphImg = $(aGlyph).find("a.th").html();
+					glyphImg = glyphImg.slice(0,-1) + ' height="' + glyphHeight + '">';
+					
+					var glyphTxt = $(aGlyph).children("p").text();
+					
+					j++;
+					
+					if( j%tablewidth == 0 ) { newrow = "<tr>";}
+					
+					newrow += "<td>" + glyphImg + "</td><td>" + glyphTxt + "</td>";
+					
+					if( j%tablewidth == tablewidth-1 ) { 
+						newrow += "</tr>";
+						$(newrow).insertBefore("#lexiconTableRow"); 
+					}
+				}				
+			}
+			
+			while(j%tablewidth != tablewidth-1){
+				newrow += "<td></td><td></td>"
+				j++;
+			}
+			newrow += "</tr>";
+			$(newrow).insertBefore("#lexiconTableRow"); 
+			
+			$("#lexiconTableRow").remove();
+	
+			
+		if(statusTxt == "error")
+			alert("Error: " + xhr.status + ": " + xhr.statusText);
+	});
+	
+});
+
+</script>
+
+</body>
+</html>
