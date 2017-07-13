@@ -8,7 +8,6 @@ class RoadbookModel{
     */
     this.currentlyEditingWaypoint = null;
     this.editingNameDesc = false;
-    this.newWaypoints = false;
 
     /*
       Declare some internal variables
@@ -30,16 +29,12 @@ class RoadbookModel{
     var index = this.determineInstructionInsertionIndex(instructionData.kmFromStart);
     this.determineInstructionTrackTypes(index,instructionData);
 
-    //create the instruction
-    var instruction = new Waypoint(this, instructionData);
+    var instruction = this.instantiateInstruction(instructionData);
 
     this.instructions.splice(index,0,instruction);
     this.reindexWaypoints();
 
-    //persistence tracking
-    // TODO how often is this used?
-    this.newWaypoints = true;
-    $('#save-roadbook').removeClass('secondary'); //TODO this shouldn't be here
+    this.controller.highlightSaveButton();
 
     return instruction;
   }
@@ -167,6 +162,10 @@ class RoadbookModel{
       instructionData.entryTrackType = this.instructions()[index-1].exitTrackType;
       instructionData.exitTrackType = instructionData.entryTrackType;
     }
+  }
+
+  instantiateInstruction(instructionData){
+    return new Waypoint(this, instructionData);
   }
 
   /*

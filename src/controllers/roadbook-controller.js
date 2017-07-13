@@ -12,6 +12,10 @@ class RoadbookController{
     this.bindToAddedTrackSelector();
   }
 
+  highlightSaveButton(){
+    $('#save-roadbook').removeClass('secondary'); //TODO this shouldn't be here
+  }
+
   /*
     initialize rich text editor for the roadbook description
   */

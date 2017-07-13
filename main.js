@@ -123,7 +123,8 @@ function createWindow () {
 
 
 /*
-  the below should go in their own folders and be required
+  IPC LISTENERS
+  TODO: the below should go in their own folders and be required
 */
 var data;
 ipcMain.on('ignite-print', (event, arg) => {
