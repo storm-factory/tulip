@@ -24,6 +24,7 @@ class RoadbookModel{
   */
 
   addInstruction(instructionData){
+
     this.finishInstructionEdit(); //TODO make callback?
 
     var index = this.determineInstructionInsertionIndex(instructionData.kmFromStart);
@@ -68,7 +69,7 @@ class RoadbookModel{
   }
 
   appendGlyphToNoteTextEditor(image){
-    $('#note-editor').append(image);
+    this.controller.appendGlyphToNoteTextEditor(image);
   }
 
   appendInstruction(wptData){
@@ -197,65 +198,32 @@ class RoadbookModel{
       Roadbook edit control flow
     ---------------------------------------------------------------------------
   */
-  // NOTE controller function
   requestInstructionEdit(instruction){
     if(instruction != this.currentlyEditingInstruction){ //we need this to discard click events fired from editing the instruction tulip canvas
       this.finishInstructionEdit(); //clear any existing UI just to be sure
-      $('#save-roadbook').removeClass('secondary');
       this.currentlyEditingInstruction = instruction;
-      $('#note-editor').html(instruction.noteHTML());
-      $('#notification-bubble').val((instruction.notification ? instruction.notification.bubble : null));
-      $('#notification-modifier').val((instruction.notification ? instruction.notification.modifier : null));
-      $('#note-editor-container').toggleClass('hideCap',!instruction.showHeading());
       this.instructionShowHeading(instruction.showHeading());
-      // app.glyphControls.bindNoteGlyphResizable();
-      app.mapController.setMapCenter({lat: instruction.lat(), lng: instruction.lng()});
-      if(app.mapController.getMapZoom() < 18){
-        app.mapController.setMapZoom(18);
-      }
-
-      $('#roadbook-waypoints').children().hide();
-      $(instruction.element).show();
-      $('#roadbook').scrollTop(instruction.element.position().top - 80)
-      $('#waypoint-palette').slideDown('slow');
-      $(instruction.element).find('.waypoint-note').append($('#note-editor-container'));
-      $('#roadbook').css('padding-bottom', '0');
-      $('#roadbook').find('.roadbook-info').hide();
-      if(instruction.notification){
-        $('#notification-options').removeClass('hidden');
-      }
+      app.mapController.centerOnInstruction(instruction);
+      this.controller.populateInstructionPalette(instruction)
       return true;
     }
   }
 
   finishInstructionEdit(){
     if(this.currentlyEditingInstruction !== null){
-      this.resetInstructionPalette(this.currentlyEditingInstruction);
       this.updateInstructionAfterEdit(this.currentlyEditingInstruction);
+      this.controller.resetInstructionPalette(this.currentlyEditingInstruction);
       this.currentlyEditingInstruction = null;
-      $('#note-editor').html('');
     }
     return true;
-  }
-  // NOTE controller function
-  resetInstructionPalette(instruction){
-    $('.waypoint.row').show();
-    $('#waypoint-palette').find('.note-tools').append($('#note-editor-container'));
-    $('#waypoint-palette').slideUp('slow');
-    $('.added-track-selector').removeClass('active');
-    $($('.added-track-selector')[1]).addClass('active');
-    $('#roadbook').css('padding-bottom', '150%');
-    $('#roadbook').find('.roadbook-info').show();
-    $('#notification-options').addClass('hidden');
-    $('#roadbook').scrollTop(instruction.element.position().top - 80);
   }
 
   updateInstructionAfterEdit(instruction){
     instruction.changeAddedTrackType('track');
-    instruction.noteHTML($('#note-editor').html());
+    instruction.noteHTML(this.controller.getNoteEditorHTML());
     if(instruction.notification){
-      instruction.notification.bubble = $('#notification-bubble').val();
-      instruction.notification.modifier = $('#notification-modifier').val();
+      instruction.notification.bubble = this.controller.getNotificationBubbleVal();
+      instruction.notification.modifier = this.controller.getNotificationModifierVal();
     }
     instruction.tulip.finishEdit();
     instruction.tulip.finishRemove();
@@ -345,3 +313,7 @@ class RoadbookModel{
   }
 
 };
+/*
+  Node exports for test suite
+*/
+module.exports.roadbookModel = RoadbookModel;

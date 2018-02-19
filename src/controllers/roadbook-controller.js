@@ -16,6 +16,10 @@ class RoadbookController{
     $('#save-roadbook').removeClass('secondary'); //TODO this shouldn't be here
   }
 
+  appendGlyphToNoteTextEditor(image){
+    $('#note-editor').append(image);
+  }
+
   /*
     initialize rich text editor for the roadbook description
   */
@@ -112,5 +116,48 @@ class RoadbookController{
       $('.added-track-selector').removeClass('active');
       $(this).addClass('active');
     });
+  }
+
+  populateInstructionPalette(instruction){
+    $('#save-roadbook').removeClass('secondary');
+    $('#note-editor').html(instruction.noteHTML());
+    $('#notification-bubble').val((instruction.notification ? instruction.notification.bubble : null));
+    $('#notification-modifier').val((instruction.notification ? instruction.notification.modifier : null));
+    $('#note-editor-container').toggleClass('hideCap',!instruction.showHeading());
+    $('#roadbook-waypoints').children().hide();
+    $(instruction.element).show();
+    $('#roadbook').scrollTop(instruction.element.position().top - 80)
+    $('#waypoint-palette').slideDown('slow');
+    $(instruction.element).find('.waypoint-note').append($('#note-editor-container'));
+    $('#roadbook').css('padding-bottom', '0');
+    $('#roadbook').find('.roadbook-info').hide();
+    if(instruction.notification){
+      $('#notification-options').removeClass('hidden');
+    }
+  }
+
+  resetInstructionPalette(instruction){
+    $('.waypoint.row').show();
+    $('#waypoint-palette').find('.note-tools').append($('#note-editor-container'));
+    $('#waypoint-palette').slideUp('slow');
+    $('.added-track-selector').removeClass('active');
+    $($('.added-track-selector')[1]).addClass('active');
+    $('#roadbook').css('padding-bottom', '150%');
+    $('#roadbook').find('.roadbook-info').show();
+    $('#notification-options').addClass('hidden');
+    $('#roadbook').scrollTop(instruction.element.position().top - 80);
+    $('#note-editor').html('');
+  }
+
+  getNoteEditorHTML(){
+    return $('#note-editor').html()
+  }
+
+  getNotificationBubbleVal(){
+    return $('#notification-bubble').val();
+  }
+
+  getNotificationModifierVal(){
+    return $('#notification-modifier').val();
   }
 }

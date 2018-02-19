@@ -61,6 +61,7 @@ var Instruction = Class({
   },
   //TODO This needs refactored
   manageNotifications(glyphs){
+    console.log("kerplo");
     if(this.notification == null){
       // create a new notification
       for(i=0;i<glyphs.length;i++){

@@ -169,6 +169,13 @@ class MapController{
     }
   }
 
+  centerOnInstruction(instruction){
+    this.setMapCenter({lat: instruction.lat(), lng: instruction.lng()});
+    if(this.getMapZoom() < 18){
+      this.setMapZoom(18);
+    }
+  }
+
   bindToModel(){
     this.model.route = this.routePolyline.getPath();
     this.model.controller = this;
