@@ -1,6 +1,5 @@
-// TODO seperate into tulip model and controller and try to abstract the waypoint UI element from the data state
-//  also rename waypoint to instruction
-var Waypoint = Class({
+// TODO seperate into tulip model and controller and try to abstract the instruction UI element from the data state
+var Instruction = Class({
   /*
 
     wptJson: {
@@ -35,7 +34,7 @@ var Waypoint = Class({
     this.entryTrackType = wptJson.entryTrackType == undefined ? 'track' : wptJson.entryTrackType;
     this.exitTrackType  = wptJson.exitTrackType == undefined ? 'track' : wptJson.exitTrackType;
 
-    // waypoints don't get any note info when they are added via UI so intialize them to blank
+    // instruction don't get any note info when they are added via UI so intialize them to blank
     var text = wptJson.notes == undefined ? '' : wptJson.notes.text;
     this.noteHTML = ko.observable(text);
 
@@ -52,10 +51,10 @@ var Waypoint = Class({
     var angle = wptJson.relativeAngle;
     var json = wptJson.tulipJson;
     var trackTypes = {entryTrackType: this.entryTrackType, exitTrackType: this.exitTrackType};
-    ko.bindingHandlers.waypointCanvasRendered = {
+    ko.bindingHandlers.instructionCanvasRendered = {
       init: function(element){
         _this.initTulip(element, angle, trackTypes, json);
-        _this.initWaypointListeners($(element).parents('.waypoint'));
+        _this.initInstructionListeners($(element).parents('.waypoint'));
         _this.element = $(element).parents('.waypoint');
       }
     };
@@ -121,7 +120,7 @@ var Waypoint = Class({
     this.tulip = new Tulip(element, angle, trackTypes, json);
   },
 
-  updateWaypoint: function (geoData,routePointIndex){
+  updateInstruction: function (geoData,routePointIndex){
     if(geoData.kmFromStart){
       this.kmFromStart(geoData.kmFromStart);
     }
@@ -161,13 +160,17 @@ var Waypoint = Class({
     return Array(Math.max(3 - String(heading).length + 1, 0)).join(0) + heading + '\xB0';
   },
 
-  initWaypointListeners: function(element){
+  initInstructionListeners: function(element){
     var _this = this;
     $(element).click(function(e){
-      if(_this.roadbook.requestWaypointEdit(_this)){
+      if(_this.roadbook.requestInstructionEdit(_this)){
         _this.tulip.beginEdit();
       }
     });
+  },
+
+  instructionNumber: function(){
+    return this.roadbook.instructions.indexOf(this) + 1;
   },
 
   serializeTulip: function() {

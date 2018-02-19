@@ -1,7 +1,7 @@
 'use strict';
 /*
   PROBLEM: This class does map stuff... It should be broken into more specific classes
-  SOLUTIONS: map-util, map route object, map waypoint object.. something along those lines
+  SOLUTIONS: map-util, map route object, map instruction object.. something along those lines
 
   // TODO rewrite latLng as prototype so we can store all the marker stuff in there and only have to track one array
 
@@ -29,11 +29,11 @@ class MapModel {
         var latLng = this.googleMapsNewLatLng(points[j].lat, points[j].lng)
         this.addRoutePoint(latLng,map);
         if(j == points.length-1){
-          this.addWaypoint(this.getLastItemInArray(this.markers))
+          this.addInstruction(this.getLastItemInArray(this.markers))
         }
       }
     }
-    this.updateRoadbookAndWaypoints();
+    this.updateRoadbookAndInstructions();
   }
 
   /*
@@ -62,9 +62,9 @@ class MapModel {
     this.markers.push(marker);
   }
 
-  addWaypoint(marker){
-    this.setMarkerIconToWaypointIcon(marker);
-    marker.waypoint = this.addWaypointToRoadbook(this.getWaypointGeodata(marker, this.route, this.markers),this.updateRoadbookAndWaypoints);
+  addInstruction(marker){
+    this.setMarkerIconToInstructionIcon(marker);
+    marker.instruction = this.addInstructionToRoadbook(this.getInstructionGeodata(marker, this.route, this.markers),this.updateRoadbookAndInstructions);
   }
 
   addWaypointBubble(index,radius,fill,map) {
@@ -92,8 +92,8 @@ class MapModel {
     marker.setIcon(this.buildDeleteQueueIcon());
   }
 
-  setMarkerIconToWaypointIcon(marker){
-    marker.setIcon(this.buildWaypointIcon());
+  setMarkerIconToInstructionIcon(marker){
+    marker.setIcon(this.buildInstructionIcon());
   }
 
   computeDistanceOnRouteBetweenPoints(beginIndex, endIndex, route){
@@ -105,7 +105,7 @@ class MapModel {
   }
 
   /*
-    Compute the cap heading of this waypoint
+    Compute the cap heading of this instruction
     // TODO doing too many tings
   */
   computeHeading(marker, route){
@@ -139,7 +139,7 @@ class MapModel {
   }
 
   computeMapOrientationAngle(){
-    var i = this.getRoadBookWaypointBeingEditedRoutePointIndex();
+    var i = this.getRoadBookInstructionBeingEditedRoutePointIndex();
     if(i){
       return this.googleMapsComputeHeading(this.route.getAt(i-1),this.route.getAt(i))
     }
@@ -191,8 +191,8 @@ class MapModel {
     var start = this.deleteQueue.pop();
 
     for(var i = end;i >= start;i--){
-      if(this.markers[i].waypoint){
-        this.revertWaypointToRoutePoint(this.markers[i]);
+      if(this.markers[i].instruction){
+        this.revertInstructionToRoutePoint(this.markers[i]);
       }
       this.deletePointFromRoute(this.markers[i].routePointIndex);
     }
@@ -215,8 +215,8 @@ class MapModel {
     return Math.pow(map.getZoom(), -(map.getZoom()/5));
   }
 
-  getWaypointGeodata(marker, route, markers){
-    var prevWaypointIndex = this.getPrevWaypointRoutePointIndex(marker.routePointIndex, markers); //TODO pass in markers?
+  getInstructionGeodata(marker, route, markers){
+    var prevInstructionIndex = this.getPrevInstructionRoutePointIndex(marker.routePointIndex, markers); //TODO pass in markers?
     var heading = this.computeHeading(marker, route);
     var relativeAngle = this.computeRelativeAngle(marker,route,heading);
     return {
@@ -224,16 +224,16 @@ class MapModel {
       long: marker.getPosition().lng(),
       routePointIndex: marker.routePointIndex,
       kmFromStart: this.computeDistanceOnRouteBetweenPoints(0,marker.routePointIndex, route.getArray()), //TODO pass in route?
-      kmFromPrev: this.computeDistanceOnRouteBetweenPoints(prevWaypointIndex, marker.routePointIndex, route.getArray()), //TODO pass in route?
+      kmFromPrev: this.computeDistanceOnRouteBetweenPoints(prevInstructionIndex, marker.routePointIndex, route.getArray()), //TODO pass in route?
       heading: heading,
       relativeAngle: relativeAngle
     }
   }
 
-  getPrevWaypointRoutePointIndex(routePointIndex,markersArray){
+  getPrevInstructionRoutePointIndex(routePointIndex,markersArray){
     var index = 0;
     for(var i=routePointIndex-1;i>0;i--){
-      if(markersArray[i].waypoint){
+      if(markersArray[i].instruction){
         index = i;
         break;
       }
@@ -266,25 +266,25 @@ class MapModel {
     return marker;
   }
 
-  makeFirstMarkerWaypoint(markers){
+  makeFirstMarkerInstruction(markers){
     var marker = markers[0];
-    this.addWaypoint(marker);
+    this.addInstruction(marker);
   }
 
-  revertWaypointToRoutePoint(marker){
+  revertInstructionToRoutePoint(marker){
     marker.setIcon(this.buildVertexIcon());
     this.deleteWaypointBubble(marker.routePointIndex);
-    this.deleteWaypointFromRoadbook(marker.waypoint.id);
-    marker.waypoint = null;
+    this.deleteInstructionFromRoadbook(marker.instruction.id);
+    marker.instruction = null;
     marker.bubble = null;
-    this.updateRoadbookAndWaypoints()
+    this.updateRoadbookAndInstructions()
   }
 
-  updateAllMarkersWaypointGeoData() {
+  updateAllMarkersInstructionGeoData() {
     for(var i = 0; i < this.markers.length; i++) {
       var marker = this.markers[i];
-      if(marker.waypoint) {
-        this.updateMarkerWaypointGeoData(marker, this.getWaypointGeodata(marker, this.route, this.markers));
+      if(marker.instruction) {
+        this.updateMarkerInstructionGeoData(marker, this.getInstructionGeodata(marker, this.route, this.markers));
       }
     }
   }
@@ -302,10 +302,10 @@ class MapModel {
   }
 
   /*
-    Roadbook/Waypoint update catchall
+    Roadbook/Instruction update catchall
   */
-  updateRoadbookAndWaypoints(){
-    this.updateAllMarkersWaypointGeoData();
+  updateRoadbookAndInstructions(){
+    this.updateAllMarkersInstructionGeoData();
     this.updateRoadbookTotalDistance();
   }
 
@@ -317,26 +317,26 @@ class MapModel {
     app.roadbook.updateTotalDistance(); //NOTE this shouldn't be in this model
   }
 
-  addWaypointToRoadbook(geoDataJSON, callback){
-    var roadbookWaypoint = app.roadbook.addWaypoint(geoDataJSON);
+  addInstructionToRoadbook(geoDataJSON, callback){
+    var roadbookInstruction = app.roadbook.addInstruction(geoDataJSON);
     callback.call(this)
-    return roadbookWaypoint;
+    return roadbookInstruction;
   }
 
-  deleteWaypointFromRoadbook(wptIndex){
-    app.roadbook.deleteWaypoint(wptIndex);
+  deleteInstructionFromRoadbook(index){
+    app.roadbook.deleteInstruction(index);
   }
 
-  getRoadBookWaypointBeingEditedRoutePointIndex(){
-    return app.roadbook.currentlyEditingWaypoint.routePointIndex;
+  getRoadBookInstructionBeingEditedRoutePointIndex(){
+    return app.roadbook.currentlyEditingInstruction.routePointIndex;
   }
 
   /*
-    Waypoint functions
+    Instruction functions
   */
 
-  updateMarkerWaypointGeoData(marker, geoData){
-    marker.waypoint.updateWaypoint(geoData, marker.routePointIndex);
+  updateMarkerInstructionGeoData(marker, geoData){
+    marker.instruction.updateInstruction(geoData, marker.routePointIndex);
   }
 
   /*
@@ -386,9 +386,9 @@ class MapModel {
   }
 
   /*
-    an icon which marks a waypoint (vertex) on the route Polyline
+    an icon which marks a instruction (vertex) on the route Polyline
   */
-  buildWaypointIcon(){
+  buildInstructionIcon(){
     return {
               path: 'M-1.25,-1.25 1.25,-1.25 1.25,1.25 -1.25,1.25z',
               scale: 7,
@@ -400,7 +400,7 @@ class MapModel {
   }
 
   /*
-    an icon which marks a waypoint (vertex) on the route Polyline
+    an icon which marks a point to be removed on the route Polyline
   */
   buildDeleteQueueIcon(){
     return {

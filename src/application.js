@@ -79,7 +79,7 @@ var App = Class({
 
   canSave: function(){
     var can;
-    can = this.roadbook.finishWaypointEdit();
+    can = this.roadbook.finishInstructionEdit();
     can = can || this.roadbook.newWaypoints;
     can = can || this.roadbook.finishNameDescEdit();
     return can;
@@ -164,7 +164,7 @@ var App = Class({
       // Request documents directory path from node
       this.ipc.send('get-documents-path');
     } else {
-      this.roadbook.finishWaypointEdit();
+      this.roadbook.finishInstructionEdit();
       this.fs.writeFile(this.roadbook.filePath, JSON.stringify(this.roadbook.statefulJSON(), null, 2), function (err) {});
     }
   },

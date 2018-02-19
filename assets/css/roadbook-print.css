@@ -92,6 +92,19 @@ body {
   font-size: 0.875rem;
 }
 
+.instruction-number{
+  height: 28px;
+  color: #d2d2d2;
+  font-weight: bold;
+  border-top: 1px solid #000;
+  text-align: left;
+  margin-top: 35px;
+  padding-left: 3px;
+  font-size: 25px;
+  width: 51%;
+  float: left;
+}
+
 .relative-distance {
   height: 28px;
   color: #000;
@@ -99,8 +112,10 @@ body {
   font-size: 25px;
   border-top: 1px solid #000;
   text-align: right;
-  margin-top: 45px;
+  margin-top: 35px;
   padding-right: 10px;
+  width: 40%;
+  float: right;
 }
 .total-distance {
   height: 90px;
@@ -187,10 +202,6 @@ body {
   overflow: hidden;
   word-wrap: break-word;
   line-height: 1;
-}
-
-.waypoint-distance .relative-distance {
-  margin-top: 35px;
 }
 
 /*

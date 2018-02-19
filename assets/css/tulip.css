@@ -277,6 +277,19 @@ textarea.waypoint-palette{
 .heading label {
   display: inline;
 }
+
+.instruction-number{
+  height: 28px;
+  color: #d2d2d2;
+  font-weight: bold;
+  border-top: 1px solid #000;
+  text-align: left;
+  margin-top: 45px;
+  padding-left: 3px;
+  width: 50%;
+  float: left;
+}
+
 .map-container
 {
   padding: 0 !important;
@@ -323,6 +336,8 @@ textarea.waypoint-palette{
   text-align: right;
   margin-top: 45px;
   padding-right: 3px;
+  width: 50%;
+  float: right;
 }
 
 .roadbook-container {

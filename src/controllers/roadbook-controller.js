@@ -3,7 +3,7 @@
 class RoadbookController{
   constructor(model){
     this.model = model
-    this.bindToWaypointDescriptionInput();
+    this.bindToInstructionDescriptionInput();
     this.bindToNameDescEditButtons();
     this.bindToPaletteControls();
     this.bindToTrackGrid();
@@ -19,7 +19,7 @@ class RoadbookController{
   /*
     initialize rich text editor for the roadbook description
   */
-  bindToWaypointDescriptionInput(){
+  bindToInstructionDescriptionInput(){
     var _this = this;
     this.descriptionTextEditor = new Quill('#description-editor');
     this.descriptionTextEditor.addModule('toolbar', {
@@ -62,12 +62,12 @@ class RoadbookController{
   bindToPaletteControls(){
     var _this = this;
     $('#hide-palette').click(function(){
-      _this.model.finishWaypointEdit();
+      _this.model.finishInstructionEdit();
     });
 
     $('#toggle-heading').change(function(){
-      $('#note-editor-container').toggleClass('hideCap',!_this.model.waypointShowHeading())
-      _this.model.currentlyEditingWaypoint.showHeading(_this.model.waypointShowHeading());
+      $('#note-editor-container').toggleClass('hideCap',!_this.model.instructionShowHeading())
+      _this.model.currentlyEditingInstruction.showHeading(_this.model.instructionShowHeading());
     });
   }
 
@@ -76,14 +76,14 @@ class RoadbookController{
     $('.track-grid').click(function(e){
       if($(this).hasClass('undo')){
         if(e.shiftKey){
-          _this.model.currentlyEditingWaypoint.tulip.beginRemoveTrack();
+          _this.model.currentlyEditingInstruction.tulip.beginRemoveTrack();
         }else{
-          _this.model.currentlyEditingWaypoint.tulip.removeLastTrack();
+          _this.model.currentlyEditingInstruction.tulip.removeLastTrack();
         }
         return
       }
       var angle = $(this).data('angle');
-      _this.model.currentlyEditingWaypoint.tulip.addTrack(angle);
+      _this.model.currentlyEditingInstruction.tulip.addTrack(angle);
     });
   }
 
@@ -91,7 +91,7 @@ class RoadbookController{
     var _this = this;
     $('.entry-track-selector').click(function(e) {
       e.preventDefault();
-      _this.model.changeEditingWaypointEntry($(this).data('track'));
+      _this.model.changeEditingInstructionEntry($(this).data('track'));
     });
   }
 
@@ -99,7 +99,7 @@ class RoadbookController{
     var _this = this;
     $('.exit-track-selector').click(function(e) {
       e.preventDefault();
-      _this.model.changeEditingWaypointExit($(this).data('track'));
+      _this.model.changeEditingInstructionExit($(this).data('track'));
     });
   }
 
@@ -107,7 +107,7 @@ class RoadbookController{
     var _this = this;
     $('.added-track-selector').click(function(e) {
       e.preventDefault();
-      _this.model.changeEditingWaypointAdded($(this).data('track'));
+      _this.model.changeEditingInstructionAdded($(this).data('track'));
 
       $('.added-track-selector').removeClass('active');
       $(this).addClass('active');

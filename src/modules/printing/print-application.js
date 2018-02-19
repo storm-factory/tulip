@@ -19,7 +19,7 @@ var PrintApp = Class({
     this.name = ko.observable('');
     this.desc = ko.observable('');
     this.totalDistance = ko.observable('');
-    this.waypoints = ko.observableArray([]);
+    this.instructions = ko.observableArray([]);
 
     this.ipc = require('electron').ipcRenderer;
     this.ipc.on('print-data', function(event, arg){
@@ -35,7 +35,7 @@ var PrintApp = Class({
     this.name(json.name);
     this.desc(json.desc);
     this.totalDistance(json.totalDistance);
-    this.waypoints(json.waypoints);
+    this.instructions(json.instructions);
     this.filePath = json.filePath;
 
     // Default to Letter Format
@@ -77,11 +77,11 @@ var PrintApp = Class({
   addPageBreaks(){
     if( $('.break').length > 0) { return };
     $('#roadbook').find('#roadbook-header').after($('<div>').attr('class', 'break'));
-    var waypoints = $('#roadbook').find('.waypoint');
+    var instructions = $('#roadbook').find('.waypoint');
     // Default to Letter Format
-    for(i=0;i<waypoints.length;i++){
+    for(i=0;i<instructions.length;i++){
       if((((i+1)%5) == 0) && (i > 0)){
-        $(waypoints[i]).after($('<div>').attr('class', 'break'));
+        $(instructions[i]).after($('<div>').attr('class', 'break'));
       }
     }
   },

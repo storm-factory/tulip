@@ -387,13 +387,17 @@
           <div data-bind="text: totalDistance">
           </div>
         </div>
+        <div class="instruction-number">
+          <div data-bind="text: instructionNumber()">
+          </div>
+        </div>
         <div class="relative-distance">
           <div data-bind="text: distFromPrev">
           </div>
         </div>
       </div>
       <div class='waypoint-tulip'>
-        <canvas data-bind="waypointCanvasRendered" width='180' height='180'>
+        <canvas data-bind="instructionCanvasRendered" width='180' height='180'>
         </canvas>
       </div>
       <div class='waypoint-note'>
@@ -707,7 +711,7 @@
   <script src='src/modules/tracks.js'></script>
   <script src='src/modules/tulip.js'></script>
   <script src='src/modules/notification.js'></script>
-  <script src='src/modules/waypoint.js'></script>
+  <script src='src/modules/instruction.js'></script>
   <script>
   /*
     ---------------------------------------------------------------------------

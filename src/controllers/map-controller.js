@@ -6,7 +6,7 @@ class MapController{
   constructor(model){
     this.model = model;
     this.rotation = 0;
-    this.lockedBeforeWaypointEdit = false;
+    this.lockedBeforeInstructionEdit = false;
     this.mapUnlocked = true; //this guy isn't working right, and is also a little jenky
     this.displayEdge = true; //displayEdge is a instance variable which tracks whether a handle should be shown when the user hovers the mouse over the route. (think of a better name and nuke this comment)
     this.markerDeleteMode = false;
@@ -90,26 +90,26 @@ class MapController{
 
   toggleMapLock(element){
     this.mapUnlocked = !this.mapUnlocked;
-    this.lockedBeforeWaypointEdit = !this.mapUnlocked;
+    this.lockedBeforeInstructionEdit = !this.mapUnlocked;
     element ? $(element).toggleClass('secondary') : null;
   }
 
   lockMap(element){
-    this.lockedBeforeWaypointEdit = !this.mapUnlocked;
+    this.lockedBeforeInstructionEdit = !this.mapUnlocked;
     this.mapUnlocked = false
     element ? $(element).removeClass('secondary') : null;
   }
 
   unlockMap(element){
-    if(!this.lockedBeforeWaypointEdit){
-      this.lockedBeforeWaypointEdit = !this.mapUnlocked;
+    if(!this.lockedBeforeInstructionEdit){
+      this.lockedBeforeInstructionEdit = !this.mapUnlocked;
       this.mapUnlocked = true
       element ? $(element).addClass('secondary') : null;
     }
   }
 
   orientMap(){
-    this.lockedBeforeWaypointEdit = !this.mapUnlocked;
+    this.lockedBeforeInstructionEdit = !this.mapUnlocked;
     var bearing = this.model.computeMapOrientationAngle();
     if(bearing){
       if(this.rotation == 0){
@@ -132,9 +132,9 @@ class MapController{
 
   addRoutePoint(latLng){
     this.model.addRoutePoint(latLng,this.map);
-    this.model.updateRoadbookAndWaypoints();
+    this.model.updateRoadbookAndInstructions();
     if(this.model.markers.length == 1){
-      this.model.makeFirstMarkerWaypoint(this.model.markers);
+      this.model.makeFirstMarkerInstruction(this.model.markers);
     }
   }
 
@@ -162,8 +162,8 @@ class MapController{
   }
 
   returnPointToNaturalColor(marker){
-    if(marker.waypoint){
-      marker.setIcon(this.model.buildWaypointIcon());
+    if(marker.instruction){
+      marker.setIcon(this.model.buildInstructionIcon());
     }else {
       marker.setIcon(this.model.buildVertexIcon());
     }
@@ -202,10 +202,10 @@ class MapController{
       When two items are in the queue, all points in between are deleted.
     */
     google.maps.event.addListener(marker, 'click', function(evt) {
-      if(this.waypoint && !this.markerDeleteMode){
-        // TODO make into waypoint controller function and abstract it from here
+      if(this.instruction && !this.markerDeleteMode){
+        // TODO make into instruction controller function and abstract it from here
         $('#roadbook').scrollTop(0);
-        $('#roadbook').scrollTop(($(this.waypoint.element).offset().top-100));
+        $('#roadbook').scrollTop(($(this.instruction.element).offset().top-100));
       }
     });
 
@@ -214,21 +214,22 @@ class MapController{
     */
     google.maps.event.addListener(marker, 'rightclick', function(evt) {
       _this.markerDeleteMode = true;
-      _this.model.processMarkerForDeletion(this,_this.model.updateRoadbookAndWaypoints,_this.model.exitControllerDeleteMode);
+      _this.model.processMarkerForDeletion(this,_this.model.updateRoadbookAndInstructions,_this.model.exitControllerDeleteMode);
     });
 
     /*
-      double clicking on a route point toggles whether the point is a waypoint or not
+      double clicking on a route point toggles whether the point is a instruction or not
     */
     google.maps.event.addListener(marker, 'dblclick', function(evt) {
-      //If the point has a waypoint remove it, otherwise add one
+      //If the point has a instruction remove it, otherwise add one
+      console.log(this)
       if(!this.markerDeleteMode){
-        if(this.waypoint){
-          _this.model.revertWaypointToRoutePoint(this);
+        if(this.instruction){
+          _this.model.revertInstructionToRoutePoint(this);
         } else {
-          _this.model.addWaypoint(this);
+          _this.model.addInstruction(this);
           $('#roadbook').scrollTop(0);
-          $('#roadbook').scrollTop(($(this.waypoint.element).offset().top-100));
+          $('#roadbook').scrollTop(($(this.instruction.element).offset().top-100));
         }
       }
     });
@@ -244,7 +245,7 @@ class MapController{
     });
 
     google.maps.event.addListener(marker, 'dragend', function(evt) {
-      _this.model.updateRoadbookAndWaypoints();
+      _this.model.updateRoadbookAndInstructions();
     });
 
     /*
@@ -317,7 +318,7 @@ class MapController{
           */
           google.maps.event.addListener(handle, 'mouseup', function(evt){
             dragging = false;
-            _this.model.updateAllMarkersWaypointGeoData();
+            _this.model.updateAllMarkersInstructionGeoData();
             _this.model.updateRoadbookTotalDistance();
             this.setMap(null);
           });
@@ -366,7 +367,7 @@ class MapController{
     });
 
     /*
-        Waypoint Palette
+        Instruction Palette
     */
     $('#orient-map').click(function(){
       _this.orientMap();

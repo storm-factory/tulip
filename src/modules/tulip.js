@@ -227,7 +227,7 @@ var Tulip = Class({
   },
 
   changeExitAngle(angle,exitTrackType){
-    if(!this.exitTrackEdited){
+    if(!this.exitTrackEdited && this.exitTrack){
       this.exitTrack.changeAngle(angle,exitTrackType,this.canvas);
       if(this.activeEditors.length){
         this.finishEdit();

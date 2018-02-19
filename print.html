@@ -43,7 +43,7 @@
         </div>
       </div>
       <!-- render waypoint templates here -->
-      <div id="roadbook-waypoints" data-bind="template: { name: 'waypoint-template', foreach: printApp.waypoints }"></div>
+      <div id="roadbook-waypoints" data-bind="template: { name: 'waypoint-template', foreach: printApp.instructions }"></div>
     </div>
     <!--
       Define templates
@@ -54,6 +54,10 @@
         <div class='waypoint-distance'>
           <div class='total-distance'>
             <div data-bind="text: kmFromStart.toFixed(2)">
+            </div>
+          </div>
+          <div class="instruction-number">
+            <div data-bind="text: instructionNumber">
             </div>
           </div>
           <div class="relative-distance">
