@@ -17,7 +17,7 @@ class MapOptimizer{
     if(map.getZoom() >= 14){
       this.showMarkersInViewport(map,markers,map.getBounds());
     }else{
-      this.showOnlyWaypointsAtZoom(map,markers);
+      this.showOnlyInstructionsAtZoom(map,markers);
     }
   }
 
@@ -33,9 +33,9 @@ class MapOptimizer{
     }
   }
 
-  showOnlyWaypointsAtZoom(map, markers){
+  showOnlyInstructionsAtZoom(map, markers){
     for(var i=0;i<markers.length;i++){
-      if(markers[i].waypoint){
+      if(markers[i].instruction){
         if(markers[i].getMap() == null){
           markers[i].setMap(map);
         }

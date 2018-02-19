@@ -28,7 +28,7 @@ var Io = Class({
 
   addWaypoint: function(marker){
     if(marker){
-      app.mapModel.addWaypoint(marker);
+      app.mapModel.addInstruction(marker);
     }
   },
 
@@ -43,9 +43,9 @@ var Io = Class({
     var points = app.mapModel.markers;
     var wptCount = 1;
     for(var i=0;i<points.length;i++){
-      if(points[i].waypoint){
-        var name = this.buildNameString(wptCount,points[i].waypoint);
-        var desc = this.buildDescString(wptCount,points[i].waypoint);
+      if(points[i].instruction){
+        var name = this.buildNameString(wptCount,points[i].instruction);
+        var desc = this.buildDescString(wptCount,points[i].instruction);
         var waypoint = "<wpt lat='" + points[i].getPosition().lat() + "' lon='" + points[i].getPosition().lng() + "'><name>" + name + "</name><desc>" + desc + "</desc></wpt>";
         waypoints += waypoint;
         wptCount++;
@@ -70,8 +70,8 @@ var Io = Class({
     var points = app.mapModel.markers;
     var wptCount = 1;
     for(var i=0;i<points.length;i++){
-      if(points[i].waypoint !== undefined){
-        var waypoint = "<wpt lat='" + points[i].getPosition().lat() + "' lon='" + points[i].getPosition().lng() + "'><name>" + wptCount + "</name><desc></desc>" + this.buildOpenRallyExtensionsString(wptCount,points[i].waypoint) + "</wpt>";
+      if(points[i].instruction !== undefined){
+        var waypoint = "<wpt lat='" + points[i].getPosition().lat() + "' lon='" + points[i].getPosition().lng() + "'><name>" + wptCount + "</name><desc></desc>" + this.buildOpenRallyExtensionsString(wptCount,points[i].instruction) + "</wpt>";
         waypoints += waypoint;
         wptCount++;
       }
