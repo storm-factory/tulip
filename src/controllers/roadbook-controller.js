@@ -143,6 +143,9 @@ class RoadbookController{
     $('.waypoint.row').show();
     $('#waypoint-palette').find('.note-tools').append($('#note-editor-container'));
     $('#waypoint-palette').slideUp('slow');
+    $('#note-selection-bold, #note-selection-italic, #note-selection-underline').removeClass('active');
+    $('#note-selection-size-range').val(4);
+    $('#note-selection-size-range').change();
     $('.added-track-selector').removeClass('active');
     $($('.added-track-selector')[1]).addClass('active');
     $('#roadbook').css('padding-bottom', '150%');

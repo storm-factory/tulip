@@ -11,7 +11,6 @@ var Tulip = Class({
     this.canvas.selection = false;
     this.canvas.hoverCursor = 'pointer';
 
-    // TODO is this a good thing or a hack?
     var _this = this;
     this.canvas.on('object:moving',function(e){
       // NOTE I do not like this dependency
@@ -53,12 +52,10 @@ var Tulip = Class({
     }
   },
 
-  // initEntry: function(point, path){
   initEntry: function(trackType){
     this.entryTrack = new EntryTrack(trackType, this.canvas);
   },
 
-  // initExit: function(point, path){
   initExit: function(angle, trackType){
     this.exitTrack = new ExitTrack(angle, trackType, this.canvas);
   },
@@ -79,7 +76,7 @@ var Tulip = Class({
 
     //NOTE this solves the problem of having overlapping handles if a control is clicked twice or things get too close to one another.
     //     an alternate solution that may solve any performance issues this might cause is to loop through the active editors and bring all the
-    //     hangles to the front.
+    //     handles to the front.
     this.finishEdit();
     this.beginEdit();
   },

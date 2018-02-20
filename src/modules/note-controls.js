@@ -41,7 +41,7 @@ class NoteControls {
       $('#notification-modifier').attr('step', notification.modStep);
     });
     //TODO decouple this
-    $('#notification-bubble, #notification-modifier').change(function(){
+    $('#notification-bubble, #notification-modifier').bind('keyup input',function(){
       var notification = app.roadbook.currentlyEditingInstruction.notification;
       notification.bubble = $('#notification-bubble').val();
       notification.modifier = $('#notification-modifier').val();
