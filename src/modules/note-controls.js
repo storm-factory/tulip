@@ -33,16 +33,16 @@ class NoteControls {
     })
 
     $('#show-notification-options').click(function(){
-      var notification = app.roadbook.currentlyEditingWaypoint.notification;
+      var notification = app.roadbook.currentlyEditingInstruction.notification;
       $('#notification-bubble').val(notification.bubble);
       $('#notification-modifier').val(notification.modifier);
       $('#notification-modifier').attr('min', notification.modMin);
       $('#notification-modifier').attr('max', notification.modMax);
       $('#notification-modifier').attr('step', notification.modStep);
     });
-
+    //TODO decouple this
     $('#notification-bubble, #notification-modifier').change(function(){
-      var notification = app.roadbook.currentlyEditingWaypoint.notification;
+      var notification = app.roadbook.currentlyEditingInstruction.notification;
       notification.bubble = $('#notification-bubble').val();
       notification.modifier = $('#notification-modifier').val();
       _this.checkForNotification(); //TODO This needs refactored

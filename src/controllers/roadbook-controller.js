@@ -10,6 +10,7 @@ class RoadbookController{
     this.bindToEntryTrackSelector();
     this.bindToExitTrackSelector();
     this.bindToAddedTrackSelector();
+    this.element;
   }
 
   highlightSaveButton(){
@@ -66,7 +67,8 @@ class RoadbookController{
   bindToPaletteControls(){
     var _this = this;
     $('#hide-palette').click(function(){
-      _this.model.finishInstructionEdit();
+      _this.model.finishInstructionEdit(_this.getNoteEditorHTML(),_this.getNotificationBubbleVal(),_this.getNotificationModifierVal());
+      _this.resetInstructionPalette();
     });
 
     $('#toggle-heading').change(function(){
@@ -119,6 +121,7 @@ class RoadbookController{
   }
 
   populateInstructionPalette(instruction){
+    this.editingElement = instruction.element;
     $('#save-roadbook').removeClass('secondary');
     $('#note-editor').html(instruction.noteHTML());
     $('#notification-bubble').val((instruction.notification ? instruction.notification.bubble : null));
@@ -126,7 +129,7 @@ class RoadbookController{
     $('#note-editor-container').toggleClass('hideCap',!instruction.showHeading());
     $('#roadbook-waypoints').children().hide();
     $(instruction.element).show();
-    $('#roadbook').scrollTop(instruction.element.position().top - 80)
+    $('#roadbook').scrollTop(this.editingElement.position().top - 80)
     $('#waypoint-palette').slideDown('slow');
     $(instruction.element).find('.waypoint-note').append($('#note-editor-container'));
     $('#roadbook').css('padding-bottom', '0');
@@ -136,7 +139,7 @@ class RoadbookController{
     }
   }
 
-  resetInstructionPalette(instruction){
+  resetInstructionPalette(){
     $('.waypoint.row').show();
     $('#waypoint-palette').find('.note-tools').append($('#note-editor-container'));
     $('#waypoint-palette').slideUp('slow');
@@ -145,7 +148,7 @@ class RoadbookController{
     $('#roadbook').css('padding-bottom', '150%');
     $('#roadbook').find('.roadbook-info').show();
     $('#notification-options').addClass('hidden');
-    $('#roadbook').scrollTop(instruction.element.position().top - 80);
+    $('#roadbook').scrollTop(this.editingElement.position().top - 80);
     $('#note-editor').html('');
   }
 

@@ -6,7 +6,7 @@ class MapController{
   constructor(model){
     this.model = model;
     this.rotation = 0;
-    this.lockedBeforeInstructionEdit = false;
+    this.unlockedBeforeInstructionEdit = true;
     this.mapUnlocked = true; //this guy isn't working right, and is also a little jenky
     this.displayEdge = true; //displayEdge is a instance variable which tracks whether a handle should be shown when the user hovers the mouse over the route. (think of a better name and nuke this comment)
     this.markerDeleteMode = false;
@@ -89,30 +89,30 @@ class MapController{
   }
 
   toggleMapLock(element){
+    this.unlockedBeforeInstructionEdit = this.mapUnlocked;
     this.mapUnlocked = !this.mapUnlocked;
-    this.lockedBeforeInstructionEdit = !this.mapUnlocked;
     element ? $(element).toggleClass('secondary') : null;
   }
 
   lockMap(element){
-    this.lockedBeforeInstructionEdit = !this.mapUnlocked;
+    this.unlockedBeforeInstructionEdit = this.mapUnlocked;
     this.mapUnlocked = false
     element ? $(element).removeClass('secondary') : null;
   }
 
   unlockMap(element){
-    if(!this.lockedBeforeInstructionEdit){
-      this.lockedBeforeInstructionEdit = !this.mapUnlocked;
+    if(this.unlockedBeforeInstructionEdit){
+      this.unlockedBeforeInstructionEdit = this.mapUnlocked;
       this.mapUnlocked = true
       element ? $(element).addClass('secondary') : null;
     }
   }
 
   orientMap(){
-    this.lockedBeforeInstructionEdit = !this.mapUnlocked;
     var bearing = this.model.computeMapOrientationAngle();
     if(bearing){
       if(this.rotation == 0){
+        this.unlockedBeforeInstructionEdit = this.mapUnlocked;
         this.lockMap();
         this.rotation = 360-bearing
         this.rotateNumDegrees(this.rotation);
@@ -229,7 +229,6 @@ class MapController{
     */
     google.maps.event.addListener(marker, 'dblclick', function(evt) {
       //If the point has a instruction remove it, otherwise add one
-      console.log(this)
       if(!this.markerDeleteMode){
         if(this.instruction){
           _this.model.revertInstructionToRoutePoint(this);

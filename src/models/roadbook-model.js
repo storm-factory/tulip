@@ -209,24 +209,23 @@ class RoadbookModel{
     }
   }
 
-  finishInstructionEdit(){
+  finishInstructionEdit(noteVal,notificationVal,modifierVal){
     if(this.currentlyEditingInstruction !== null){
-      this.updateInstructionAfterEdit(this.currentlyEditingInstruction);
-      this.controller.resetInstructionPalette(this.currentlyEditingInstruction);
+      this.updateInstructionAfterEdit(noteVal,notificationVal,modifierVal);
       this.currentlyEditingInstruction = null;
     }
     return true;
   }
 
-  updateInstructionAfterEdit(instruction){
-    instruction.changeAddedTrackType('track');
-    instruction.noteHTML(this.controller.getNoteEditorHTML());
-    if(instruction.notification){
-      instruction.notification.bubble = this.controller.getNotificationBubbleVal();
-      instruction.notification.modifier = this.controller.getNotificationModifierVal();
+  updateInstructionAfterEdit(noteVal,notificationVal,modifierVal){
+    this.currentlyEditingInstruction.changeAddedTrackType('track');
+    this.currentlyEditingInstruction.noteHTML(noteVal);
+    if(this.currentlyEditingInstruction.notification){
+      this.currentlyEditingInstruction.notification.bubble = notificationVal;
+      this.currentlyEditingInstruction.notification.modifier = modifierVal;
     }
-    instruction.tulip.finishEdit();
-    instruction.tulip.finishRemove();
+    this.currentlyEditingInstruction.tulip.finishEdit();
+    this.currentlyEditingInstruction.tulip.finishRemove();
   }
 
   updateTotalDistance(){
