@@ -1,4 +1,4 @@
-// TODO refactor this to use MVC pattern and act as a controller for the currentlyEditingWaypoint for the roadbook
+// TODO refactor this to use MVC pattern and act as a controller for the currentlyEditingInstruction for the roadbook
 class GlyphControls{
 
   constructor(){
@@ -92,10 +92,10 @@ class GlyphControls{
       if($(this).hasClass('undo')){
         if(e.shiftKey){
           // NOTE this module should only know about the roadbook
-          app.roadbook.currentlyEditingWaypoint.tulip.beginRemoveGlyph();
+          app.roadbook.currentlyEditingInstruction.tulip.beginRemoveGlyph();
         }else{
           // NOTE this module should only know about the roadbook
-          app.roadbook.currentlyEditingWaypoint.tulip.removeLastGlyph();
+          app.roadbook.currentlyEditingInstruction.tulip.removeLastGlyph();
         }
         return false
       }
@@ -119,7 +119,7 @@ class GlyphControls{
       app.roadbook.appendGlyphToNoteTextEditor($('<img>').attr('src', src).addClass('normal'));
     } else {
       // NOTE this module should only know about the roadbook
-      app.roadbook.currentlyEditingWaypoint.tulip.addGlyph(app.glyphPlacementPosition,src);
+      app.roadbook.currentlyEditingInstruction.tulip.addGlyph(app.glyphPlacementPosition,src);
     }
   }
 
