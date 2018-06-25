@@ -91,6 +91,19 @@ body {
   display: inline;
   font-size: 0.875rem;
 }
+.heading.A5Roll {
+	position: absolute;
+	height: 35px;
+	width: 75px;
+	bottom: 0px;
+	left: 0px;
+	border-top: 1px solid black;
+	border-right: 1px solid black;
+	padding-left: 10px;
+}
+.heading.A5Roll label {
+	font-size: 0px;
+}
 
 .relative-distance {
   height: 28px;
@@ -101,6 +114,15 @@ body {
   text-align: right;
   margin-top: 45px;
   padding-right: 10px;
+}
+.relative-distance.A5Roll {
+	position: absolute;
+	height: 27px;
+	width:75px;
+	bottom: 0px;
+	right: 0px;
+	border-top: 1px solid black;
+	border-left: 1px solid black;
 }
 .total-distance {
   height: 90px;
@@ -122,6 +144,11 @@ body {
   width: 580px !important; /* works for letter */
 }
 
+.waypoint.A5Roll{
+  width: 610px !important;
+  position: relative;
+}
+
 .waypoint {
   width: 528px !important; /* works for letter */
   border: 2px solid #000;
@@ -139,12 +166,24 @@ body {
   /*width: 230px;*/
   width: 193px;
 }
+.waypoint-distance.A5Roll {
+  width: 175px;
+  position:absolute;
+  top: 0px;
+  left: 0px;
+}
 
 /* works for letter */
 .waypoint-note {
   width: 185px;
   padding-left: 4px;
   padding-right: 4px;
+}
+.waypoint-note.A5Roll {
+  width: 225px;
+  position: absolute;
+  top: 0px;
+  right: 0px;
 }
 
 /* works for letter */
@@ -163,6 +202,13 @@ body {
   width:190px;
 }
 
+.waypoint-tulip.A5Roll {
+  width:175px;
+  padding-left: 25px;
+  position: absolute;
+  top: 0px;
+  left: 175px;
+}
 /*.waypoint-distance,
 .waypoint-note,
 .waypoint-tulip {
@@ -179,6 +225,13 @@ body {
   height: 175px;
   float: left
 }
+.waypoint.A5Roll,
+.waypoint-distance.A5Roll,
+.waypoint-tulip.A5Roll,
+.waypoint-note.A5Roll {
+  height: 150px;
+}
+
 .waypoint-note p {
   height: 135px;
   font-size: medium;
@@ -188,6 +241,16 @@ body {
   word-wrap: break-word;
   line-height: 1;
 }
+.waypoint-note.A5Roll p {
+  height: 110px;
+  font-size: medium;
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+  word-wrap: break-word;
+  line-height: 1;
+}
+
 
 .waypoint-distance .relative-distance {
   margin-top: 35px;

@@ -144,10 +144,8 @@ ipcMain.on('print-launched', (event, arg) => {
 // NOTE this is about as robust as a wet paper bag and fails just as gracefully
 ipcMain.on('print-pdf', (event, arg) => {
   var size = arg.opts.pageSize;
-  if(arg.opts.pageSize != 'Letter' && arg.opts.pageSize != 'A5'){
-    size = 'Roll'
-  }
-  var filename = arg.filepath.replace('.tlp', size + '.pdf')
+  var sizeName = arg.opts.pageSizeName;
+  var filename = arg.filepath.replace('.tlp','_' + sizeName + '.pdf')
   console.log(arg.opts);
   printWindow.webContents.printToPDF(arg.opts, (error, data) => {
     if (error) throw error;

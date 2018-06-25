@@ -26,7 +26,7 @@ var PrintApp = Class({
       _this.parseJson(arg);
     });
 
-    this.pageSizes = ko.observableArray([{text: "Letter", value: "Letter"}, {text: 'A5', value: 'A5'}, {text: 'Roll', value: 'Roll'}]);
+    this.pageSizes = ko.observableArray([{text: "Letter", value: "Letter"}, {text: 'A5', value: 'A5'}, {text: 'Roll', value: 'Roll'}, {text:'A5 Roll',value:'A5Roll'}]);
     this.pageSize = ko.observable();
     this.ipc.send('print-launched', true);
   },
@@ -44,8 +44,9 @@ var PrintApp = Class({
 
   requestPdfPrint: function(){
     $('nav').hide();
-    this.rerenderForPageSize()
+    this.rerenderForPageSize();
     var size = this.pageSize();
+    var sizeName = size;
     if(size == "Roll"){
       size = {height: $(document).height()*265, width: $(document).width()*265};
     }
@@ -55,7 +56,10 @@ var PrintApp = Class({
     if((size == "Roll")){
       $('body').css('margin-left', '-30px');
     }
-    var data = {'filepath': this.filePath, 'opts': {'pageSize': size, 'marginsType' : '1'}};
+    if((size == "A5Roll")){
+      size = {height: $(document).height()*220, width: $(document).width()*240};
+    }
+    var data = {'filepath': this.filePath, 'opts': {'pageSize': size, 'pageSizeName': sizeName, 'marginsType' : '1'}};
 
     this.ipc.send('print-pdf', data);
   },
@@ -63,6 +67,7 @@ var PrintApp = Class({
   rerenderForPageSize: function(){
     var pageSize = this.pageSize();
     $('.waypoint, .waypoint-note, .waypoint-distance, .waypoint-tulip').removeClass('A5');
+	$('.waypoint, .waypoint-note, .waypoint-distance, .waypoint-tulip, .heading, .relative-distance').removeClass('A5Roll');
     $('.break').remove();
     if((pageSize == "Letter" || pageSize == "A5")){
       this.addPageBreaks();
@@ -72,6 +77,9 @@ var PrintApp = Class({
         $('.waypoint, .waypoint-note, .waypoint-distance, .waypoint-tulip').addClass('A5');
       }
     }
+	if(( pageSize == "A5Roll")){
+		$('.waypoint, .waypoint-note, .waypoint-distance, .waypoint-tulip, .heading, .relative-distance').addClass('A5Roll');
+	}
   },
 
   addPageBreaks(){
