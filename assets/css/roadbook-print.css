@@ -2,6 +2,14 @@
   font-family:bellybeans;
   src:url(../fonts/bellybeans.ttf);
 }
+@font-face{
+  font-family:Lato-Regular;
+  src:url(../fonts/Lato-Regular.ttf);
+}
+@font-face{
+  font-family:Lato-Regular-outline;
+  src:url(../fonts/Lato-Regular-outline.ttf);
+}
 
 /*
   for native printing expirementation
@@ -83,7 +91,7 @@ body {
   width: 53px;
 }
 .heading {
-  font-family: Tahoma, Geneva, sans-serif;
+  font-family:Lato-Regular;
   color: #000;
   font-size: 2em;
 }
@@ -107,8 +115,8 @@ body {
 
 .relative-distance {
   height: 28px;
+  font-family:Lato-Regular;
   color: #000;
-  font-weight: bold;
   font-size: 25px;
   border-top: 1px solid #000;
   text-align: right;
@@ -127,7 +135,7 @@ body {
 .total-distance {
   height: 90px;
   font-family: Tahoma, Geneva, sans-serif;
-  font-size: 3em;
+  font-size: 0; /* eliminate the space between regular and hundredths digits */
   color: #000;
   text-align: center;
 }
@@ -140,6 +148,18 @@ body {
   margin-top: 20px
 }
 
+.regularDigit {
+	font-size:50px;
+	font-family:Lato-Regular;
+}
+.hundredthDigit {
+	font-size:50px;
+	font-family:Lato-Regular;
+}
+.hundredthDigit.outline {
+	font-size:50px;
+	font-family:Lato-Regular-outline;
+}
 .waypoint.A5{
   width: 580px !important; /* works for letter */
 }
@@ -275,7 +295,7 @@ body {
 }
 .main-nav {
   background: #ffba29;
-  height: 55px;
+  height: 110px;
   z-index: 150;
   margin-bottom: 20px;
   padding-top: 5px;
@@ -433,7 +453,7 @@ select {
   padding: 0.5rem;
   border-radius: 0;
   height: 2.7rem;
-  width: 100px;
+  width: 150px;
 }
 select.radius {
   border-radius: 3px;

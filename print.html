@@ -18,6 +18,12 @@
           </a>
         </div>
       </div>
+	  <div class="row">
+	    <div class="large-3 columns">
+          <select id="number-format" data-bind="options: numberFormats ,optionsText: 'text', optionsValue: 'value', value: numberFormat">
+          </select>
+        </div>
+	  </div>
     </nav>
     <div align='center'>
       <img src='./assets/tulip-logo3.png' height='300'>
@@ -53,8 +59,10 @@
       <div class='waypoint row'>
         <div class='waypoint-distance'>
           <div class='total-distance'>
-            <div data-bind="text: kmFromStart.toFixed(2)">
-            </div>
+		    <span data-bind="text: kmFromStart.toFixed(1)" class='regularDigit'> 
+			</span>
+			<span data-bind="text:kmFromStart.toFixed(2).slice(-1)" class='hundredthDigit'> 
+			</span>
           </div>
           <div class="relative-distance">
             <div data-bind="text: kmFromPrev.toFixed(2)">

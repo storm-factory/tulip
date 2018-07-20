@@ -28,6 +28,8 @@ var PrintApp = Class({
 
     this.pageSizes = ko.observableArray([{text: "Letter", value: "Letter"}, {text: 'A5', value: 'A5'}, {text: 'Roll', value: 'Roll'}, {text:'A5 Roll',value:'A5Roll'}]);
     this.pageSize = ko.observable();
+	this.numberFormats = ko.observableArray([{text: "Plain Hundredths", value: "Plain"},{text: "Outline Hundredths", value:"Outline"}]);
+	this.numberFormat = ko.observable();
     this.ipc.send('print-launched', true);
   },
 
@@ -81,7 +83,13 @@ var PrintApp = Class({
 		$('.waypoint, .waypoint-note, .waypoint-distance, .waypoint-tulip, .heading, .relative-distance').addClass('A5Roll');
 	}
   },
-
+  rerenderForNumberFormat: function(){
+    var numberFormat = this.numberFormat();
+    $('.hundredthDigit').removeClass('outline');
+	if(( numberFormat == "Outline")){
+		$('.hundredthDigit').addClass('outline');
+	}
+  },
   addPageBreaks(){
     if( $('.break').length > 0) { return };
     $('#roadbook').find('#roadbook-header').after($('<div>').attr('class', 'break'));
@@ -115,6 +123,9 @@ $(document).ready(function(){
 
   $('#print-size').change(function(){
     printApp.rerenderForPageSize();
+  });
+  $('#number-format').change(function(){
+    printApp.rerenderForNumberFormat();
   });
   $('.button').click(function(){
     printApp.requestPdfPrint();
