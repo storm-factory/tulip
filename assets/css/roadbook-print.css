@@ -160,6 +160,10 @@ body {
 	font-size:50px;
 	font-family:Lato-Regular-outline;
 }
+.hundredthDigit.none {
+	font-size:0px;
+}
+
 .waypoint.A5{
   width: 580px !important; /* works for letter */
 }

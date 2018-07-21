@@ -6,7 +6,7 @@
     <nav class="main-nav">
       <div class="row">
         <div class="large-3 columns">
-          <select id="print-size" data-bind="options: pageSizes ,optionsText: 'text', optionsValue: 'value', value: pageSize">
+          <select id="number-format" data-bind="options: numberFormats ,optionsText: 'text', optionsValue: 'value', value: numberFormat">
           </select>
         </div>
         <div class="large-3 columns logo">
@@ -20,7 +20,11 @@
       </div>
 	  <div class="row">
 	    <div class="large-3 columns">
-          <select id="number-format" data-bind="options: numberFormats ,optionsText: 'text', optionsValue: 'value', value: numberFormat">
+          <select id="page-format" data-bind="options: pageFormats ,optionsText: 'text', optionsValue: 'value', value: pageFormat">
+          </select>
+        </div>
+	    <div class="large-3 columns">
+          <select id="page-length" data-bind="options: pageLengths ,optionsText: 'text', optionsValue: 'value', value: pageLength">
           </select>
         </div>
 	  </div>
