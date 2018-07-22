@@ -10,14 +10,21 @@
   font-family:Lato-Regular-outline;
   src:url(../fonts/Lato-Regular-outline.ttf);
 }
+/*@page{
+	margin-left:0px;
+	margin-top:40px;
+	margin-bottom:0px;
+	margin-right:0px;
+}*/
 
 /*
   for native printing expirementation
 */
 html {
-  width:616px;
+  width:520px;
   margin:auto;
 }
+
 body {
     background: #fff;
     font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
@@ -83,6 +90,7 @@ body {
  clear: both;
  page-break-after: always;
 }
+
 .glyph-container {
   height: 53px;
 }
@@ -90,195 +98,151 @@ body {
   height: 53px;
   width: 53px;
 }
-.heading {
-  font-family:Lato-Regular;
-  color: #000;
-  font-size: 2em;
+
+
+
+
+
+.waypoint {
+	width: 515px !important;
+	border-left: 2px solid #000;
+	border-right: 2px solid #000;
+	border-top: 1px solid #000;
+	border-bottom: 1px solid #000;
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+	position: relative;
 }
-.heading label {
-  display: inline;
-  font-size: 0.875rem;
-}
-.heading.A5Roll {
-	position: absolute;
-	height: 35px;
-	width: 75px;
-	bottom: 0px;
+
+.waypoint-distance {
+	width: 150px;
+	position:absolute;
+	top: 0px;
 	left: 0px;
-	border-top: 1px solid black;
-	border-right: 1px solid black;
-	padding-left: 10px;
-}
-.heading.A5Roll label {
-	font-size: 0px;
+	border-right: 2px solid #000;
 }
 
-.relative-distance {
-  height: 28px;
-  font-family:Lato-Regular;
-  color: #000;
-  font-size: 25px;
-  border-top: 1px solid #000;
-  text-align: right;
-  margin-top: 45px;
-  padding-right: 10px;
-}
-.relative-distance.A5Roll {
+.waypoint-tulip {
+	width:175px;
+	border-right: 0px solid #0f0;
 	position: absolute;
-	height: 27px;
-	width:75px;
-	bottom: 0px;
+	top: 0px;
+	left: 154px;
+}
+
+.waypoint-tulip img {
+	height: 95%;
+	width:  95%;
+	padding-left: 0px;
+	position:absolute;
+	top:2px;
+	left:2px;
+	border:0px solid #f00;
+}
+
+.waypoint-note {
+	padding-left: 4px;
+	padding-right: 4px;
+	width: 175px;
+	position: absolute;
+	top: 0px;
 	right: 0px;
-	border-top: 1px solid black;
-	border-left: 1px solid black;
+	border-left: 2px solid #000;
 }
+
+.waypoint,
+.waypoint-distance,
+.waypoint-tulip,
+.waypoint-note {
+	height: 135px;
+}
+.waypoint.PackedLetter,
+.waypoint-distance.PackedLetter,
+.waypoint-tulip.PackedLetter,
+.waypoint-note.PackedLetter {
+	height: 129px;
+}
+
+
+.waypoint-note p {
+	height: 125px;
+	font-size: medium;
+	width: 100%;
+	margin: 0;
+	overflow: hidden;
+	word-wrap: break-word;
+	line-height: 1;
+}
+
 .total-distance {
-  height: 90px;
-  font-family: Tahoma, Geneva, sans-serif;
-  font-size: 0; /* eliminate the space between regular and hundredths digits */
-  color: #000;
-  text-align: center;
+	font-size: 0; /* eliminate the space between regular and hundredths digits */
+	text-align: right;
+	border: 0px solid #f00;
+	position: absolute;
+	top:25;
+	right:5;
 }
 
-.total-distance.A5 {
-  font-size: 3.45em;
-}
 
-.total-distance div {
-  margin-top: 20px
-}
 
 .regularDigit {
-	font-size:50px;
+	font-size:45px;
 	font-family:Lato-Regular;
 }
 .hundredthDigit {
-	font-size:50px;
+	font-size:45px;
 	font-family:Lato-Regular;
 }
 .hundredthDigit.outline {
-	font-size:50px;
+	font-size:45px;
 	font-family:Lato-Regular-outline;
 }
 .hundredthDigit.none {
 	font-size:0px;
 }
 
-.waypoint.A5{
-  width: 580px !important; /* works for letter */
+.relative-distance {
+	font-family:Lato-Regular;
+	color: #000;
+	font-size: 18px;
+	text-align: right;
+	padding-right: 10px;
+	position: absolute;
+	height: 27px;
+	width:70px;
+	bottom: 0px;
+	right: 0px;
+	border-top: 1px solid black;
+	border-left: 1px solid black;
 }
-
-.waypoint.A5Roll{
-  width: 610px !important;
-  position: relative;
+.waypoint-index {
+	height: 16px;
+	width: 24px;
+	bottom:0px;
+	left:0px;
+	position:absolute;
+	padding-top:3px;
+	font-size: 11px;
+	text-align:center;
 }
-
-.waypoint {
-  width: 528px !important; /* works for letter */
-  border: 2px solid #000;
-  /*height:190px;*/
-  margin-left: 0 !important;
-  margin-right: 0 !important;
+.heading {
+	font-family:Lato-Regular;
+	font-size: 18pt;
+	position: absolute;
+	height: 40px;
+	width: 90px;
+	bottom: 0px;
+	left: 0px;
+	border-top: 0px solid black;
+	border-right: 0px solid black;
+	padding-left: 10px;
 }
-
-/* works for letter */
-.waypoint-distance {
-  width: 150px;
-}
-
-.waypoint-distance.A5 {
-  /*width: 230px;*/
-  width: 193px;
-}
-.waypoint-distance.A5Roll {
-  width: 175px;
-  position:absolute;
-  top: 0px;
-  left: 0px;
-}
-
-/* works for letter */
-.waypoint-note {
-  width: 185px;
-  padding-left: 4px;
-  padding-right: 4px;
-}
-.waypoint-note.A5Roll {
-  width: 225px;
-  position: absolute;
-  top: 0px;
-  right: 0px;
-}
-
-/* works for letter */
-.waypoint-tulip {
-  width:180px;
-  border-left: 1px solid #000;
-  border-right: 1px solid #000;
-}
-
-.waypoint-tulip img {
-  height: 99%;
-  margin-left: 1%;
-}
-
-.waypoint-tulip.A5 {
-  width:190px;
-}
-
-.waypoint-tulip.A5Roll {
-  width:175px;
-  padding-left: 25px;
-  position: absolute;
-  top: 0px;
-  left: 175px;
-}
-/*.waypoint-distance,
-.waypoint-note,
-.waypoint-tulip {
-  height: 190px;
-  float: left
-}*/
-/*
-  --- A5 sizing
-*/
-.waypoint,
-.waypoint-distance,
-.waypoint-tulip,
-.waypoint-note {
-  height: 175px;
-  float: left
-}
-.waypoint.A5Roll,
-.waypoint-distance.A5Roll,
-.waypoint-tulip.A5Roll,
-.waypoint-note.A5Roll {
-  height: 150px;
-}
-
-.waypoint-note p {
-  height: 135px;
-  font-size: medium;
-  width: 100%;
-  margin: 0;
-  overflow: hidden;
-  word-wrap: break-word;
-  line-height: 1;
-}
-.waypoint-note.A5Roll p {
-  height: 110px;
-  font-size: medium;
-  width: 100%;
-  margin: 0;
-  overflow: hidden;
-  word-wrap: break-word;
-  line-height: 1;
+.heading label {
+	display: inline;
+	font-size: 26pt;
 }
 
 
-.waypoint-distance .relative-distance {
-  margin-top: 35px;
-}
 
 /*
   Sticky nav
@@ -299,21 +263,19 @@ body {
 }
 .main-nav {
   background: #ffba29;
-  height: 110px;
+  height: 115px;
   z-index: 150;
   margin-bottom: 20px;
-  padding-top: 5px;
-  padding-left: 20px;
+  padding-top: 10px;
+  padding-left: 0px;
   box-shadow: 0 2px 3px rgba(0,0,0,.4);
-  width: 650px;
+  width: 565px;
   margin-left: -25px;
+ 
 }
 
 .main-nav-scrolled {
-  padding-top: 5px;
   position: fixed;
-  width: 100%;
-  top: 0;
 }
 /*
   neccessary foundation stuff

@@ -30,7 +30,7 @@ var PrintApp = Class({
 		{text:"Letter", value:"Letter"},
 		{text:"Legal",  value:"Legal"},
 		{text:"A5",     value:"A5"},
-		{text:"Enduro", value:"Enduro"}
+		{text:"PackedLetter", value:"PackedLetter"}
 		]);
     this.pageFormat = ko.observable();
     this.pageLengths = ko.observableArray([
@@ -55,7 +55,8 @@ var PrintApp = Class({
     this.filePath = json.filePath;
 
     // Default to Letter Format
-    this.addPageBreaks()
+    $('.break').remove();
+	this.addPageBreaks();
   },
 
   requestPdfPrint: function(){
@@ -67,31 +68,51 @@ var PrintApp = Class({
     var sizeName = pageFormat + '_' + pageLength;
 	var size = 'Letter';
 
-    if((pageFormat == 'Letter') && (pageLength == 'Page')){
+	var pageCss=document.createElement("style");
+	pageCss.type = "text/css";
+
+   if((pageFormat == 'Letter') && (pageLength == 'Page')){
 		size = 'Letter';
-		$('body').css('margin-left', '-60px');
+		pageCss.innerHTML = "@page{margin-left:0px; margin-top:40px; margin-right:0px; margin-bottom:0px}";
+		$('body').css('margin-left', '-76px');
 	}
 	if((pageFormat == 'Letter') && (pageLength == 'Roll')){
-		size = {height: $(document).height()*265+100000, width: 8.5*25400};
+		size = {height: $(document).height()*265+100000, width: 216000};
+		pageCss.innerHTML = "@page{margin-left:0px; margin-top:40px; margin-right:0px; margin-bottom:0px}";
+		$('body').css('margin-left', '-76px');
 	}
     if((pageFormat == 'Legal') && (pageLength == 'Page')){
-		size = {height: 14*25400, width: 8.5*25400};
+		size = 'Legal';
+		pageCss.innerHTML = "@page{margin-left:0px; margin-top:40px; margin-right:0px; margin-bottom:0px}";
+		$('body').css('margin-left', '-76px');
 	}
 	if((pageFormat == 'Legal') && (pageLength == 'Roll')){
-		size = {height: $(document).height()*265+100000, width: 8.5*25400};
+		size = {height: $(document).height()*265+100000, width: 216000};
+		pageCss.innerHTML = "@page{margin-left:0px; margin-top:40px; margin-right:0px; margin-bottom:0px}";
+		$('body').css('margin-left', '-76px');
 	}
     if((pageFormat == 'A5') && (pageLength == 'Page')){
 		size = 'A5';
+		pageCss.innerHTML = "@page{margin-left:0px; margin-top:40px; margin-right:0px; margin-bottom:0px}";
+		$('body').css('margin-left', '50px');
 	}
 	if((pageFormat == 'A5') && (pageLength == 'Roll')){
-		size = {height: $(document).height()*265+100000, width: $(document).width()*265};
+		size = {height: $(document).height()*265+100000, width: 148000};
+		pageCss.innerHTML = "@page{margin-left:0px; margin-top:40px; margin-right:0px; margin-bottom:0px}";
+		$('body').css('margin-left', '50px');
 	}
-    if((pageFormat == 'Enduro') && (pageLength == 'Page')){
+    if((pageFormat == 'PackedLetter') && (pageLength == 'Page')){
 		size = 'Letter';
+		pageCss.innerHTML = "@page{margin-left:0px; margin-top:2px; margin-right:0px; margin-bottom:0px}";
+		$('body').css('margin-left', '-76px');
 	}
-	if((pageFormat == 'Enduro')	&& (pageLength == 'Roll')){
-		size = {height: $(document).height()*265+100000, width: 8.5*25400};
+	if((pageFormat == 'PackedLetter')	&& (pageLength == 'Roll')){
+		size = {height: $(document).height()*265+100000, width: 216000};
+		pageCss.innerHTML = "@page{margin-left:0px; margin-top:0px; margin-right:0px; margin-bottom:0px}";
+		$('body').css('margin-left', '-76px');
 	}
+
+	document.body.appendChild(pageCss);
 
     var data = {'filepath': this.filePath, 'opts': {'pageSize': size, 'pageSizeName': sizeName, 'marginsType' : '1'}};
 
@@ -101,14 +122,9 @@ var PrintApp = Class({
   rerenderForPageSize: function(){
 	var pageFormat = this.pageFormat();
 	var pageLength = this.pageLength();
-	$('.waypoint, .waypoint-note, .waypoint-distance, .waypoint-tulip').removeClass('A5');
-    $('.waypoint, .waypoint-note, .waypoint-distance, .waypoint-tulip, .heading, .relative-distance').removeClass('Enduro');
-	if(pageFormat == "A5") {
-		$('.waypoint, .waypoint-note, .waypoint-distance, .waypoint-tulip').addClass('A5');
-	}
-	if(pageFormat == "Enduro") {
-		$('.waypoint, .waypoint-note, .waypoint-distance, .waypoint-tulip, .heading, .relative-distance').addClass('Enduro');
-	}
+	 $('.waypoint,.waypoint-distance,.waypoint-tulip,.waypoint-note').removeClass('PackedLetter');
+	if((pageFormat == 'PackedLetter')) $('.waypoint,.waypoint-distance,.waypoint-tulip,.waypoint-note').addClass('PackedLetter');
+
     $('.break').remove();
     if((pageLength == "Page")){
       this.addPageBreaks();
@@ -130,10 +146,13 @@ var PrintApp = Class({
   	$('#roadbook').find('#roadbook-header').after($('<div>').attr('class', 'break'));
 	var waypoints = $('#roadbook').find('.waypoint');
 	var offset = 1;
-	var interval = 5;
-	if(pageFormat == 'Legal'){
-		interval = 7;
-	}
+	var interval = 1;
+
+	if(pageFormat == 'Letter') interval = 7;
+	if(pageFormat == 'Legal') interval = 10;
+	if(pageFormat == 'A5') interval = 5;
+	if(pageFormat == 'PackedLetter') interval = 8;
+
 	for(i=0;i<waypoints.length;i++){
 		if((((i+offset)%interval) == 0) && (i>0)){
 			$(waypoints[i]).after($('<div>').attr('class', 'break'));

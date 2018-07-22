@@ -53,7 +53,7 @@
         </div>
       </div>
       <!-- render waypoint templates here -->
-      <div id="roadbook-waypoints" data-bind="template: { name: 'waypoint-template', foreach: printApp.waypoints }"></div>
+      <div id="roadbook-waypoints" data-bind="template: { name: 'waypoint-template', foreach: printApp.waypoints}"></div>
     </div>
     <!--
       Define templates
@@ -72,6 +72,10 @@
             <div data-bind="text: kmFromPrev.toFixed(2)">
             </div>
           </div>
+		  <div class="waypoint-index">
+			<div data-bind="text: $index()+1">
+			</div>
+		  </div>
         </div>
         <div class='waypoint-tulip'>
           <img data-bind="attr: { src: tulip}">
@@ -79,7 +83,11 @@
         <div class='waypoint-note'>
           <p data-bind="html: notes.text"></p>
           <div class='heading' data-bind="visible: showHeading">
-            <label>CAP </label><span data-bind="text: Array(Math.max(3 - String(Math.round(heading)).length + 1, 0)).join(0) + Math.round(heading) + '\xB0'"></span>
+            <label>C </label>
+			<span data-bind="text: Math.round(heading) + '\xB0'"></span>
+			<!-- Just in case you want to go back to leading zeros, here's the code:
+			<span data-bind="text: Array(Math.max(3 - String(Math.round(heading)).length + 1, 0)).join(0) + Math.round(heading) + '\xB0'"></span>
+			--->
           </div>
         </div>
       </div>
