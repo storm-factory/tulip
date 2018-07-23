@@ -99,7 +99,7 @@ var PrintApp = Class({
 	if((pageFormat == 'A5') && (pageLength == 'Roll')){
 		size = {height: $(document).height()*265+100000, width: 148000};
 		pageCss.innerHTML = "@page{margin-left:0px; margin-top:40px; margin-right:0px; margin-bottom:0px}";
-		$('body').css('margin-left', '50px');
+		$('body').css('margin-left', '0px');
 	}
     if((pageFormat == 'PackedLetter') && (pageLength == 'Page')){
 		size = 'Letter';

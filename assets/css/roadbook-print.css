@@ -38,7 +38,7 @@ body {
 #roadbook-name {
   font-size: 35px;
   text-align: left;
-  width: 349px !important;
+  width: 300px !important;
   font-family: bellybeans !important;
   border-left: 1px solid #000; min-height: 90px;
 }
