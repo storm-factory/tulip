@@ -74,42 +74,42 @@ var PrintApp = Class({
    if((pageFormat == 'Letter') && (pageLength == 'Page')){
 		size = 'Letter';
 		pageCss.innerHTML = "@page{margin-left:0px; margin-top:40px; margin-right:0px; margin-bottom:0px}";
-		$('body').css('margin-left', '-76px');
+		$('body').css('margin-left', '-25px');
 	}
 	if((pageFormat == 'Letter') && (pageLength == 'Roll')){
 		size = {height: $(document).height()*265+100000, width: 216000};
 		pageCss.innerHTML = "@page{margin-left:0px; margin-top:40px; margin-right:0px; margin-bottom:0px}";
-		$('body').css('margin-left', '-76px');
+		$('body').css('margin-left', '-25px');
 	}
     if((pageFormat == 'Legal') && (pageLength == 'Page')){
 		size = 'Legal';
-		pageCss.innerHTML = "@page{margin-left:0px; margin-top:40px; margin-right:0px; margin-bottom:0px}";
-		$('body').css('margin-left', '-76px');
+		pageCss.innerHTML = "@page{margin-left:0px; margin-top:20px; margin-right:0px; margin-bottom:0px}";
+		$('body').css('margin-left', '-25px');
 	}
 	if((pageFormat == 'Legal') && (pageLength == 'Roll')){
 		size = {height: $(document).height()*265+100000, width: 216000};
 		pageCss.innerHTML = "@page{margin-left:0px; margin-top:40px; margin-right:0px; margin-bottom:0px}";
-		$('body').css('margin-left', '-76px');
+		$('body').css('margin-left', '-25px');
 	}
     if((pageFormat == 'A5') && (pageLength == 'Page')){
 		size = 'A5';
 		pageCss.innerHTML = "@page{margin-left:0px; margin-top:40px; margin-right:0px; margin-bottom:0px}";
-		$('body').css('margin-left', '50px');
+		$('body').css('margin-left', '-25px');
 	}
 	if((pageFormat == 'A5') && (pageLength == 'Roll')){
 		size = {height: $(document).height()*265+100000, width: 148000};
 		pageCss.innerHTML = "@page{margin-left:0px; margin-top:40px; margin-right:0px; margin-bottom:0px}";
-		$('body').css('margin-left', '0px');
+		$('body').css('margin-left', '-25px');
 	}
     if((pageFormat == 'PackedLetter') && (pageLength == 'Page')){
 		size = 'Letter';
 		pageCss.innerHTML = "@page{margin-left:0px; margin-top:2px; margin-right:0px; margin-bottom:0px}";
-		$('body').css('margin-left', '-76px');
+		$('body').css('margin-left', '-25px');
 	}
 	if((pageFormat == 'PackedLetter')	&& (pageLength == 'Roll')){
 		size = {height: $(document).height()*265+100000, width: 216000};
 		pageCss.innerHTML = "@page{margin-left:0px; margin-top:0px; margin-right:0px; margin-bottom:0px}";
-		$('body').css('margin-left', '-76px');
+		$('body').css('margin-left', '-25px');
 	}
 
 	document.body.appendChild(pageCss);
@@ -122,8 +122,14 @@ var PrintApp = Class({
   rerenderForPageSize: function(){
 	var pageFormat = this.pageFormat();
 	var pageLength = this.pageLength();
-	 $('.waypoint,.waypoint-distance,.waypoint-tulip,.waypoint-note').removeClass('PackedLetter');
-	if((pageFormat == 'PackedLetter')) $('.waypoint,.waypoint-distance,.waypoint-tulip,.waypoint-note').addClass('PackedLetter');
+	 $('.waypoint').removeClass('Letter');
+	 $('.waypoint').removeClass('Legal');
+	 $('.waypoint').removeClass('A5');
+	 $('.waypoint').removeClass('PackedLetter');
+	if((pageFormat == 'Letter')) $('.waypoint').addClass('Letter');
+	if((pageFormat == 'Legal')) $('.waypoint').addClass('Legal');
+	if((pageFormat == 'A5')) $('.waypoint').addClass('A5');
+	if((pageFormat == 'PackedLetter')) $('.waypoint').addClass('PackedLetter');
 
     $('.break').remove();
     if((pageLength == "Page")){

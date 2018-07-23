@@ -10,19 +10,16 @@
   font-family:Lato-Regular-outline;
   src:url(../fonts/Lato-Regular-outline.ttf);
 }
-/*@page{
-	margin-left:0px;
-	margin-top:40px;
-	margin-bottom:0px;
-	margin-right:0px;
-}*/
 
 /*
   for native printing expirementation
 */
 html {
-  width:520px;
-  margin:auto;
+  width:525px;
+  margin-left:50px;
+  margin-right:50px;
+  margin-top:0px;
+  margin-bottom:0px;
 }
 
 body {
@@ -38,9 +35,12 @@ body {
 #roadbook-name {
   font-size: 35px;
   text-align: left;
-  width: 300px !important;
+  width: 350px !important;
   font-family: bellybeans !important;
-  border-left: 1px solid #000; min-height: 90px;
+  border-left: 1px solid #000;
+  min-height: 90px;
+  overflow: hidden;
+  word-wrap: normal;
 }
 #roadbook-desc {
   font-size: 15px;
@@ -54,7 +54,11 @@ body {
   font-family: Tahoma, Geneva, sans-serif;
 }
 
-#roadbook-total-distance{max-height: 90px;  width: 125px !important}
+#roadbook-total-distance{
+	max-height: 90px;  
+	width: 165px !important;
+	border: 0px solid #f00;
+}
 #roadbook-total-distance p{
   font-family: "Lucida Console", Monaco, monospace;
   color: #000;
@@ -62,6 +66,9 @@ body {
   font-size: 35px;
 }
 
+*{
+	box-sizing: border-box;
+}
 .waypoint-note p div img.small,
 .waypoint-note p img.small{
   height: 35px;
@@ -104,7 +111,8 @@ body {
 
 
 .waypoint {
-	width: 515px !important;
+	width: 525px !important;
+	height: 128px; /*FIM standard, overridden by most page sizes*/
 	border-left: 2px solid #000;
 	border-right: 2px solid #000;
 	border-top: 1px solid #000;
@@ -113,9 +121,22 @@ body {
 	margin-right: 0 !important;
 	position: relative;
 }
+.waypoint.letter {
+    height: 135px;
+}
+.waypoint.legal {
+	height: 130px;
+}
+.waypoint.A5 {
+	height: 128px;
+}
+.waypoint.PackedLetter {
+	height: 131px;
+}
 
 .waypoint-distance {
 	width: 150px;
+	height: 100%;
 	position:absolute;
 	top: 0px;
 	left: 0px;
@@ -123,49 +144,41 @@ body {
 }
 
 .waypoint-tulip {
-	width:175px;
-	border-right: 0px solid #0f0;
+	width:180px;
+	height: 100%;
+	border: 0px solid #0f0;
 	position: absolute;
 	top: 0px;
-	left: 154px;
+	left: 152px;
 }
 
 .waypoint-tulip img {
-	height: 95%;
-	width:  95%;
+	height: 96%;
+	width:  96%;
 	padding-left: 0px;
 	position:absolute;
-	top:2px;
-	left:2px;
+	top:2%;
+	left:2%;
 	border:0px solid #f00;
 }
 
 .waypoint-note {
 	padding-left: 4px;
 	padding-right: 4px;
-	width: 175px;
+	width: 188px;
+	height: 100%;
 	position: absolute;
 	top: 0px;
 	right: 0px;
 	border-left: 2px solid #000;
 }
 
-.waypoint,
-.waypoint-distance,
-.waypoint-tulip,
-.waypoint-note {
-	height: 135px;
-}
-.waypoint.PackedLetter,
-.waypoint-distance.PackedLetter,
-.waypoint-tulip.PackedLetter,
-.waypoint-note.PackedLetter {
-	height: 129px;
-}
+
+
 
 
 .waypoint-note p {
-	height: 125px;
+	height: 100%;
 	font-size: medium;
 	width: 100%;
 	margin: 0;
@@ -209,7 +222,7 @@ body {
 	padding-right: 10px;
 	position: absolute;
 	height: 27px;
-	width:70px;
+	width:80px;
 	bottom: 0px;
 	right: 0px;
 	border-top: 1px solid black;
@@ -230,7 +243,7 @@ body {
 	font-size: 18pt;
 	position: absolute;
 	height: 40px;
-	width: 90px;
+	width: 100px;
 	bottom: 0px;
 	left: 0px;
 	border-top: 0px solid black;
@@ -260,10 +273,11 @@ body {
   text-shadow: -3px 3px 2px rgba(0,0,0, 1);
   background-color: #787878;
   color: #ffba29;
+  border-radius: 5px;
 }
 .main-nav {
   background: #ffba29;
-  height: 115px;
+  height: 135px;
   z-index: 150;
   margin-bottom: 20px;
   padding-top: 10px;
@@ -271,6 +285,7 @@ body {
   box-shadow: 0 2px 3px rgba(0,0,0,.4);
   width: 565px;
   margin-left: -25px;
+  border-radius: 5px;
  
 }
 
@@ -296,20 +311,15 @@ img {
 .clearfix:after {
   clear: both; }
 .row {
-  margin: 0 auto;
-  max-width: 62.5rem;
-  width: 100%; }
-    .row:before, .row:after {
-      content: " ";
-      display: table; }
-    .row:after {
-      clear: both; }
-      .column,
-      .columns {
-        padding-left: 0.9375rem;
-        padding-right: 0.9375rem;
-        width: 100%;
-        float: left; }
+	margin: 0 auto;
+	max-width: 62.5rem;
+	width: 100%; 
+}
+.row:before, .row:after {
+	content: " ";
+	display: table; }
+.row:after {
+	clear: both; }
 
 .column + .column:last-child,
 .columns + .column:last-child, .column +
@@ -325,10 +335,10 @@ img {
   float: left; }
 .column,
 .columns {
-  position: relative;
-  padding-left: 0.9375rem;
-  padding-right: 0.9375rem;
-  float: left; }
+	position: relative;
+	padding-left: 0.9375rem;
+	padding-right: 0.9375rem;
+	float: left;}
 .large-1 {
   width: 8.33333%; }
 
@@ -384,7 +394,7 @@ button, .button {
   border-color: #007095;
   color: #FFFFFF;
   transition: background-color 300ms ease-out;
-  width: 65px;
+  width: 130px;
 }
 button:hover, button:focus, .button:hover, .button:focus {
   background-color: #007095; }
