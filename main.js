@@ -79,6 +79,7 @@ function createWindow () {
       { label: "Export GPX", accelerator: "CmdOrCtrl+E", click: function() { mainWindow.webContents.send('export-gpx'); }},
       { label: "Export OpenRally GPX", click: function() { mainWindow.webContents.send('export-openrally-gpx'); }},
       { label: "Export PDF", accelerator: "CmdOrCtrl+P", click: function() { mainWindow.webContents.send('export-pdf'); }},
+	  { label: "Export Lexicon Key", click: function() { mainWindow.webContents.send('export-lexicon'); }},
     ]
     },
     {label: "View",
@@ -135,7 +136,15 @@ ipcMain.on('ignite-print', (event, arg) => {
   })
 
 });
+ipcMain.on('ignite-lexicon', (event, arg) => {
+  printWindow = new BrowserWindow({width: 820, height: 700, 'min-height': 700, 'resizable': false});
+  printWindow.loadURL('file://' + __dirname + '/lexicon_key.html');
+  data = arg;
+  printWindow.on('closed', () => {
+    printWindow = null
+  })
 
+});
 //listens for the browser window to say it's ready to print
 ipcMain.on('print-launched', (event, arg) => {
   event.sender.send('print-data', data);
@@ -146,17 +155,44 @@ ipcMain.on('print-pdf', (event, arg) => {
   var size = arg.opts.pageSize;
   var sizeName = arg.opts.pageSizeName;
   var filename = arg.filepath.replace('.tlp','_' + sizeName + '.pdf')
-  console.log(arg.opts);
   printWindow.webContents.printToPDF(arg.opts, (error, data) => {
-    if (error) throw error;
-    fs.writeFile(filename, data, (error) => {
-      if (error)
-        throw error;
-      printWindow.close();
-
-      dialog.showMessageBox(mainWindow, {message: "Your PDF has been exported to the same directory you saved your roadbook. Gas a la burra!",buttons: ['ok']})
-    });
+    if (error) {
+		console.log('Error converting PDF to HTML' + error + arg.opts);
+		throw error;
+	} else {
+		fs.writeFile(filename, data, (error) => {
+		  if (error) {
+			console.log('Error writing PDF file. Is ' + filename +' also open in another program?' + error);
+			throw error;
+		  } else {
+			  printWindow.close();
+			  dialog.showMessageBox(mainWindow, {message: "Your PDF has been exported to the same directory you saved your roadbook. Gas a la burra!",buttons: ['ok']})
+		  }
+		});
+	}
   });
+});
+
+ipcMain.on('print-lexicon-pdf', (event,arg) => {
+	const path = require('path');
+	var filename = path.join(path.dirname(arg.filepath),"lexicon-key.pdf")
+	console.log('called main.js function ' + filename);
+	printWindow.webContents.printToPDF(arg.opts, (error, data) => {
+		if (error) {
+			console.log('Error converting PDF to HTML' + error + arg.opts);
+			throw error;
+		} else {
+			fs.writeFile(filename, data, (error) => {
+			  if (error) {
+				console.log('Error writing PDF file. Is ' + filename +' also open in another program?' + error);
+				throw error;
+			  } else {
+				  printWindow.close();
+				  dialog.showMessageBox(mainWindow, {message: "Your PDF has been exported to the same directory you saved your roadbook. Gas a la burra!",buttons: ['ok']})
+			  }
+			});
+		}
+	});
 });
 
 //listens for the browser window to ask for the documents folder

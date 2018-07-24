@@ -1,34 +1,73 @@
 <!DOCTYPE html>
 <html>
 <head>
-
-<script src="./assets/libs/jquery-2.1.4.min.js"></script>
-
-</head>
-
-<body>
-
-<div id="storage" style="display:none;"></div>
-<h4>Tulip lexicon</h4>
-
-<table id="lexiconTable" border = "1px">
-<tr id="lexiconTableRow"><td><p> &nbsp Table Loading ... &nbsp </p></td></tr>
-</table>
-
-
+<link rel="stylesheet" type="text/css" href="assets/css/roadbook-print.css">
+<style>
+html {
+	width:720px;
+}
+.firstrow {
+	height:53px;
+	border-top:1px solid black;
+	border-bottom:1px solid black;
+	border-right:1px solid black;
+}
+.otherrow {
+	height:53px;
+	border-bottom:1px solid black;
+	border-right:1px solid black;
+}
+.glyphcolumn {
+	padding-left:0px;
+	height:100%;
+	border-left:1px solid black;
+	border-right:0px solid black;
+}
+.desccolumn {
+	padding:6px;
+	height:100%;
+}
+</style>
+<script>
+    //Jquery sees it is running in CommonJS env, and wants to be used as such.
+    window.$ = window.jQuery = require('./assets/libs/jquery-2.1.4.min.js');
+</script>
 <script>
 
-var tablewidth = 4;
-var glyphHeight = 30;
-
+const tablewidth = 4;
+const glyphHeight = 40;
+const pageLength = 18;
+var ipc;
+var filePath;
 $(document).ready(function(){
+    loadGlyphTable();
 
-$("#storage").load("index.html #glyphs",function(responseTxt,statusTxt,xhr){
+	var arg;
+	ipc = require('electron').ipcRenderer;
+	ipc.on('print-data', function(event, arg){
+		filePath = arg;
+    });
+	ipc.send('print-launched', true);
+
+	$(window).scroll(function() {
+		if( $(this).scrollTop() > 0 ) {
+			$(".main-nav").addClass("main-nav-scrolled");
+		} else {
+			$(".main-nav").removeClass("main-nav-scrolled");
+		}
+	});
+	$('.button').click(function(){
+		requestPdfPrint();
+	});
+});
+
+function loadGlyphTable() {
+	$("#storage").load("index.html #glyphs",function(responseTxt,statusTxt,xhr){
 		if(statusTxt == "success") 
 			
 			var aGlyphs = $("#storage").find("li");
 			var j=-1;
-			var newrow;
+			var newrow = "";
 			for(var i = 0; i < aGlyphs.size();i++){
 				var aGlyph = aGlyphs.eq(i);
 				if($(aGlyph).children("a.th").size() > 0){
@@ -36,27 +75,39 @@ $("#storage").load("index.html #glyphs",function(responseTxt,statusTxt,xhr){
 					glyphImg = glyphImg.slice(0,-1) + ' height="' + glyphHeight + '">';
 					
 					var glyphTxt = $(aGlyph).children("p").text();
-					
-					j++;
-					
-					if( j%tablewidth == 0 ) { newrow = "<tr>";}
-					
-					newrow += "<td>" + glyphImg + "</td><td>" + glyphTxt + "</td>";
-					
-					if( j%tablewidth == tablewidth-1 ) { 
-						newrow += "</tr>";
-						$(newrow).insertBefore("#lexiconTableRow"); 
+					if((glyphTxt != "")
+						&& ((glyphTxt.slice(-3) != "kph") || (glyphTxt == '25kph'))
+						&& ((!glyphTxt.includes('cliff')) || (glyphTxt == 'cliff'))){
+						j++;
+						if((j/tablewidth % pageLength ==0)){
+							newrow = "<div class='row firstrow'>";
+						} else if( j%tablewidth == 0 ) {
+							if( j > 0 && (j/tablewidth % pageLength == pageLength-1)){
+								newrow = "<div class='row break otherrow'>";
+							} else {
+								newrow = "<div class='row otherrow'>";
+							}
+						}
+						if(glyphTxt == '') glyphTxt = '<p></p>'
+						newrow += "<div class='column large-1 glyphcolumn'>"
+							+ glyphImg + "</div><div class='column large-2 desccolumn'>" + glyphTxt + "</div>";
+						if( j%tablewidth == tablewidth-1 ) {
+							newrow += "</div>";
+							$(newrow).insertBefore("#lexiconTableRow");
+							newrow="";
+						}
 					}
 				}				
 			}
-			
-			while(j%tablewidth != tablewidth-1){
-				newrow += "<td></td><td></td>"
-				j++;
+			if( newrow != "" ){
+				while(j%tablewidth != tablewidth-1){
+					newrow += "<div class='column large-1 glyphcolumn'>"
+						+ "<p></p></div><div class='column large-2 desccolumn'><p></p></div>"
+					j++;
+				}
+				newrow += "</div>";
+				$(newrow).insertBefore("#lexiconTableRow"); 
 			}
-			newrow += "</tr>";
-			$(newrow).insertBefore("#lexiconTableRow"); 
-			
 			$("#lexiconTableRow").remove();
 	
 			
@@ -64,9 +115,43 @@ $("#storage").load("index.html #glyphs",function(responseTxt,statusTxt,xhr){
 			alert("Error: " + xhr.status + ": " + xhr.statusText);
 	});
 	
-});
+}
+
+function requestPdfPrint(){
+    $('nav').hide();
+	var data = {'filepath': filePath, 'opts': {'pageSize': 'Letter', 'pageSizeName': 'Letter', 'marginsType' : '1'}};
+    ipc.send('print-lexicon-pdf', data);
+}
 
 </script>
+</head>
+
+<body>
+
+<div id="storage" style="display:none;"></div>
+
+ <nav class="main-nav" style="height:80px;width:745px">
+      <div class="row">
+        <div class="large-4 columns"><p></p>
+        </div>
+        <div class="large-4 columns logo">
+          Tulip
+        </div>
+        <div class="large-4 columns" align='right'>
+          <a href="#" class="button small radius">
+            Save PDF
+          </a>
+        </div>
+      </div>
+  </nav>
+ 
+<h3>Tulip Lexicon</h3>
+<div class="row">
+	<div class="column" id="lexiconTableRow"><p>Table Loading ... </p></div>
+</div>
+
+
+
 
 </body>
 </html>
