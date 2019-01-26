@@ -67,7 +67,9 @@ class RoadbookController{
   bindToPaletteControls(){
     var _this = this;
     $('#hide-palette').click(function(){
-      _this.model.finishInstructionEdit(_this.getNoteEditorHTML(),_this.getNotificationBubbleVal(),_this.getNotificationModifierVal());
+      // NOTE: this is handled by the tulip module maybe interface could be improved
+      _this.model.clearInstructionUI();
+      _this.persistToModel();
       _this.resetInstructionPalette();
     });
 
@@ -118,6 +120,15 @@ class RoadbookController{
       $('.added-track-selector').removeClass('active');
       $(this).addClass('active');
     });
+  }
+
+  // TODO refactor into app
+  persistToModel(){
+    if(this.model.filePath !== null){
+      app.saveRoadBook();
+    }else{
+      this.model.finishInstructionEdit(this.getNoteEditorHTML(),this.getNotificationBubbleVal(),this.getNotificationModifierVal());
+    }
   }
 
   populateInstructionPalette(instruction){

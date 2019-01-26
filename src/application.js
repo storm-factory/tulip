@@ -39,6 +39,7 @@ var App = Class({
     this.roadbook = new RoadbookModel();
     this.roadbook.bindToKnockout();
 
+    // TODO: : this is weird:
     this.roadbookController = new RoadbookController(this.roadbook);
     this.roadbook.controller = this.roadbookController;
     /*
@@ -77,13 +78,6 @@ var App = Class({
     return can
   },
 
-  canSave: function(){
-    var can;
-    can = this.roadbook.finishInstructionEdit();
-    can = can || this.roadbook.finishNameDescEdit();
-    return can;
-  },
-
   openRoadBook: function(){
     var _this = this;
     this.dialog.showOpenDialog({ filters: [
@@ -109,6 +103,7 @@ var App = Class({
     });
   },
 
+  // TODO make a select box that asks if you want RB classic, Open rally, or straight gpx
   exportGPX: function(){
     if(this.canExport()){
       var gpx = this.io.exportGPX();
@@ -121,19 +116,19 @@ var App = Class({
     }
   },
 
-  exportOpenRallyGPX: function(){
-    if(this.canExport()){
-      var gpx = this.io.exportOpenRallyGPX();
-      var filename = ('openrally-'+this.roadbook.filePath).replace('tlp','gpx');
-      this.fs.writeFile(filename, gpx, function (err) {});
-      $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
-      alert('You gpx has been exported to the same directory you saved your roadbook');
-    } else {
-      alert('F@#k1ng Kamaz! You must save your roadbook before you can export GPX tracks');
-    }
-  },
+  // exportOpenRallyGPX: function(){
+  //   if(this.canExport()){
+  //     var gpx = this.io.exportOpenRallyGPX();
+  //     var filename = (this.roadbook.filePath).replace('tlp','openrally.gpx');
+  //     this.fs.writeFile(filename, gpx, function (err) {});
+  //     $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
+  //     alert('You gpx has been exported to the same directory you saved your roadbook');
+  //   } else {
+  //     alert('F@#k1ng Kamaz! You must save your roadbook before you can export GPX tracks');
+  //   }
+  // },
 
-  importGPX: function(){
+  importGPX: function(reverse=false){
     var _this = this;
     this.dialog.showOpenDialog({ filters: [
        { name: 'import gpx', extensions: ['gpx'] }
@@ -144,7 +139,7 @@ var App = Class({
       $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
       var fileName = fileNames[0];
       _this.fs.readFile(fileName, 'utf-8', function (err, data) {
-        _this.io.importGPX(data);
+        _this.io.importGPX(data, reverse);
       });
     });
   },
@@ -159,11 +154,11 @@ var App = Class({
   },
 
   saveRoadBook: function(){
+    this.roadbook.finishInstructionEdit(this.roadbookController.getNoteEditorHTML(), this.roadbookController.getNotificationBubbleVal(), this.roadbookController.getNotificationModifierVal());
     if(this.roadbook.filePath == null){
       // Request documents directory path from node
       this.ipc.send('get-documents-path');
     } else {
-      this.roadbook.finishInstructionEdit();
       this.fs.writeFile(this.roadbook.filePath, JSON.stringify(this.roadbook.statefulJSON(), null, 2), function (err) {});
     }
   },
@@ -260,13 +255,11 @@ var App = Class({
 
     $('#save-roadbook').click(function(e){
       e.preventDefault();
-      if(_this.canSave()){
-        $(this).addClass('secondary');
-        if(e.shiftKey){
-          _this.saveRoadBookAs();
-        }else {
-          _this.saveRoadBook();
-        }
+      $(this).addClass('secondary');
+      if(e.shiftKey){
+        _this.saveRoadBookAs();
+      }else {
+        _this.saveRoadBook();
       }
       $(this).blur();
     });
@@ -329,6 +322,10 @@ var App = Class({
 
     this.ipc.on('import-gpx', function(event, arg){
       _this.importGPX();
+    });
+
+    this.ipc.on('import-gpx-reverse', function(event, arg){
+      _this.importGPX(true);
     });
 
     this.ipc.on('export-gpx', function(event, arg){

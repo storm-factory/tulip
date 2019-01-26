@@ -212,6 +212,7 @@ class RoadbookModel{
   finishInstructionEdit(noteVal,notificationVal,modifierVal){
     if(this.currentlyEditingInstruction !== null){
       this.updateInstructionAfterEdit(noteVal,notificationVal,modifierVal);
+      // this.clearInstructionUI();
       this.currentlyEditingInstruction = null;
     }
     return true;
@@ -224,6 +225,9 @@ class RoadbookModel{
       this.currentlyEditingInstruction.notification.bubble = notificationVal;
       this.currentlyEditingInstruction.notification.modifier = modifierVal;
     }
+  }
+
+  clearInstructionUI(){
     this.currentlyEditingInstruction.tulip.finishEdit();
     this.currentlyEditingInstruction.tulip.finishRemove();
   }
