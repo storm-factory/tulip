@@ -154,7 +154,7 @@ var App = Class({
   },
 
   saveRoadBook: function(){
-    this.roadbook.finishInstructionEdit(this.roadbookController.getNoteEditorHTML(), this.roadbookController.getNotificationBubbleVal(), this.roadbookController.getNotificationModifierVal());
+    this.roadbook.updateInstructionAfterEdit(this.roadbookController.getNoteEditorHTML(), this.roadbookController.getNotificationBubbleVal(), this.roadbookController.getNotificationModifierVal());
     if(this.roadbook.filePath == null){
       // Request documents directory path from node
       this.ipc.send('get-documents-path');

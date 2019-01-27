@@ -1,10 +1,11 @@
 {
   "name": "tulip",
-  "version": "1.8.2",
+  "version": "1.9.0",
   "description": "A application for creating rally fun times",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder -wm"
   },
   "repository": {
     "type": "git",
@@ -23,7 +24,22 @@
   },
   "homepage": "https://github.com/storm-factory/tulip",
   "devDependencies": {
-    "electron-prebuilt": "^1.2.0",
-    "tape": "^4.6.3"
+    "electron": "^4.0.2",
+    "electron-builder": "^20.38.5",
+    "tape": "^4.9.2"
+  },
+  "dependencies": {},
+  "build": {
+    "appId": "com.tulip.app",
+    "productName": "tulip",
+    "extraResources": "./assets/svg/glyphs/*.svg",
+    "mac": {
+      "target": "dmg",
+      "icon": "./build/tulip-logo.icns"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "./build/tulip-logo.ico"
+    }
   }
 }

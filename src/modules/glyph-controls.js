@@ -12,12 +12,17 @@ class GlyphControls{
   }
 
   getGylphNames(){
+    var files;
     try {
-      this.files = this.fs.readdirSync(this.process.resourcesPath + '/app/assets/svg/glyphs/').filter(function(val){ return val.endsWith('.svg')});
+      var path = this.process.resourcesPath + '/app/assets/svg/glyphs/';
+      console.log(path);
+      files = this.fs.readdirSync(path);
     } catch (e) {
       console.log("using unpackaged filesys");
-      this.files = this.fs.readdirSync('assets/svg/glyphs').filter(function(val){ return val.endsWith('.svg')});
+      files = this.fs.readdirSync('./assets/svg/glyphs');
     }
+    console.log(files);
+    this.files = files.filter(function(val){ return val.endsWith('.svg')});
   }
 
   handleGlyphSelectUI(e){
