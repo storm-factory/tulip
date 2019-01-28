@@ -60,9 +60,11 @@ var App = Class({
     */
     this.initListeners();
 
-    this.glyphControls = new GlyphControls();
-
-    this.noteControls = new NoteControls();
+    this.glyphManager = new GlyphFileManager();
+    // this.glyphControls = new GlyphControls(); //TODO fix IPC function
+    this.tulipPaletteController = new TulipPaletteController(this.roadbook, this.glyphManager);
+    // this.noteControls = new NoteControls();
+    this.notePaletteController = new NotePaletteController(this.roadbook, this.glyphManager);
   },
 
   /*

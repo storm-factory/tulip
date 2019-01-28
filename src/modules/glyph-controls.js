@@ -1,6 +1,6 @@
 // TODO refactor this to use MVC pattern and act as a controller for the currentlyEditingInstruction for the roadbook
 class GlyphControls{
-
+  //TODO does this need to know about the roadbook or instruction?
   constructor(){
     this.fs = require('fs');
     this.process = require('electron').remote.process;
@@ -11,6 +11,7 @@ class GlyphControls{
     this.addToNote = false;
   }
 
+  //model/module function
   getGylphNames(){
     var files;
     try {
@@ -24,7 +25,7 @@ class GlyphControls{
     console.log(files);
     this.files = files.filter(function(val){ return val.endsWith('.svg')});
   }
-
+  //controller function
   handleGlyphSelectUI(e){
     e.preventDefault();
     if(!e.shiftKey){
@@ -32,7 +33,7 @@ class GlyphControls{
     }
     $('#glyph-search').focus();
   }
-
+  //controller function
   populateResults(results){
     var _this = this;
     $.each(results, function(i,result){
@@ -46,7 +47,7 @@ class GlyphControls{
       $('#glyph-search-results').append(showResult);
     });
   }
-
+  //model/module function
   searchGlyphNames(query){
     var results=[];
     $.each(this.files, function(i,file){
@@ -56,7 +57,7 @@ class GlyphControls{
     });
     return results;
   }
-
+  //controller function
   bindToGlyphImages(){
     var _this = this;
     $('.glyph').click(function(e){
@@ -65,7 +66,7 @@ class GlyphControls{
       app.noteControls.checkForNotification();
     });
   }
-
+  //controller function
   initListeners(){
     var _this = this;
     $('#glyph-search').keyup(function(){
@@ -108,7 +109,7 @@ class GlyphControls{
       return false
     });
   }
-
+  //controller function
   showGlyphModal(top,left){
     app.glyphPlacementPosition = {top: top, left: left};
     this.addToNote = false;
@@ -116,7 +117,7 @@ class GlyphControls{
     setTimeout(function() { $('#glyph-search').focus(); }, 600); //we have to wait for the modal to be visible before we can assign focus
     return false
   }
-
+  //controller function
   addGlyphToInstruction(element){
     var src = $(element).attr('src');
     if(this.addToNote){

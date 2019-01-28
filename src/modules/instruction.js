@@ -72,7 +72,7 @@ var Instruction = Class({
           app.mapController.addWaypointBubble(this.routePointIndex, this.notification.bubble, this.notification.fill)
           // show notification options
           $('#notification-options').removeClass('hidden');
-          app.noteControls.updateNotificationControls(this.notification);
+          app.notePaletteController.updateNotificationControls(this.notification);
         }
 
       }

@@ -301,7 +301,7 @@ textarea.waypoint-palette{
 .tab-title {
   margin-right: 4px;
 }
-.note-grid {
+#add-glyph-to-note {
   width: 100% !important;
   height: 35px;
   float: left;
@@ -315,14 +315,14 @@ textarea.waypoint-palette{
   margin-right: 10px;
   margin-top: 5px;
 }
-.note-grid i {
+#add-glyph-to-note i {
   display: none;
 }
-.note-grid:hover i {
+#add-glyph-to-note:hover i {
   display: block;
 }
 
-.note-grid:hover {
+#add-glyph-to-note:hover {
   background-color: rgba(255,144,0,1);
   cursor: pointer;
   box-shadow: 5px 5px 22px -2px rgba(0,0,0,0.60);
