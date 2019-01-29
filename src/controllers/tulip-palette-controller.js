@@ -1,9 +1,9 @@
 /*
   A module for providing the application with the means to control the map via the UI
 */
-class TulipPaletteController extends BasePaletteController{
-  constructor(roadbook,glyphManager){
-    super(glyphManager);
+class TulipPaletteController{
+  constructor(roadbook,glyphController){
+    this.glyphController = glyphController;
     this.initListeners(roadbook);
   }
 
@@ -28,17 +28,8 @@ class TulipPaletteController extends BasePaletteController{
         }
         return false
       }
-      _this.showGlyphModal($(this).data('top'),$(this).data('left'),roadbook);
+      app.glyphPlacementPosition = {top: $(this).data('top'), left: $(this).data('left')};
+      _this.glyphController.showGlyphModal(roadbook,_this.addGlyphToTulip);
     });
   }
-
-  showGlyphModal(top,left,roadbook){
-    $('.glyph').off('click')
-    app.glyphPlacementPosition = {top: top, left: left};
-    $('#glyphs').foundation('reveal', 'open');
-    setTimeout(function() { $('#glyph-search').focus(); }, 600); //we have to wait for the modal to be visible before we can assign focus
-    super.bindToGlyphModalImages(roadbook,this.addGlyphToTulip);
-    super.bindToGlyphModalSearch(roadbook,this.addGlyphToTulip);
-  }
-
 }

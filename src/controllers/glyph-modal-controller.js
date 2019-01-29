@@ -1,4 +1,5 @@
-class BasePaletteController{
+// I dont think this needs to inherit, it can be it's own controller called GlyphModalController or something
+class GlyphModalController{
 
   constructor(glyphManager){
     this.glyphManager = glyphManager;
@@ -34,15 +35,20 @@ class BasePaletteController{
   }
 
   bindToGlyphModalSearchClear(){
+    var _this = this;
     $('#glyph-search-clear').off('click');
     $('#glyph-search-clear').click(function(){
-      $('#glyph-search').val('');
-      $('#glyph-search-results').html('');
-      $('#glyph-search').focus();
+      _this.clearGlyphSearch();
     })
   }
 
-  //move to base class
+  clearGlyphSearch(){
+    $('#glyph-search').val('');
+    $('#glyph-search-results').html('');
+    $('#glyph-search').focus();
+  }
+
+
   populateResults(results){
     var _this = this;
     $.each(results, function(i,result){
@@ -53,5 +59,13 @@ class BasePaletteController{
     });
   }
 
+  showGlyphModal(roadbook,callback){
+    this.clearGlyphSearch();
+    $('.glyph').off('click');
+    $('#glyphs').foundation('reveal', 'open');
+    setTimeout(function() { $('#glyph-search').focus(); }, 600); //we have to wait for the modal to be visible before we can assign focus
+    this.bindToGlyphModalImages(roadbook,callback);
+    this.bindToGlyphModalSearch(roadbook,callback);
+  }
 
 }

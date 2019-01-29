@@ -1,6 +1,6 @@
-class NotePaletteController extends BasePaletteController{
-  constructor(roadbook,glyphManager){
-    super(glyphManager);
+class NotePaletteController{
+  constructor(roadbook,glyphController){
+    this.glyphController = glyphController;
     this.bindToNoteSelection();
     this.bindToAddGlyphButton(roadbook);
     this.bindToNotificationUI(roadbook);
@@ -74,7 +74,7 @@ class NotePaletteController extends BasePaletteController{
     var _this = this;
     $('#add-glyph-to-note').click(function(e){
       e.preventDefault();
-      _this.showGlyphModal(roadbook);
+      _this.glyphController.showGlyphModal(roadbook,_this.addGlyphToNote);
     });
   }
 
@@ -96,13 +96,4 @@ class NotePaletteController extends BasePaletteController{
       }
     }
   }
-
-  showGlyphModal(roadbook){
-    $('.glyph').off('click')
-    $('#glyphs').foundation('reveal', 'open');
-    setTimeout(function() { $('#glyph-search').focus(); }, 600); //we have to wait for the modal to be visible before we can assign focus
-    super.bindToGlyphModalImages(roadbook,this.addGlyphToNote);
-    super.bindToGlyphModalSearch(roadbook,this.addGlyphToNote);
-  }
-
 }
