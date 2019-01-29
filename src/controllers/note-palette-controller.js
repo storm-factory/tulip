@@ -1,24 +1,25 @@
 class NotePaletteController extends BasePaletteController{
   constructor(roadbook,glyphManager){
-    super();
+    super(glyphManager);
     this.bindToNoteSelection();
-    this.bindToNotificationUI(roadbook,glyphManager);
+    this.bindToAddGlyphButton(roadbook);
+    this.bindToNotificationUI(roadbook);
   }
 
-  addGlyphToNote(element){
+  addGlyphToNote(roadbook,element){
     var src = $(element).attr('src');
-    app.roadbook.appendGlyphToNoteTextEditor($('<img>').attr('src', src).addClass('normal'));
+    roadbook.appendGlyphToNoteTextEditor($('<img>').attr('src', src).addClass('normal'));
   }
 
   /*
     Here we check the note section for WPM glyphs, !!! glyphs, and eventually speed zone glyphs
     so that we can capture data for rally blitz or rally comp exports
   */
-  checkForNotification(){
-    if(app.roadbook.currentlyEditingInstruction){
+  checkForNotification(roadbook){
+    if(roadbook.currentlyEditingInstruction){
       // reduce DOM image objects in the text editor to a collection of glyph names
       var glyphs = $('#note-editor').find("img").toArray().map(function(g){return $(g).attr('src').match(/\/([a-z0-9,-]*)\./)[1]})
-      app.roadbook.currentlyEditingInstruction.manageNotifications(glyphs);
+      roadbook.currentlyEditingInstruction.manageNotifications(glyphs);
     }
   }
 
@@ -60,22 +61,20 @@ class NotePaletteController extends BasePaletteController{
       $('#notification-modifier').attr('max', notification.modMax);
       $('#notification-modifier').attr('step', notification.modStep);
     });
-    //TODO decouple this
+    //TODO decouple this and don't mutate, it's weird
     $('#notification-bubble, #notification-modifier').bind('keyup input',function(){
       var notification = roadbook.currentlyEditingInstruction.notification;
       notification.bubble = $('#notification-bubble').val();
       notification.modifier = $('#notification-modifier').val();
-      _this.checkForNotification(); //TODO This needs refactored (mehbe as callback)
+      _this.checkForNotification(roadbook); //TODO This needs refactored (mehbe as callback)
     });
   }
 
-  bindToGlyphModal(){
-    // TODO move to note palette
+  bindToAddGlyphButton(roadbook){
+    var _this = this;
     $('#add-glyph-to-note').click(function(e){
       e.preventDefault();
-      _this.bindToGlyphModalImages(roadbook,_this.addGlyphToTulip);
-      $('#glyphs').foundation('reveal', 'open');
-      setTimeout(function() { $('#glyph-search').focus(); }, 600); //we have to wait for the modal to be visible before we can assign focus
+      _this.showGlyphModal(roadbook);
     });
   }
 
@@ -96,6 +95,14 @@ class NotePaletteController extends BasePaletteController{
         $(images[i]).addClass(size);
       }
     }
+  }
+
+  showGlyphModal(roadbook){
+    $('.glyph').off('click')
+    $('#glyphs').foundation('reveal', 'open');
+    setTimeout(function() { $('#glyph-search').focus(); }, 600); //we have to wait for the modal to be visible before we can assign focus
+    super.bindToGlyphModalImages(roadbook,this.addGlyphToNote);
+    super.bindToGlyphModalSearch(roadbook,this.addGlyphToNote);
   }
 
 }
