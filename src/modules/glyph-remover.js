@@ -1,4 +1,4 @@
-// TODO refactor this into the tulip controller
+// TODO refactor this into the tulip palette controller
 var GlyphRemover = Class({
 
   create: function(tulip,glyph,index){

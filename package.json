@@ -28,7 +28,9 @@
     "electron-builder": "^20.38.5",
     "tape": "^4.9.2"
   },
-  "dependencies": {},
+  "dependencies": {
+    "walk": "^2.3.14"
+  },
   "build": {
     "appId": "com.tulip.app",
     "productName": "tulip",
