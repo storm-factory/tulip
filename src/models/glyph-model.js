@@ -1,16 +1,46 @@
-class GlyphFileManager {
+class GlyphModel {
 
   constructor(){
-    this.files = this.loadGlyphFiles();
-    console.log(this.files);
+    this.fileTree = this.loadGlyphFiles();
+    this.bindToKnockout();
+  }
+
+  populateKnockout(glyphs){
+    this.routeDetails.descriptions(glyphs["route-details"].descriptions);
+    this.routeDetails.conditions(glyphs["route-details"].conditions);
+    this.routeDetails.actions(glyphs["route-details"].actions);
+    this.trackDescriptions(glyphs["track-descriptions"]);
+    this.terrainFeatures.manMade(glyphs["terrain-features"]["man-made"]);
+    this.terrainFeatures.natural(glyphs["terrain-features"].natural);
+    this.terrainFeatures.symbols(glyphs["terrain-features"].symbols);
+    this.orga.notices(glyphs.orga.notices);
+    this.orga.speedZones(glyphs.orga["speed-zones"]);
+  }
+
+  bindToKnockout(){
+    this.routeDetails = {
+      descriptions: ko.observableArray(),
+      conditions: ko.observableArray(),
+      actions: ko.observableArray()
+    };
+    this.trackDescriptions = ko.observableArray();
+    this.terrainFeatures = {
+      manMade: ko.observableArray(),
+      natural: ko.observableArray(),
+      symbols: ko.observableArray()
+    };
+    this.orga = {
+      notices: ko.observableArray(),
+      speedZones: ko.observableArray(),
+    };
   }
 
   //model/module function
   findGlyphsByName(query){
     var results=[];
-    $.each(this.files, function(i,file){
-      if(file.indexOf(query) != -1){
-        results.push({name: file.replace('.svg', ''), path: 'assets/svg/glyphs/'+file})
+    $.each(this.fileList, function(i,file){
+      if(file.name.indexOf(query) != -1){
+        results.push({name: file.name.replace('.svg', ''), path: file.path})
       }
     });
     return results;
@@ -26,9 +56,14 @@ class GlyphFileManager {
       return path;
     } catch (e) {
       console.log("using unpackaged filesys");
-      // return './assets/svg/glyphs';
       return './assets/glyphs'
     }
+  }
+
+  flattenGlyphFileTree(glyphs){
+    var flatten = require('flat')
+    var files = flatten(glyphs,{ maxDepth: 2 })
+    this.fileList = Object.keys(files).map(function(key) { return files[key] }).reduce((a, b) => a.concat(b));
   }
 
   //model/module function
@@ -38,6 +73,7 @@ class GlyphFileManager {
   }
 
   walkGlyphDirectory(glyphBasePath){
+    var _this = this;
     var fs = require('fs');
     var walk = require('walk');
     var walker;
@@ -61,6 +97,11 @@ class GlyphFileManager {
         }
         next();
       });
+    });
+    walker.on("end", function () {
+      // _this.bindToKnockout(glyphs)
+      _this.populateKnockout(glyphs)
+      _this.flattenGlyphFileTree(glyphs)
     });
     return glyphs;
   }

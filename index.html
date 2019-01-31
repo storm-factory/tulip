@@ -407,6 +407,9 @@
   <!--
     Glyph Modal
   -->
+  <script type="text/html" id="glyph-template">
+    <li><a class="th" href="#"><img class="glyph" data-bind="attr: {src: path}"></a><p data-bind="text: name.replace('.svg', '')"></p></li>
+  </script>
   <div id="glyphs" class="reveal-modal glyph-modal" data-reveal aria-hidden="true" role="dialog">
     <h3>Choose from the options below to place a glyph: <a class="close-reveal-modal" aria-label="Close">&#215;</a></h3>
     <hr>
@@ -426,67 +429,14 @@
 
           <div class="tabs-content">
             <div class="content active" id="description-detail">
-              <ul class="small-block-grid-5">
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/bad.svg"></a><p>bad</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/many.svg"></a><p>many</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/medium.svg"></a><p>medium</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/big.svg"></a><p>big</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/more-or-less-visible.svg"></a><p>more or less visible</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/narrow.svg"></a><p>narrow</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/imperative.svg"></a><p>imperative</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/tight.svg"></a><p>tight</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/twisty.svg"></a><p>twisty</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/winding-main-track.svg"></a><p>winding main track</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/winding-track.svg"></a><p>winding track</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/distance200.svg"></a><p>distance 200m</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/distance175.svg"></a><p>distance 175m</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/distance150.svg"></a><p>distance 150m</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/distance125.svg"></a><p>distance 125m</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/distance100.svg"></a><p>distance 100m</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/distance75.svg"></a><p>distance 75m</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/distance50.svg"></a><p>distance 50m</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/distance25.svg"></a><p>distance 25m</p></li>
-              </ul>
+              <ul class="small-block-grid-5" data-bind="template: { name: 'glyph-template', foreach: app.glyphModel.routeDetails.descriptions }"></ul>
             </div>
 
             <div class="content" id="condition-detail">
-              <ul class="small-block-grid-5">
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/collapsed.svg"></a><p>collapsed</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/dry-river.svg"></a><p>river</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/dune.svg"></a><p>dune</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/small-dune.svg"></a><p>small dune</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/gravel.svg"></a><p>gravel</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/stone.svg"></a><p>stone</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/road.svg"></a><p>road</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/rocks-text.svg"></a><p>rocks</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/rocky.svg"></a><p>rocky</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/rough.svg"></a><p>rough</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/rut.svg"></a><p>ruts</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/wash-river.svg"></a>wash/river<p></p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/vegetation.svg"></a><p>vegetation</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/sand.svg"></a><p></p></li>
-              </ul>
+              <ul class="small-block-grid-5" data-bind="template: { name: 'glyph-template', foreach: app.glyphModel.routeDetails.conditions }"></ul>
             </div>
             <div class="content" id="action-detail">
-              <ul class="small-block-grid-5">
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/left.svg"></a><p>left</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/on-the-left.svg"></a><p>on the left</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/right.svg"></a><p>right</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/on-the-right.svg"></a><p>on the right</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/left-right.svg"></a><p>left then right</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/right-left.svg"></a><p>right then left</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/keep-straight.svg"></a><p>keep straight</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/keep-straight-on-main-road.svg"></a><p>keep straight on main road</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/keep-straight-on-main-track.svg"></a><p>keep straight on main track</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/slow-down.svg"></a><p>slow down</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/always.svg"></a><p>always</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/in.svg"></a><p>in</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/leave.svg"></a><p>leave</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/average-bearing.svg"></a><p>average bearing</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/bearing.svg"></a><p>bearing (CAP)</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/between.svg"></a><p>between</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/to-take.svg"></a><p>to take</p></li>
-              </ul>
+              <ul class="small-block-grid-5" data-bind="template: { name: 'glyph-template', foreach: app.glyphModel.routeDetails.actions }"></ul>
             </div>
           </div>
         </div>
@@ -494,18 +444,7 @@
       <li class="accordion-navigation">
         <a href="#track-glyphs">Track Descriptions</a>
         <div id="track-glyphs" class="content">
-          <ul class="small-block-grid-5">
-            <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/big.svg"></a><p>big</p></li>
-            <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/big-track.svg"></a><p> big track</p></li>
-            <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/main-track.svg"></a><p> main track</p></li>
-            <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/off-track.svg"></a><p>off track</p></li>
-            <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/off-track-forbidden.svg"></a><p>off track forbidden</p></li>
-            <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/parallel-tracks.svg"></a><p>parallel tracks</p></li>
-            <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/road.svg"></a><p>road</p></li>
-            <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/track.svg"></a><p>track</p></li>
-            <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/winding-track.svg"></a><p>winding track</p></li>
-            <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/winding-main-track.svg"></a><p>winding main track</p></li>
-          </ul>
+          <ul class="small-block-grid-5" data-bind="template: { name: 'glyph-template', foreach: app.glyphModel.trackDescriptions }"></ul>
         </div>
       </li>
       <li class="accordion-navigation">
@@ -518,95 +457,13 @@
           </ul>
           <div class="tabs-content">
             <div class="content active" id="man-made-feature">
-              <ul class="small-block-grid-5">
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/antenna.svg"></a><p>antenna</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/barrel.svg"></a><p>barrel</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/water-tank.svg"></a><p>water tank</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/well.svg"></a><p>well</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/billboard.svg"></a><p>billboard</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/pointy-sign.svg"></a><p>pointy sign</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/post.svg"></a><p>post</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/buildings.svg"></a><p>buildings</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/bridge.svg"></a><p>bridge</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/house.svg"></a><p>house</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cemetery.svg"></a><p>cemetery</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/ruins.svg"></a><p>ruins</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/church.svg"></a><p>church</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cairn.svg"></a><p>cairn</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cattle-guard-1.svg"></a><p>cattle guard one</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cattle-guard-2.svg"></a><p>cattle guard two</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/fence.svg"></a><p>fence</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/barbed-wire-fence.svg"></a><p>barbed wire fence</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/corral.svg"></a><p>corral</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/gate-barrier.svg"></a><p>gate barrier</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/low-wall.svg"></a><p>low wall</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/mine.svg"></a><p>mine</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/pumpjack.svg"></a><p>pumpjack</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/pipeline.svg"></a><p>pipeline</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/railroad.svg"></a><p>railroad</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/electric-line.svg"></a><p>electric line</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/electric-line2.svg"></a><p>electric line two</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/electric-pole.svg"></a><p>electric pole</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/electric-pole2.svg"></a><p>second electric pole</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/high-voltage-line.svg"></a><p>high voltage line</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/water-trough.svg"></a><p>water trough</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/beer.svg"></a><p>beer</p></li>
-              </ul>
+              <ul class="small-block-grid-5" data-bind="template: { name: 'glyph-template', foreach: app.glyphModel.terrainFeatures.manMade }"></ul>
             </div>
             <div class="content" id="natural-feature">
-              <ul class="small-block-grid-5">
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/ford.svg"></a><p>ford</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/wash.svg"></a><p>wash</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/wash-bend1.svg"></a><p>wash bend one</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/wash-bend2.svg"></a><p>wash bend two</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/rio.svg"></a><p>river</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/ruts.svg"></a><p>ruts</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/rocks.svg"></a><p>rocks</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/dunes.svg"></a><p>dunes</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/dunette.svg"></a><p>lil dune</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/mountain.svg"></a><p>mountain</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/mountain2.svg"></a><p>another mountain</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/undulations.svg"></a><p>undulations</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/palm-tree.svg"></a><p>palm tree</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/shrub.svg"></a><p>shrub?</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/tall-grass.svg"></a><p>tall grass</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/tree.svg"></a><p>tree</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/tree2.svg"></a><p>tree two</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/pond.svg"></a><p>pond</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/hill1.svg"></a><p>hill one</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/hill2.svg"></a><p>hill two</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/dunes1.svg"></a><p>dune one</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/dunes2.svg"></a><p>dune two</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cliff.svg"></a><p>cliff</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cliff1.svg"></a><p>cliff two</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cliff2.svg"></a><p>cliff too</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cliff3.svg"></a><p>another cliff</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cliff4.svg"></a><p>don't fall off this cliff</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cliff5.svg"></a><p>cliff five</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cliff6.svg"></a><p>cliff tannen</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cliff7.svg"></a><p>an eyelash. sike! it's a cliff</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cliff8.svg"></a><p>cliff8</p></li>
-              </ul>
+              <ul class="small-block-grid-5" data-bind="template: { name: 'glyph-template', foreach: app.glyphModel.terrainFeatures.natural }"></ul>
             </div>
             <div class="content" id="symbols-feature">
-              <ul class="small-block-grid-5">
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/uphill.svg"></a><p>uphill</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/downhill.svg"></a><p>downhill</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/step.svg"></a><p>step</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/step-down.svg"></a><p>step down</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/step-up.svg"></a><p>step up</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/sand-pit.svg"></a><p>sand pit</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/hole.svg"></a><p>hole</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/bump.svg"></a><p>bump</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/collapse.svg"></a><p>collapse</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/compression.svg"></a><p>compression</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/dip.svg"></a><p>dip</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/ditch.svg"></a><p>ditch</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/towards.svg"></a><p>towards</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/danger-3.svg"></a><p>kill</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/danger-2.svg"></a><p>maim</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/danger-1.svg"></a><p>boo-boo</p></li>
-              </ul>
+              <ul class="small-block-grid-5" data-bind="template: { name: 'glyph-template', foreach: app.glyphModel.terrainFeatures.symbols }"></ul>
             </div>
           </div>
         </div>
@@ -620,52 +477,10 @@
           </ul>
           <div class="tabs-content">
             <div class="content active" id="orga-notices">
-              <ul class="small-block-grid-5">
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/finish-of-selective-section.svg"></a><p>finish selective section</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/finish.svg"></a><p>finish</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/start-of-selective-section.svg"></a><p>start selective section</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/start.svg"></a><p>start</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/clock.svg"></a><p>time check</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/waypoint-masked.svg"></a><p>waypoint masked</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/waypoint-eclipsed.svg"></a><p>waypoint eclipsed</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/waypoint-safety.svg"></a><p>waypoint safety</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/control-point.svg"></a><p>control point</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/camp.svg"></a><p>camp</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/petrol-station.svg"></a><p>petrol station</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/village.svg"></a><p>village</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/danger-3.svg"></a><p></p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/danger-2.svg"></a><p></p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/danger-1.svg"></a><p></p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/stop.svg"></a><p></p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/sensitive-zone.svg"></a><p>sensitive zone</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/photo.svg"></a><p>photo</p></li>
-              </ul>
+              <ul class="small-block-grid-5" data-bind="template: { name: 'glyph-template', foreach: app.glyphModel.orga.notices }"></ul>
             </div>
             <div class="content" id="speed-zones">
-              <ul class="small-block-grid-5">
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-start.svg"></a><p>start speed zone</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-end.svg"></a><p>end speed zone</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-20.svg"></a><p>20kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-25.svg"></a><p>25kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-30.svg"></a><p>30kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-35.svg"></a><p>35kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-40.svg"></a><p>40kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-45.svg"></a><p>45kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-50.svg"></a><p>50kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-55.svg"></a><p>55kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-60.svg"></a><p>60kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-65.svg"></a><p>65kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-70.svg"></a><p>70kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-75.svg"></a><p>75kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-80.svg"></a><p>80kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-85.svg"></a><p>85kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-90.svg"></a><p>90kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-95.svg"></a><p>95kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-100.svg"></a><p>100kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-105.svg"></a><p>105kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-110.svg"></a><p>110kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-120.svg"></a><p>120kph</p></li>
-              </ul>
+              <ul class="small-block-grid-5" data-bind="template: { name: 'glyph-template', foreach: app.glyphModel.orga.speedZones }"></ul>
             </div>
           </div>
         </div>

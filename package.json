@@ -29,6 +29,7 @@
     "tape": "^4.9.2"
   },
   "dependencies": {
+    "flat": "^4.1.0",
     "walk": "^2.3.14"
   },
   "build": {

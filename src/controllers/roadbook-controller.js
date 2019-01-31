@@ -130,7 +130,7 @@ class RoadbookController{
       this.model.finishInstructionEdit(this.getNoteEditorHTML(),this.getNotificationBubbleVal(),this.getNotificationModifierVal());
     }
   }
-
+  
   populateInstructionPalette(instruction){
     this.editingElement = instruction.element;
     $('#save-roadbook').removeClass('secondary');

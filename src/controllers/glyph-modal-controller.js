@@ -1,8 +1,8 @@
 // I dont think this needs to inherit, it can be it's own controller called GlyphModalController or something
 class GlyphModalController{
 
-  constructor(glyphManager){
-    this.glyphManager = glyphManager;
+  constructor(model){
+    this.model = model;
     this.bindToGlyphModalSearchClear();
   }
 
@@ -27,7 +27,7 @@ class GlyphModalController{
     $('#glyph-search').keyup(function(){
       $('#glyph-search-results').html('');
       if($(this).val() != ''){
-        var results = _this.glyphManager.findGlyphsByName($(this).val());
+        var results = _this.model.findGlyphsByName($(this).val());
         _this.populateResults(results);
         _this.bindToGlyphModalImages(roadbook,callback);
       }
