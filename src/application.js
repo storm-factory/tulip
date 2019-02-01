@@ -157,7 +157,9 @@ var App = Class({
   },
 
   saveRoadBook: function(){
-    this.roadbook.updateInstructionAfterEdit(this.roadbookController.getNoteEditorHTML(), this.roadbookController.getNotificationBubbleVal(), this.roadbookController.getNotificationModifierVal());
+    if(this.roadbook.currentlyEditingInstruction){
+      this.roadbook.updateInstructionAfterEdit(this.roadbookController.getNoteEditorHTML(), this.roadbookController.getNotificationBubbleVal(), this.roadbookController.getNotificationModifierVal());
+    }
     if(this.roadbook.filePath == null){
       // Request documents directory path from node
       this.ipc.send('get-documents-path');

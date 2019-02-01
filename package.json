@@ -35,7 +35,7 @@
   "build": {
     "appId": "com.tulip.app",
     "productName": "tulip",
-    "extraResources": "./assets/svg/glyphs/*.svg",
+    "extraResources": "assets/glyphs",
     "mac": {
       "target": "dmg",
       "icon": "./build/tulip-logo.icns"

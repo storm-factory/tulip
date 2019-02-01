@@ -51,8 +51,8 @@ class GlyphModel {
     var fs = require('fs');
     try {
       //see if we can read the path to the packaged filesys
-      var path = process.resourcesPath + '/app/assets/svg/glyphs/'
-      this.fs.readdirSync(path)
+      var path = process.resourcesPath + '/assets/glyphs'
+      fs.readdirSync(path)
       return path;
     } catch (e) {
       console.log("using unpackaged filesys");

@@ -35,6 +35,7 @@ var Instruction = Class({
     this.exitTrackType  = wptJson.exitTrackType == undefined ? 'track' : wptJson.exitTrackType;
 
     // instruction don't get any note info when they are added via UI so intialize them to blank
+    // TODO parse note text and set glyph filepaths
     var text = wptJson.notes == undefined ? '' : wptJson.notes.text;
     this.noteHTML = ko.observable(text);
 
@@ -49,6 +50,7 @@ var Instruction = Class({
 
     var _this = this;
     var angle = wptJson.relativeAngle;
+    // TODO adjust glyph filepaths
     var json = wptJson.tulipJson;
     var trackTypes = {entryTrackType: this.entryTrackType, exitTrackType: this.exitTrackType};
     ko.bindingHandlers.instructionCanvasRendered = {
