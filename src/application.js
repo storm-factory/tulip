@@ -121,7 +121,7 @@ var App = Class({
   exportOpenRallyGPX: function(){
     if(this.canExport()){
       var gpx = this.io.exportOpenRallyGPX();
-      var filename = ('openrally-'+this.roadbook.filePath).replace('tlp','gpx');
+      var filename = this.roadbook.filePath.replace('.tlp','-openrally.gpx');
       this.fs.writeFile(filename, gpx, function (err) {});
       $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
       alert('You gpx has been exported to the same directory you saved your roadbook');
