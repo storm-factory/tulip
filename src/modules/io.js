@@ -103,10 +103,17 @@ var Io = Class({
   		  	string += " open='"+waypoint.notification.bubble+"'";
   	  	  }
   		  if (waypoint.notification.modifier) {
-  			  string += " clear='"+waypoint.notification.modifier+"'";
+  			  string += " clear='"+waypoint.notification.modifier+"'/>\n";
   		  }
-  	  }
-  	  string += "/>\n";
+      } else if (waypoint.notification.openrallytype == 'dz') {
+        //TODO: this is a hack because Tulip doesn't respect more than one glyph as a first-class glyph :-)
+        speedGuess = waypoint.noteHTML().match(/speed-(\d+)/)[1];
+		    string += "/><openrally:speed>" + speedGuess + "</openrally:speed>";
+  	  } else if (waypoint.notification.openrallytype == 'speed') {
+        string += ">" + waypoint.notification.modifier + "</openrally:speed>\n"
+	    } else {
+  	     string += "/>\n";
+      }
     }
     string += "\n</extensions>\n";
     return string;
