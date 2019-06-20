@@ -126,6 +126,9 @@ var Io = Class({
     var string;
     if(waypoint.notification){
       var type = waypoint.notification.type
+      if (type.startsWith("speed-")) {
+        type = "speed";
+      }
       type = (type == "wpm" ? type + count : type).toUpperCase();
       var dist = type == "wpm" ? ":" + waypoint.kmFromStart().toFixed(2) : "";
       var modifier = waypoint.notification.modifier ? ":" + waypoint.notification.modifier : ""
