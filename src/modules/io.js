@@ -62,20 +62,22 @@ var Io = Class({
   },
   // TODO DRY this up
   exportOpenRallyGPX: function(){
-    var gpxString = "<?xml version='1.0' encoding='UTF-8'?>";
-    gpxString += "<gpx xmlns='http://www.topografix.com/GPX/1/1' version='1.1' creator='Tulip' xmlns:openrally='http://www.openrally.org/xmlschemas/GpxExtensions/v0.1' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd http://www.topografix.com/GPX/gpx_style/0/2 http://www.topografix.com/GPX/gpx_style/0/2/gpx_style.xsd http://www.topografix.com/GPX/gpx_overlay/0/3 http://www.topografix.com/GPX/gpx_overlay/0/3/gpx_overlay.xsd http://www.topografix.com/GPX/gpx_modified/0/1 http://www.topografix.com/GPX/gpx_modified/0/1/gpx_modified.xsd http://www.topografix.com/GPX/Private/TopoGrafix/0/4 http://www.topografix.com/GPX/Private/TopoGrafix/0/4/topografix.xsd'>";
+    var gpxString = "<?xml version='1.0' encoding='UTF-8'?>\n";
+    gpxString += "<gpx xmlns='http://www.topografix.com/GPX/1/1' version='1.1' creator='Tulip' xmlns:openrally='http://www.openrally.org/xmlschemas/GpxExtensions/v1.0-Cross-Country-DRAFT' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd http://www.topografix.com/GPX/gpx_style/0/2 http://www.topografix.com/GPX/gpx_style/0/2/gpx_style.xsd http://www.topografix.com/GPX/gpx_overlay/0/3 http://www.topografix.com/GPX/gpx_overlay/0/3/gpx_overlay.xsd http://www.topografix.com/GPX/gpx_modified/0/1 http://www.topografix.com/GPX/gpx_modified/0/1/gpx_modified.xsd http://www.topografix.com/GPX/Private/TopoGrafix/0/4 http://www.topografix.com/GPX/Private/TopoGrafix/0/4/topografix.xsd'>\n";
+    gpxString += "<metadata><extensions>\n<openrally:units>metric</openrally:units>";
+    gpxString += "\n<openrally:distance>" + app.roadbook.totalDistance() + "</openrally:distance>\n</extensions></metadata>\n";
     var waypoints = "";
-    var trackPoints = "<trk><trkseg>";
+    var trackPoints = "<trk><trkseg>\n";
     // TODO abstract this to the app
     var points = app.mapModel.markers;
     var wptCount = 1;
     for(var i=0;i<points.length;i++){
       if(points[i].waypoint !== undefined){
-        var waypoint = "<wpt lat='" + points[i].getPosition().lat() + "' lon='" + points[i].getPosition().lng() + "'><name>" + wptCount + "</name><desc></desc>" + this.buildOpenRallyExtensionsString(wptCount,points[i].waypoint) + "</wpt>";
+        var waypoint = "<wpt lat='" + points[i].getPosition().lat() + "' lon='" + points[i].getPosition().lng() + "'><name>" + wptCount + "</name>" + this.buildOpenRallyExtensionsString(wptCount,points[i].waypoint) + "</wpt>\n";
         waypoints += waypoint;
         wptCount++;
       }
-      var trackPoint = "<trkpt lat='" + points[i].getPosition().lat() + "' lon='" + points[i].getPosition().lng() + "'></trkpt>"
+      var trackPoint = "<trkpt lat='" + points[i].getPosition().lat() + "' lon='" + points[i].getPosition().lng() + "'></trkpt>\n"
       trackPoints += trackPoint;
     }
     trackPoints += "</trkseg></trk>";
@@ -90,25 +92,23 @@ var Io = Class({
     OpenRally enhanced GPX format... route metadata without overriding GPX user-land variables.
   */
   buildOpenRallyExtensionsString: function(count,waypoint) {
-    var string;
+    var string = "";
+    string = "\n<extensions>\n";
+    string += "<openrally:distance>" + waypoint.totalDistance() + "</openrally:distance>\n";
     if(waypoint.notification && waypoint.notification.openrallytype){
-      string = "<extensions>";
       string += "<openrally:" + waypoint.notification.openrallytype;
-	  if (waypoint.notification.openrallytype.startsWith('wp')) {
-		  if (waypoint.notification.bubble) {
-		  	string += " open='"+waypoint.notification.bubble+"'";
-	  	  }
-		  if (waypoint.notification.modifier) {
-			  string += " clear='"+waypoint.notification.modifier+"'";
-		  }
-	  }
-	  if (waypoint.notification.openrallytype.startsWith('dz')) {
-		  string += "/><openrally:speed kph=''"; //TODO: speed kph from glyph?
-	  }
-	  string += "/></extensions>";
-    }else{
-      string = "";
+  	  if (waypoint.notification.openrallytype.startsWith('wp')) {
+        string += " name='K"+parseInt(waypoint.totalDistance())+"'";
+  		  if (waypoint.notification.bubble) {
+  		  	string += " open='"+waypoint.notification.bubble+"'";
+  	  	  }
+  		  if (waypoint.notification.modifier) {
+  			  string += " clear='"+waypoint.notification.modifier+"'";
+  		  }
+  	  }
+  	  string += "/>\n";
     }
+    string += "\n</extensions>\n";
     return string;
   },
 
