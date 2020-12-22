@@ -154,7 +154,14 @@ var App = Class({
       alert('You must save your roadbook before you can export it as a PDF');
     }
   },
-
+  printLexicon: function(){
+	if(this.canExport()){
+		$('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
+		this.ipc.send('ignite-lexicon',app.roadbook.filePath);
+	}else {
+      alert('You must save your roadbook before you can save the Lexicon. No, really. Sorry.');
+    }
+  },
   saveRoadBook: function(){
     if(this.roadbook.filePath == null){
       // Request documents directory path from node
@@ -253,6 +260,9 @@ var App = Class({
 
     $('#print-roadbook').click(function(){
       _this.printRoadbook();
+    });
+    $('#print-lexicon').click(function(){
+      _this.printLexicon();
     });
 
     $('#save-roadbook').click(function(e){
@@ -438,6 +448,10 @@ var App = Class({
       _this.printRoadbook();
     });
 
+	this.ipc.on('export-lexicon', function(event, arg){
+      _this.printLexicon();
+    });
+	
     this.ipc.on('zoom-in', function(event, arg){
       _this.mapController.zin();
     });

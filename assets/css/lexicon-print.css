@@ -1,0 +1,35 @@
+*{
+	box-sizing: border-box;
+}
+html {
+	width:720px;
+}
+.firstrow {
+	height:53px;
+	width:100%;
+	border-top:1px solid black;
+	border-bottom:1px solid black;
+	border-right:1px solid black;
+	float:clear;
+}
+.otherrow {
+	height:53px;
+	width:100%;
+	border-bottom:1px solid black;
+	border-right:1px solid black;
+	float:clear;
+}
+.glyphcolumn {
+	padding-left:0px;
+	height:100%;
+	width:8.33%;
+	border-left:1px solid black;
+	border-right:0px solid black;
+	float:left;
+}
+.desccolumn {
+	padding:6px;
+	height:100%;
+	width:16.66%;
+	float:left;
+}

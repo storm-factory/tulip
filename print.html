@@ -5,22 +5,34 @@
   <body style= "margin-left:0px;">
     <nav class="main-nav">
       <div class="row">
-        <div class="large-3 columns">
-          <select id="print-size" data-bind="options: pageSizes ,optionsText: 'text', optionsValue: 'value', value: pageSize">
-          </select>
+        <div class="large-4 columns"><p></p>
         </div>
-        <div class="large-3 columns logo">
+        <div class="large-4 columns logo">
           Tulip
         </div>
-        <div class="large-3 columns">
+        <div class="large-4 columns" align='right'>
           <a href="#" class="button small radius">
             Save PDF
           </a>
         </div>
       </div>
+	  <div class="row" style='padding:10px'>
+	    <div class="large-4 columns" align='center'>
+          <select id="number-format" data-bind="options: numberFormats ,optionsText: 'text', optionsValue: 'value', value: numberFormat">
+          </select>
+        </div>
+		<div class="large-4 columns" align='center'>
+          <select id="page-format" data-bind="options: pageFormats ,optionsText: 'text', optionsValue: 'value', value: pageFormat">
+          </select>
+        </div>
+	    <div class="large-4 columns" align='center'>
+          <select id="page-length" data-bind="options: pageLengths ,optionsText: 'text', optionsValue: 'value', value: pageLength">
+          </select>
+        </div>
+	  </div>
     </nav>
     <div align='center'>
-      <img src='./assets/tulip-logo3.png' height='300'>
+      <img src='./assets/tulip-logo3.png' width='300'>
     </div>
     <div id="roadbook">
       <hr>
@@ -43,7 +55,7 @@
         </div>
       </div>
       <!-- render waypoint templates here -->
-      <div id="roadbook-waypoints" data-bind="template: { name: 'waypoint-template', foreach: printApp.waypoints }"></div>
+      <div id="roadbook-waypoints" data-bind="template: { name: 'waypoint-template', foreach: printApp.waypoints}"></div>
     </div>
     <!--
       Define templates
@@ -53,13 +65,19 @@
       <div class='waypoint row'>
         <div class='waypoint-distance'>
           <div class='total-distance'>
-            <div data-bind="text: kmFromStart.toFixed(2)">
-            </div>
+		    <span data-bind="text: kmFromStart.toFixed(1)" class='regularDigit'> 
+			</span>
+			<span data-bind="text:kmFromStart.toFixed(2).slice(-1)" class='hundredthDigit'> 
+			</span>
           </div>
           <div class="relative-distance">
             <div data-bind="text: kmFromPrev.toFixed(2)">
             </div>
           </div>
+		  <div class="waypoint-index">
+			<div data-bind="text: $index()+1">
+			</div>
+		  </div>
         </div>
         <div class='waypoint-tulip'>
           <img data-bind="attr: { src: tulip}">
@@ -67,7 +85,11 @@
         <div class='waypoint-note'>
           <p data-bind="html: notes.text"></p>
           <div class='heading' data-bind="visible: showHeading">
-            <label>CAP </label><span data-bind="text: Array(Math.max(3 - String(Math.round(heading)).length + 1, 0)).join(0) + Math.round(heading) + '\xB0'"></span>
+            <label>C </label>
+			<span data-bind="text: Math.round(heading) + '\xB0'"></span>
+			<!-- Just in case you want to go back to leading zeros, here's the code:
+			<span data-bind="text: Array(Math.max(3 - String(Math.round(heading)).length + 1, 0)).join(0) + Math.round(heading) + '\xB0'"></span>
+			--->
           </div>
         </div>
       </div>

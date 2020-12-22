@@ -2,14 +2,26 @@
   font-family:bellybeans;
   src:url(../fonts/bellybeans.ttf);
 }
+@font-face{
+  font-family:Lato-Regular;
+  src:url(../fonts/Lato-Regular.ttf);
+}
+@font-face{
+  font-family:Lato-Regular-outline;
+  src:url(../fonts/Lato-Regular-outline.ttf);
+}
 
 /*
   for native printing expirementation
 */
 html {
-  width:616px;
-  margin:auto;
+  width:525px;
+  margin-left:50px;
+  margin-right:50px;
+  margin-top:0px;
+  margin-bottom:0px;
 }
+
 body {
     background: #fff;
     font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
@@ -23,9 +35,12 @@ body {
 #roadbook-name {
   font-size: 35px;
   text-align: left;
-  width: 349px !important;
+  width: 350px !important;
   font-family: bellybeans !important;
-  border-left: 1px solid #000; min-height: 90px;
+  border-left: 1px solid #000;
+  min-height: 90px;
+  overflow: hidden;
+  word-wrap: normal;
 }
 #roadbook-desc {
   font-size: 15px;
@@ -39,7 +54,11 @@ body {
   font-family: Tahoma, Geneva, sans-serif;
 }
 
-#roadbook-total-distance{max-height: 90px;  width: 125px !important}
+#roadbook-total-distance{
+	max-height: 90px;  
+	width: 165px !important;
+	border: 0px solid #f00;
+}
 #roadbook-total-distance p{
   font-family: "Lucida Console", Monaco, monospace;
   color: #000;
@@ -47,6 +66,9 @@ body {
   font-size: 35px;
 }
 
+*{
+	box-sizing: border-box;
+}
 .waypoint-note p div img.small,
 .waypoint-note p img.small{
   height: 35px;
@@ -75,6 +97,7 @@ body {
  clear: both;
  page-break-after: always;
 }
+
 .glyph-container {
   height: 53px;
 }
@@ -82,116 +105,157 @@ body {
   height: 53px;
   width: 53px;
 }
-.heading {
-  font-family: Tahoma, Geneva, sans-serif;
-  color: #000;
-  font-size: 2em;
-}
-.heading label {
-  display: inline;
-  font-size: 0.875rem;
-}
 
-.relative-distance {
-  height: 28px;
-  color: #000;
-  font-weight: bold;
-  font-size: 25px;
-  border-top: 1px solid #000;
-  text-align: right;
-  margin-top: 45px;
-  padding-right: 10px;
-}
-.total-distance {
-  height: 90px;
-  font-family: Tahoma, Geneva, sans-serif;
-  font-size: 3em;
-  color: #000;
-  text-align: center;
-}
 
-.total-distance.A5 {
-  font-size: 3.45em;
-}
 
-.total-distance div {
-  margin-top: 20px
-}
 
-.waypoint.A5{
-  width: 580px !important; /* works for letter */
-}
 
 .waypoint {
-  width: 528px !important; /* works for letter */
-  border: 2px solid #000;
-  /*height:190px;*/
-  margin-left: 0 !important;
-  margin-right: 0 !important;
+	width: 525px !important;
+	height: 128px; /*FIM standard, overridden by most page sizes*/
+	border-left: 2px solid #000;
+	border-right: 2px solid #000;
+	border-top: 1px solid #000;
+	border-bottom: 1px solid #000;
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+	position: relative;
+}
+.waypoint.letter {
+    height: 135px;
+}
+.waypoint.legal {
+	height: 130px;
+}
+.waypoint.A5 {
+	height: 128px;
+}
+.waypoint.PackedLetter {
+	height: 131px;
 }
 
-/* works for letter */
 .waypoint-distance {
-  width: 150px;
+	width: 150px;
+	height: 100%;
+	position:absolute;
+	top: 0px;
+	left: 0px;
+	border-right: 2px solid #000;
 }
 
-.waypoint-distance.A5 {
-  /*width: 230px;*/
-  width: 193px;
-}
-
-/* works for letter */
-.waypoint-note {
-  width: 185px;
-  padding-left: 4px;
-  padding-right: 4px;
-}
-
-/* works for letter */
 .waypoint-tulip {
-  width:180px;
-  border-left: 1px solid #000;
-  border-right: 1px solid #000;
+	width:180px;
+	height: 100%;
+	border: 0px solid #0f0;
+	position: absolute;
+	top: 0px;
+	left: 152px;
 }
 
 .waypoint-tulip img {
-  height: 99%;
-  margin-left: 1%;
+	height: 96%;
+	width:  96%;
+	padding-left: 0px;
+	position:absolute;
+	top:2%;
+	left:2%;
+	border:0px solid #f00;
 }
 
-.waypoint-tulip.A5 {
-  width:190px;
-}
-
-/*.waypoint-distance,
-.waypoint-note,
-.waypoint-tulip {
-  height: 190px;
-  float: left
-}*/
-/*
-  --- A5 sizing
-*/
-.waypoint,
-.waypoint-distance,
-.waypoint-tulip,
 .waypoint-note {
-  height: 175px;
-  float: left
-}
-.waypoint-note p {
-  height: 135px;
-  font-size: medium;
-  width: 100%;
-  margin: 0;
-  overflow: hidden;
-  word-wrap: break-word;
-  line-height: 1;
+	padding-left: 4px;
+	padding-right: 4px;
+	width: 188px;
+	height: 100%;
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	border-left: 2px solid #000;
 }
 
-.waypoint-distance .relative-distance {
-  margin-top: 35px;
+
+
+
+
+.waypoint-note p {
+	height: 100%;
+	font-size: medium;
+	width: 100%;
+	margin: 0;
+	overflow: hidden;
+	word-wrap: break-word;
+	line-height: 1;
 }
+
+.total-distance {
+	font-size: 0; /* eliminate the space between regular and hundredths digits */
+	text-align: right;
+	border: 0px solid #f00;
+	position: absolute;
+	top:25;
+	right:5;
+}
+
+
+
+.regularDigit {
+	font-size:45px;
+	font-family:Lato-Regular;
+}
+.hundredthDigit {
+	font-size:45px;
+	font-family:Lato-Regular;
+}
+.hundredthDigit.outline {
+	font-size:45px;
+	font-family:Lato-Regular-outline;
+}
+.hundredthDigit.none {
+	font-size:0px;
+}
+
+.relative-distance {
+	font-family:Lato-Regular;
+	color: #000;
+	font-size: 18px;
+	text-align: right;
+	padding-right: 10px;
+	position: absolute;
+	height: 27px;
+	width:80px;
+	bottom: 0px;
+	right: 0px;
+	border-top: 1px solid black;
+	border-left: 1px solid black;
+}
+.waypoint-index {
+	height: 16px;
+	width: 24px;
+	bottom:0px;
+	left:0px;
+	position:absolute;
+	padding-top:3px;
+	font-size: 11px;
+	text-align:center;
+}
+.heading {
+	font-family:Lato-Regular;
+	font-size: 18pt;
+	position: absolute;
+	height: 40px;
+	width: 100px;
+	bottom: 0px;
+	left: 0px;
+	border-top: 0px solid black;
+	border-right: 0px solid black;
+	padding-left: 10px;
+}
+.heading label {
+	display: inline;
+	font-size: 26pt;
+}
+
+
 
 /*
   Sticky nav
@@ -209,24 +273,24 @@ body {
   text-shadow: -3px 3px 2px rgba(0,0,0, 1);
   background-color: #787878;
   color: #ffba29;
+  border-radius: 5px;
 }
 .main-nav {
   background: #ffba29;
-  height: 55px;
+  height: 135px;
   z-index: 150;
   margin-bottom: 20px;
-  padding-top: 5px;
-  padding-left: 20px;
+  padding-top: 10px;
+  padding-left: 0px;
   box-shadow: 0 2px 3px rgba(0,0,0,.4);
-  width: 650px;
+  width: 565px;
   margin-left: -25px;
+  border-radius: 5px;
+ 
 }
 
 .main-nav-scrolled {
-  padding-top: 5px;
   position: fixed;
-  width: 100%;
-  top: 0;
 }
 /*
   neccessary foundation stuff
@@ -247,20 +311,15 @@ img {
 .clearfix:after {
   clear: both; }
 .row {
-  margin: 0 auto;
-  max-width: 62.5rem;
-  width: 100%; }
-    .row:before, .row:after {
-      content: " ";
-      display: table; }
-    .row:after {
-      clear: both; }
-      .column,
-      .columns {
-        padding-left: 0.9375rem;
-        padding-right: 0.9375rem;
-        width: 100%;
-        float: left; }
+	margin: 0 auto;
+	max-width: 62.5rem;
+	width: 100%; 
+}
+.row:before, .row:after {
+	content: " ";
+	display: table; }
+.row:after {
+	clear: both; }
 
 .column + .column:last-child,
 .columns + .column:last-child, .column +
@@ -276,10 +335,10 @@ img {
   float: left; }
 .column,
 .columns {
-  position: relative;
-  padding-left: 0.9375rem;
-  padding-right: 0.9375rem;
-  float: left; }
+	position: relative;
+	padding-left: 0.9375rem;
+	padding-right: 0.9375rem;
+	float: left;}
 .large-1 {
   width: 8.33333%; }
 
@@ -335,7 +394,7 @@ button, .button {
   border-color: #007095;
   color: #FFFFFF;
   transition: background-color 300ms ease-out;
-  width: 65px;
+  width: 130px;
 }
 button:hover, button:focus, .button:hover, .button:focus {
   background-color: #007095; }
@@ -370,7 +429,7 @@ select {
   padding: 0.5rem;
   border-radius: 0;
   height: 2.7rem;
-  width: 100px;
+  width: 150px;
 }
 select.radius {
   border-radius: 3px;
