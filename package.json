@@ -23,7 +23,9 @@
   },
   "homepage": "https://github.com/storm-factory/tulip",
   "devDependencies": {
+    "electron-installer-debian": "^3.1.0",
+    "electron-packager": "^15.4.0",
     "electron-prebuilt": "^1.2.0",
-    "tape": "^4.6.3"
+    "tape": "^4.14.0"
   }
 }
