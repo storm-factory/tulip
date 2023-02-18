@@ -107,7 +107,12 @@ function createWindow () {
   Menu.setApplicationMenu(menu)
 
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 1500, height: 1000, 'min-height': 700});
+  mainWindow = new BrowserWindow({width: 1500, height: 1000, 'min-height': 700,
+                                  webPreferences: {
+                                    nodeIntegration: true,
+                                    contextIsolation: false,
+                                    enableRemoteModule: true,
+                                  }});
 
   // and load the index.html of the app.
   mainWindow.loadURL('file://' + __dirname + '/index.html')
@@ -128,7 +133,12 @@ function createWindow () {
 */
 var data;
 ipcMain.on('ignite-print', (event, arg) => {
-  printWindow = new BrowserWindow({width: 650, height: 700, 'min-height': 700, 'resizable': false});
+  printWindow = new BrowserWindow({width: 650, height: 700, 'min-height': 700, 'resizable': false,
+                                  webPreferences: {
+                                    nodeIntegration: true,
+                                    contextIsolation: false,
+                                    enableRemoteModule: true,
+                                }});
   printWindow.loadURL('file://' + __dirname + '/print.html');
   data = arg;
   printWindow.on('closed', () => {
@@ -137,7 +147,12 @@ ipcMain.on('ignite-print', (event, arg) => {
 
 });
 ipcMain.on('ignite-lexicon', (event, arg) => {
-  printWindow = new BrowserWindow({width: 820, height: 700, 'min-height': 700, 'resizable': false});
+  printWindow = new BrowserWindow({width: 820, height: 700, 'min-height': 700, 'resizable': false,
+                                  webPreferences: {
+                                    nodeIntegration: true,
+                                    contextIsolation: false,
+                                    enableRemoteModule: true,
+                                }});
   printWindow.loadURL('file://' + __dirname + '/lexicon_key.html');
   data = arg;
   printWindow.on('closed', () => {
@@ -155,12 +170,8 @@ ipcMain.on('print-pdf', (event, arg) => {
   var size = arg.opts.pageSize;
   var sizeName = arg.opts.pageSizeName;
   var filename = arg.filepath.replace('.tlp','_' + sizeName + '.pdf')
-  printWindow.webContents.printToPDF(arg.opts, (error, data) => {
-    if (error) {
-		console.log('Error converting PDF to HTML' + error + arg.opts);
-		throw error;
-	} else {
-		fs.writeFile(filename, data, (error) => {
+  printWindow.webContents.printToPDF(arg.opts).then(data => {
+    fs.writeFile(filename, data, (error) => {
 		  if (error) {
 			console.log('Error writing PDF file. Is ' + filename +' also open in another program?' + error);
 			throw error;
@@ -168,8 +179,10 @@ ipcMain.on('print-pdf', (event, arg) => {
 			  printWindow.close();
 			  dialog.showMessageBox(mainWindow, {message: "Your PDF has been exported to the same directory you saved your roadbook. Gas a la burra!",buttons: ['ok']})
 		  }
-		});
-	}
+		})
+    dialog.showMessageBox(mainWindow, {message: "Your PDF has been exported to the same directory you saved your roadbook. Gas a la burra!",buttons: ['ok']})
+  }).catch(error => {
+		console.log('Error converting PDF to HTML' + error + arg.opts);
   });
 });
 
@@ -178,6 +191,7 @@ ipcMain.on('print-lexicon-pdf', (event,arg) => {
 	var filename = path.join(path.dirname(arg.filepath),"lexicon-key.pdf")
 	console.log('called main.js function ' + filename);
 	printWindow.webContents.printToPDF(arg.opts, (error, data) => {
+    alert("Func call")
 		if (error) {
 			console.log('Error converting PDF to HTML' + error + arg.opts);
 			throw error;
@@ -192,10 +206,34 @@ ipcMain.on('print-lexicon-pdf', (event,arg) => {
 			  }
 			});
 		}
-	});
+	}).then(
+    result => {
+      alert("Write PDF")
+    }
+  );
 });
 
 //listens for the browser window to ask for the documents folder
 ipcMain.on('get-documents-path', (event, arg) => {
   event.sender.send('documents-path', app.getPath('documents'));
 });
+
+ipcMain.on('show-open-dialog', (event, arg) => {
+  filePaths = dialog.showOpenDialogSync(arg)
+  if (filePaths === undefined)  return
+  event.reply('read-file', filePaths[0]);
+})
+
+ipcMain.on('show-save-dialog', (event, arg) => {
+  fileName = dialog.showSaveDialogSync(arg)
+  event.reply('save-file', fileName);
+})
+
+ipcMain.on('autotrace-dialog', (event) => {
+  var autotrace = dialog.showMessageBoxSync({type: "question",
+    buttons: ["Cancel","Ok"],
+    defaultId: 1,
+    message: "About to auto-trace roads to your route, Are you sure?"});
+  event.reply('autotrace-response', autotrace);
+})
+

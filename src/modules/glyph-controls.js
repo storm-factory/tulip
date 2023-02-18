@@ -3,7 +3,7 @@ class GlyphControls{
 
   constructor(){
     this.fs = require('fs');
-    this.process = require('electron').remote.process;
+    this.process = require('electron');
     this.files = [];
     this.getGylphNames();
     this.initListeners();

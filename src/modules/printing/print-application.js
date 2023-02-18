@@ -114,7 +114,7 @@ var PrintApp = Class({
 
 	document.body.appendChild(pageCss);
 
-    var data = {'filepath': this.filePath, 'opts': {'pageSize': size, 'pageSizeName': sizeName, 'marginsType' : '1'}};
+    var data = {'filepath': this.filePath, 'opts': {'pageSize': size, 'pageSizeName': sizeName, 'marginsType' : 1}};
 
     this.ipc.send('print-pdf', data);
   },

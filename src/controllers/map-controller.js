@@ -1,3 +1,5 @@
+// const { ipcRenderer } = require('electron');
+
 /*
   A module for providing the application with the means to control the map via the UI
 */
@@ -11,7 +13,7 @@ class MapController{
     this.displayEdge = true; //displayEdge is a instance variable which tracks whether a handle should be shown when the user hovers the mouse over the route. (think of a better name and nuke this comment)
     this.markerDeleteMode = false;
     this.deleteQueue = [];
-    this.dialog = require('electron').remote.dialog;
+    this.dialog = require('electron');
 
     this.initMap();
     this.initRoutePolyline();
@@ -184,13 +186,12 @@ class MapController{
 
     this.map.addListener('rightclick', function(evt){
       if(_this.routePolyline.getPath().length >0){
-        var autotrace = _this.dialog.showMessageBox({type: "question",
-                                                     buttons: ["Cancel","Ok"],
-                                                    defaultId: 1,
-                                                    message: "About to auto-trace roads to your route, Are you sure?"});
-        if(_this.mapUnlocked && !this.markerDeleteMode && (autotrace == 1)){
-            _this.model.requestGoogleDirections(evt.latLng,_this.map, _this.model.appendGoogleDirectionsToMap);
-        }
+        ipcRenderer.send('autotrace-dialog')
+        ipcRenderer.on('autotrace-response', (event, autotrace) => {
+          if(_this.mapUnlocked && !this.markerDeleteMode && (autotrace == 1)){
+              _this.model.requestGoogleDirections(evt.latLng,_this.map, _this.model.appendGoogleDirectionsToMap);
+          }
+        })
       }
     });
   }
