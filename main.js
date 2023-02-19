@@ -1,7 +1,7 @@
 const ipcMain = require('electron').ipcMain;
 const fs = require('fs');
 const {electron, Menu,app,BrowserWindow,dialog} = require('electron');
-
+const path = require('path');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -108,6 +108,7 @@ function createWindow () {
 
   // Create the browser window.
   mainWindow = new BrowserWindow({width: 1500, height: 1000, 'min-height': 700,
+                                  icon: path.join(app.getAppPath(), '/assets/icons/tulip.png'),
                                   webPreferences: {
                                     nodeIntegration: true,
                                     contextIsolation: false,
@@ -180,7 +181,6 @@ ipcMain.on('print-pdf', (event, arg) => {
 			  dialog.showMessageBox(mainWindow, {message: "Your PDF has been exported to the same directory you saved your roadbook. Gas a la burra!",buttons: ['ok']})
 		  }
 		})
-    dialog.showMessageBox(mainWindow, {message: "Your PDF has been exported to the same directory you saved your roadbook. Gas a la burra!",buttons: ['ok']})
   }).catch(error => {
 		console.log('Error converting PDF to HTML' + error + arg.opts);
   });
@@ -189,28 +189,22 @@ ipcMain.on('print-pdf', (event, arg) => {
 ipcMain.on('print-lexicon-pdf', (event,arg) => {
 	const path = require('path');
 	var filename = path.join(path.dirname(arg.filepath),"lexicon-key.pdf")
-	console.log('called main.js function ' + filename);
 	printWindow.webContents.printToPDF(arg.opts, (error, data) => {
-    alert("Func call")
-		if (error) {
-			console.log('Error converting PDF to HTML' + error + arg.opts);
-			throw error;
-		} else {
-			fs.writeFile(filename, data, (error) => {
-			  if (error) {
-				console.log('Error writing PDF file. Is ' + filename +' also open in another program?' + error);
-				throw error;
-			  } else {
-				  printWindow.close();
-				  dialog.showMessageBox(mainWindow, {message: "Your PDF has been exported to the same directory you saved your roadbook. Gas a la burra!",buttons: ['ok']})
-			  }
-			});
-		}
-	}).then(
-    result => {
-      alert("Write PDF")
+  }).then(
+    data => {
+      fs.writeFile(filename, data, (error) => {
+        if (error) {
+        console.log('Error writing PDF file. Is ' + filename +' also open in another program?' + error);
+        throw error;
+      } else {
+          printWindow.close();
+          dialog.showMessageBox(mainWindow, {message: "Your PDF has been exported to the same directory you saved your roadbook. Gas a la burra!",buttons: ['ok']})
+        }
+      });
     }
-  );
+    ).catch(error => {
+      console.log('Error converting PDF to HTML' + error + arg.opts);
+  })
 });
 
 //listens for the browser window to ask for the documents folder
@@ -218,6 +212,7 @@ ipcMain.on('get-documents-path', (event, arg) => {
   event.sender.send('documents-path', app.getPath('documents'));
 });
 
+// handle open dialog
 ipcMain.on('show-open-dialog', (event, arg) => {
   filePaths = dialog.showOpenDialogSync(arg)
   if (filePaths === undefined)  return

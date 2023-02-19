@@ -58,7 +58,7 @@ var App = Class({
     */
     this.initListeners();
 
-    this.glyphControls = new GlyphControls();
+    this.glyphControls = new GlyphControls(process.resourcesPath);
 
     this.noteControls = new NoteControls();
   },

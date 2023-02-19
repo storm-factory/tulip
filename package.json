@@ -1,10 +1,15 @@
 {
   "name": "tulip",
-  "version": "1.8.2",
+  "version": "1.8.3",
   "description": "A application for creating rally fun times",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "make-linux": "electron-forge make --platform linux",
+    "make-win": "electron-forge make --platform win32",
+    "make-mac": "electron-forge make --platform darwin"
   },
   "repository": {
     "type": "git",
@@ -23,12 +28,16 @@
   },
   "homepage": "https://github.com/storm-factory/tulip",
   "devDependencies": {
-    "electron-installer-debian": "^3.1.0",
-    "electron-packager": "^17.1.1",
-    "electron-prebuilt": "^1.2.0",
+    "@electron-forge/cli": "^6.0.5",
+    "@electron-forge/maker-deb": "^6.0.5",
+    "@electron-forge/maker-rpm": "^6.0.5",
+    "@electron-forge/maker-squirrel": "^6.0.5",
+    "@electron-forge/maker-zip": "^6.0.5",
+    "electron": "^23.1.0",
     "tape": "^4.14.0"
   },
   "dependencies": {
-    "electron": "^23.1.0"
+    "electron": "^23.1.0",
+    "electron-squirrel-startup": "^1.0.0"
   }
 }
