@@ -22,6 +22,7 @@ var Waypoint = Class({
     // can all this knockout stuff be at the controller level then model data is updated when controller starts up or shuts down
     this.kmFromStart    = ko.observable(wptJson.kmFromStart);
     this.kmFromPrev     = ko.observable(wptJson.kmFromPrev);
+    this.kmPrevClose    = ko.observable(wptJson.kmPrevClose);
     this.exactHeading   = ko.observable(wptJson.heading);
     this.lat            = ko.observable(wptJson.lat);
     this.lng            = ko.observable(wptJson.long);

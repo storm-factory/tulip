@@ -143,6 +143,10 @@ body {
 	border-right: 2px solid #000;
 }
 
+.waypoint-distance-close {
+  background-color: #93ff93;
+}
+
 .waypoint-tulip {
 	width:180px;
 	height: 100%;
