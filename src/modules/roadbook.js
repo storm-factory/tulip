@@ -320,6 +320,7 @@ var Roadbook = Class({
           waypoint: points[i].waypoint ? true : false,
           kmFromStart: points[i].waypoint.kmFromStart(),
           kmFromPrev: points[i].waypoint.kmFromPrev(),
+          kmPrevClose: (points[i].waypoint.kmFromPrev() < 0.3),
           heading: points[i].waypoint.exactHeading(),
           showHeading: points[i].waypoint.showHeading(),
           notes: {

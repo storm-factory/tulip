@@ -1,7 +1,8 @@
-@font-face{
-  font-family:bellybeans;
-  src:url(../fonts/bellybeans.ttf);
+@font-face {
+  font-family: bellybeans;
+  src: url(../fonts/bellybeans.ttf);
 }
+
 a.added-track-selector,
 a.entry-track-selector,
 a.exit-track-selector {
@@ -17,40 +18,53 @@ a.added-track-selector.active {
 h2 {
   font-family: bellybeans;
   font-size: 1.5rem !important;
-  color: rgba(255,144,0,1) !important;
-  text-shadow: -3px 3px 2px rgba(0,0,0, 1);
+  color: rgba(255, 144, 0, 1) !important;
+  text-shadow: -3px 3px 2px rgba(0, 0, 0, 1);
   font-family: bellybeans !important;
   font-size: 30px;
 }
-img.glyph{
+
+img.glyph {
   height: 100px;
   margin: auto;
   display: block;
 }
+
 canvas {
   width: 180px;
   height: 180px;
 }
-div.switch label {box-shadow: 2px 2px 5px -2px rgba(0,0,0,0.60);}
-a.button {box-shadow: 2px 2px 5px -2px rgba(0,0,0,0.60);}
-aside {
-  padding:15px;
+
+div.switch label {
+  box-shadow: 2px 2px 5px -2px rgba(0, 0, 0, 0.60);
 }
+
+a.button {
+  box-shadow: 2px 2px 5px -2px rgba(0, 0, 0, 0.60);
+}
+
+aside {
+  padding: 15px;
+}
+
 aside ul {
   list-style-type: none;
 }
-aside ul li a.main-menu{
+
+aside ul li a.main-menu {
   font-size: 1rem !important;
 }
+
 aside.right-off-canvas-menu {
   background: #787878;
 }
 
 textarea {
-  box-shadow: 3px 1px 13px -3px rgba(0,0,0,0.60) !important;
+  box-shadow: 3px 1px 13px -3px rgba(0, 0, 0, 0.60) !important;
   padding: 0.2rem !important;
 }
-textarea.waypoint-palette{
+
+textarea.waypoint-palette {
   height: 75px !important;
   width: 120px !important;
 }
@@ -58,6 +72,7 @@ textarea.waypoint-palette{
 #content {
   height: 100%;
 }
+
 #content .content-container {
   height: 100%;
 }
@@ -65,6 +80,7 @@ textarea.waypoint-palette{
 #glyph-search-results li a {
   width: 100px;
 }
+
 #glyph-search-clear {
   position: relative;
   left: 97%;
@@ -79,12 +95,15 @@ textarea.waypoint-palette{
   top: 40%;
   left: 40%;
   background: transparent;
-  -webkit-animation:rotateloader 4s linear infinite;
+  -webkit-animation: rotateloader 4s linear infinite;
 }
 
 @-webkit-keyframes rotateloader {
-  to { -webkit-transform: rotate(360deg);}
+  to {
+    -webkit-transform: rotate(360deg);
+  }
 }
+
 #hide-palette {
   margin-bottom: 0;
 }
@@ -97,15 +116,17 @@ textarea.waypoint-palette{
   position: relative;
   top: -185px;
 }
+
 #note-editor-container.hideCap {
   top: -137px;
 }
+
 #note-editor {
   width: 100%;
   height: 135px;
-  box-shadow: 0px 2px 6px 1px rgba(255,144,0,0.60);
+  box-shadow: 0px 2px 6px 1px rgba(255, 144, 0, 0.60);
   background: #fff;
-  padding:0;
+  padding: 0;
   display: block;
   overflow: hidden;
 }
@@ -126,8 +147,7 @@ textarea.waypoint-palette{
 .waypoint-note p div img,
 .waypoint-note p img,
 .waypoint-note div img.normal,
-.waypoint-note img.normal
-#note-editor div img,
+.waypoint-note img.normal #note-editor div img,
 #note-editor img,
 #note-editor div img.normal,
 #note-editor img.normal {
@@ -150,7 +170,7 @@ textarea.waypoint-palette{
 
 #notification-bubble,
 #notification-modifier {
-  box-shadow: 2px 2px 5px -2px rgba(0,0,0,0.60);
+  box-shadow: 2px 2px 5px -2px rgba(0, 0, 0, 0.60);
 }
 
 #roadbook {
@@ -159,10 +179,11 @@ textarea.waypoint-palette{
   height: 90%;
   overflow: auto;
 }
+
 #roadbook-header {
   font-family: bellybeans;
   font-size: 3rem;
-  text-shadow: -3px 3px 2px rgba(0,0,0, 1);
+  text-shadow: -3px 3px 2px rgba(0, 0, 0, 1);
   text-align: left;
   background-color: #787878;
   color: #ffba29;
@@ -173,7 +194,7 @@ textarea.waypoint-palette{
   text-align: right;
 }
 
-#roadbook-header .menu a{
+#roadbook-header .menu a {
   text-shadow: none;
   vertical-align: middle;
   margin: 0;
@@ -181,21 +202,34 @@ textarea.waypoint-palette{
   padding: 0 .65rem 0 .65rem;
 }
 
-#roadbook-name {border-left: 1px solid #000; min-height: 90px;}
+#roadbook-name {
+  border-left: 1px solid #000;
+  min-height: 90px;
+}
 
 #roadbook-name a.hide-editor,
 #roadbook-desc a.hide-editor {
   display: none;
 }
 
-#roadbook-total-distance{max-height: 90px;}
+#roadbook-total-distance {
+  max-height: 90px;
+}
+
 #roadbook-name .roadbook-header-input-container,
-#roadbook-desc .roadbook-header-input-container{
-  display:none;
+#roadbook-desc .roadbook-header-input-container {
+  display: none;
   width: 100%;
   margin-top: 15px;
 }
-#roadbook-name p {font-size: 30px; text-align: right; font-family: bellybeans !important;color: #000;}
+
+#roadbook-name p {
+  font-size: 30px;
+  text-align: right;
+  font-family: bellybeans !important;
+  color: #000;
+}
+
 #roadbook-desc p {
   /*font-size: 15px;*/
   text-align: left;
@@ -209,6 +243,7 @@ textarea.waypoint-palette{
 #roadbook-name p {
   float: right;
 }
+
 #roadbook-total-distance p {
   font-family: "Lucida Console", Monaco, monospace;
   color: #000;
@@ -229,8 +264,8 @@ textarea.waypoint-palette{
 #feature-glyphs li img,
 #detail-glyphs li img,
 #orga-glyphs li img {
-  min-width:100px;
-  height:100px;
+  min-width: 100px;
+  height: 100px;
 }
 
 #track-glyphs li.tab-title,
@@ -240,9 +275,11 @@ textarea.waypoint-palette{
   text-align: center;
 }
 
-#waypoint-tracks, #waypoint-glyphs {
+#waypoint-tracks,
+#waypoint-glyphs {
   padding: 10px 0 10px 0;
 }
+
 #waypoint-palette {
   display: none;
   width: 100%;
@@ -254,7 +291,7 @@ textarea.waypoint-palette{
   padding: 5px;
 }
 
-#waypoint-palette h3 a{
+#waypoint-palette h3 a {
   color: #ff4200;
 }
 
@@ -272,13 +309,23 @@ textarea.waypoint-palette{
 .heading {
   font-family: Tahoma, Geneva, sans-serif;
   color: #000;
-  font-size: 2em;
+  font-size: 1.95em;
 }
+
+.heading span {
+  background-color: yellow;
+  border-color: black;
+  border-width: 1px;
+  border-style: solid;
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
 .heading label {
-  display: inline;
+  display: none;
 }
-.map-container
-{
+
+.map-container {
   padding: 0 !important;
   height: 100%;
   overflow: hidden;
@@ -288,31 +335,34 @@ textarea.waypoint-palette{
 .tab-title {
   margin-right: 4px;
 }
+
 .note-grid {
   width: 100% !important;
   height: 35px;
   float: left;
   border-radius: 10px;
-  box-shadow: 2px 3px 6px 1px rgba(0,0,0,0.60);
+  box-shadow: 2px 3px 6px 1px rgba(0, 0, 0, 0.60);
   text-align: center;
   font-size: 25px;
   color: #ffba29;
-  text-shadow: -1px 1px 4px rgba(0,0,0, 1);
+  text-shadow: -1px 1px 4px rgba(0, 0, 0, 1);
   background-color: #efefef;
   margin-right: 10px;
   margin-top: 5px;
 }
+
 .note-grid i {
   display: none;
 }
+
 .note-grid:hover i {
   display: block;
 }
 
 .note-grid:hover {
-  background-color: rgba(255,144,0,1);
+  background-color: rgba(255, 144, 0, 1);
   cursor: pointer;
-  box-shadow: 5px 5px 22px -2px rgba(0,0,0,0.60);
+  box-shadow: 5px 5px 22px -2px rgba(0, 0, 0, 0.60);
 }
 
 .relative-distance {
@@ -333,17 +383,18 @@ textarea.waypoint-palette{
   z-index: 10;
   background-color: #fff;
   padding: 10px;
-  box-shadow: -12px 4px 29px -2px rgba(0,0,0,0.89);
+  box-shadow: -12px 4px 29px -2px rgba(0, 0, 0, 0.89);
   overflow: hidden;
 }
-.roadbook-container.collapsed{
+
+.roadbook-container.collapsed {
   height: 90px;
-  transition:all 1s;
+  transition: all 1s;
 }
 
-.roadbook-container.expanded{
+.roadbook-container.expanded {
   height: 95%;
-  transition:all 1s;
+  transition: all 1s;
 }
 
 .heading label {
@@ -351,7 +402,7 @@ textarea.waypoint-palette{
 }
 
 .selected {
-  background-color: rgba(255,144,0,1);
+  background-color: rgba(255, 144, 0, 1);
 }
 
 #waypoint-palette .switch {
@@ -367,74 +418,136 @@ ul.track-selection li.accordion-navigation a {
   box-shadow: none;
 }
 
-.track-selection, .glyph-selection {min-height: 130px;}
-.note-glyph-selection {min-height: 40px;margin-bottom: 5px;}
-.track-grid, .glyph-grid {
+.track-selection,
+.glyph-selection {
+  min-height: 130px;
+}
+
+.note-glyph-selection {
+  min-height: 40px;
+  margin-bottom: 5px;
+}
+
+.track-grid,
+.glyph-grid {
   width: 40px;
   height: 40px;
-  box-shadow: 2px 3px 6px 1px rgba(0,0,0,0.60);
+  box-shadow: 2px 3px 6px 1px rgba(0, 0, 0, 0.60);
   position: absolute;
   text-align: center;
   font-size: 25px;
   color: #ffba29;
-  text-shadow: -1px 1px 4px rgba(0,0,0, 1);
+  text-shadow: -1px 1px 4px rgba(0, 0, 0, 1);
   background-color: #efefef;
 }
 
 .track-selection li.accordion-navigation {
-  box-shadow: 2px 2px 5px -2px rgba(0,0,0,0.60);
+  box-shadow: 2px 2px 5px -2px rgba(0, 0, 0, 0.60);
 }
 
-.track-grid.undo, .glyph-grid.undo {color: #000}
+.track-grid.undo,
+.glyph-grid.undo {
+  color: #000
+}
 
-.track-grid:hover, .glyph-grid:hover {background-color: rgba(255,144,0,1); cursor: pointer; box-shadow: 5px 5px 22px -2px rgba(0,0,0,0.60);}
+.track-grid:hover,
+.glyph-grid:hover {
+  background-color: rgba(255, 144, 0, 1);
+  cursor: pointer;
+  box-shadow: 5px 5px 22px -2px rgba(0, 0, 0, 0.60);
+}
 
-.track-grid.undo:hover, .glyph-grid.undo:hover {background-color: #000; color: #ffba29;}
+.track-grid.undo:hover,
+.glyph-grid.undo:hover {
+  background-color: #000;
+  color: #ffba29;
+}
 
-.track-grid i, .glyph-grid i {
-  display:none;
+.track-grid i,
+.glyph-grid i {
+  display: none;
 }
 
 .track-grid:hover i,
 .glyph-grid:hover i,
 .track-grid.undo i,
-.glyph-grid.undo i  {
-  display:block;
+.glyph-grid.undo i {
+  display: block;
 }
 
 .track-grid.undo i,
-.glyph-grid.undo i  {
+.glyph-grid.undo i {
   transform: scale(-1, 1);
 }
 
-.tl {left: 15; top: 0; border-top-left-radius: 10px;}
-.tm {left: 54px; top: 0;}
-.tr {left: 93px; top: 0; border-top-right-radius: 10px;}
-.ml {left: 15; top: 39px;}
-.mm {left: 54px; top: 39px;}
-.mr {left: 93px; top: 39px;}
-.ll {left: 15; top: 78px; border-bottom-left-radius: 10px;}
-.lm {left: 54px; top: 78px;}
-.lr {left: 93px; top: 78px; border-bottom-right-radius: 10px;}
+.tl {
+  left: 15;
+  top: 0;
+  border-top-left-radius: 10px;
+}
+
+.tm {
+  left: 54px;
+  top: 0;
+}
+
+.tr {
+  left: 93px;
+  top: 0;
+  border-top-right-radius: 10px;
+}
+
+.ml {
+  left: 15;
+  top: 39px;
+}
+
+.mm {
+  left: 54px;
+  top: 39px;
+}
+
+.mr {
+  left: 93px;
+  top: 39px;
+}
+
+.ll {
+  left: 15;
+  top: 78px;
+  border-bottom-left-radius: 10px;
+}
+
+.lm {
+  left: 54px;
+  top: 78px;
+}
+
+.lr {
+  left: 93px;
+  top: 78px;
+  border-bottom-right-radius: 10px;
+}
 
 .track-grid.tl div,
 .track-grid.lr div {
-  transform:rotate(-45deg);
+  transform: rotate(-45deg);
 }
 
 .track-grid.tr div,
 .track-grid.ll div {
-  transform:rotate(45deg);
+  transform: rotate(45deg);
 }
 
 nav.top-bar {
-  background: -webkit-linear-gradient(top, rgba(255,68,0,1) 0%, rgba(255,68,0,1) 33%, rgba(255,144,0,1) 34%, rgba(255,144,0,1) 68%, rgba(255,187,41,1) 68%, rgba(255,187,41,1) 100%);
-  box-shadow: 0px 13px 115px 1px rgba(120,120,120,0.89);
+  background: -webkit-linear-gradient(top, rgba(255, 68, 0, 1) 0%, rgba(255, 68, 0, 1) 33%, rgba(255, 144, 0, 1) 34%, rgba(255, 144, 0, 1) 68%, rgba(255, 187, 41, 1) 68%, rgba(255, 187, 41, 1) 100%);
+  box-shadow: 0px 13px 115px 1px rgba(120, 120, 120, 0.89);
   z-index: 5;
   position: absolute;
   top: 2rem;
   width: 100%;
 }
+
 .total-distance {
   height: 90px;
   font-family: Tahoma, Geneva, sans-serif;
@@ -452,20 +565,24 @@ nav.top-bar {
 }
 
 .waypoint {
-  width:500px !important;
+  width: 500px !important;
   border: 2px solid #000;
-  height:182px;
+  height: 182px;
   margin-left: 0 !important;
   margin-right: 0 !important;
   margin-top: 10px !important;
 }
 
 .waypoint-distance {
-  width:120px;
+  width: 120px;
 }
 
+.waypoint-distance-close {
+  width:120px;
+  background-color: #93ff93;
+}
 .waypoint-note {
-  width:195px;
+  width: 195px;
   padding: 3px;
 }
 
@@ -480,7 +597,7 @@ nav.top-bar {
 }
 
 .waypoint-tulip {
-  width:180px;
+  width: 180px;
   border-left: 1px solid #000;
   border-right: 1px solid #000;
   padding-left: 0 !important;
@@ -490,6 +607,6 @@ nav.top-bar {
 .waypoint-distance,
 .waypoint-note,
 .waypoint-tulip {
-  height: 180px;
+  height: 178px;
   float: left
 }

@@ -383,7 +383,7 @@
   <!--  waypoint template-->
   <script type="text/html" id="waypoint-template">
     <div class='waypoint row'>
-      <div class='waypoint-distance'>
+      <div data-bind="css: { 'waypoint-distance-close': distanceClose}" class="waypoint-distance">
         <div class='total-distance'>
           <div data-bind="text: totalDistance">
           </div>

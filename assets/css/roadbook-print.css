@@ -143,6 +143,10 @@ body {
 	border-right: 2px solid #000;
 }
 
+.waypoint-distance-close {
+  background-color: #93ff93;
+}
+
 .waypoint-tulip {
 	width:180px;
 	height: 100%;
@@ -242,16 +246,19 @@ body {
 	font-family:Lato-Regular;
 	font-size: 18pt;
 	position: absolute;
-	height: 40px;
-	width: 100px;
+	height: 35px;
+	/* width: 100px; */
 	bottom: 0px;
 	left: 0px;
-	border-top: 0px solid black;
-	border-right: 0px solid black;
-	padding-left: 10px;
+  background-color: yellow;
+  border-color: black;
+  border-width: 1px;
+  border-style: solid;
+  padding-right: 6px;
+	padding-left: 6px;
 }
 .heading label {
-	display: inline;
+	display: none;
 	font-size: 26pt;
 }
 
