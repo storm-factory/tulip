@@ -27,6 +27,7 @@ var Waypoint = Class({
     this.lng            = ko.observable(wptJson.long);
 
     this.distFromPrev   = ko.computed(this.computedDistanceFromPrev, this);
+    this.distanceClose  = ko.computed(function(){ return this.distFromPrev() < 0.3 }, this);
     this.totalDistance  = ko.computed(this.computedTotalDistance, this);
     this.heading        = ko.computed(this.computedHeading, this);
 
