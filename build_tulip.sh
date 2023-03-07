@@ -1,11 +1,11 @@
 #!/bin/bash
-tap test/unit/*.js
+npx tape test/unit/*.js
 
-echo "what is the build version?"
-read VERSION
+echo "building tulip $VERSION for Linux"
+npm run make-linux
 echo "building tulip $VERSION for OSX"
-electron-packager . --appname=tulip --platform=darwin --arch=x64 --icon=tulip-logo.ico --app-version=$VERSION --version=1.2.4 --overwrite
+npm run  make-mac
 echo "building tulip $VERSION for Windows"
-electron-packager . --appname=tulip --platform=win32 --arch=x64 --icon=tulip-logo.ico --app-version=$VERSION --version=1.2.4 --overwrite
+npm run make-win
 
 echo "tulip builds complete!"

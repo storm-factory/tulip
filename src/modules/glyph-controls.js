@@ -1,19 +1,18 @@
 // TODO refactor this to use MVC pattern and act as a controller for the currentlyEditingWaypoint for the roadbook
 class GlyphControls{
 
-  constructor(){
+  constructor(resourcesPath){
     this.fs = require('fs');
-    this.process = require('electron').remote.process;
     this.files = [];
-    this.getGylphNames();
+    this.getGylphNames(resourcesPath);
     this.initListeners();
     this.bindToGlyphImages();
     this.addToNote = false;
   }
 
-  getGylphNames(){
+  getGylphNames(resourcesPath){
     try {
-      this.files = this.fs.readdirSync(this.process.resourcesPath + '/app/assets/svg/glyphs/').filter(function(val){ return val.endsWith('.svg')});
+      this.files = this.fs.readdirSync(resourcesPath + '/app/assets/svg/glyphs/').filter(function(val){ return val.endsWith('.svg')});
     } catch (e) {
       console.log("using unpackaged filesys");
       this.files = this.fs.readdirSync('assets/svg/glyphs').filter(function(val){ return val.endsWith('.svg')});

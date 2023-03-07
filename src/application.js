@@ -1,3 +1,6 @@
+const { ipcRenderer } = require('electron');
+const { debuglog } = require('util');
+
 /*
   ---------------------------------------------------------------------------
   Define the application object as a singleton
@@ -31,7 +34,7 @@ var App = Class({
     this.canEditMap = true;
     this.pointDeleteMode = false;
     //Dialogs for file IO
-    this.dialog = require('electron').remote.dialog;
+    this.dialog = require('electron');
     /*
       instantiate the roadbook
     */
@@ -55,7 +58,7 @@ var App = Class({
     */
     this.initListeners();
 
-    this.glyphControls = new GlyphControls();
+    this.glyphControls = new GlyphControls(process.resourcesPath);
 
     this.noteControls = new NoteControls();
   },
@@ -83,27 +86,28 @@ var App = Class({
 
   openRoadBook: function(){
     var _this = this;
-    this.dialog.showOpenDialog({ filters: [
-       { name: 'tulip', extensions: ['tlp'] }
-      ]},function (fileNames) {
-      var fs = require('fs');
-      if (fileNames === undefined) return;
-        _this.startLoading();
-        //TODO this needs to be passed to create when choice is added
-        //we need to figure out how to watch a file while it's being edited so if it's moved it gets saved to the right place ***fs.watch***
-        var fileName = fileNames[0];
-        _this.fs.readFile(fileName, 'utf-8', function (err, data) {
-          var json = JSON.parse(data);
-          // We need to ask whether they want to open a new roadbook or append an existing one to the currently
-          // being edited RB
-          _this.roadbook.appendRouteFromJSON(json,fileName); //TODO this needs to only pass json once choice is added
-        });
-        $('#toggle-roadbook').click();
-        $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
-        $('#print-roadbook').removeClass('disabled')
-        $('#export-gpx').removeClass('disabled')
-        $('#export-openrally-gpx').removeClass('disabled')
-    });
+    var options = {
+      filters: [{ name: 'tulip', extensions: ['tlp'] }],
+      multiSelections: false
+    }
+    ipcRenderer.send('show-open-dialog', options)
+    ipcRenderer.on('read-file', (event, fileName) => {
+      if (fileName === undefined) return
+      _this.startLoading();
+      //TODO this needs to be passed to create when choice is added
+      //we need to figure out how to watch a file while it's being edited so if it's moved it gets saved to the right place ***fs.watch***
+      _this.fs.readFile(fileName, 'utf-8', function (err, data) {
+        var json = JSON.parse(data);
+        // We need to ask whether they want to open a new roadbook or append an existing one to the currently
+        // being edited RB
+        _this.roadbook.appendRouteFromJSON(json,fileName); //TODO this needs to only pass json once choice is added
+      });
+      $('#toggle-roadbook').click();
+      $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
+      $('#print-roadbook').removeClass('disabled')
+      $('#export-gpx').removeClass('disabled')
+      $('#export-openrally-gpx').removeClass('disabled')
+    })
   },
 
   exportGPX: function(){
@@ -132,18 +136,20 @@ var App = Class({
 
   importGPX: function(){
     var _this = this;
-    this.dialog.showOpenDialog({ filters: [
-       { name: 'import gpx', extensions: ['gpx'] }
-      ]},function (fileNames) {
+    var options = {
+      filters: [{ name: 'import gpx', extensions: ['gpx'] }],
+      multiSelections: false
+    }
+    ipcRenderer.send('show-open-dialog', options)
+    ipcRenderer.on('read-file', (event, fileName) => {
+      if (fileName === undefined) return
       var fs = require('fs');
-      if (fileNames === undefined) return;
       _this.startLoading();
       $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
-      var fileName = fileNames[0];
       _this.fs.readFile(fileName, 'utf-8', function (err, data) {
         _this.io.importGPX(data);
-      });
-    });
+      })
+    })
   },
 
   printRoadbook: function(){
@@ -183,21 +189,26 @@ var App = Class({
 
   showSaveDialog: function(title,path) {
     var _this = this;
-    this.dialog.showSaveDialog({
-                                title: title,
-                                defaultPath: path,
-                                filters: [{ name: 'tulip', extensions: ['tlp'] }]
-      },function (fileName) {
-      if (fileName === undefined) return;
-        // assign the file path to the json for first time players
-        // TODO figure out what to do if the user changes the name of the file
+    path = path + ".tlp";
+    options = {
+      title: title,
+      defaultPath: path,
+      showOverwriteConfirmation: true,
+      filters: [{ name: 'tulip', extensions: ['tlp'] }]
+    }
+
+    ipcRenderer.send('show-save-dialog', options)
+    ipcRenderer.on('save-file', (event, filePath) => {
+      console.log("Saving file ", filePath)
+
+      if (filePath === undefined) return
         var tulipFile = _this.roadbook.statefulJSON();
-        tulipFile.filePath = fileName;
-        _this.roadbook.filePath = fileName;
+        tulipFile.filePath = filePath;
+        _this.roadbook.filePath = filePath;
         tulipFile = JSON.stringify(tulipFile, null, 2);
-        _this.fs.writeFile(fileName, tulipFile, function (err) {});
+        _this.fs.writeFile(filePath, tulipFile, function (err) {});
         return true
-    });
+    })
   },
 
   startLoading: function(){

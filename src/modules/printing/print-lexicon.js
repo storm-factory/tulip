@@ -92,6 +92,10 @@ function loadGlyphTable() {
 
 function requestPdfPrint(){
     $('nav').hide();
-	var data = {'filepath': filePath, 'opts': {'pageSize': 'Letter', 'pageSizeName': 'Letter', 'marginsType' : '1'}};
+	var data = {'filepath': filePath, 
+			'opts': {
+				'pageSize': 'Letter',
+				'pageSizeName': 'Letter',
+				'marginsType' : 1}};
     ipc.send('print-lexicon-pdf', data);
 }
