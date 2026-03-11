@@ -11,7 +11,7 @@ class MapController{
     this.displayEdge = true; //displayEdge is a instance variable which tracks whether a handle should be shown when the user hovers the mouse over the route. (think of a better name and nuke this comment)
     this.markerDeleteMode = false;
     this.deleteQueue = [];
-    this.dialog = require('electron').remote.dialog;
+    this.dialog = require('@electron/remote').dialog;
 
     this.initMap();
     this.initRoutePolyline();

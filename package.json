@@ -23,7 +23,10 @@
   },
   "homepage": "https://github.com/storm-factory/tulip",
   "devDependencies": {
-    "electron-prebuilt": "^1.2.0",
+    "electron": "^33.0.0",
     "tape": "^4.6.3"
+  },
+  "dependencies": {
+    "@electron/remote": "^2.1.2"
   }
 }

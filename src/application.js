@@ -31,7 +31,7 @@ var App = Class({
     this.canEditMap = true;
     this.pointDeleteMode = false;
     //Dialogs for file IO
-    this.dialog = require('electron').remote.dialog;
+    this.dialog = require('@electron/remote').dialog;
     /*
       instantiate the roadbook
     */

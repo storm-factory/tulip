@@ -1,4 +1,5 @@
-tulip-darwin-x64
-tulip-win32-x64
-api_keys.js
-node_modules
+node_modules/
+.DS_Store
+*.log
+npm-debug.log*
+package-lock.json

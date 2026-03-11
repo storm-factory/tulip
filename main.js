@@ -1,6 +1,6 @@
-const ipcMain = require('electron').ipcMain;
+const { ipcMain, Menu, app, BrowserWindow, dialog } = require('electron');
+const remoteMain = require('@electron/remote/main');
 const fs = require('fs');
-const {electron, Menu,app,BrowserWindow,dialog} = require('electron');
 
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -11,6 +11,7 @@ var printWindow = null;
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 app.on('ready', function() {
+  remoteMain.initialize();
   createWindow();
 });
 
@@ -107,10 +108,22 @@ function createWindow () {
   Menu.setApplicationMenu(menu)
 
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 1500, height: 1000, 'min-height': 700});
+  mainWindow = new BrowserWindow({
+    width: 1500,
+    height: 1000,
+    minHeight: 700,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+      enableRemoteModule: true
+    }
+  });
+
+  // Enable @electron/remote for this window
+  remoteMain.enable(mainWindow.webContents);
 
   // and load the index.html of the app.
-  mainWindow.loadURL('file://' + __dirname + '/index.html')
+  mainWindow.loadFile('index.html');
   // mainWindow.webContents.openDevTools()
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
@@ -128,8 +141,19 @@ function createWindow () {
 */
 var data;
 ipcMain.on('ignite-print', (event, arg) => {
-  printWindow = new BrowserWindow({width: 650, height: 700, 'min-height': 700, 'resizable': false});
-  printWindow.loadURL('file://' + __dirname + '/print.html');
+  printWindow = new BrowserWindow({
+    width: 650,
+    height: 700,
+    minHeight: 700,
+    resizable: false,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+      enableRemoteModule: true
+    }
+  });
+  remoteMain.enable(printWindow.webContents);
+  printWindow.loadFile('print.html');
   data = arg;
   printWindow.on('closed', () => {
     printWindow = null
@@ -137,8 +161,19 @@ ipcMain.on('ignite-print', (event, arg) => {
 
 });
 ipcMain.on('ignite-lexicon', (event, arg) => {
-  printWindow = new BrowserWindow({width: 820, height: 700, 'min-height': 700, 'resizable': false});
-  printWindow.loadURL('file://' + __dirname + '/lexicon_key.html');
+  printWindow = new BrowserWindow({
+    width: 820,
+    height: 700,
+    minHeight: 700,
+    resizable: false,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+      enableRemoteModule: true
+    }
+  });
+  remoteMain.enable(printWindow.webContents);
+  printWindow.loadFile('lexicon_key.html');
   data = arg;
   printWindow.on('closed', () => {
     printWindow = null
@@ -151,48 +186,52 @@ ipcMain.on('print-launched', (event, arg) => {
 });
 
 // NOTE this is about as robust as a wet paper bag and fails just as gracefully
-ipcMain.on('print-pdf', (event, arg) => {
+ipcMain.on('print-pdf', async (event, arg) => {
   var size = arg.opts.pageSize;
   var sizeName = arg.opts.pageSizeName;
   var filename = arg.filepath.replace('.tlp','_' + sizeName + '.pdf')
-  printWindow.webContents.printToPDF(arg.opts, (error, data) => {
-    if (error) {
-		console.log('Error converting PDF to HTML' + error + arg.opts);
-		throw error;
-	} else {
-		fs.writeFile(filename, data, (error) => {
+  try {
+    const data = await printWindow.webContents.printToPDF(arg.opts);
+    fs.writeFile(filename, data, async (error) => {
+      if (error) {
+        console.log('Error writing PDF file. Is ' + filename +' also open in another program?' + error);
+        throw error;
+      } else {
+        printWindow.close();
+        await dialog.showMessageBox(mainWindow, {
+          message: "Your PDF has been exported to the same directory you saved your roadbook. Gas a la burra!",
+          buttons: ['ok']
+        });
+      }
+    });
+  } catch (error) {
+    console.log('Error converting PDF to HTML' + error + arg.opts);
+    throw error;
+  }
+});
+
+ipcMain.on('print-lexicon-pdf', async (event,arg) => {
+	const path = require('path');
+	var filename = path.join(path.dirname(arg.filepath),"lexicon-key.pdf")
+	console.log('called main.js function ' + filename);
+	try {
+		const data = await printWindow.webContents.printToPDF(arg.opts);
+		fs.writeFile(filename, data, async (error) => {
 		  if (error) {
 			console.log('Error writing PDF file. Is ' + filename +' also open in another program?' + error);
 			throw error;
 		  } else {
 			  printWindow.close();
-			  dialog.showMessageBox(mainWindow, {message: "Your PDF has been exported to the same directory you saved your roadbook. Gas a la burra!",buttons: ['ok']})
+			  await dialog.showMessageBox(mainWindow, {
+				message: "Your PDF has been exported to the same directory you saved your roadbook. Gas a la burra!",
+				buttons: ['ok']
+			  });
 		  }
 		});
+	} catch (error) {
+		console.log('Error converting PDF to HTML' + error + arg.opts);
+		throw error;
 	}
-  });
-});
-
-ipcMain.on('print-lexicon-pdf', (event,arg) => {
-	const path = require('path');
-	var filename = path.join(path.dirname(arg.filepath),"lexicon-key.pdf")
-	console.log('called main.js function ' + filename);
-	printWindow.webContents.printToPDF(arg.opts, (error, data) => {
-		if (error) {
-			console.log('Error converting PDF to HTML' + error + arg.opts);
-			throw error;
-		} else {
-			fs.writeFile(filename, data, (error) => {
-			  if (error) {
-				console.log('Error writing PDF file. Is ' + filename +' also open in another program?' + error);
-				throw error;
-			  } else {
-				  printWindow.close();
-				  dialog.showMessageBox(mainWindow, {message: "Your PDF has been exported to the same directory you saved your roadbook. Gas a la burra!",buttons: ['ok']})
-			  }
-			});
-		}
-	});
 });
 
 //listens for the browser window to ask for the documents folder
