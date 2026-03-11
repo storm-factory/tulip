@@ -119,6 +119,16 @@ var App = Class({
       this.dialog
     );
 
+    // Phase 10: Help System
+    this.helpService = new HelpService();
+    this.help = new Help(this.helpService);
+    this.helpView = new HelpView();
+    this.helpController = new HelpController(
+      this.help,
+      this.helpView,
+      this.eventBus
+    );
+
     // Check if api_keys.js exists, if not, open settings for first-time setup
     this.checkApiKeysOnStartup();
   },
@@ -351,6 +361,12 @@ initListeners: function(){
     _this.uiController.closeMenu();
   });
 
+  // Open help
+  document.querySelector('#open-help').addEventListener('click', function(){
+    _this.helpController.openHelp();
+    _this.uiController.closeMenu();
+  });
+
   // Save roadbook
   document.querySelector('#save-roadbook').addEventListener('click', function(e){
     e.preventDefault();
@@ -561,6 +577,10 @@ initListeners: function(){
 
   this.ipcService.on('open-settings', function(event, arg){
     _this.settingsController.openSettings();
+  });
+
+  this.ipcService.on('open-help', function(event, arg){
+    _this.helpController.openHelp();
   });
 
   this.ipcService.on('zoom-in', function(event, arg){

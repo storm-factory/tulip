@@ -103,6 +103,15 @@ function createWindow () {
         }
       },
     ]
+    },
+    {label: "Help",
+    submenu: [
+      {
+        label: "Keyboard Shortcuts",
+        accelerator: process.platform === 'darwin' ? 'Cmd+/' : 'F1',
+        click: function() { mainWindow.webContents.send('open-help'); }
+      },
+    ]
     }
 
   ];

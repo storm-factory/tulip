@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="assets/libs/foundation-5.5.3/css/foundation.css" />
     <link rel="stylesheet" href="assets/css/foundation-icons/foundation-icons.css" />
     <link rel="stylesheet" href="assets/css/settings.css" />
+    <link rel="stylesheet" href="assets/css/help.css" />
     <title>tulip</title>
   </head>
   <body class="off-canvas-wrap" data-offcanvas>
@@ -68,6 +69,7 @@
 		  <li><a href="#" id="print-lexicon" class="main-menu button tiny radius"><i class="fi-print"></i> Lexicon Key</a></li>
           <hr>
           <li><a href="#" id="open-settings" class="main-menu button tiny radius"><i class="fi-widget"></i> Settings</a></li>
+          <li><a href="#" id="open-help" class="main-menu button tiny radius"><i class="fi-info"></i> Help</a></li>
           <hr>
         </ul>
     </aside>
@@ -727,6 +729,13 @@
   <script src='src/models/Settings.js'></script>
   <script src='src/controllers/SettingsController.js'></script>
   <script src='src/views/SettingsView.js'></script>
+  <!--
+    Load Help System (Service-Oriented Architecture - Phase 10)
+  -->
+  <script src='src/services/HelpService.js'></script>
+  <script src='src/models/Help.js'></script>
+  <script src='src/controllers/HelpController.js'></script>
+  <script src='src/views/HelpView.js'></script>
   <!--
     Load Models
   -->
