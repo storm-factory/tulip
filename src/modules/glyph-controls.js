@@ -1,4 +1,5 @@
 // TODO refactor this to use MVC pattern and act as a controller for the currentlyEditingWaypoint for the roadbook
+// Phase 6: Converted to vanilla JavaScript
 class GlyphControls{
 
   constructor(){
@@ -23,28 +24,41 @@ class GlyphControls{
   handleGlyphSelectUI(e){
     e.preventDefault();
     if(!e.shiftKey){
-      $('#glyphs').foundation('reveal', 'close');
+      var glyphsModal = document.querySelector('#glyphs');
+      if(glyphsModal) $(glyphsModal).foundation('reveal', 'close'); // Phase 7: Foundation modal
     }
-    $('#glyph-search').focus();
+    var glyphSearch = document.querySelector('#glyph-search');
+    if(glyphSearch) glyphSearch.focus();
   }
 
   populateResults(results){
     var _this = this;
-    $.each(results, function(i,result){
-      var img = $('<img>').addClass('glyph').attr('src', result.path)
-      var link = $('<a>').addClass('th').attr('title', result.name).append(img);
-      var showResult = $('<li>').append(link);
-      $(img).click(function(e){
+    results.forEach(function(result){
+      var img = document.createElement('img');
+      img.classList.add('glyph');
+      img.setAttribute('src', result.path);
+
+      var link = document.createElement('a');
+      link.classList.add('th');
+      link.setAttribute('title', result.name);
+      link.appendChild(img);
+
+      var showResult = document.createElement('li');
+      showResult.appendChild(link);
+
+      img.addEventListener('click', function(e){
         _this.handleGlyphSelectUI(e);
         _this.addGlyphToInstruction(this);
-      })
-      $('#glyph-search-results').append(showResult);
+      });
+
+      var searchResults = document.querySelector('#glyph-search-results');
+      if(searchResults) searchResults.appendChild(showResult);
     });
   }
 
   searchGlyphNames(query){
     var results=[];
-    $.each(this.files, function(i,file){
+    this.files.forEach(function(file){
       if(file.indexOf(query) != -1){
         results.push({name: file.replace('.svg', ''), path: 'assets/svg/glyphs/'+file})
       }
@@ -54,69 +68,107 @@ class GlyphControls{
 
   bindToGlyphImages(){
     var _this = this;
-    $('.glyph').click(function(e){
-      _this.handleGlyphSelectUI(e);
-      _this.addGlyphToInstruction(this);
-      app.noteControls.checkForNotification();
+    var glyphs = document.querySelectorAll('.glyph');
+    glyphs.forEach(function(glyph){
+      glyph.addEventListener('click', function(e){
+        _this.handleGlyphSelectUI(e);
+        _this.addGlyphToInstruction(this);
+        app.noteControls.checkForNotification();
+      });
     });
   }
 
   initListeners(){
     var _this = this;
-    $('#glyph-search').keyup(function(){
-      $('#glyph-search-results').html('');
-      if($(this).val() != ''){
-        var results = _this.searchGlyphNames($(this).val());
-        _this.populateResults(results);
-        $('.glyph').off('click')
-        _this.bindToGlyphImages();
-      }
-    });
+    var glyphSearch = document.querySelector('#glyph-search');
+    if(glyphSearch){
+      glyphSearch.addEventListener('keyup', function(){
+        var searchResults = document.querySelector('#glyph-search-results');
+        if(searchResults) searchResults.innerHTML = '';
 
-    $('#glyph-search-clear').click(function(){
-      $('#glyph-search').val('');
-      $('#glyph-search-results').html('');
-      $('#glyph-search').focus();
-    })
+        if(this.value != ''){
+          var results = _this.searchGlyphNames(this.value);
+          _this.populateResults(results);
 
-    $('.note-grid').click(function(e){
-      e.preventDefault();
-      _this.addToNote = true;
-      $('#glyphs').foundation('reveal', 'open');
-      setTimeout(function() { $('#glyph-search').focus(); }, 600); //we have to wait for the modal to be visible before we can assign focus
-    });
+          // Remove old click handlers and rebind
+          var glyphs = document.querySelectorAll('.glyph');
+          glyphs.forEach(function(glyph){
+            var clone = glyph.cloneNode(true);
+            glyph.parentNode.replaceChild(clone, glyph);
+          });
+          _this.bindToGlyphImages();
+        }
+      });
+    }
+
+    var glyphSearchClear = document.querySelector('#glyph-search-clear');
+    if(glyphSearchClear){
+      glyphSearchClear.addEventListener('click', function(){
+        var glyphSearch = document.querySelector('#glyph-search');
+        var searchResults = document.querySelector('#glyph-search-results');
+        if(glyphSearch){
+          glyphSearch.value = '';
+          glyphSearch.focus();
+        }
+        if(searchResults) searchResults.innerHTML = '';
+      });
+    }
+
+    var noteGrid = document.querySelector('.note-grid');
+    if(noteGrid){
+      noteGrid.addEventListener('click', function(e){
+        e.preventDefault();
+        _this.addToNote = true;
+        var glyphsModal = document.querySelector('#glyphs');
+        if(glyphsModal) $(glyphsModal).foundation('reveal', 'open'); // Phase 7: Foundation modal
+        setTimeout(function() {
+          var glyphSearch = document.querySelector('#glyph-search');
+          if(glyphSearch) glyphSearch.focus();
+        }, 600); //we have to wait for the modal to be visible before we can assign focus
+      });
+    }
 
     //TODO fill out this todo, you know you wanna.
-    $('.glyph-grid').click(function(e){
-      e.preventDefault();
-      if($(this).hasClass('undo')){
-        if(e.shiftKey){
-          // NOTE this module should only know about the roadbook
-          app.roadbook.currentlyEditingWaypoint.tulip.beginRemoveGlyph();
-        }else{
-          // NOTE this module should only know about the roadbook
-          app.roadbook.currentlyEditingWaypoint.tulip.removeLastGlyph();
+    var glyphGrid = document.querySelector('.glyph-grid');
+    if(glyphGrid){
+      glyphGrid.addEventListener('click', function(e){
+        e.preventDefault();
+        if(this.classList.contains('undo')){
+          if(e.shiftKey){
+            // NOTE this module should only know about the roadbook
+            app.roadbook.currentlyEditingWaypoint.tulip.beginRemoveGlyph();
+          }else{
+            // NOTE this module should only know about the roadbook
+            app.roadbook.currentlyEditingWaypoint.tulip.removeLastGlyph();
+          }
+          return false
         }
+        _this.showGlyphModal(this.dataset.top, this.dataset.left);
         return false
-      }
-      _this.showGlyphModal($(this).data('top'),$(this).data('left'));
-      return false
-    });
+      });
+    }
   }
 
   showGlyphModal(top,left){
     app.glyphPlacementPosition = {top: top, left: left};
     this.addToNote = false;
-    $('#glyphs').foundation('reveal', 'open');
-    setTimeout(function() { $('#glyph-search').focus(); }, 600); //we have to wait for the modal to be visible before we can assign focus
+    var glyphsModal = document.querySelector('#glyphs');
+    if(glyphsModal) $(glyphsModal).foundation('reveal', 'open'); // Phase 7: Foundation modal
+    setTimeout(function() {
+      var glyphSearch = document.querySelector('#glyph-search');
+      if(glyphSearch) glyphSearch.focus();
+    }, 600); //we have to wait for the modal to be visible before we can assign focus
     return false
   }
 
   addGlyphToInstruction(element){
-    var src = $(element).attr('src');
+    var src = element.getAttribute('src');
     if(this.addToNote){
       // NOTE this module should only know about the roadbook
-      app.roadbook.appendGlyphToNoteTextEditor($('<img>').attr('src', src).addClass('normal'));
+      var img = document.createElement('img');
+      img.setAttribute('src', src);
+      img.classList.add('normal');
+      app.roadbook.appendGlyphToNoteTextEditor(img);
     } else {
       // NOTE this module should only know about the roadbook
       app.roadbook.currentlyEditingWaypoint.tulip.addGlyph(app.glyphPlacementPosition,src);

@@ -73,38 +73,54 @@ class MapController{
   }
 
   rotateNumDegrees(degrees){
-    $('#map').css({'-webkit-transform' : 'rotate('+ degrees +'deg)'});
-    $('#draw-route').hide();
-    $('.map-rotate-notice').show();
-    $('.map-rotate-notice').fadeTo('slow', 0.25).fadeTo('slow', 1.0);
+    // Phase 6: vanilla JS
+    var mapEl = document.querySelector('#map');
+    if(mapEl) mapEl.style.webkitTransform = 'rotate('+ degrees +'deg)';
+
+    var drawRoute = document.querySelector('#draw-route');
+    if(drawRoute) drawRoute.style.display = 'none';
+
+    var rotateNotice = document.querySelector('.map-rotate-notice');
+    if(rotateNotice) rotateNotice.style.display = 'block';
+
     this.map.setOptions({draggable: false});
   }
 
   reorient(){
     this.rotation = 0;
-    $('#map').css({'-webkit-transform' : 'rotate(0deg)'});
-    $('.map-rotate-notice').hide();
-    $('#draw-route').show('slow');
+    // Phase 6: vanilla JS
+    var mapEl = document.querySelector('#map');
+    if(mapEl) mapEl.style.webkitTransform = 'rotate(0deg)';
+
+    var rotateNotice = document.querySelector('.map-rotate-notice');
+    if(rotateNotice) rotateNotice.style.display = 'none';
+
+    var drawRoute = document.querySelector('#draw-route');
+    if(drawRoute) drawRoute.style.display = 'block';
+
     this.map.setOptions({draggable: true});
   }
 
   toggleMapLock(element){
     this.mapUnlocked = !this.mapUnlocked;
     this.lockedBeforeWaypointEdit = !this.mapUnlocked;
-    element ? $(element).toggleClass('secondary') : null;
+    // Phase 6: vanilla JS
+    if(element) element.classList.toggle('secondary');
   }
 
   lockMap(element){
     this.lockedBeforeWaypointEdit = !this.mapUnlocked;
-    this.mapUnlocked = false
-    element ? $(element).removeClass('secondary') : null;
+    this.mapUnlocked = false;
+    // Phase 6: vanilla JS
+    if(element) element.classList.remove('secondary');
   }
 
   unlockMap(element){
     if(!this.lockedBeforeWaypointEdit){
       this.lockedBeforeWaypointEdit = !this.mapUnlocked;
-      this.mapUnlocked = true
-      element ? $(element).addClass('secondary') : null;
+      this.mapUnlocked = true;
+      // Phase 6: vanilla JS
+      if(element) element.classList.add('secondary');
     }
   }
 
@@ -124,10 +140,29 @@ class MapController{
   }
 
   updateLayerDropdown(element){
-    $('#layers-dropdown').find('i').hide();
-    $(element).parent('li').siblings('li').find('a').removeClass('selected');
-    $(element).addClass('selected');
-    $(element).find('i').show();
+    // Phase 6: vanilla JS
+    // Hide all icons in dropdown
+    var dropdown = document.querySelector('#layers-dropdown');
+    if(dropdown){
+      var icons = dropdown.querySelectorAll('i');
+      icons.forEach(function(icon){ icon.style.display = 'none'; });
+    }
+
+    // Remove selected from siblings
+    if(element && element.parentElement){
+      var siblings = element.parentElement.parentElement.querySelectorAll('li');
+      siblings.forEach(function(li){
+        var link = li.querySelector('a');
+        if(link) link.classList.remove('selected');
+      });
+    }
+
+    // Add selected to this element
+    if(element){
+      element.classList.add('selected');
+      var icon = element.querySelector('i');
+      if(icon) icon.style.display = 'inline';
+    }
   }
 
   addRoutePoint(latLng){
@@ -209,8 +244,17 @@ class MapController{
     google.maps.event.addListener(marker, 'click', function(evt) {
       if(this.waypoint && !this.markerDeleteMode){
         // TODO make into waypoint controller function and abstract it from here
-        $('#roadbook').scrollTop(0);
-        $('#roadbook').scrollTop(($(this.waypoint.element).offset().top-100));
+        // Phase 6: vanilla JS
+        var roadbook = document.querySelector('#roadbook');
+        if(roadbook && this.waypoint.element){
+          roadbook.scrollTop = 0;
+          // waypoint.element is a jQuery object, get the DOM element
+          var waypointEl = this.waypoint.element[0] || this.waypoint.element;
+          if(waypointEl && waypointEl.getBoundingClientRect){
+            var elementTop = waypointEl.getBoundingClientRect().top + roadbook.scrollTop;
+            roadbook.scrollTop = elementTop - 100;
+          }
+        }
       }
     });
 
@@ -232,8 +276,17 @@ class MapController{
           _this.model.revertWaypointToRoutePoint(this);
         } else {
           _this.model.addWaypoint(this);
-          $('#roadbook').scrollTop(0);
-          $('#roadbook').scrollTop(($(this.waypoint.element).offset().top-100));
+          // Phase 6: vanilla JS
+          var roadbook = document.querySelector('#roadbook');
+          if(roadbook && this.waypoint && this.waypoint.element){
+            roadbook.scrollTop = 0;
+            // waypoint.element is a jQuery object, get the DOM element
+            var waypointEl = this.waypoint.element[0] || this.waypoint.element;
+            if(waypointEl && waypointEl.getBoundingClientRect){
+              var elementTop = waypointEl.getBoundingClientRect().top + roadbook.scrollTop;
+              roadbook.scrollTop = elementTop - 100;
+            }
+          }
         }
       }
     });
@@ -333,54 +386,82 @@ class MapController{
 
   bindToUI(){
     /*
-        Nav Bar
+        Nav Bar - Phase 6: vanilla JS
     */
     var _this = this;
-    $('#zin').click(function(){
-      _this.zin();
-      $(this).blur();
-    });
 
-    $('#zout').click(function(){
-      _this.zout();
-      $(this).blur();
-    });
+    var zin = document.querySelector('#zin');
+    if(zin){
+      zin.addEventListener('click', function(){
+        _this.zin();
+        this.blur();
+      });
+    }
 
-    $('#map-hybrid-layer').click(function(){
-      _this.map.setMapTypeId(google.maps.MapTypeId.HYBRID);
-      _this.updateLayerDropdown(this)
-    });
+    var zout = document.querySelector('#zout');
+    if(zout){
+      zout.addEventListener('click', function(){
+        _this.zout();
+        this.blur();
+      });
+    }
 
-    $('#map-satellite-layer').click(function(){
-      _this.map.setMapTypeId(google.maps.MapTypeId.SATELLITE);
-      _this.updateLayerDropdown(this)
-    });
+    var hybridLayer = document.querySelector('#map-hybrid-layer');
+    if(hybridLayer){
+      hybridLayer.addEventListener('click', function(){
+        _this.map.setMapTypeId(google.maps.MapTypeId.HYBRID);
+        _this.updateLayerDropdown(this);
+      });
+    }
 
-    $('#map-roadmap-layer').click(function(){
-      _this.map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
-      _this.updateLayerDropdown(this)
-    });
+    var satelliteLayer = document.querySelector('#map-satellite-layer');
+    if(satelliteLayer){
+      satelliteLayer.addEventListener('click', function(){
+        _this.map.setMapTypeId(google.maps.MapTypeId.SATELLITE);
+        _this.updateLayerDropdown(this);
+      });
+    }
 
-    $('#map-terrain-layer').click(function(){
-      _this.map.setMapTypeId(google.maps.MapTypeId.TERRAIN);
-      _this.updateLayerDropdown(this)
-    });
+    var roadmapLayer = document.querySelector('#map-roadmap-layer');
+    if(roadmapLayer){
+      roadmapLayer.addEventListener('click', function(){
+        _this.map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+        _this.updateLayerDropdown(this);
+      });
+    }
 
-    $('#draw-route').click(function(){
-      _this.toggleMapLock(this);
-    });
+    var terrainLayer = document.querySelector('#map-terrain-layer');
+    if(terrainLayer){
+      terrainLayer.addEventListener('click', function(){
+        _this.map.setMapTypeId(google.maps.MapTypeId.TERRAIN);
+        _this.updateLayerDropdown(this);
+      });
+    }
+
+    var drawRoute = document.querySelector('#draw-route');
+    if(drawRoute){
+      drawRoute.addEventListener('click', function(){
+        _this.toggleMapLock(this);
+      });
+    }
 
     /*
         Waypoint Palette
     */
-    $('#orient-map').click(function(){
-      _this.orientMap();
-    });
+    var orientMap = document.querySelector('#orient-map');
+    if(orientMap){
+      orientMap.addEventListener('click', function(){
+        _this.orientMap();
+      });
+    }
 
-    $('#hide-palette').click(function(){
-      _this.unlockMap();
-      _this.reorient();
-    });
+    var hidePalette = document.querySelector('#hide-palette');
+    if(hidePalette){
+      hidePalette.addEventListener('click', function(){
+        _this.unlockMap();
+        _this.reorient();
+      });
+    }
   }
 
   bindToMapOptimizer(){
@@ -393,15 +474,24 @@ class MapController{
     we can rotate the map and still appropriately display attribution
   */
   placeMapAttribution(){
-
+    // Phase 6: vanilla JS
     var _this = this;
     this.missingAttribution = true;
     google.maps.event.addListener(this.map, 'tilesloaded', function() {
       if(_this.missingAttribution){
-        var m = $('#map div.gm-style').children('div'); //get the contents of the map container
-        m = m.toArray();
-        m.shift(); //remove the map but keep the attribution elements
-        $('.content-container').append($(m));
+        // Get the Google Maps style container
+        var mapContainer = document.querySelector('#map div.gm-style');
+        if(mapContainer){
+          var children = Array.from(mapContainer.children);
+          children.shift(); // Remove the first child (map), keep attribution elements
+
+          var contentContainer = document.querySelector('.content-container');
+          if(contentContainer){
+            children.forEach(function(child){
+              contentContainer.appendChild(child);
+            });
+          }
+        }
         _this.missingAttribution = false;
       }
     });

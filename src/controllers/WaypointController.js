@@ -47,18 +47,37 @@ WaypointController.prototype.startEditingWaypoint = function(waypoint) {
   this.uiController.showWaypointPalette();
   this.uiController.markUnsaved();
 
-  // Populate note editor
-  $('#note-editor').html(waypoint.noteHTML());
+  // Populate note editor (Phase 6: vanilla JS)
+  var noteEditor = document.querySelector('#note-editor');
+  if (noteEditor) {
+    noteEditor.innerHTML = waypoint.noteHTML();
+  }
 
-  // Populate notification controls
-  $('#notification-bubble').val((waypoint.notification ? waypoint.notification.bubble : null));
-  $('#notification-modifier').val((waypoint.notification ? waypoint.notification.modifier : null));
+  // Populate notification controls (Phase 6: vanilla JS)
+  var notificationBubble = document.querySelector('#notification-bubble');
+  var notificationModifier = document.querySelector('#notification-modifier');
+  if (notificationBubble) {
+    notificationBubble.value = (waypoint.notification ? waypoint.notification.bubble : null);
+  }
+  if (notificationModifier) {
+    notificationModifier.value = (waypoint.notification ? waypoint.notification.modifier : null);
+  }
 
-  // Set toggle heading checkbox
-  $('#toggle-heading').prop('checked', waypoint.showHeading());
+  // Set toggle heading checkbox (Phase 6: vanilla JS)
+  var toggleHeading = document.querySelector('#toggle-heading');
+  if (toggleHeading) {
+    toggleHeading.checked = waypoint.showHeading();
+  }
 
-  // Update note editor container visibility
-  $('#note-editor-container').toggleClass('hideCap', !waypoint.showHeading());
+  // Update note editor container visibility (Phase 6: vanilla JS)
+  var noteEditorContainer = document.querySelector('#note-editor-container');
+  if (noteEditorContainer) {
+    if (!waypoint.showHeading()) {
+      noteEditorContainer.classList.add('hideCap');
+    } else {
+      noteEditorContainer.classList.remove('hideCap');
+    }
+  }
 };
 
 /*
@@ -72,8 +91,11 @@ WaypointController.prototype.finishEditingWaypoint = function() {
     // Finish tulip edit
     waypoint.tulip.finishEdit();
 
-    // Save note HTML
-    waypoint.noteHTML($('#note-editor').html());
+    // Save note HTML (Phase 6: vanilla JS)
+    var noteEditor = document.querySelector('#note-editor');
+    if (noteEditor) {
+      waypoint.noteHTML(noteEditor.innerHTML);
+    }
 
     // Emit event (Phase 5: EventBus)
     this.eventBus.emit(EventBus.Events.WAYPOINT_EDIT_FINISHED, { waypoint: waypoint });
@@ -191,11 +213,20 @@ WaypointController.prototype.addGlyph = function(top, left) {
 */
 WaypointController.prototype.toggleHeading = function() {
   if (this.roadbook.currentlyEditingWaypoint) {
-    var showHeading = $('#toggle-heading').prop('checked');
+    // Get checkbox state (Phase 6: vanilla JS)
+    var toggleHeading = document.querySelector('#toggle-heading');
+    var showHeading = toggleHeading ? toggleHeading.checked : false;
     this.roadbook.currentlyEditingWaypoint.showHeading(showHeading);
 
-    // Update note editor container
-    $('#note-editor-container').toggleClass('hideCap', !showHeading);
+    // Update note editor container (Phase 6: vanilla JS)
+    var noteEditorContainer = document.querySelector('#note-editor-container');
+    if (noteEditorContainer) {
+      if (!showHeading) {
+        noteEditorContainer.classList.add('hideCap');
+      } else {
+        noteEditorContainer.classList.remove('hideCap');
+      }
+    }
   }
 };
 

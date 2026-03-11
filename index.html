@@ -97,14 +97,14 @@
               <hr>
               <div id="roadbook-total-distance" class="large-4 columns">
                 Total Kilometers:
-                <p data-bind="text: app.roadbook.totalDistance"></p>
+                <p data-bind="text: totalDistance"></p>
               </div>
               <div id="roadbook-name" class="large-8 columns">
                 <a class="button tiny round alert hide-editor" title="Hide editor.">&#215;</a>
                 <a href=# class="button tiny radius secondary show-editor rb-name"><i class="fi-pencil"></i></a>
-                <p href="#" data-bind="text: app.roadbook.name"></p>
+                <p href="#" data-bind="text: name"></p>
                 <div class="roadbook-header-input-container">
-                  <input type="text" placeholder="Roadbook Name" data-bind="textInput: app.roadbook.name"/>
+                  <input type="text" placeholder="Roadbook Name" data-bind="textInput: name"/>
                 </div>
               </div>
             </div>
@@ -113,7 +113,7 @@
               <div id="roadbook-desc" class="large-12 columns">
                 <a class="button tiny round alert hide-editor rb-desc" title="Hide editor.">&#215;</a>
                 <a href=# class="button tiny radius secondary show-editor rb-desc"><i class="fi-pencil"></i></a>
-                <p data-bind="html: app.roadbook.desc"></p>
+                <p data-bind="html: desc"></p>
                 <div class="roadbook-header-input-container">
                   <div id="description-toolbar">
                     <select class="ql-size" style="width:25%">
@@ -133,7 +133,7 @@
               </div>
             </div>
             <!-- render waypoint templates here -->
-            <div id="roadbook-waypoints" data-bind="template: { name: 'waypoint-template', foreach: app.roadbook.waypoints }"></div>
+            <div id="roadbook-waypoints" data-bind="template: { name: 'waypoint-template', foreach: waypoints }"></div>
             <!--  palette for editing waypoint content -->
             <div id="waypoint-palette">
               <div class="row">

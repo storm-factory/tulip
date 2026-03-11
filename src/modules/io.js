@@ -3,17 +3,18 @@ var Io = Class({
 
   importGPX: function(gpx){
     try {
-      var gpxDoc = $.parseXML(gpx.trim());
-      this.gpx = $(gpxDoc);
+      // Phase 6: vanilla JS XML parsing
+      var parser = new DOMParser();
+      this.gpx = parser.parseFromString(gpx.trim(), 'text/xml');
     } catch (e) {
       alert("Error parsing GPX :-(");
       app.stopLoading();
       return
     }
 
-
-    this.importGPXTracks($.makeArray(this.gpx.find( "trkpt" )));
-    this.importGPXWaypoints($.makeArray(this.gpx.find( "wpt" )));
+    // Phase 6: vanilla JS - querySelectorAll returns NodeList, convert to Array
+    this.importGPXTracks(Array.from(this.gpx.querySelectorAll("trkpt")));
+    this.importGPXWaypoints(Array.from(this.gpx.querySelectorAll("wpt")));
 
     // TODO abstract this to the app as roadbookHasWaypoints
     if(app.mapModel.markers[0].waypoint == null){
@@ -164,7 +165,7 @@ var Io = Class({
         var index = this.waypointSharesTrackpoint(waypoint);
 
         if(index == -1){
-          var latLng = new google.maps.LatLng($(waypoint).attr('lat'), $(waypoint).attr('lon'));
+          var latLng = new google.maps.LatLng(waypoint.getAttribute('lat'), waypoint.getAttribute('lon'));
           index = app.mapController.insertLatLngIntoRoute(latLng);
         }
 
@@ -179,7 +180,7 @@ var Io = Class({
   parseGpxTracksToArray: function(gpxTracks){
     var tracks = []
     for(var i=0;i<gpxTracks.length;i++){
-      var point = {lat: parseFloat($(gpxTracks[i]).attr('lat')), lng: parseFloat($(gpxTracks[i]).attr('lon'))}
+      var point = {lat: parseFloat(gpxTracks[i].getAttribute('lat')), lng: parseFloat(gpxTracks[i].getAttribute('lon'))}
       tracks.push(point);
     }
     return tracks;
@@ -199,7 +200,7 @@ var Io = Class({
     var tracks = this.tracks;
     var index = -1;
     for(var i=0;i<tracks.length;i++){
-      if(tracks[i].lat == parseFloat($(waypoint).attr('lat')) && tracks[i].lng == parseFloat($(waypoint).attr('lon'))){
+      if(tracks[i].lat == parseFloat(waypoint.getAttribute('lat')) && tracks[i].lng == parseFloat(waypoint.getAttribute('lon'))){
         index = i;
         break;
       }

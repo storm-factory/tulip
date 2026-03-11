@@ -10,6 +10,8 @@
 
   Following the Service-Oriented Architecture pattern from Phase 4.
   This controller handles UI coordination without business logic.
+
+  Phase 6: Converted from jQuery to vanilla JavaScript
   ---------------------------------------------------------------------------
 */
 
@@ -57,11 +59,13 @@ UIController.prototype.setupEventListeners = function() {
   Toggle the roadbook panel (collapsed/expanded)
 */
 UIController.prototype.toggleRoadbook = function() {
-  $('.roadbook-container').toggleClass('collapsed');
-  $('.roadbook-container').toggleClass('expanded');
+  var container = document.querySelector('.roadbook-container');
+  container.classList.toggle('collapsed');
+  container.classList.toggle('expanded');
 
-  $('#toggle-roadbook i').toggleClass('fi-arrow-down');
-  $('#toggle-roadbook i').toggleClass('fi-arrow-up');
+  var icon = document.querySelector('#toggle-roadbook i');
+  icon.classList.toggle('fi-arrow-down');
+  icon.classList.toggle('fi-arrow-up');
 
   this.isRoadbookExpanded = !this.isRoadbookExpanded;
 };
@@ -94,14 +98,20 @@ UIController.prototype.collapseRoadbook = function() {
   Show loading indicator
 */
 UIController.prototype.showLoading = function() {
-  $('#loading').show();
+  var loading = document.querySelector('#loading');
+  if (loading) {
+    loading.style.display = 'block';
+  }
 };
 
 /*
   Hide loading indicator
 */
 UIController.prototype.hideLoading = function() {
-  $('#loading').hide();
+  var loading = document.querySelector('#loading');
+  if (loading) {
+    loading.style.display = 'none';
+  }
 };
 
 /*
@@ -112,6 +122,7 @@ UIController.prototype.hideLoading = function() {
 
 /*
   Close the off-canvas menu
+  Note: Still uses Foundation until Phase 7 (Modernize CSS)
 */
 UIController.prototype.closeMenu = function() {
   $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
@@ -119,6 +130,7 @@ UIController.prototype.closeMenu = function() {
 
 /*
   Open the off-canvas menu
+  Note: Still uses Foundation until Phase 7 (Modernize CSS)
 */
 UIController.prototype.openMenu = function() {
   $('.off-canvas-wrap').foundation('offcanvas', 'show', 'move-left');
@@ -134,32 +146,32 @@ UIController.prototype.openMenu = function() {
   Enable export buttons (GPX, PDF)
 */
 UIController.prototype.enableExportButtons = function() {
-  $('#print-roadbook').removeClass('disabled');
-  $('#export-gpx').removeClass('disabled');
-  $('#export-openrally-gpx').removeClass('disabled');
+  document.querySelector('#print-roadbook').classList.remove('disabled');
+  document.querySelector('#export-gpx').classList.remove('disabled');
+  document.querySelector('#export-openrally-gpx').classList.remove('disabled');
 };
 
 /*
   Disable export buttons (GPX, PDF)
 */
 UIController.prototype.disableExportButtons = function() {
-  $('#print-roadbook').addClass('disabled');
-  $('#export-gpx').addClass('disabled');
-  $('#export-openrally-gpx').addClass('disabled');
+  document.querySelector('#print-roadbook').classList.add('disabled');
+  document.querySelector('#export-gpx').classList.add('disabled');
+  document.querySelector('#export-openrally-gpx').classList.add('disabled');
 };
 
 /*
   Mark save button as having unsaved changes
 */
 UIController.prototype.markUnsaved = function() {
-  $('#save-roadbook').removeClass('secondary');
+  document.querySelector('#save-roadbook').classList.remove('secondary');
 };
 
 /*
   Mark save button as saved
 */
 UIController.prototype.markSaved = function() {
-  $('#save-roadbook').addClass('secondary');
+  document.querySelector('#save-roadbook').classList.add('secondary');
 };
 
 /*
@@ -172,12 +184,18 @@ UIController.prototype.markSaved = function() {
   Scroll roadbook to show a specific waypoint
 
   Parameters:
-  - waypointElement: jQuery element or DOM element
+  - waypointElement: DOM element or jQuery element (for backwards compatibility)
 */
 UIController.prototype.scrollToWaypoint = function(waypointElement) {
-  var $element = $(waypointElement);
-  $('#roadbook').scrollTop(0);
-  $('#roadbook').scrollTop(($element.offset().top - 100));
+  // Handle both DOM elements and jQuery objects
+  var element = waypointElement.jquery ? waypointElement[0] : waypointElement;
+
+  var roadbook = document.querySelector('#roadbook');
+  roadbook.scrollTop = 0;
+
+  // Get element position relative to document
+  var elementTop = element.getBoundingClientRect().top + roadbook.scrollTop;
+  roadbook.scrollTop = elementTop - 100;
 };
 
 /*
@@ -190,14 +208,20 @@ UIController.prototype.scrollToWaypoint = function(waypointElement) {
   Show the waypoint editing palette
 */
 UIController.prototype.showWaypointPalette = function() {
-  $('#waypoint-palette').show();
+  var palette = document.querySelector('#waypoint-palette');
+  if (palette) {
+    palette.style.display = 'block';
+  }
 };
 
 /*
   Hide the waypoint editing palette
 */
 UIController.prototype.hideWaypointPalette = function() {
-  $('#waypoint-palette').hide();
+  var palette = document.querySelector('#waypoint-palette');
+  if (palette) {
+    palette.style.display = 'none';
+  }
 };
 
 /*
@@ -214,16 +238,25 @@ UIController.prototype.hideWaypointPalette = function() {
 */
 UIController.prototype.showNameDescEditor = function(type) {
   var selector = type === 'name' ? '#roadbook-name' : '#roadbook-desc';
+  var container = document.querySelector(selector);
 
-  $(selector).find('.show-editor').hide();
-  $(selector).find('.hide-editor').show();
-  $(selector).find('.roadbook-header-input-container').slideDown('fast');
+  var showEditor = container.querySelector('.show-editor');
+  var hideEditor = container.querySelector('.hide-editor');
+  var inputContainer = container.querySelector('.roadbook-header-input-container');
+
+  if (showEditor) showEditor.style.display = 'none';
+  if (hideEditor) hideEditor.style.display = 'block';
+  if (inputContainer) inputContainer.style.display = 'block';
 
   if (type === 'name') {
-    $(selector).find(':input').focus();
+    var input = container.querySelector('input');
+    if (input) input.focus();
   } else if (type === 'desc') {
-    $('#roadbook-desc p').slideUp('fast');
-    app.roadbook.descriptionTextEditor.focus();
+    var descP = document.querySelector('#roadbook-desc p');
+    if (descP) descP.style.display = 'none';
+    if (app.roadbook.descriptionTextEditor) {
+      app.roadbook.descriptionTextEditor.focus();
+    }
   }
 
   this.markUnsaved();
@@ -237,13 +270,19 @@ UIController.prototype.showNameDescEditor = function(type) {
 */
 UIController.prototype.hideNameDescEditor = function(type) {
   var selector = type === 'name' ? '#roadbook-name' : '#roadbook-desc';
+  var container = document.querySelector(selector);
 
-  $(selector).find('.hide-editor').hide();
-  $(selector).find('.show-editor').show();
-  $(selector).find('.roadbook-header-input-container').slideUp('fast');
+  var hideEditor = container.querySelector('.hide-editor');
+  var showEditor = container.querySelector('.show-editor');
+  var inputContainer = container.querySelector('.roadbook-header-input-container');
+
+  if (hideEditor) hideEditor.style.display = 'none';
+  if (showEditor) showEditor.style.display = 'block';
+  if (inputContainer) inputContainer.style.display = 'none';
 
   if (type === 'desc') {
-    $('#roadbook-desc p').slideDown('fast');
+    var descP = document.querySelector('#roadbook-desc p');
+    if (descP) descP.style.display = 'block';
   }
 };
 
@@ -257,12 +296,18 @@ UIController.prototype.hideNameDescEditor = function(type) {
   Show notification options panel
 */
 UIController.prototype.showNotificationOptions = function() {
-  $('#notification-options').removeClass('hidden');
+  var options = document.querySelector('#notification-options');
+  if (options) {
+    options.classList.remove('hidden');
+  }
 };
 
 /*
   Hide notification options panel
 */
 UIController.prototype.hideNotificationOptions = function() {
-  $('#notification-options').addClass('hidden');
+  var options = document.querySelector('#notification-options');
+  if (options) {
+    options.classList.add('hidden');
+  }
 };

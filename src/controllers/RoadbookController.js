@@ -13,13 +13,14 @@
   ---------------------------------------------------------------------------
 */
 
-function RoadbookController(roadbook, fileService, exportService, dialogService, ipcService, eventBus) {
+function RoadbookController(roadbook, fileService, exportService, dialogService, ipcService, eventBus, uiController) {
   this.roadbook = roadbook;
   this.fileService = fileService;
   this.exportService = exportService;
   this.dialogService = dialogService;
   this.ipcService = ipcService;
   this.eventBus = eventBus;
+  this.uiController = uiController;
 }
 
 /*
@@ -52,12 +53,10 @@ RoadbookController.prototype.openRoadbook = function() {
       // Emit event (Phase 5: EventBus)
       _this.eventBus.emit(EventBus.Events.ROADBOOK_LOADED, { roadbook: _this.roadbook, filePath: filePath });
 
-      // Update UI
-      $('#toggle-roadbook').click();
-      $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
-      $('#print-roadbook').removeClass('disabled');
-      $('#export-gpx').removeClass('disabled');
-      $('#export-openrally-gpx').removeClass('disabled');
+      // Update UI (Phase 6: delegate to UIController)
+      _this.uiController.expandRoadbook();
+      _this.uiController.closeMenu();
+      _this.uiController.enableExportButtons();
     }
   });
 };
@@ -155,7 +154,8 @@ RoadbookController.prototype.exportGPX = function() {
         return;
       }
 
-      $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
+      // Close menu (Phase 6: delegate to UIController)
+      _this.uiController.closeMenu();
       _this.dialogService.alert('Your GPX has been exported to the same directory you saved your roadbook');
 
       // Emit event (Phase 5: EventBus)
@@ -179,7 +179,8 @@ RoadbookController.prototype.exportOpenRallyGPX = function() {
         return;
       }
 
-      $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
+      // Close menu (Phase 6: delegate to UIController)
+      _this.uiController.closeMenu();
       _this.dialogService.alert('Your GPX has been exported to the same directory you saved your roadbook');
     });
   } else {
@@ -201,7 +202,8 @@ RoadbookController.prototype.importGPX = function() {
     }
 
     app.startLoading();
-    $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
+    // Close menu (Phase 6: delegate to UIController)
+    _this.uiController.closeMenu();
   });
 };
 
@@ -210,7 +212,8 @@ RoadbookController.prototype.importGPX = function() {
 */
 RoadbookController.prototype.printRoadbook = function() {
   if (this.canExport()) {
-    $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
+    // Close menu (Phase 6: delegate to UIController)
+    this.uiController.closeMenu();
     this.ipcService.send('ignite-print', app.roadbook.statelessJSON());
   } else {
     this.dialogService.alert('You must save your roadbook before you can export it as a PDF');
@@ -222,7 +225,8 @@ RoadbookController.prototype.printRoadbook = function() {
 */
 RoadbookController.prototype.printLexicon = function() {
   if (this.canExport()) {
-    $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
+    // Close menu (Phase 6: delegate to UIController)
+    this.uiController.closeMenu();
     this.ipcService.send('ignite-lexicon', app.roadbook.filePath);
   } else {
     this.dialogService.alert('You must save your roadbook before you can save the Lexicon. No, really. Sorry.');
