@@ -949,7 +949,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
 ## Migration Strategy
 
-### Phase 1: Electron Upgrade (Week 1-2)
+### ⚠️ Revised Phase Order
+
+**Original Order**: Phases 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10
+
+**Revised Order** (Practical Implementation):
+- ✅ **Phase 1**: Electron Upgrade - *COMPLETED*
+- ✅ **Phase 2**: Extract Services - *COMPLETED*
+- ✅ **Phase 4**: Create Controllers - *COMPLETED*
+- ✅ **Phase 5**: Add EventBus - *COMPLETED*
+- **Phase 6**: Remove jQuery/Knockout
+- **Phase 3**: Refine Domain Models *(Deferred - depends on Phase 6)*
+- **Phase 7**: Modernize CSS
+- **Phase 8**: Add Build Tooling
+- ✅ **Phase 9**: Settings UI - *COMPLETED*
+- **Phase 10**: Help UI
+
+**Why the change?**
+After analyzing the codebase, Phase 3 (Refine Domain Models) is heavily dependent on Phase 6 (Remove jQuery/Knockout) because the current models are tightly coupled with Knockout.js observables and jQuery DOM manipulation. Attempting to refactor models while keeping Knockout would require rewriting everything twice. It's more pragmatic to:
+1. Build the controller layer (Phase 4)
+2. Add EventBus for decoupling (Phase 5)
+3. Remove jQuery/Knockout together (Phase 6)
+4. Then refactor models to be pure (Phase 3)
+
+This revised order is **more incremental** and **avoids duplicate work**.
+
+---
+
+### Phase 1: Electron Upgrade (Week 1-2) ✅ **COMPLETED**
 
 **Goal**: Update to Electron 33+ and fix breaking changes
 
@@ -1005,42 +1032,61 @@ document.addEventListener('DOMContentLoaded', () => {
 
 ---
 
-### Phase 2: Extract Services (Week 3)
+### Phase 2: Extract Services (Week 3) ✅ **COMPLETED**
 
 **Goal**: Create service layer and move all I/O out of Application.js
 
 **Tasks:**
-1. Create `services/` directory
-2. Implement `FileService`
-3. Implement `DialogService`
-4. Implement `ExportService`
-5. Implement `MapService`
-6. Implement `IPCService`
-7. Update `Application.js` to use services
-8. Test file operations still work
+1. ✅ Create `services/` directory
+2. ✅ Implement `FileService` - file I/O and dialogs
+3. ✅ Implement `DialogService` - user messaging
+4. ✅ Implement `ExportService` - GPX import/export
+5. ✅ Implement `MapService` - Google Maps wrapper
+6. ✅ Implement `IPCService` - IPC communication
+7. ✅ Update `Application.js` to use services
+8. ✅ Test file operations still work
+9. ✅ Fix Shift+Right Click auto-routing (async dialog bug)
 
-**Success Criteria**: All Electron/Node APIs isolated in services
+**Success Criteria**: All Electron/Node APIs isolated in services ✅
+
+**Status**: Completed and tested. All services extracted and working.
 
 ---
 
-### Phase 3: Refine Domain Models (Week 4)
+### Phase 3: Refine Domain Models ⏸️ **DEFERRED**
 
-**Goal**: Make models pure JavaScript (no DOM, no I/O)
+**Status**: Deferred to after Phase 6
 
-**Tasks:**
+**Reason**: Current models (`Roadbook`, `Waypoint`, `Tulip`) are tightly coupled with:
+- Knockout.js observables (e.g., `ko.observable()`, `ko.computed()`)
+- jQuery DOM manipulation (e.g., `$('#element').click()`)
+- Global `app` object dependencies
+- Google Maps API direct usage
+
+Attempting to refactor models while keeping Knockout would require:
+1. Rewriting all observable properties to plain properties
+2. Creating parallel UI binding system
+3. Then removing it all again in Phase 6
+
+**Better approach**: Complete Phases 4-5-6 first, then refactor models when Knockout is removed.
+
+**Will be completed after**: Phase 6 (Remove jQuery/Knockout)
+
+**Original Goal**: Make models pure JavaScript (no DOM, no I/O)
+
+**Original Tasks** (deferred):
 1. Review existing `Roadbook`, `Waypoint`, `Tulip` classes
 2. Remove any DOM manipulation
 3. Remove any file I/O
-4. Add proper `toJSON` / `fromJSON` methods
-5. Add distance calculation methods
-6. Add validation methods
-7. Write unit tests for models
-
-**Success Criteria**: Models testable without DOM or Electron
+4. Remove Knockout observables (requires Phase 6 first)
+5. Add proper `toJSON` / `fromJSON` methods
+6. Add distance calculation methods
+7. Add validation methods
+8. Write unit tests for models
 
 ---
 
-### Phase 4: Create Controllers (Week 5)
+### Phase 4: Create Controllers (Week 5) 🔄 **IN PROGRESS**
 
 **Goal**: Extract coordination logic from Application.js
 
@@ -1057,19 +1103,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
 ---
 
-### Phase 5: Add Event Bus (Week 6)
+### Phase 5: Add Event Bus (Week 6) ✅ **COMPLETED**
 
 **Goal**: Decouple components with events
 
 **Tasks:**
-1. Create `EventBus` class
-2. Define standard event names
-3. Update controllers to emit events
-4. Update UI to listen for events
-5. Replace IPC spaghetti with clean events
-6. Test event flow
+1. ✅ Create `EventBus` class
+2. ✅ Define standard event names
+3. ✅ Update controllers to emit events
+4. ✅ Update UI to listen for events
+5. ✅ Replace IPC spaghetti with clean events
+6. ✅ Test event flow
 
 **Success Criteria**: Components communicate via events, not direct calls
+
+**Implementation Summary:**
+- Created `EventBus` class with `on`, `emit`, `off`, `once`, and `clear` methods
+- Defined standard event constants (ROADBOOK_LOADED, ROADBOOK_SAVED, EXPORT_COMPLETED, etc.)
+- Updated RoadbookController to emit events on open, save, export operations
+- Updated UIController to listen for events and update UI accordingly
+- Updated WaypointController to emit events on waypoint editing
+- Added event listeners in Application.js for debugging and logging
+- All components now communicate through EventBus instead of direct coupling
 
 ---
 
@@ -1164,6 +1219,216 @@ $.ajax({...})               → fetch(url, {...})
 7. Configure production build
 
 **Success Criteria**: Fast dev server, optimized production builds
+
+---
+
+### Phase 9: Settings UI for API Keys (Week 11) ✅ **COMPLETED**
+
+**Goal**: User-friendly API key management with automatic first-time setup
+
+**Tasks:**
+1. Create `SettingsService.js` - Read/write api_keys.js file
+2. Create `Settings.js` model - Data and validation
+3. Create `SettingsController.js` - Workflow coordination
+4. Create `SettingsView.js` - UI rendering (vanilla JS, custom CSS)
+5. Create `settings.css` - Modern modal styling
+6. Add Settings menu item and keyboard shortcut (Cmd+,)
+7. Implement first-time setup detection
+8. Auto-open Settings if api_keys.js doesn't exist
+9. Prevent Settings cancellation during first-time setup
+10. Auto-reload app after first-time setup
+
+**Success Criteria**:
+- Settings accessible via menu and keyboard shortcut
+- New users automatically prompted for API keys
+- API keys validated before saving
+- File created/updated with proper format
+- No API keys committed to git
+
+**Status**: ✅ Completed and tested
+
+---
+
+### Phase 10: Help UI with Keyboard Shortcuts (Week 12)
+
+**Goal**: In-app help system showing keyboard shortcuts and documentation
+
+**Tasks:**
+1. Create `HelpService.js` - Manage help content, keyboard shortcuts, and mouse controls data
+2. Create `Help.js` model - Store and organize help content (shortcuts, mouse controls, getting started)
+3. Create `HelpController.js` - Coordinate help display and tab navigation
+4. Create `HelpView.js` - Render help modal with tabbed interface (vanilla JS, custom CSS)
+5. Create `help.css` - Modern modal styling with tabbed interface and responsive design
+6. Add Help menu item and keyboard shortcut (Cmd+? or F1)
+7. Document all keyboard shortcuts organized by category (File, Edit, Tracks, View, I/O, General)
+8. Document all mouse interactions organized by context (Map, Markers, Waypoint Palette)
+9. Add searchable/filterable content across all tabs
+10. Create "Getting Started" guide with step-by-step instructions
+11. Include "About Tulip" information (version, Electron version, credits, license)
+12. Add platform detection for Mac vs Windows/Linux shortcuts display
+
+**Implementation Details:**
+
+**Architecture (Service-Oriented):**
+```
+HelpService (data provider)
+    ↓
+Help Model (content structure)
+    ↓
+HelpController (coordination)
+    ↓
+HelpView (UI rendering)
+```
+
+**Help Content Structure:**
+```javascript
+{
+  shortcuts: {
+    file: [
+      { action: 'Settings', mac: 'Cmd+,', win: 'Ctrl+,' },
+      { action: 'Save', mac: 'Cmd+S', win: 'Ctrl+S' },
+      { action: 'Save As', mac: 'Cmd+Shift+S', win: 'Ctrl+Shift+S' },
+      { action: 'Open', mac: 'Cmd+O', win: 'Ctrl+O' },
+      { action: 'Quit', mac: 'Cmd+Q', win: 'Ctrl+Q' },
+    ],
+    edit: [
+      { action: 'Undo', mac: 'Cmd+Z', win: 'Ctrl+Z' },
+      { action: 'Redo', mac: 'Cmd+Shift+Z', win: 'Ctrl+Shift+Z' },
+      { action: 'Cut', mac: 'Cmd+X', win: 'Ctrl+X' },
+      { action: 'Copy', mac: 'Cmd+C', win: 'Ctrl+C' },
+      { action: 'Paste', mac: 'Cmd+V', win: 'Ctrl+V' },
+      { action: 'Select All', mac: 'Cmd+A', win: 'Ctrl+A' },
+    ],
+    tracks: [
+      { action: 'Add Track 0° (360°)', mac: 'Cmd+1', win: 'Ctrl+1' },
+      { action: 'Add Track 45°', mac: 'Cmd+2', win: 'Ctrl+2' },
+      { action: 'Add Track 90°', mac: 'Cmd+3', win: 'Ctrl+3' },
+      { action: 'Add Track 135°', mac: 'Cmd+4', win: 'Ctrl+4' },
+      { action: 'Add Track 180°', mac: 'Cmd+5', win: 'Ctrl+5' },
+      { action: 'Add Track 225°', mac: 'Cmd+6', win: 'Ctrl+6' },
+      { action: 'Add Track 270°', mac: 'Cmd+7', win: 'Ctrl+7' },
+      { action: 'Add Track 315°', mac: 'Cmd+8', win: 'Ctrl+8' },
+      { action: 'Set Track HP (Off-piste)', mac: 'Cmd+Opt+1', win: 'Ctrl+Alt+1' },
+      { action: 'Set Track P (Track)', mac: 'Cmd+Opt+2', win: 'Ctrl+Alt+2' },
+      { action: 'Set Track PP (Road)', mac: 'Cmd+Opt+3', win: 'Ctrl+Alt+3' },
+      { action: 'Set Track RO (Main Road)', mac: 'Cmd+Opt+4', win: 'Ctrl+Alt+4' },
+      { action: 'Set Track DCW (Divided Road)', mac: 'Cmd+Opt+5', win: 'Ctrl+Alt+5' },
+      { action: 'Add Glyph', mac: 'Cmd+Opt+G', win: 'Ctrl+Alt+G' },
+    ],
+    io: [
+      { action: 'Import GPX', mac: 'Cmd+I', win: 'Ctrl+I' },
+      { action: 'Export GPX', mac: 'Cmd+E', win: 'Ctrl+E' },
+      { action: 'Export PDF', mac: 'Cmd+P', win: 'Ctrl+P' },
+    ],
+    view: [
+      { action: 'Reload', mac: 'Cmd+R', win: 'Ctrl+R' },
+      { action: 'Toggle Roadbook Panel', mac: 'Cmd+B', win: 'Ctrl+B' },
+      { action: 'Zoom In', mac: 'Cmd+Plus', win: 'Ctrl+Plus' },
+      { action: 'Zoom Out', mac: 'Cmd+-', win: 'Ctrl+-' },
+      { action: 'Toggle Developer Tools', mac: 'Cmd+Opt+I', win: 'Ctrl+Shift+I' },
+    ],
+    general: [
+      { action: 'Escape', description: 'Exit delete modes, cancel operations' },
+    ]
+  },
+  mouseControls: {
+    map: [
+      { action: 'Click on map', description: 'Add route point at clicked location' },
+      { action: 'Shift+Right Click on map', description: 'Auto-route using Google Directions API from last point to clicked location (shows confirmation dialog)' },
+      { action: 'Hover over route', description: 'Shows draggable handle to insert new point on route' },
+      { action: 'Click+Drag route handle', description: 'Insert and position new route point between existing points' },
+    ],
+    markers: [
+      { action: 'Click on waypoint marker', description: 'Scroll roadbook to show that waypoint' },
+      { action: 'Right Click on marker', description: 'Delete the route point/waypoint' },
+      { action: 'Double Click on marker', description: 'Toggle between waypoint and regular route point' },
+      { action: 'Drag marker', description: 'Move route point to new location (updates distances and route)' },
+    ],
+    waypoints: [
+      { action: 'Click waypoint in roadbook', description: 'Open waypoint palette for editing tulip and notes' },
+      { action: 'Click track grid (palette)', description: 'Add track at selected angle to tulip diagram' },
+      { action: 'Click track grid (undo)', description: 'Remove last added track from tulip' },
+      { action: 'Shift+Click track grid (undo)', description: 'Enter track removal mode (click tracks to remove)' },
+      { action: 'Click track type selector', description: 'Change track type (HP/P/PP/RO/DCW) for new tracks' },
+      { action: 'Click glyph grid', description: 'Add glyph at selected position in tulip' },
+      { action: 'Shift+Click glyph grid', description: 'Enter glyph removal mode (click glyphs to remove)' },
+      { action: 'Click note glyph insertion', description: 'Add glyph to waypoint note' },
+    ]
+  },
+  about: {
+    version: '1.8.2',
+    electron: '33.0.0',
+    description: 'Rally roadbook creation tool',
+    // ...
+  },
+  gettingStarted: [
+    { title: 'Setup API Keys', content: 'Configure your Google Maps API keys via Settings (Cmd+,)...' },
+    { title: 'Create Your First Roadbook', content: 'Click on the map to add route points...' },
+    { title: 'Add Waypoints', content: 'Double-click any route point to convert it to a waypoint...' },
+    { title: 'Edit Waypoint Tulips', content: 'Click a waypoint in the roadbook panel to open the editing palette...' },
+    { title: 'Auto-Route with Directions', content: 'Shift+Right Click on the map to auto-route from your last point...' },
+    { title: 'Save and Export', content: 'Save your roadbook (Cmd+S) and export to GPX or PDF...' },
+  ]
+}
+```
+
+**UI Features:**
+- Tabbed interface: "Keyboard Shortcuts", "Mouse Controls", "Getting Started", "About"
+- **Keyboard Shortcuts tab:**
+  - Grouped by category (File, Edit, Tracks, View, I/O, General)
+  - Platform-specific display (shows Mac or Windows shortcuts)
+  - Search/filter functionality
+  - Visual keyboard key styling (e.g., `⌘ Cmd` + `S`)
+  - All 40+ keyboard shortcuts documented
+- **Mouse Controls tab:**
+  - Map interactions (click, Shift+Right Click for auto-routing, hover, drag)
+  - Marker interactions (click, right-click to delete, double-click to toggle waypoint, drag)
+  - Waypoint palette interactions (track grid, glyph grid, track type selectors)
+  - Visual diagrams showing click locations (optional)
+  - Modifier key combinations (Shift+Click, etc.)
+- **Getting Started tab:**
+  - Step-by-step guide for new users
+  - Covers: API setup, creating roadbooks, adding waypoints, editing tulips, auto-routing
+  - Screenshots/diagrams (optional)
+- **About tab:**
+  - Version information
+  - Electron version
+  - Credits and licenses
+  - Links to documentation/GitHub
+
+**Keyboard Shortcut Display:**
+- Use platform detection to show correct shortcuts
+- Mac: Show ⌘, ⌥, ⇧ symbols
+- Windows/Linux: Show Ctrl, Alt, Shift text
+- Consistent visual styling for all key combinations
+
+**Menu Integration:**
+- Add to application menu: "Help" → "Keyboard Shortcuts"
+- Keyboard shortcut: `Cmd+?` (Mac) or `F1` (Windows/Linux)
+- Also accessible from right off-canvas menu
+
+**Success Criteria**:
+- Help accessible via menu and keyboard shortcut (Cmd+? or F1)
+- All 40+ keyboard shortcuts documented and categorized
+- All mouse interactions documented:
+  - Map interactions (click, Shift+Right Click auto-routing, hover, drag handles)
+  - Marker interactions (click, right-click delete, double-click toggle, drag)
+  - Waypoint palette interactions (track/glyph grids, Shift+Click modes)
+- Platform-specific shortcuts displayed correctly (Mac vs Windows/Linux)
+- Search/filter works smoothly across all tabs
+- Tabbed navigation works (Keyboard Shortcuts, Mouse Controls, Getting Started, About)
+- Modal UI consistent with Settings modal styling
+- No jQuery or Foundation dependencies (vanilla JS + modern CSS)
+- Keyboard navigation works (Tab, Escape, arrow keys)
+- Responsive design for smaller screens
+- Print-friendly stylesheet (optional)
+
+**Benefits**:
+- ✅ Improved discoverability of features
+- ✅ Reduces learning curve for new users
+- ✅ Professional in-app documentation
+- ✅ Demonstrates complete SOA architecture
+- ✅ Foundation for future help content
 
 ---
 

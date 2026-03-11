@@ -685,12 +685,7 @@
   <script src='assets/libs/foundation-5.5.3/js/foundation/foundation.tooltip.js'></script>
   <script src='assets/libs/foundation-5.5.3/js/vendor/modernizr.js'></script>
   <!--
-    Load the application
-  -->
-  <script src='src/application.js'></script>
-  <script src='api_keys.js'></script>
-  <!--
-    Load Modules
+    Load Modules (before application.js needs them)
   -->
   <script src='src/modules/map-viewport-optimizer.js'></script>
   <script src='src/modules/track-editors.js'></script>
@@ -698,13 +693,35 @@
   <script src='src/modules/glyph-remover.js'></script>
   <script src='src/modules/io.js'></script>
   <!--
-    Load Controllers
+    Load EventBus (Phase 5: Service-Oriented Architecture)
+    Enables decoupled component communication
   -->
+  <script src='src/core/EventBus.js'></script>
+  <!--
+    Load Controllers (Phase 4: Service-Oriented Architecture)
+    MUST load before application.js since initControllers() needs them
+  -->
+  <script src='src/controllers/RoadbookController.js'></script>
+  <script src='src/controllers/UIController.js'></script>
+  <script src='src/controllers/WaypointController.js'></script>
   <script src='src/controllers/map-controller.js'></script>
+  <!--
+    Load the application (depends on controllers and modules above)
+  -->
+  <script src='src/application.js'></script>
+  <script src='api_keys.js'></script>
   <script src='src/modules/glyph-controls.js'></script>
   <script src='src/modules/note-controls.js'></script>
   <!--
-    Load Settings (Service-Oriented Architecture)
+    Load Services (Service-Oriented Architecture - Phase 2)
+  -->
+  <script src='src/services/FileService.js'></script>
+  <script src='src/services/DialogService.js'></script>
+  <script src='src/services/ExportService.js'></script>
+  <script src='src/services/MapService.js'></script>
+  <script src='src/services/IPCService.js'></script>
+  <!--
+    Load Settings (Service-Oriented Architecture - Phase 9)
   -->
   <script src='src/services/SettingsService.js'></script>
   <script src='src/models/Settings.js'></script>

@@ -182,14 +182,19 @@ class MapController{
       }
     });
 
-    this.map.addListener('rightclick', function(evt){
-      if(_this.routePolyline.getPath().length >0){
-        var autotrace = _this.dialog.showMessageBox({type: "question",
-                                                     buttons: ["Cancel","Ok"],
-                                                    defaultId: 1,
-                                                    message: "About to auto-trace roads to your route, Are you sure?"});
-        if(_this.mapUnlocked && !this.markerDeleteMode && (autotrace == 1)){
-            _this.model.requestGoogleDirections(evt.latLng,_this.map, _this.model.appendGoogleDirectionsToMap);
+    this.map.addListener('rightclick', async function(evt){
+      // Shift+Right Click: Auto-trace using Google Directions API
+      if(evt.domEvent.shiftKey && _this.routePolyline.getPath().length > 0){
+        // Modern Electron uses async dialog API
+        var result = await _this.dialog.showMessageBox({
+          type: "question",
+          buttons: ["Cancel","Ok"],
+          defaultId: 1,
+          message: "About to auto-trace roads to your route, Are you sure?"
+        });
+
+        if(_this.mapUnlocked && !this.markerDeleteMode && (result.response == 1)){
+            _this.model.requestGoogleDirections(evt.latLng, _this.map, _this.model.appendGoogleDirectionsToMap);
         }
       }
     });

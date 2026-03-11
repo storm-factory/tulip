@@ -30,26 +30,28 @@ var App = Class({
     this.glyphPlacementPosition = {top: 30,left: 30};
     this.canEditMap = true;
     this.pointDeleteMode = false;
-    //Dialogs for file IO
-    this.dialog = require('@electron/remote').dialog;
+
+    /*
+      Create EventBus (Phase 5: Service-Oriented Architecture)
+      Enables decoupled component communication
+    */
+    this.eventBus = new EventBus();
+
+    /*
+      instantiate import/export (must be before initServices)
+    */
+    this.io = new Io();
+
     /*
       instantiate the roadbook
     */
     this.roadbook = new Roadbook();
 
     /*
-      instantiate import/export
+      Initialize Services (Phase 2: Service-Oriented Architecture)
     */
-    this.io = new Io();
+    this.initServices();
 
-    /*
-      file io
-    */
-    this.fs = require('fs');
-    /*
-      IPC to Main process
-    */
-    this.ipc = require('electron').ipcRenderer; //TODO try require('ipcRenderer')
     /*
       initialize UI listeners
     */
@@ -60,9 +62,41 @@ var App = Class({
     this.noteControls = new NoteControls();
 
     /*
-      Initialize Settings (Service-Oriented Architecture)
+      Initialize Controllers (Phase 4: Service-Oriented Architecture)
+    */
+    this.initControllers();
+
+    /*
+      Initialize Event Listeners (Phase 5: Service-Oriented Architecture)
+    */
+    this.initEventListeners();
+
+    /*
+      Initialize Settings (Phase 9: Service-Oriented Architecture)
     */
     this.initSettings();
+  },
+
+  /*
+    ---------------------------------------------------------------------------
+    Initialize Services (Phase 2)
+    Following the Service-Oriented Architecture pattern
+    ---------------------------------------------------------------------------
+  */
+  initServices: function() {
+    // Create core services
+    this.fileService = new FileService();
+    this.dialogService = new DialogService();
+    this.mapService = new MapService();
+    this.ipcService = new IPCService();
+
+    // ExportService depends on Io and FileService
+    this.exportService = new ExportService(this.io, this.fileService);
+
+    // Keep legacy references for backward compatibility during transition
+    this.dialog = this.dialogService.dialog;
+    this.fs = this.fileService.fs;
+    this.ipc = this.ipcService.ipc;
   },
 
   /*
@@ -112,151 +146,140 @@ var App = Class({
 
   /*
     ---------------------------------------------------------------------------
+    Initialize Controllers (Phase 4)
+    Following the Service-Oriented Architecture pattern
+    ---------------------------------------------------------------------------
+  */
+  initControllers: function() {
+    // Create RoadbookController - coordinates roadbook file operations and exports
+    this.roadbookController = new RoadbookController(
+      this.roadbook,
+      this.fileService,
+      this.exportService,
+      this.dialogService,
+      this.ipcService,
+      this.eventBus
+    );
+
+    // Create UIController - coordinates UI state and interactions
+    this.uiController = new UIController(this.eventBus);
+
+    // Create WaypointController - coordinates waypoint editing operations
+    this.waypointController = new WaypointController(
+      this.roadbook,
+      this.uiController,
+      this.eventBus
+    );
+  },
+
+  /*
+    ---------------------------------------------------------------------------
+    Initialize Event Listeners (Phase 5)
+    Following the Service-Oriented Architecture pattern
+    ---------------------------------------------------------------------------
+  */
+  initEventListeners: function() {
+    var _this = this;
+
+    // Log all events for debugging (can remove later)
+    this.eventBus.on(EventBus.Events.ROADBOOK_LOADED, function(data) {
+      console.log('[EventBus] Roadbook loaded:', data.filePath);
+    });
+
+    this.eventBus.on(EventBus.Events.ROADBOOK_SAVED, function(data) {
+      console.log('[EventBus] Roadbook saved');
+    });
+
+    this.eventBus.on(EventBus.Events.EXPORT_COMPLETED, function(data) {
+      console.log('[EventBus] Export completed:', data.type, data.outputPath);
+    });
+
+    this.eventBus.on(EventBus.Events.WAYPOINT_EDITING, function(data) {
+      console.log('[EventBus] Waypoint editing started');
+    });
+
+    this.eventBus.on(EventBus.Events.WAYPOINT_EDIT_FINISHED, function(data) {
+      console.log('[EventBus] Waypoint editing finished');
+    });
+
+    this.eventBus.on(EventBus.Events.ERROR_OCCURRED, function(data) {
+      console.error('[EventBus] Error occurred in', data.context, ':', data.error);
+    });
+  },
+
+  /*
+    ---------------------------------------------------------------------------
     App persistence
     TODO create a persistence module and move this into it.
     ---------------------------------------------------------------------------
   */
 
   canExport: function(){
-    var can;
-    can = this.roadbook.filePath != null;
-    return can
+    // Delegate to RoadbookController (Phase 4)
+    return this.roadbookController.canExport();
   },
 
   canSave: function(){
-    var can;
-    can = this.roadbook.finishWaypointEdit();
-    can = can || this.roadbook.newWaypoints;
-    can = can || this.roadbook.finishNameDescEdit();
-    return can;
+    // Delegate to RoadbookController (Phase 4)
+    return this.roadbookController.canSave();
   },
 
   openRoadBook: function(){
-    var _this = this;
-    this.dialog.showOpenDialog({ filters: [
-       { name: 'tulip', extensions: ['tlp'] }
-      ]},function (fileNames) {
-      var fs = require('fs');
-      if (fileNames === undefined) return;
-        _this.startLoading();
-        //TODO this needs to be passed to create when choice is added
-        //we need to figure out how to watch a file while it's being edited so if it's moved it gets saved to the right place ***fs.watch***
-        var fileName = fileNames[0];
-        _this.fs.readFile(fileName, 'utf-8', function (err, data) {
-          var json = JSON.parse(data);
-          // We need to ask whether they want to open a new roadbook or append an existing one to the currently
-          // being edited RB
-          _this.roadbook.appendRouteFromJSON(json,fileName); //TODO this needs to only pass json once choice is added
-        });
-        $('#toggle-roadbook').click();
-        $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
-        $('#print-roadbook').removeClass('disabled')
-        $('#export-gpx').removeClass('disabled')
-        $('#export-openrally-gpx').removeClass('disabled')
-    });
+    // Delegate to RoadbookController (Phase 4)
+    this.roadbookController.openRoadbook();
   },
 
   exportGPX: function(){
-    if(this.canExport()){
-      var gpx = this.io.exportGPX();
-      var filename = this.roadbook.filePath.replace('tlp','gpx');
-      this.fs.writeFile(filename, gpx, function (err) {});
-      $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
-      alert('You gpx has been exported to the same directory you saved your roadbook');
-    } else {
-      alert('F@#k1ng Kamaz! You must save your roadbook before you can export GPX tracks');
-    }
+    // Delegate to RoadbookController (Phase 4)
+    this.roadbookController.exportGPX();
   },
 
   exportOpenRallyGPX: function(){
-    if(this.canExport()){
-      var gpx = this.io.exportOpenRallyGPX();
-      var filename = this.roadbook.filePath.replace('.tlp','-openrally.gpx');
-      this.fs.writeFile(filename, gpx, function (err) {});
-      $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
-      alert('You gpx has been exported to the same directory you saved your roadbook');
-    } else {
-      alert('F@#k1ng Kamaz! You must save your roadbook before you can export GPX tracks');
-    }
+    // Delegate to RoadbookController (Phase 4)
+    this.roadbookController.exportOpenRallyGPX();
   },
 
   importGPX: function(){
-    var _this = this;
-    this.dialog.showOpenDialog({ filters: [
-       { name: 'import gpx', extensions: ['gpx'] }
-      ]},function (fileNames) {
-      var fs = require('fs');
-      if (fileNames === undefined) return;
-      _this.startLoading();
-      $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
-      var fileName = fileNames[0];
-      _this.fs.readFile(fileName, 'utf-8', function (err, data) {
-        _this.io.importGPX(data);
-      });
-    });
+    // Delegate to RoadbookController (Phase 4)
+    this.roadbookController.importGPX();
   },
 
   printRoadbook: function(){
-    if(this.canExport()){
-      $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
-      this.ipc.send('ignite-print',app.roadbook.statelessJSON());
-    } else {
-      alert('You must save your roadbook before you can export it as a PDF');
-    }
+    // Delegate to RoadbookController (Phase 4)
+    this.roadbookController.printRoadbook();
   },
+
   printLexicon: function(){
-	if(this.canExport()){
-		$('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
-		this.ipc.send('ignite-lexicon',app.roadbook.filePath);
-	}else {
-      alert('You must save your roadbook before you can save the Lexicon. No, really. Sorry.');
-    }
+    // Delegate to RoadbookController (Phase 4)
+    this.roadbookController.printLexicon();
   },
   saveRoadBook: function(){
-    if(this.roadbook.filePath == null){
-      // Request documents directory path from node
-      this.ipc.send('get-documents-path');
-    } else {
-      this.roadbook.finishWaypointEdit();
-      this.fs.writeFile(this.roadbook.filePath, JSON.stringify(this.roadbook.statefulJSON(), null, 2), function (err) {});
-    }
+    // Delegate to RoadbookController (Phase 4)
+    this.roadbookController.saveRoadbook();
   },
 
   saveRoadBookAs: function(){
-    if(this.roadbook.filePath == null){
-      // Request documents directory path from node TODO we really only need to do this once...
-      this.ipc.send('get-documents-path');
-    } else {
-      this.showSaveDialog('Save roadbook as',this.roadbook.filePath)
-    }
+    // Delegate to RoadbookController (Phase 4)
+    this.roadbookController.saveRoadbookAs();
   },
 
-  showSaveDialog: function(title,path) {
-    var _this = this;
-    this.dialog.showSaveDialog({
-                                title: title,
-                                defaultPath: path,
-                                filters: [{ name: 'tulip', extensions: ['tlp'] }]
-      },function (fileName) {
-      if (fileName === undefined) return;
-        // assign the file path to the json for first time players
-        // TODO figure out what to do if the user changes the name of the file
-        var tulipFile = _this.roadbook.statefulJSON();
-        tulipFile.filePath = fileName;
-        _this.roadbook.filePath = fileName;
-        tulipFile = JSON.stringify(tulipFile, null, 2);
-        _this.fs.writeFile(fileName, tulipFile, function (err) {});
-        return true
-    });
+  showSaveDialog: function(title, path) {
+    // Delegate to RoadbookController (Phase 4)
+    this.roadbookController.showSaveDialog(title, path);
   },
 
   startLoading: function(){
-    $('#loading').show();
-    google.maps.event.addListener(this.mapController.map, 'idle', this.stopLoading); //TODO pass to map controller with callback
+    var _this = this;
+    // Delegate to UIController (Phase 4)
+    this.uiController.showLoading();
+    google.maps.event.addListener(this.mapController.map, 'idle', function() {
+      _this.stopLoading();
+    });
   },
 
   stopLoading: function(){
-    $('#loading').hide();
+    // Delegate to UIController (Phase 4)
+    this.uiController.hideLoading();
   },
 
   initMap: function(){
@@ -266,11 +289,8 @@ var App = Class({
   },
 
   toggleRoadbook: function(){
-    $('.roadbook-container').toggleClass('collapsed');
-    $('.roadbook-container').toggleClass('expanded');
-
-    $('#toggle-roadbook i').toggleClass('fi-arrow-down');
-    $('#toggle-roadbook i').toggleClass('fi-arrow-up');
+    // Delegate to UIController (Phase 4)
+    this.uiController.toggleRoadbook();
   },
 
   /*
@@ -461,119 +481,119 @@ var App = Class({
     */
     // Listener to get path to documents directory from node for saving roadbooks
     // NOTE only use this for roadbooks which haven't been named
-    this.ipc.on('documents-path', function(event, arg){
+    this.ipcService.on('documents-path', function(event, arg){
       var path = arg+'/';
       path += _this.roadbook.name() == 'Name your roadbook' ? 'Untitled' : _this.roadbook.name().replace(/\s/g, '-')
       _this.showSaveDialog('Save roadbook', path)
     });
 
-    this.ipc.on('save-roadbook', function(event, arg){
+    this.ipcService.on('save-roadbook', function(event, arg){
       _this.saveRoadBook();
     });
 
-    this.ipc.on('save-roadbook-as', function(event, arg){
+    this.ipcService.on('save-roadbook-as', function(event, arg){
       _this.saveRoadBookAs();
     });
 
-    this.ipc.on('open-roadbook', function(event, arg){
+    this.ipcService.on('open-roadbook', function(event, arg){
       _this.openRoadBook();
     });
 
-    this.ipc.on('reload-roadbook', function(event, arg){
+    this.ipcService.on('reload-roadbook', function(event, arg){
       location.reload();
     });
 
-    this.ipc.on('toggle-roadbook', function(event, arg){
+    this.ipcService.on('toggle-roadbook', function(event, arg){
       _this.toggleRoadbook();
     });
 
-    this.ipc.on('import-gpx', function(event, arg){
+    this.ipcService.on('import-gpx', function(event, arg){
       _this.importGPX();
     });
 
-    this.ipc.on('export-gpx', function(event, arg){
+    this.ipcService.on('export-gpx', function(event, arg){
       _this.exportGPX();
     });
 
-    this.ipc.on('export-openrally-gpx', function(event, arg){
+    this.ipcService.on('export-openrally-gpx', function(event, arg){
       _this.exportOpenRallyGPX();
     });
 
-    this.ipc.on('export-pdf', function(event, arg){
+    this.ipcService.on('export-pdf', function(event, arg){
       _this.printRoadbook();
     });
 
-	this.ipc.on('export-lexicon', function(event, arg){
+	this.ipcService.on('export-lexicon', function(event, arg){
       _this.printLexicon();
     });
 
-    this.ipc.on('open-settings', function(event, arg){
+    this.ipcService.on('open-settings', function(event, arg){
       _this.settingsController.openSettings();
     });
 
-    this.ipc.on('zoom-in', function(event, arg){
+    this.ipcService.on('zoom-in', function(event, arg){
       _this.mapController.zin();
     });
 
-    this.ipc.on('zoom-out', function(event, arg){
+    this.ipcService.on('zoom-out', function(event, arg){
       _this.mapController.zout();
     });
 
-    this.ipc.on('add-glyph', function(event, arg){
+    this.ipcService.on('add-glyph', function(event, arg){
       if(_this.roadbook.currentlyEditingWaypoint){
         _this.glyphControls.showGlyphModal(30,30);
       }
     });
 
-    this.ipc.on('add-track-0', function(event, arg){
+    this.ipcService.on('add-track-0', function(event, arg){
       if(_this.roadbook.currentlyEditingWaypoint){
         _this.roadbook.currentlyEditingWaypoint.tulip.addTrack(0);
       }
     });
 
-    this.ipc.on('add-track-45', function(event, arg){
+    this.ipcService.on('add-track-45', function(event, arg){
       if(_this.roadbook.currentlyEditingWaypoint){
         _this.roadbook.currentlyEditingWaypoint.tulip.addTrack(45);
       }
     });
 
-    this.ipc.on('add-track-90', function(event, arg){
+    this.ipcService.on('add-track-90', function(event, arg){
       if(_this.roadbook.currentlyEditingWaypoint){
         _this.roadbook.currentlyEditingWaypoint.tulip.addTrack(90);
       }
     });
 
-    this.ipc.on('add-track-135', function(event, arg){
+    this.ipcService.on('add-track-135', function(event, arg){
       if(_this.roadbook.currentlyEditingWaypoint){
         _this.roadbook.currentlyEditingWaypoint.tulip.addTrack(135);
       }
     });
 
-    this.ipc.on('add-track-180', function(event, arg){
+    this.ipcService.on('add-track-180', function(event, arg){
       if(_this.roadbook.currentlyEditingWaypoint){
         _this.roadbook.currentlyEditingWaypoint.tulip.addTrack(180);
       }
     });
 
-    this.ipc.on('add-track-225', function(event, arg){
+    this.ipcService.on('add-track-225', function(event, arg){
       if(_this.roadbook.currentlyEditingWaypoint){
         _this.roadbook.currentlyEditingWaypoint.tulip.addTrack(225);
       }
     });
 
-    this.ipc.on('add-track-270', function(event, arg){
+    this.ipcService.on('add-track-270', function(event, arg){
       if(_this.roadbook.currentlyEditingWaypoint){
         _this.roadbook.currentlyEditingWaypoint.tulip.addTrack(270);
       }
     });
 
-    this.ipc.on('add-track-315', function(event, arg){
+    this.ipcService.on('add-track-315', function(event, arg){
       if(_this.roadbook.currentlyEditingWaypoint){
         _this.roadbook.currentlyEditingWaypoint.tulip.addTrack(315);
       }
     });
 
-    this.ipc.on('set-track-hp', function(event, arg){
+    this.ipcService.on('set-track-hp', function(event, arg){
       if(_this.roadbook.currentlyEditingWaypoint){
         _this.roadbook.changeEditingWaypointAdded('offPiste');
         $('.added-track-selector').removeClass('active');
@@ -581,7 +601,7 @@ var App = Class({
       }
     });
 
-    this.ipc.on('set-track-p', function(event, arg){
+    this.ipcService.on('set-track-p', function(event, arg){
       if(_this.roadbook.currentlyEditingWaypoint){
         _this.roadbook.changeEditingWaypointAdded('track');
         $('.added-track-selector').removeClass('active');
@@ -589,7 +609,7 @@ var App = Class({
       }
     });
 
-    this.ipc.on('set-track-pp', function(event, arg){
+    this.ipcService.on('set-track-pp', function(event, arg){
       if(_this.roadbook.currentlyEditingWaypoint){
         _this.roadbook.changeEditingWaypointAdded('road');
         $('.added-track-selector').removeClass('active');
@@ -597,7 +617,7 @@ var App = Class({
       }
     });
 
-    this.ipc.on('set-track-ro', function(event, arg){
+    this.ipcService.on('set-track-ro', function(event, arg){
       if(_this.roadbook.currentlyEditingWaypoint){
         _this.roadbook.changeEditingWaypointAdded('mainRoad');
         $('.added-track-selector').removeClass('active');
@@ -606,7 +626,7 @@ var App = Class({
       }
     });
 
-    this.ipc.on('set-track-dcw', function(event, arg){
+    this.ipcService.on('set-track-dcw', function(event, arg){
       if(_this.roadbook.currentlyEditingWaypoint){
         _this.roadbook.changeEditingWaypointAdded('dcw');
         $('.added-track-selector').removeClass('active');
