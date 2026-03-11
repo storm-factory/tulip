@@ -58,6 +58,56 @@ var App = Class({
     this.glyphControls = new GlyphControls();
 
     this.noteControls = new NoteControls();
+
+    /*
+      Initialize Settings (Service-Oriented Architecture)
+    */
+    this.initSettings();
+  },
+
+  /*
+    ---------------------------------------------------------------------------
+    Initialize Settings
+    Following the Service-Oriented Architecture pattern from Phase 9
+    ---------------------------------------------------------------------------
+  */
+  initSettings: function() {
+    var _this = this;
+
+    // Create service, model, view, and controller
+    this.settingsService = new SettingsService();
+    this.settings = new Settings();
+    this.settingsView = new SettingsView();
+    this.settingsController = new SettingsController(
+      this.settingsService,
+      this.settings,
+      this.settingsView,
+      this.dialog
+    );
+
+    // Check if api_keys.js exists, if not, open settings for first-time setup
+    this.checkApiKeysOnStartup();
+  },
+
+  /*
+    Check if api_keys.js exists on startup
+    If not, automatically open settings for first-time setup
+  */
+  checkApiKeysOnStartup: async function() {
+    var _this = this;
+
+    try {
+      var fileExists = await this.settingsService.fileExists();
+
+      if (!fileExists) {
+        // Wait a moment for the app to fully load
+        setTimeout(function() {
+          _this.settingsController.openSettings(true); // true = first-time setup
+        }, 500);
+      }
+    } catch (error) {
+      console.error('Error checking API keys:', error);
+    }
   },
 
   /*
@@ -265,6 +315,11 @@ var App = Class({
       _this.printLexicon();
     });
 
+    $('#open-settings').click(function(){
+      _this.settingsController.openSettings();
+      $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
+    });
+
     $('#save-roadbook').click(function(e){
       e.preventDefault();
       if(_this.canSave()){
@@ -451,7 +506,11 @@ var App = Class({
 	this.ipc.on('export-lexicon', function(event, arg){
       _this.printLexicon();
     });
-	
+
+    this.ipc.on('open-settings', function(event, arg){
+      _this.settingsController.openSettings();
+    });
+
     this.ipc.on('zoom-in', function(event, arg){
       _this.mapController.zin();
     });

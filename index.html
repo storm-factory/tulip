@@ -4,6 +4,7 @@
     <link rel="stylesheet" type="text/css" href="assets/css/tulip.css">
     <link rel="stylesheet" href="assets/libs/foundation-5.5.3/css/foundation.css" />
     <link rel="stylesheet" href="assets/css/foundation-icons/foundation-icons.css" />
+    <link rel="stylesheet" href="assets/css/settings.css" />
     <title>tulip</title>
   </head>
   <body class="off-canvas-wrap" data-offcanvas>
@@ -65,6 +66,8 @@
           <!-- <li><a href="#" class="main-menu button tiny radius disabled"><i class="fi-upload"></i> Export Waypoints</a></li> -->
           <li><a href="#" id="print-roadbook" class="main-menu button tiny radius"><i class="fi-print"></i> Export PDF</a></li>
 		  <li><a href="#" id="print-lexicon" class="main-menu button tiny radius"><i class="fi-print"></i> Lexicon Key</a></li>
+          <hr>
+          <li><a href="#" id="open-settings" class="main-menu button tiny radius"><i class="fi-widget"></i> Settings</a></li>
           <hr>
         </ul>
     </aside>
@@ -700,6 +703,13 @@
   <script src='src/controllers/map-controller.js'></script>
   <script src='src/modules/glyph-controls.js'></script>
   <script src='src/modules/note-controls.js'></script>
+  <!--
+    Load Settings (Service-Oriented Architecture)
+  -->
+  <script src='src/services/SettingsService.js'></script>
+  <script src='src/models/Settings.js'></script>
+  <script src='src/controllers/SettingsController.js'></script>
+  <script src='src/views/SettingsView.js'></script>
   <!--
     Load Models
   -->

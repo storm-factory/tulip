@@ -37,10 +37,13 @@ function createWindow () {
   const template = [
     {label: "Tulip",
     submenu: [
-      { label: "Quit", accelerator: "CmdOrCtrl+Q", click: function() { app.quit(); }},
+      { label: "Settings", accelerator: "CmdOrCtrl+,", click: function() { mainWindow.webContents.send('open-settings'); }},
+      { type: "separator" },
       { label: "Save", accelerator: "CmdOrCtrl+S", click: function() { mainWindow.webContents.send('save-roadbook'); }},
       { label: "Save As", accelerator: "CmdOrCtrl+Shift+S", click: function() { mainWindow.webContents.send('save-roadbook-as'); }},
       { label: "Open", accelerator: "CmdOrCtrl+O", click: function() { mainWindow.webContents.send('open-roadbook'); }},
+      { type: "separator" },
+      { label: "Quit", accelerator: "CmdOrCtrl+Q", click: function() { app.quit(); }},
     ]},
     {label: "Edit",
     submenu: [

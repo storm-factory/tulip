@@ -3,6 +3,18 @@
 
   SETUP INSTRUCTIONS:
 
+  METHOD 1: Use the Settings UI (Recommended)
+  --------------------------------------------
+  When you first launch Tulip, if no API keys are configured, the Settings UI
+  will automatically open. Simply enter your API keys and click Save.
+
+  You can also open Settings later via:
+  - Menu: Tulip → Settings
+  - Keyboard shortcut: Cmd+, (Mac) or Ctrl+, (Windows/Linux)
+  - Right menu: Click hamburger icon → Settings
+
+  METHOD 2: Manual Configuration
+  -------------------------------
   1. Go to Google Cloud Console: https://console.cloud.google.com/
 
   2. Create a new project or select an existing one
