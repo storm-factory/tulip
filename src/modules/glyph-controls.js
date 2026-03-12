@@ -13,12 +13,21 @@ class GlyphControls{
   }
 
   getGylphNames(){
-    try {
-      this.files = this.fs.readdirSync(this.process.resourcesPath + '/app/assets/svg/glyphs/').filter(function(val){ return val.endsWith('.svg')});
-    } catch (e) {
-      console.log("using unpackaged filesys");
-      this.files = this.fs.readdirSync('assets/svg/glyphs').filter(function(val){ return val.endsWith('.svg')});
+    const path = require('path');
+    let glyphPath;
+
+    // Try packaged app path first
+    if (this.process.resourcesPath) {
+      glyphPath = path.join(this.process.resourcesPath, 'app.asar.unpacked', 'assets', 'svg', 'glyphs');
+      if (this.fs.existsSync(glyphPath)) {
+        this.files = this.fs.readdirSync(glyphPath).filter(function(val){ return val.endsWith('.svg')});
+        return;
+      }
     }
+
+    // Development mode - use path relative to index.html
+    glyphPath = path.join(__dirname, '..', '..', 'assets', 'svg', 'glyphs');
+    this.files = this.fs.readdirSync(glyphPath).filter(function(val){ return val.endsWith('.svg')});
   }
 
   handleGlyphSelectUI(e){

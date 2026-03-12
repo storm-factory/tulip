@@ -18,8 +18,15 @@ var SettingsService = Class({
   create: function() {
     this.fs = require('fs').promises;
     this.path = require('path');
-    // Use process.cwd() to get the app root directory
-    this.apiKeysPath = this.path.join(process.cwd(), 'api_keys.js');
+    const { app } = require('@electron/remote');
+
+    // In packaged app, use userData directory (writable)
+    // In development, use app root directory
+    if (app.isPackaged) {
+      this.apiKeysPath = this.path.join(app.getPath('userData'), 'api_keys.js');
+    } else {
+      this.apiKeysPath = this.path.join(app.getAppPath(), 'api_keys.js');
+    }
   },
 
   /*

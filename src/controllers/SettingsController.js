@@ -104,6 +104,12 @@ var SettingsController = Class({
         this.settings.googleDirectionsKey
       );
 
+      // Update global api_keys object
+      window.api_keys = Object.freeze({
+        google_directions: this.settings.googleDirectionsKey,
+        google_maps: this.settings.googleMapsKey
+      });
+
       // Mark as saved
       this.settings.markAsSaved();
 
@@ -117,7 +123,7 @@ var SettingsController = Class({
 
       var detail = this.settings.isFirstTimeSetup
         ? 'The application will now load the map with your API keys.'
-        : 'Please restart the application for changes to take effect.';
+        : 'Your API keys have been updated.';
 
       await this.dialog.showMessageBox({
         type: 'info',

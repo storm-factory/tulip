@@ -4,7 +4,8 @@
   "description": "A application for creating rally fun times",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "build": "./build_tulip.sh"
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,7 @@
   "homepage": "https://github.com/storm-factory/tulip",
   "devDependencies": {
     "electron": "^33.0.0",
+    "electron-packager": "^17.1.2",
     "tape": "^4.6.3"
   },
   "dependencies": {

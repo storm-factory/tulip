@@ -733,7 +733,6 @@
     Load the application (depends on controllers and modules above)
   -->
   <script src='src/application.js'></script>
-  <script src='api_keys.js'></script>
   <script src='src/modules/glyph-controls.js'></script>
   <script src='src/modules/note-controls.js'></script>
   <!--
@@ -778,11 +777,12 @@
     ko.applyBindings(app.roadbook);
     $(document).foundation();
 
-    new function(){
+    // Wait for API keys to be loaded before initializing Google Maps
+    app.eventBus.on('api-keys:loaded', function() {
       var s = document.createElement( 'script' );
       s.setAttribute( 'src', "https://maps.googleapis.com/maps/api/js?key=" + api_keys.google_maps + "&callback=app.initMap" );
       document.body.appendChild( s );
-    }
+    });
 
     function setMapSize(){
       var width = window.innerWidth;

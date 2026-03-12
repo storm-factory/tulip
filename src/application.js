@@ -137,6 +137,7 @@ var App = Class({
   /*
     Check if api_keys.js exists on startup
     If not, automatically open settings for first-time setup
+    Also loads keys and makes them globally available
   */
   checkApiKeysOnStartup: async function() {
     var _this = this;
@@ -145,13 +146,37 @@ var App = Class({
       var fileExists = await this.settingsService.fileExists();
 
       if (!fileExists) {
-        // Wait a moment for the app to fully load
+        // No api_keys.js file - create empty one and open settings
+        await this.settingsService.writeApiKeys('', '');
+
         setTimeout(function() {
           _this.settingsController.openSettings(true); // true = first-time setup
         }, 500);
+
+        // Set empty keys so app doesn't crash
+        window.api_keys = Object.freeze({
+          google_directions: '',
+          google_maps: ''
+        });
+      } else {
+        // Load existing keys
+        var keys = await this.settingsService.readApiKeys();
+        window.api_keys = Object.freeze({
+          google_directions: keys.googleDirectionsKey,
+          google_maps: keys.googleMapsKey
+        });
       }
+
+      // Trigger event to signal keys are loaded
+      this.eventBus.emit('api-keys:loaded');
     } catch (error) {
-      console.error('Error checking API keys:', error);
+      console.error('Error loading API keys:', error);
+      // Set empty keys so app doesn't crash
+      window.api_keys = Object.freeze({
+        google_directions: '',
+        google_maps: ''
+      });
+      this.eventBus.emit('api-keys:loaded');
     }
   },
 
