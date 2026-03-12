@@ -12,6 +12,7 @@
   ---------------------------------------------------------------------------
 */
 // TODO get rid of singleton badness
+// Phase 6: Converted to vanilla JavaScript
 var PrintApp = Class({
   singleton: true,
   create: function(){
@@ -55,12 +56,15 @@ var PrintApp = Class({
     this.filePath = json.filePath;
 
     // Default to Letter Format
-    $('.break').remove();
+    var breaks = document.querySelectorAll('.break');
+    breaks.forEach(function(br){ br.remove(); });
 	this.addPageBreaks();
   },
 
   requestPdfPrint: function(){
-    $('nav').hide();
+    var nav = document.querySelector('nav');
+    if(nav) nav.style.display = 'none';
+
     this.rerenderForPageSize();
 	this.rerenderForNumberFormat();
     var pageFormat = this.pageFormat();
@@ -71,45 +75,47 @@ var PrintApp = Class({
 	var pageCss=document.createElement("style");
 	pageCss.type = "text/css";
 
+	var html = document.querySelector('html');
+
    if((pageFormat == 'Letter') && (pageLength == 'Page')){
 		size = 'Letter';
 		pageCss.innerHTML = "@page{margin-left:0px; margin-top:40px; margin-right:0px; margin-bottom:0px}";
-		$('html').css('margin-left', '25px');
+		if(html) html.style.marginLeft = '25px';
 	}
 	if((pageFormat == 'Letter') && (pageLength == 'Roll')){
-		size = {height: $(document).height()*265+100000, width: 216000};
+		size = {height: document.documentElement.scrollHeight*265+100000, width: 216000};
 		pageCss.innerHTML = "@page{margin-left:0px; margin-top:40px; margin-right:0px; margin-bottom:0px}";
-		$('html').css('margin-left', '25px');
+		if(html) html.style.marginLeft = '25px';
 	}
     if((pageFormat == 'Legal') && (pageLength == 'Page')){
 		size = 'Legal';
 		pageCss.innerHTML = "@page{margin-left:0px; margin-top:20px; margin-right:0px; margin-bottom:0px}";
-		$('html').css('margin-left', '25px');
+		if(html) html.style.marginLeft = '25px';
 	}
 	if((pageFormat == 'Legal') && (pageLength == 'Roll')){
-		size = {height: $(document).height()*265+100000, width: 216000};
+		size = {height: document.documentElement.scrollHeight*265+100000, width: 216000};
 		pageCss.innerHTML = "@page{margin-left:0px; margin-top:40px; margin-right:0px; margin-bottom:0px}";
-		$('html').css('margin-left', '25px');
+		if(html) html.style.marginLeft = '25px';
 	}
     if((pageFormat == 'A5') && (pageLength == 'Page')){
 		size = 'A5';
 		pageCss.innerHTML = "@page{margin-left:0px; margin-top:40px; margin-right:0px; margin-bottom:0px}";
-		$('html').css('margin-left', '25px');
+		if(html) html.style.marginLeft = '25px';
 	}
 	if((pageFormat == 'A5') && (pageLength == 'Roll')){
-		size = {height: $(document).height()*265+100000, width: 148000};
+		size = {height: document.documentElement.scrollHeight*265+100000, width: 148000};
 		pageCss.innerHTML = "@page{margin-left:0px; margin-top:40px; margin-right:0px; margin-bottom:0px}";
-		$('html').css('margin-left', '25px');
+		if(html) html.style.marginLeft = '25px';
 	}
     if((pageFormat == 'PackedLetter') && (pageLength == 'Page')){
 		size = 'Letter';
 		pageCss.innerHTML = "@page{margin-left:0px; margin-top:2px; margin-right:0px; margin-bottom:0px}";
-		$('html').css('margin-left', '25px');
+		if(html) html.style.marginLeft = '25px';
 	}
 	if((pageFormat == 'PackedLetter')	&& (pageLength == 'Roll')){
-		size = {height: $(document).height()*265+100000, width: 216000};
+		size = {height: document.documentElement.scrollHeight*265+100000, width: 216000};
 		pageCss.innerHTML = "@page{margin-left:0px; margin-top:0px; margin-right:0px; margin-bottom:0px}";
-		$('html').css('margin-left', '25px');
+		if(html) html.style.marginLeft = '25px';
 	}
 
 	document.body.appendChild(pageCss);
@@ -122,35 +128,68 @@ var PrintApp = Class({
   rerenderForPageSize: function(){
 	var pageFormat = this.pageFormat();
 	var pageLength = this.pageLength();
-	 $('.waypoint').removeClass('Letter');
-	 $('.waypoint').removeClass('Legal');
-	 $('.waypoint').removeClass('A5');
-	 $('.waypoint').removeClass('PackedLetter');
-	if((pageFormat == 'Letter')) $('.waypoint').addClass('Letter');
-	if((pageFormat == 'Legal')) $('.waypoint').addClass('Legal');
-	if((pageFormat == 'A5')) $('.waypoint').addClass('A5');
-	if((pageFormat == 'PackedLetter')) $('.waypoint').addClass('PackedLetter');
 
-    $('.break').remove();
+	var waypoints = document.querySelectorAll('.waypoint');
+	waypoints.forEach(function(wp){
+		wp.classList.remove('Letter');
+		wp.classList.remove('Legal');
+		wp.classList.remove('A5');
+		wp.classList.remove('PackedLetter');
+	});
+
+	if((pageFormat == 'Letter')){
+		waypoints.forEach(function(wp){ wp.classList.add('Letter'); });
+	}
+	if((pageFormat == 'Legal')){
+		waypoints.forEach(function(wp){ wp.classList.add('Legal'); });
+	}
+	if((pageFormat == 'A5')){
+		waypoints.forEach(function(wp){ wp.classList.add('A5'); });
+	}
+	if((pageFormat == 'PackedLetter')){
+		waypoints.forEach(function(wp){ wp.classList.add('PackedLetter'); });
+	}
+
+    var breaks = document.querySelectorAll('.break');
+    breaks.forEach(function(br){ br.remove(); });
+
     if((pageLength == "Page")){
       this.addPageBreaks();
 	}
   },
   rerenderForNumberFormat: function(){
     var numberFormat = this.numberFormat();
-	$('.hundredthDigit').removeClass('none');
-	$('.hundredthDigit').removeClass('outline');
+	var hundredthDigits = document.querySelectorAll('.hundredthDigit');
+
+	hundredthDigits.forEach(function(digit){
+		digit.classList.remove('none');
+		digit.classList.remove('outline');
+	});
+
 	if(numberFormat == "Outline"){
-		$('.hundredthDigit').addClass('outline');
+		hundredthDigits.forEach(function(digit){
+			digit.classList.add('outline');
+		});
 	}
 	if(numberFormat == "None"){
-		$('.hundredthDigit').addClass('none');
+		hundredthDigits.forEach(function(digit){
+			digit.classList.add('none');
+		});
 	}
   },
   addPageBreaks(){
     var pageFormat = this.pageFormat();
-  	$('#roadbook').find('#roadbook-header').after($('<div>').attr('class', 'break'));
-	var waypoints = $('#roadbook').find('.waypoint');
+	var roadbook = document.querySelector('#roadbook');
+	if(!roadbook) return;
+
+	var roadbookHeader = roadbook.querySelector('#roadbook-header');
+	if(roadbookHeader){
+		var breakDiv = document.createElement('div');
+		breakDiv.setAttribute('class', 'break');
+		roadbookHeader.after(breakDiv);
+	}
+
+	var waypoints = roadbook.querySelectorAll('.waypoint');
 	var offset = 1;
 	var interval = 1;
 
@@ -161,7 +200,9 @@ var PrintApp = Class({
 
 	for(i=0;i<waypoints.length;i++){
 		if((((i+offset)%interval) == 0) && (i>0)){
-			$(waypoints[i]).after($('<div>').attr('class', 'break'));
+			var breakDiv = document.createElement('div');
+			breakDiv.setAttribute('class', 'break');
+			waypoints[i].after(breakDiv);
 		}
 	}
   },
@@ -173,28 +214,46 @@ var PrintApp = Class({
   ---------------------------------------------------------------------------
 */
 var printApp;
-$(document).ready(function(){
+document.addEventListener('DOMContentLoaded', function(){
   printApp = PrintApp.instance();
   ko.applyBindings(printApp);
 
-  $(window).scroll(function() {
-    if( $(this).scrollTop() > 0 ) {
-      $(".main-nav").addClass("main-nav-scrolled");
-    } else {
-      $(".main-nav").removeClass("main-nav-scrolled");
+  window.addEventListener('scroll', function() {
+    var mainNav = document.querySelector(".main-nav");
+    if(mainNav){
+      if(window.scrollY > 0){
+        mainNav.classList.add("main-nav-scrolled");
+      } else {
+        mainNav.classList.remove("main-nav-scrolled");
+      }
     }
   });
 
-  $('#page-format').change(function(){
-    printApp.rerenderForPageSize();
-  });
-  $('#page-length').change(function(){
-    printApp.rerenderForPageSize();
-  });
-  $('#number-format').change(function(){
-    printApp.rerenderForNumberFormat();
-  });
-  $('.button').click(function(){
-    printApp.requestPdfPrint();
+  var pageFormat = document.querySelector('#page-format');
+  if(pageFormat){
+    pageFormat.addEventListener('change', function(){
+      printApp.rerenderForPageSize();
+    });
+  }
+
+  var pageLength = document.querySelector('#page-length');
+  if(pageLength){
+    pageLength.addEventListener('change', function(){
+      printApp.rerenderForPageSize();
+    });
+  }
+
+  var numberFormat = document.querySelector('#number-format');
+  if(numberFormat){
+    numberFormat.addEventListener('change', function(){
+      printApp.rerenderForNumberFormat();
+    });
+  }
+
+  var buttons = document.querySelectorAll('.button');
+  buttons.forEach(function(button){
+    button.addEventListener('click', function(){
+      printApp.requestPdfPrint();
+    });
   });
 });

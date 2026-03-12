@@ -1,9 +1,27 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <!--
+      Content Security Policy for Electron app security
+      Note: 'unsafe-eval' is required by Fabric.js and Knockout.js (they use new Function())
+      This is acceptable for desktop apps - less risky than web apps
+      Future: Remove when migrating away from Knockout.js (Phase 7/8)
+    -->
+    <meta http-equiv="Content-Security-Policy" content="
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://maps.googleapis.com https://*.gstatic.com;
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+      img-src 'self' data: https://*.googleapis.com https://*.gstatic.com https://*.google.com;
+      font-src 'self' data: https://fonts.gstatic.com;
+      connect-src 'self' https://*.googleapis.com https://*.google.com;
+      frame-src 'none';
+      object-src 'none';
+    ">
     <link rel="stylesheet" type="text/css" href="assets/css/tulip.css">
     <link rel="stylesheet" href="assets/libs/foundation-5.5.3/css/foundation.css" />
     <link rel="stylesheet" href="assets/css/foundation-icons/foundation-icons.css" />
+    <link rel="stylesheet" href="assets/css/settings.css" />
+    <link rel="stylesheet" href="assets/css/help.css" />
     <title>tulip</title>
   </head>
   <body class="off-canvas-wrap" data-offcanvas>
@@ -66,6 +84,9 @@
           <li><a href="#" id="print-roadbook" class="main-menu button tiny radius"><i class="fi-print"></i> Export PDF</a></li>
 		  <li><a href="#" id="print-lexicon" class="main-menu button tiny radius"><i class="fi-print"></i> Lexicon Key</a></li>
           <hr>
+          <li><a href="#" id="open-settings" class="main-menu button tiny radius"><i class="fi-widget"></i> Settings</a></li>
+          <li><a href="#" id="open-help" class="main-menu button tiny radius"><i class="fi-info"></i> Help</a></li>
+          <hr>
         </ul>
     </aside>
     <!--  END ADVANCED MENU -->
@@ -94,14 +115,14 @@
               <hr>
               <div id="roadbook-total-distance" class="large-4 columns">
                 Total Kilometers:
-                <p data-bind="text: app.roadbook.totalDistance"></p>
+                <p data-bind="text: totalDistance"></p>
               </div>
               <div id="roadbook-name" class="large-8 columns">
-                <a class="button tiny round alert hide-editor" title="Hide editor.">&#215;</a>
+                <a class="button tiny round alert hide-editor rb-name" title="Hide editor.">&#215;</a>
                 <a href=# class="button tiny radius secondary show-editor rb-name"><i class="fi-pencil"></i></a>
-                <p href="#" data-bind="text: app.roadbook.name"></p>
+                <p href="#" data-bind="text: name"></p>
                 <div class="roadbook-header-input-container">
-                  <input type="text" placeholder="Roadbook Name" data-bind="textInput: app.roadbook.name"/>
+                  <input type="text" placeholder="Roadbook Name" data-bind="textInput: name"/>
                 </div>
               </div>
             </div>
@@ -110,7 +131,7 @@
               <div id="roadbook-desc" class="large-12 columns">
                 <a class="button tiny round alert hide-editor rb-desc" title="Hide editor.">&#215;</a>
                 <a href=# class="button tiny radius secondary show-editor rb-desc"><i class="fi-pencil"></i></a>
-                <p data-bind="html: app.roadbook.desc"></p>
+                <p data-bind="html: desc"></p>
                 <div class="roadbook-header-input-container">
                   <div id="description-toolbar">
                     <select class="ql-size" style="width:25%">
@@ -130,7 +151,7 @@
               </div>
             </div>
             <!-- render waypoint templates here -->
-            <div id="roadbook-waypoints" data-bind="template: { name: 'waypoint-template', foreach: app.roadbook.waypoints }"></div>
+            <div id="roadbook-waypoints" data-bind="template: { name: 'waypoint-template', foreach: waypoints }"></div>
             <!--  palette for editing waypoint content -->
             <div id="waypoint-palette">
               <div class="row">
@@ -682,12 +703,7 @@
   <script src='assets/libs/foundation-5.5.3/js/foundation/foundation.tooltip.js'></script>
   <script src='assets/libs/foundation-5.5.3/js/vendor/modernizr.js'></script>
   <!--
-    Load the application
-  -->
-  <script src='src/application.js'></script>
-  <script src='api_keys.js'></script>
-  <!--
-    Load Modules
+    Load Modules (before application.js needs them)
   -->
   <script src='src/modules/map-viewport-optimizer.js'></script>
   <script src='src/modules/track-editors.js'></script>
@@ -695,11 +711,52 @@
   <script src='src/modules/glyph-remover.js'></script>
   <script src='src/modules/io.js'></script>
   <!--
-    Load Controllers
+    Load EventBus (Phase 5: Service-Oriented Architecture)
+    Enables decoupled component communication
   -->
+  <script src='src/core/EventBus.js'></script>
+  <!--
+    Load Controllers (Phase 4: Service-Oriented Architecture)
+    MUST load before application.js since initControllers() needs them
+  -->
+  <script src='src/controllers/RoadbookController.js'></script>
+  <script src='src/controllers/UIController.js'></script>
+  <script src='src/controllers/WaypointController.js'></script>
+  <!--
+    Refactored Controllers (reduces application.js size)
+  -->
+  <script src='src/controllers/RoadbookFileController.js'></script>
+  <script src='src/controllers/MenuController.js'></script>
+  <script src='src/controllers/KeyboardController.js'></script>
   <script src='src/controllers/map-controller.js'></script>
+  <!--
+    Load the application (depends on controllers and modules above)
+  -->
+  <script src='src/application.js'></script>
   <script src='src/modules/glyph-controls.js'></script>
   <script src='src/modules/note-controls.js'></script>
+  <!--
+    Load Services (Service-Oriented Architecture - Phase 2)
+  -->
+  <script src='src/services/FileService.js'></script>
+  <script src='src/services/DialogService.js'></script>
+  <script src='src/services/ExportService.js'></script>
+  <script src='src/services/MapService.js'></script>
+  <script src='src/services/IPCService.js'></script>
+  <!--
+    Load Settings (Service-Oriented Architecture - Phase 9)
+  -->
+  <script src='src/services/SettingsService.js'></script>
+  <script src='src/models/Settings.js'></script>
+  <script src='src/controllers/SettingsController.js'></script>
+  <script src='src/views/SettingsView.js'></script>
+  <!--
+    Load Help System (Service-Oriented Architecture - Phase 10)
+  -->
+  <script src='src/services/HelpService.js'></script>
+  <script src='src/models/Help.js'></script>
+  <script src='src/controllers/HelpController.js'></script>
+  <script src='src/views/HelpView.js'></script>
   <!--
     Load Models
   -->
@@ -720,11 +777,12 @@
     ko.applyBindings(app.roadbook);
     $(document).foundation();
 
-    new function(){
+    // Wait for API keys to be loaded before initializing Google Maps
+    app.eventBus.on('api-keys:loaded', function() {
       var s = document.createElement( 'script' );
       s.setAttribute( 'src', "https://maps.googleapis.com/maps/api/js?key=" + api_keys.google_maps + "&callback=app.initMap" );
       document.body.appendChild( s );
-    }
+    });
 
     function setMapSize(){
       var width = window.innerWidth;

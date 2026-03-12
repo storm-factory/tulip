@@ -141,10 +141,10 @@
           } else {
             _startHide(this, $(this));
           }
-        })
-        .on('DOMNodeRemoved DOMAttrModified', '[' + this.attr_name() + ']:not(a)', function (e) {
-          _startHide(this, S(this));
         });
+        // Removed deprecated DOMNodeRemoved/DOMAttrModified events
+        // These mutation events have been removed from modern browsers
+        // Tooltips will still function correctly without this cleanup listener
     },
 
     ie_touch : function (e) {

@@ -1,8 +1,49 @@
 /*
-  You need to create a google developer account and get a maps web api and directions web api key.
-  Once you have add those keys below and rename this file to api_keys.js
+  Google Maps API Keys Configuration
+
+  SETUP INSTRUCTIONS:
+
+  METHOD 1: Use the Settings UI (Recommended)
+  --------------------------------------------
+  When you first launch Tulip, if no API keys are configured, the Settings UI
+  will automatically open. Simply enter your API keys and click Save.
+
+  You can also open Settings later via:
+  - Menu: Tulip → Settings
+  - Keyboard shortcut: Cmd+, (Mac) or Ctrl+, (Windows/Linux)
+  - Right menu: Click hamburger icon → Settings
+
+  METHOD 2: Manual Configuration
+  -------------------------------
+  1. Go to Google Cloud Console: https://console.cloud.google.com/
+
+  2. Create a new project or select an existing one
+
+  3. Enable the required APIs:
+     - Maps JavaScript API (required for map display)
+     - Directions API (optional, for route directions)
+
+  4. Create credentials:
+     - Go to "Credentials" tab
+     - Click "Create Credentials" → "API Key"
+     - Copy your API key
+
+  5. (Recommended) Restrict your API key:
+     - Click on your API key to edit it
+     - Under "Application restrictions", select "HTTP referrers"
+     - Add: http://localhost:* (for development)
+     - Under "API restrictions", select "Restrict key"
+     - Choose: Maps JavaScript API, Directions API
+
+  6. Copy this file to api_keys.js:
+     cp api_keys.js.example api_keys.js
+
+  7. Edit api_keys.js and replace the placeholder values with your actual keys
+
+  Note: api_keys.js is in .gitignore and will NOT be committed to version control
 */
+
 const api_keys = Object.freeze({
-  google_directions: '<your_direction_key>',
-  google_maps: '<your_maps_key>',
+  google_directions: 'YOUR_GOOGLE_DIRECTIONS_API_KEY_HERE',
+  google_maps: 'YOUR_GOOGLE_MAPS_API_KEY_HERE',
 });

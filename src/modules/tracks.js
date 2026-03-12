@@ -182,7 +182,11 @@ class Track{
   }
 
   changeType(type,canvas){
-    var pathSVG = $(this.paths[0].toSVG()).attr('d')
+    // Phase 6: vanilla JS - parse SVG string to get 'd' attribute
+    var svgString = this.paths[0].toSVG();
+    var tempDiv = document.createElement('div');
+    tempDiv.innerHTML = svgString;
+    var pathSVG = tempDiv.querySelector('path') ? tempDiv.querySelector('path').getAttribute('d') : '';
     this.clearPathsFromCanvas(canvas);
     var typeOptions = this.types[type];
     this.setPaths(pathSVG, typeOptions, canvas);

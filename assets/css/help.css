@@ -1,0 +1,508 @@
+/*
+  ============================================================================
+  Help Modal Styles
+  ============================================================================
+
+  Modern, accessible help modal with tabbed interface
+  Phase 10: Help UI with Keyboard Shortcuts
+*/
+
+/* Overlay */
+.help-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.help-overlay.active {
+  opacity: 1;
+}
+
+/* Modal Container */
+.help-modal {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 900px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.help-overlay.active .help-modal {
+  transform: scale(1);
+}
+
+/* Header */
+.help-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.help-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+}
+
+.help-close {
+  background: none;
+  border: none;
+  font-size: 32px;
+  line-height: 1;
+  color: #999;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.help-close:hover {
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.help-close:focus {
+  outline: 2px solid #2196F3;
+  outline-offset: 2px;
+}
+
+/* Search */
+.help-search {
+  padding: 16px 24px;
+  border-bottom: 1px solid #e0e0e0;
+  position: relative;
+}
+
+.help-search-input {
+  width: 100%;
+  padding: 10px 36px 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.help-search-input:focus {
+  outline: none;
+  border-color: #2196F3;
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+}
+
+.help-search-clear {
+  position: absolute;
+  right: 32px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #999;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.help-search-clear:hover {
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+/* Tabs */
+.help-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 12px 24px 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.help-tab {
+  background: none;
+  border: none;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+}
+
+.help-tab:hover {
+  color: #333;
+}
+
+.help-tab.active {
+  color: #2196F3;
+  border-bottom-color: #2196F3;
+}
+
+.help-tab:focus {
+  outline: 2px solid #2196F3;
+  outline-offset: -2px;
+}
+
+/* Content Area */
+.help-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+}
+
+/* Scrollbar Styling */
+.help-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.help-content::-webkit-scrollbar-track {
+  background: #f5f5f5;
+}
+
+.help-content::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+.help-content::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+/* Category Sections */
+.help-category {
+  margin-bottom: 32px;
+}
+
+.help-category:last-child {
+  margin-bottom: 0;
+}
+
+.help-category h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+/* Keyboard Shortcuts Table */
+.help-shortcuts-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 8px;
+}
+
+.help-shortcuts-table tbody tr {
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.help-shortcuts-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.help-shortcuts-table td {
+  padding: 12px 8px;
+}
+
+.help-shortcut-action {
+  font-weight: 500;
+  color: #333;
+  width: 60%;
+}
+
+.help-shortcut-keys {
+  text-align: right;
+  width: 40%;
+}
+
+.help-shortcut-keys kbd {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 13px;
+  font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+  background: linear-gradient(to bottom, #f9f9f9, #f0f0f0);
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1), inset 0 0 0 1px #fff;
+  color: #333;
+  white-space: nowrap;
+}
+
+.help-shortcut-desc td {
+  padding-top: 0;
+  padding-bottom: 12px;
+  font-size: 13px;
+  color: #666;
+  font-style: italic;
+}
+
+/* Mouse Controls Table */
+.help-mouse-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.help-mouse-table tbody tr {
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.help-mouse-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.help-mouse-table td {
+  padding: 12px 8px;
+  vertical-align: top;
+}
+
+.help-mouse-action {
+  width: 35%;
+  color: #333;
+}
+
+.help-mouse-action strong {
+  font-weight: 600;
+  color: #2196F3;
+}
+
+.help-mouse-desc {
+  width: 65%;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Getting Started */
+.help-step {
+  margin-bottom: 28px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.help-step:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.help-step h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2196F3;
+  margin: 0 0 12px;
+}
+
+.help-step p {
+  margin: 0;
+  color: #666;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+/* About Tab */
+.help-about {
+  max-width: 600px;
+}
+
+.help-about-header {
+  margin-bottom: 24px;
+}
+
+.help-about-header h3 {
+  font-size: 28px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 8px;
+}
+
+.help-about-version {
+  font-size: 14px;
+  color: #999;
+  margin: 0;
+}
+
+.help-about-section {
+  margin-bottom: 28px;
+}
+
+.help-about-section:last-child {
+  margin-bottom: 0;
+}
+
+.help-about-section h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 12px;
+}
+
+.help-about-section p {
+  margin: 0 0 12px;
+  color: #666;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+.help-about-section p:last-child {
+  margin-bottom: 0;
+}
+
+.help-about-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.help-about-table td {
+  padding: 8px;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.help-about-table td:first-child {
+  font-weight: 600;
+  color: #666;
+  width: 30%;
+}
+
+.help-about-table td:last-child {
+  color: #333;
+}
+
+.help-about-credits {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.help-about-credits li {
+  padding: 8px 0;
+  color: #666;
+  font-size: 14px;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.help-about-credits li:last-child {
+  border-bottom: none;
+}
+
+.help-about-link {
+  color: #2196F3;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.help-about-link:hover {
+  color: #1976D2;
+  text-decoration: underline;
+}
+
+.help-about-license {
+  font-size: 13px;
+  color: #999;
+}
+
+/* No Results */
+.help-no-results {
+  text-align: center;
+  color: #999;
+  font-style: italic;
+  padding: 40px 20px;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .help-modal {
+    width: 95%;
+    max-height: 90vh;
+  }
+
+  .help-header {
+    padding: 16px 20px;
+  }
+
+  .help-header h2 {
+    font-size: 20px;
+  }
+
+  .help-search {
+    padding: 12px 20px;
+  }
+
+  .help-tabs {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .help-tab {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+
+  .help-content {
+    padding: 20px;
+  }
+
+  .help-category h3 {
+    font-size: 16px;
+  }
+
+  .help-shortcuts-table td {
+    padding: 10px 4px;
+  }
+
+  .help-shortcut-action {
+    font-size: 13px;
+  }
+
+  .help-shortcut-keys kbd {
+    font-size: 11px;
+    padding: 3px 6px;
+  }
+}
+
+/* Print Styles (Optional) */
+@media print {
+  .help-overlay {
+    background: none;
+  }
+
+  .help-modal {
+    box-shadow: none;
+    max-height: none;
+  }
+
+  .help-header,
+  .help-search,
+  .help-tabs,
+  .help-close {
+    display: none;
+  }
+
+  .help-content {
+    padding: 0;
+  }
+}

@@ -1,10 +1,11 @@
+// Phase 6: Converted to vanilla JavaScript
 function glyphRules(name) {
 	if(name == '') return false;
 	if(name == 'cliff') return true;
 	if(name.includes('cliff')) return false;
 	if(name == '25kph') return true;
 	if(name.slice(-3) == 'kph') return false;
-	return true;	
+	return true;
 }
 
 const tablewidth = 4;
@@ -13,7 +14,7 @@ const pageLength = 18;
 var ipc;
 var filePath;
 
-$(document).ready(function(){
+document.addEventListener('DOMContentLoaded', function(){
     loadGlyphTable();
 
 	var arg;
@@ -23,33 +24,62 @@ $(document).ready(function(){
     });
 	ipc.send('print-launched', true);
 
-	$(window).scroll(function() {
-		if( $(this).scrollTop() > 0 ) {
-			$(".main-nav").addClass("main-nav-scrolled");
-		} else {
-			$(".main-nav").removeClass("main-nav-scrolled");
+	window.addEventListener('scroll', function() {
+		var mainNav = document.querySelector(".main-nav");
+		if(mainNav){
+			if(window.scrollY > 0){
+				mainNav.classList.add("main-nav-scrolled");
+			} else {
+				mainNav.classList.remove("main-nav-scrolled");
+			}
 		}
 	});
-	$('.button').click(function(){
-		requestPdfPrint();
+
+	var buttons = document.querySelectorAll('.button');
+	buttons.forEach(function(button){
+		button.addEventListener('click', function(){
+			requestPdfPrint();
+		});
 	});
 });
 
 function loadGlyphTable() {
-	$("#storage").load("index.html #glyphs",function(responseTxt,statusTxt,xhr){
-		if(statusTxt == "success") 
-			
-			var aGlyphs = $("#storage").find("li");
+	// Phase 6: Load HTML content using fetch instead of jQuery .load()
+	fetch("index.html")
+		.then(response => response.text())
+		.then(responseTxt => {
+			// Create a temporary container to parse the HTML
+			var tempDiv = document.createElement('div');
+			tempDiv.innerHTML = responseTxt;
+
+			// Find the #glyphs section
+			var glyphsContent = tempDiv.querySelector('#glyphs');
+			if(!glyphsContent) {
+				alert("Error: Could not load glyphs from index.html");
+				return;
+			}
+
+			// Put it in storage
+			var storage = document.querySelector("#storage");
+			if(storage){
+				storage.innerHTML = glyphsContent.outerHTML;
+			}
+
+			// Now process the glyphs
+			var aGlyphs = storage ? storage.querySelectorAll("li") : [];
 			var j=-1;
 			var newrow = "";
-			for(var i = 0; i < aGlyphs.size();i++){
-				var aGlyph = aGlyphs.eq(i);
-				if($(aGlyph).children("a.th").size() > 0){
-					var glyphImg = $(aGlyph).find("a.th").html();
+			for(var i = 0; i < aGlyphs.length; i++){
+				var aGlyph = aGlyphs[i];
+				var glyphLinks = aGlyph.querySelectorAll("a.th");
+
+				if(glyphLinks.length > 0){
+					var glyphImg = glyphLinks[0].innerHTML;
 					glyphImg = glyphImg.slice(0,-1) + ' height="' + glyphHeight + '">';
-					
-					var glyphTxt = $(aGlyph).children("p").text();
-					
+
+					var glyphParagraphs = aGlyph.querySelectorAll("p");
+					var glyphTxt = glyphParagraphs.length > 0 ? glyphParagraphs[0].textContent : '';
+
 					if(glyphRules(glyphTxt)){
 						j++;
 						if((j/tablewidth % pageLength ==0)){
@@ -67,12 +97,22 @@ function loadGlyphTable() {
 							+ glyphImg + "</div><div class='desccolumn'>" + glyphTxt + "</div>";
 						if( j%tablewidth == tablewidth-1 ) {
 							newrow += "</div>";
-							$(newrow).insertBefore("#lexiconLoading");
+
+							// Insert before #lexiconLoading
+							var lexiconLoading = document.querySelector("#lexiconLoading");
+							if(lexiconLoading){
+								var tempContainer = document.createElement('div');
+								tempContainer.innerHTML = newrow;
+								while(tempContainer.firstChild){
+									lexiconLoading.parentNode.insertBefore(tempContainer.firstChild, lexiconLoading);
+								}
+							}
 							newrow="";
 						}
 					}
-				}				
+				}
 			}
+
 			if( newrow != "" ){
 				while(j%tablewidth != tablewidth-1){
 					newrow += "<div class='glyphcolumn'><p></p></div>"
@@ -80,18 +120,31 @@ function loadGlyphTable() {
 					j++;
 				}
 				newrow += "</div>";
-				$(newrow).insertBefore("#lexiconLoading"); 
+
+				// Insert before #lexiconLoading
+				var lexiconLoading = document.querySelector("#lexiconLoading");
+				if(lexiconLoading){
+					var tempContainer = document.createElement('div');
+					tempContainer.innerHTML = newrow;
+					while(tempContainer.firstChild){
+						lexiconLoading.parentNode.insertBefore(tempContainer.firstChild, lexiconLoading);
+					}
+				}
 			}
-			$("#lexiconLoading").remove();
-			
-		if(statusTxt == "error")
-			alert("Error: " + xhr.status + ": " + xhr.statusText);
-	});
-	
+
+			// Remove loading indicator
+			var lexiconLoading = document.querySelector("#lexiconLoading");
+			if(lexiconLoading) lexiconLoading.remove();
+		})
+		.catch(error => {
+			alert("Error loading glyphs: " + error);
+		});
 }
 
 function requestPdfPrint(){
-    $('nav').hide();
+    var nav = document.querySelector('nav');
+    if(nav) nav.style.display = 'none';
+
 	var data = {'filepath': filePath, 'opts': {'pageSize': 'Letter', 'pageSizeName': 'Letter', 'marginsType' : '1'}};
     ipc.send('print-lexicon-pdf', data);
 }
