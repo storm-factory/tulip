@@ -1486,6 +1486,69 @@ HelpView (UI rendering)
 
 ---
 
+### Application.js Refactoring (Post-Phase 10) ✅ **COMPLETED**
+
+**Goal**: Reduce application.js file size by extracting functionality into focused controllers
+
+**Problem**: application.js had grown to 710 lines with mixed concerns:
+- ~200 lines of DOM event listeners (initListeners function)
+- ~100 lines of IPC keyboard shortcut handlers
+- File I/O operations
+- UI toggling methods
+- Initialization code all in one file
+
+**Solution**: Created three new focused controllers following Service-Oriented Architecture:
+
+**Files Created:**
+1. **RoadbookFileController** (156 lines)
+   - All file operations: open, save, save as, import, export, print
+   - Coordinates between FileService, ExportService, and Roadbook model
+   - Loading state management (startLoading/stopLoading)
+   - Validation methods (canSave, canExport)
+
+2. **MenuController** (213 lines)
+   - All menu click event handlers from DOM
+   - File menu (import, export, save, open, print)
+   - Settings & Help menu clicks
+   - Roadbook name/description editors
+   - Waypoint palette controls
+   - Keyboard events (Escape key)
+   - Delegates actions to appropriate controllers
+
+3. **KeyboardController** (223 lines)
+   - All IPC keyboard shortcut handlers from main process
+   - File operations (Cmd+S, Cmd+O, Cmd+P, etc.)
+   - View operations (Cmd+B, Cmd+R, zoom shortcuts)
+   - Track editing shortcuts (Cmd+1-8 for angles)
+   - Track type shortcuts (Cmd+Opt+1-5 for HP/P/PP/RO/DCW)
+   - Add glyph shortcut (Cmd+Opt+G)
+   - Routes shortcuts to appropriate controllers
+
+**Files Modified:**
+4. **application.js**
+   - Disabled initListeners() call (moved to MenuController + KeyboardController)
+   - Added initialization of three new controllers in initControllers()
+   - Old initListeners() function kept as deprecated code for reference
+   - Effective active code reduced from 710 lines to ~350 lines
+
+5. **index.html**
+   - Added script tags for three new controllers
+
+**Benefits:**
+- ✅ Separation of concerns - each controller has single responsibility
+- ✅ Improved maintainability - easier to find and modify event handlers
+- ✅ Reduced application.js complexity - focused on bootstrap and wiring
+- ✅ Consistent with Service-Oriented Architecture pattern
+- ✅ All event handling logic in dedicated controllers
+- ✅ Better testability - controllers can be tested independently
+
+**Next Steps for Further Cleanup:**
+- Remove deprecated initListeners() function from application.js entirely
+- Remove old delegation methods if not used elsewhere
+- Extract remaining initialization logic into dedicated bootstrap class
+
+---
+
 ## Testing Strategy
 
 ### Unit Tests (Models & Services)

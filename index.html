@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta http-equiv="Content-Security-Policy" content="
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' https://maps.googleapis.com https://*.gstatic.com;
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+      img-src 'self' data: https://*.googleapis.com https://*.gstatic.com https://*.google.com;
+      font-src 'self' data: https://fonts.gstatic.com;
+      connect-src 'self' https://*.googleapis.com https://*.google.com;
+      frame-src 'none';
+      object-src 'none';
+    ">
     <link rel="stylesheet" type="text/css" href="assets/css/tulip.css">
     <link rel="stylesheet" href="assets/libs/foundation-5.5.3/css/foundation.css" />
     <link rel="stylesheet" href="assets/css/foundation-icons/foundation-icons.css" />
@@ -102,7 +112,7 @@
                 <p data-bind="text: totalDistance"></p>
               </div>
               <div id="roadbook-name" class="large-8 columns">
-                <a class="button tiny round alert hide-editor" title="Hide editor.">&#215;</a>
+                <a class="button tiny round alert hide-editor rb-name" title="Hide editor.">&#215;</a>
                 <a href=# class="button tiny radius secondary show-editor rb-name"><i class="fi-pencil"></i></a>
                 <p href="#" data-bind="text: name"></p>
                 <div class="roadbook-header-input-container">
@@ -706,6 +716,12 @@
   <script src='src/controllers/RoadbookController.js'></script>
   <script src='src/controllers/UIController.js'></script>
   <script src='src/controllers/WaypointController.js'></script>
+  <!--
+    Refactored Controllers (reduces application.js size)
+  -->
+  <script src='src/controllers/RoadbookFileController.js'></script>
+  <script src='src/controllers/MenuController.js'></script>
+  <script src='src/controllers/KeyboardController.js'></script>
   <script src='src/controllers/map-controller.js'></script>
   <!--
     Load the application (depends on controllers and modules above)
