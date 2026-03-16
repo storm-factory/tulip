@@ -1,111 +1,160 @@
 <html>
   <head>
+    <link rel="stylesheet" type="text/css" href="assets/css/common.css">
     <link rel="stylesheet" type="text/css" href="assets/css/roadbook-print.css">
-  </head>
-  <body style= "margin-left:0px;">
-    <nav class="main-nav">
-      <div class="row">
-        <div class="large-4 columns"><p></p>
-        </div>
-        <div class="large-4 columns logo">
-          Tulip
-        </div>
-        <div class="large-4 columns" align='right'>
-          <a href="#" class="button small radius">
-            Save PDF
-          </a>
-        </div>
-      </div>
-	  <div class="row" style='padding:10px'>
-	    <div class="large-4 columns" align='center'>
-          <select id="number-format" data-bind="options: numberFormats ,optionsText: 'text', optionsValue: 'value', value: numberFormat">
-          </select>
-        </div>
-		<div class="large-4 columns" align='center'>
-          <select id="page-format" data-bind="options: pageFormats ,optionsText: 'text', optionsValue: 'value', value: pageFormat">
-          </select>
-        </div>
-	    <div class="large-4 columns" align='center'>
-          <select id="page-length" data-bind="options: pageLengths ,optionsText: 'text', optionsValue: 'value', value: pageLength">
-          </select>
-        </div>
-	  </div>
-    </nav>
-    <div align='center'>
-      <img src='./assets/tulip-logo3.png' width='300'>
-    </div>
-    <div id="roadbook">
-      <hr>
-      <div id="roadbook-header">
-        <div class="row">
-          <div id="roadbook-total-distance" class="large-4 column">
-            Total Kilometers:
-            <p data-bind="text: printApp.totalDistance"></p>
-          </div>
-          <div id="roadbook-name" class="large-8 column">
-            <p href="#" data-bind="text: printApp.name" data-default="true"></p>
-          </div>
-        </div>
-        <div class="row">
-          <hr>
-          <div id="roadbook-desc" class="large-12 column">
-            <p href="#" data-bind="html: printApp.desc" data-default="true"></p>
-            <hr>
-          </div>
-        </div>
-      </div>
-      <!-- render waypoint templates here -->
-      <div id="roadbook-waypoints" data-bind="template: { name: 'waypoint-template', foreach: printApp.waypoints}"></div>
-    </div>
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+
+    <!--
+      Load the rest of our libraries
+    -->
+    <script src="assets/libs/jsclass/dist/browser/js.class.min.js"></script>
+    <script src="node_modules/knockout/build/output/knockout-latest.js"></script>
+
+    <!--
+      Load the printApplication
+    -->
+    <script src='src/modules/printing/print-application.js'></script>
+    <script src='src/modules/instruction.js'></script>  
     <!--
       Define templates
     -->
     <!--  waypoint template-->
     <script type="text/html" id="waypoint-template">
-      <div class='waypoint row'>
-        <div class='waypoint-distance'>
+      <div class='waypoint row' data-bind="css: instructionColoring">
+        <div class='waypoint-distance' data-bind="css: waypointColoring">
           <div class='total-distance'>
-		    <span data-bind="text: kmFromStart.toFixed(1)" class='regularDigit'> 
-			</span>
-			<span data-bind="text:kmFromStart.toFixed(2).slice(-1)" class='hundredthDigit'> 
-			</span>
+            <div data-bind="text: kmFromStart, css: { 'waypoint-danger-2': dangerLevel == 2 }"></div>
+            <div class="reset-zeroes" data-bind="visible: hasResetGlyph">0.00</div>
+          </div>
+          <div class="waypoint-icon" data-bind="html: waypointIcon, css: { 'waypoint-icon-none': waypointIcon == undefined }">
           </div>
           <div class="relative-distance">
             <div data-bind="text: kmFromPrev.toFixed(2)">
             </div>
           </div>
-		  <div class="waypoint-index">
-			<div data-bind="text: $index()+1">
-			</div>
-		  </div>
+          <div class="instruction-number">
+            <div data-bind="text: instructionNumber">
+            </div>
+          </div>
         </div>
-        <div class='waypoint-tulip'>
+        <div class='waypoint-tulip'  data-bind="css: assignTulipColoring">
           <img data-bind="attr: { src: tulip}">
+          <div class="tulip-checkpoint-number" data-bind="text: checkpointNumber, visible: checkpointNumber"></div>
         </div>
         <div class='waypoint-note'>
-          <p data-bind="html: notes.text"></p>
-          <div class='heading' data-bind="visible: showHeading">
-            <label>C </label>
-			<span data-bind="text: Math.round(heading) + '\xB0'"></span>
-			<!-- Just in case you want to go back to leading zeros, here's the code:
-			<span data-bind="text: Array(Math.max(3 - String(Math.round(heading)).length + 1, 0)).join(0) + Math.round(heading) + '\xB0'"></span>
-			--->
+          <img data-bind="attr: { src: note}">
+          <div class="heading" data-bind="visible: showHeading">
+            <span data-bind="text: heading">&deg;</span>
+          </div>
+            <div class="coordinates" data-bind="visible: showCoordinates">
+              <span data-bind="html: coordinates">&deg;</span>
+          </div>
+          <div class="waypoint-number" data-bind="css: { 'waypoint-number-coord':showCoordinates }, visible: waypointNumber, text:waypointNumber">
           </div>
         </div>
       </div>
     </script>
+  </head>
+  <body style= "margin-left:0px;">
+    <div id="overlay" style="display: none;">
+      <div id="overlay-text">Saving PDF</div>
+    </div>
+    <nav class="main-nav">
+      <div class="row">
+        <div class="large-3 columns">
+          <select id="print-size" data-bind="options: pageSizes ,optionsText: 'text', optionsValue: 'value', value: pageSize">
+          </select>
+        </div>
+        <div class="large-3 columns logo">
+          Tulip
+        </div>
+        <div class="large-3 columns">
+          <a href="#" class="button small radius">
+            Save PDF
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <div id="roadbook">
+      <div id="roadbook-header">
+        <div class="roadbook-logo" class="large-12 columns" data-bind="visible: printApp.customLogo">
+          <img id="roadbook-logo" src="" data-bind="attr: { src: printApp.customLogo }">
+        </div>
+        <div id="roadbook-name">
+          <p href="#" data-bind="text: printApp.name" data-default="true">Name</p>
+        </div>
+        <div id="roadbook-details">
+          <div class="large-3 header-route-info">
+            <div id="roadbook-total-distance" class="">
+              Total distance
+              <p data-bind="text: printApp.totalDistance() + 'km'"></p>
+            </div>
+            <div id="roadbook-total-waypoints" class="">
+              Waypoints
+              <div data-bind="text: printApp.waypointCount"></div>
+            </div>
+            <div id="roadbook-fuel-range" class="">
+              Fuel Range
+              <div data-bind="text: printApp.fuelRange() + ' km'"></div>
+            </div>
+          </div>
+          <div id="roadbook-desc" class="large-9">
+            <p href="#" data-bind="html: printApp.desc" data-default="true">Description</p>
+          </div>
+        </div>
+        <div class="coordinate-info">
+          <div id="" class="large-6 column edge-coordinates">
+            <strong>Start</strong>
+            <p data-bind="html: printApp.start_lat"></p>
+            <p data-bind="html: printApp.start_lon"></p>
+          </div>
+          <div id="" class="large-6 column edge-coordinates">
+            <strong>Finish</strong>
+            <p data-bind="html: printApp.end_lat"></p>
+            <p data-bind="html: printApp.end_lon"></p>
+          </div>
+        </div>
+      </div>
+      <!-- render waypoint templates here -->
+      <div id="roadbook-waypoints" data-bind="template: { name: 'waypoint-template', foreach: printApp.instructions }"></div>
+
+      <div id="roadbook-footer">
+        <div id="footer-roadbook-info">
+          <div id="roadbook-total-distance" class="large-4 column">
+            Distance
+            <p data-bind="text: printApp.totalDistance() + ' km'"></p>
+          </div>
+          <div id="roadbook-total-waypoints" class="large-4 column">
+            Waypoints
+            <p data-bind="text: printApp.waypointCount"></p>
+          </div>
+          <div id="roadbook-fuel-range" class="large-4 column">
+            Fuel Range
+            <p data-bind="text: printApp.fuelRange() + ' km'"></p>
+          </div>
+        </div>
+        <div class="coordinate-info">
+          <div id="" class="large-6 column edge-coordinates">
+            <strong>Start</strong>
+            <p data-bind="html: printApp.start_lat"></p>
+            <p data-bind="html: printApp.start_lon"></p>
+          </div>
+          <div id="" class="large-6 column edge-coordinates">
+            <strong>Finish</strong>
+            <p data-bind="html: printApp.end_lat"></p>
+            <p data-bind="html: printApp.end_lon"></p>
+          </div>
+        </div>
+        <div id="generator">
+          <h1>Generated by Tulip</h1>
+          <div align='center'>
+            <img src='./assets/tulip-logo3.png' height='200'>
+          </div>
+          <p>GitLab Repo: <a href="https://gitlab.com/drid/tulip">https://github.com/drid/tulip</a></p>
+          <p>GitHub Repo: <a href="https://github.com/drid/tulip">https://github.com/drid/tulip</a></p>
+        </div>
+      </div>
+    </div>
   </body>
-  <script>
-    //Jquery sees it is running in CommonJS env, and wants to be used as such.
-    window.$ = window.jQuery = require('./assets/libs/jquery-2.1.4.min.js');
-  </script>
-  <!--
-    Load the rest of our libraries
-  -->
-  <script src="assets/libs/jsclass/dist/browser/js.class.min.js"></script>
-  <script src="assets/libs/knockout-3.4.0.js"></script>
-  <!--
-    Load the printApplication
-  -->
-  <script src='src/modules/printing/print-application.js'></script>
 </html>

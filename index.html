@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" href="node_modules/foundation-sites/css/foundation.min.css" />
+    <link rel="stylesheet" href="node_modules/foundation-icons/foundation-icons.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/common.css">
     <link rel="stylesheet" type="text/css" href="assets/css/tulip.css">
-    <link rel="stylesheet" href="assets/libs/foundation-5.5.3/css/foundation.css" />
-    <link rel="stylesheet" href="assets/css/foundation-icons/foundation-icons.css" />
-    <title>tulip</title>
+    <link rel="stylesheet" type="text/css" href="node_modules/quill/dist/quill.snow.css">
   </head>
   <body class="off-canvas-wrap" data-offcanvas>
     <img id="loading" src="./assets/tulip-logo3.png" style="width:300px">
@@ -48,27 +49,39 @@
       </ul>
     </nav>
     <!-- END NAV -->
-    <!--  START ADVANCED MENU -->
+    <!--  START SETTINGS MENU -->
     <aside class="right-off-canvas-menu">
         <h2>
-          Menu:
+          Settings:
         </h2>
         <ul>
-          <li><a href="#" id="new-roadbook" class="main-menu button tiny radius info"><i class="fi-compass"></i> New Roadbook</a></li>
-          <li><a href="#" id="open-roadbook" class="main-menu button tiny radius info"><i class="fi-folder"></i> Open Roadbook</a></li>
+          <h4>Application Settings</h4>
+          <li>Google Maps API key<input type="text" id="gmap_key" class="settings-text"/></li>
+          <li>Google Directions API key<input type="text" id="google_directions_key" class="settings-text"/>
+          <a href="https://developers.google.com/maps/documentation/embed/get-api-key" target="_blank">API keys help</a></li>
+          <li><input type="checkbox" id="open_last"/>Open last roadbook</li>
+          <li>User glyph path: <input type="button" id="user_glyph_path_select" class="settings-text" value="..."/>
+            <p id="user_glyph_path_text">-</p></li>
           <hr>
-          <li><a href="#" id="import-gpx" class="main-menu button tiny radius"><i class="fi-download"></i> Import GPX</a></li>
-          <!-- <li><a href="#" class="main-menu button tiny radius disabled"><i class="fi-download"></i> Import Waypoints</a></li> -->
-          <!-- <hr> -->
-          <li><a href="#" id="export-gpx" class="main-menu button tiny radius"><i class="fi-map"></i> Export GPX</a></li>
-          <li><a href="#" id="export-openrally-gpx" class="main-menu button tiny radius"><i class="fi-map"></i> Export OpenRally GPX</a></li>
-          <!-- <li><a href="#" class="main-menu button tiny radius disabled"><i class="fi-upload"></i> Export Waypoints</a></li> -->
-          <li><a href="#" id="print-roadbook" class="main-menu button tiny radius"><i class="fi-print"></i> Export PDF</a></li>
-		  <li><a href="#" id="print-lexicon" class="main-menu button tiny radius"><i class="fi-print"></i> Lexicon Key</a></li>
-          <hr>
+          <h4>Tulip settings</h4>
+          <li>Tulip close distance (m)<input type="text" id="tulip_near_distance" class="settings-text"/></li>
+          <li><input type="checkbox" id="show_cap_heading"/>Show CAP heading (new)</li>
+          <li><input type="checkbox" id="show_coordinates"/>Show coordinates (new)</li>
+          <li>Coordinates Format<select id="coordinates_format">
+            <option value="dd">DD.DDDDD</option>
+            <option value="ddmm">DD MM.MMM</option>
+            <option value="ddmmss">DD MM SS.SSS</option>
+          </select></li>
+          <li><input type="checkbox" id="openrally_strict"/>Openrally strict export</li>
+          <h4>Map settings</h4>
+          <li>Set current view as home<br><input type="button" id="set-current-view-as-home" value="Set"/></li>
+          <h4>Debug settings</h4>
+          <li><input type="checkbox" id="open_dev_console"/>Dev console on start</li>
+          
+          <li><input type="button" id="save-settings" value="Save settings"/></li>
         </ul>
     </aside>
-    <!--  END ADVANCED MENU -->
+    <!--  END SETTINGS MENU -->
     <!--  START CONTENT -->
     <div id="content">
       <div class="content-container">
@@ -82,7 +95,7 @@
               Tulip
             </div>
             <div class="large-5 columns menu">
-              <a href="#" class="button tiny radius secondary" id="save-roadbook" data-tooltip aria-haspopup="true" class="has-tip button tiny radius alert" title="Click to save. Shift+click to 'Save as'">
+              <a href="#" class="button tiny radius" data-bind="css: { secondary: app.roadbookController.isSaved }" id="save-roadbook" data-tooltip aria-haspopup="true" class="has-tip button tiny radius alert" title="Click to save. Shift+click to 'Save as'">
                 <i class="fi-save"></i>
               </a>
               <a href="#" class="button tiny radius secondary" id="toggle-roadbook"><i class="fi-arrow-down"></i></a>
@@ -91,65 +104,97 @@
           </div>
           <div id="roadbook">
             <div class="row roadbook-info">
-              <hr>
-              <div id="roadbook-total-distance" class="large-4 columns">
-                Total Kilometers:
-                <p data-bind="text: app.roadbook.totalDistance"></p>
+              <div class="roadbook-logo" class="large-12 columns" data-bind="visible: app.roadbook.customLogo()">
+                <img id="roadbook-logo" src="" data-bind="attr: { src: app.roadbook.customLogo() }">
+                <i id="roadbook-logo-remove" class="fi-trash"></i>
               </div>
-              <div id="roadbook-name" class="large-8 columns">
-                <a class="button tiny round alert hide-editor" title="Hide editor.">&#215;</a>
-                <a href=# class="button tiny radius secondary show-editor rb-name"><i class="fi-pencil"></i></a>
-                <p href="#" data-bind="text: app.roadbook.name"></p>
-                <div class="roadbook-header-input-container">
-                  <input type="text" placeholder="Roadbook Name" data-bind="textInput: app.roadbook.name"/>
-                </div>
+              <div id="roadbook-name" class="large-12 columns">
+                <p data-bind="text: app.roadbook.name, event: { blur: app.roadbook.updateName }" contenteditable="true"></p>
               </div>
-            </div>
-            <div class="row roadbook-info">
-              <hr>
-              <div id="roadbook-desc" class="large-12 columns">
-                <a class="button tiny round alert hide-editor rb-desc" title="Hide editor.">&#215;</a>
-                <a href=# class="button tiny radius secondary show-editor rb-desc"><i class="fi-pencil"></i></a>
-                <p data-bind="html: app.roadbook.desc"></p>
-                <div class="roadbook-header-input-container">
-                  <div id="description-toolbar">
-                    <select class="ql-size" style="width:25%">
-                      <option value="10px">Small</option>
-                      <option value="13px" selected>Normal</option>
-                      <option value="18px">Large</option>
-                      <option value="32px">Huge</option>
-                    </select>
-                    <!-- Add a bold button -->
-                    <button class="ql-bold tiny secondary"><i class="fi-bold"></i></button>
-                    <button class="ql-italic tiny secondary "><i class="fi-italic"></i></button>
-                    <button class="ql-underline tiny secondary"><i class="fi-underline"></i></button>
+              <div id="roadbook-details">
+                <div class="large-3 column header-route-info">
+                  <div id="roadbook-total-distance" class="">
+                    Total distance
+                    <p data-bind="text: app.roadbook.totalDistance() + 'km'"></p>
                   </div>
-                  <div id="description-editor"></div>
+                  <div id="roadbook-total-waypoints" class="">
+                    Waypoints
+                    <div data-bind="text: app.roadbook.instructions().length"></div>
+                  </div>
+                  <div id="roadbook-fuel-range" class="">
+                    Fuel Range
+                    <div data-bind="text: app.roadbook.fuelRange() + ' km'"></div>
+                  </div>
                 </div>
-                <hr>
+                <div id="roadbook-desc" class="large-9 column">
+                  <a href=# class="button tiny radius secondary show-editor rb-desc"><i class="fi-pencil"></i></a>
+                  <p data-bind="html: app.roadbook.desc"></p>
+                  <div class="roadbook-header-input-container">
+                    <div id="description-editor"></div>
+                  </div>
+                  <a class="button tiny round alert hide-editor rb-desc" title="Hide editor."><i class="fi-x"></i></a>
+                </div>
               </div>
             </div>
-            <!-- render waypoint templates here -->
-            <div id="roadbook-waypoints" data-bind="template: { name: 'waypoint-template', foreach: app.roadbook.waypoints }"></div>
-            <!--  palette for editing waypoint content -->
+            <!-- render instruction templates here -->
+            <div id="roadbook-waypoints" data-bind="template: { name: 'waypoint-template', foreach: app.roadbook.instructions }"></div>
+            <!--  palette for editing instruction content -->
             <div id="waypoint-palette">
               <div class="row">
-                <div class="large-12 columns text-right">
-                  <span data-tooltip aria-haspopup="true" class="map-rotate-notice has-tip button tiny radius alert" style="display: none;" title="Map interaction other than zoom is disabled when map is rotated.">
+                <div class="tulip-edit-controls large-12 columns text-right">
+                  <a id="draw-freehand" class="button_round" title="Draw" data-bind="click: toggleDrawing, css: isDrawing() ? 'draw-btn-active' : 'draw-btn-inactive'"><i class="fa-solid fa-pencil"></i></a>
+                  <a id="rotate-km-marker" class="button_round" title="Rotate km marker"><i class="fa-solid fa-map-pin"></i></a>
+                  <a id="delete-tulip-item" class="button_round" title="Delete Glyph"><i class="fi-trash"></i></a>
+                  <span data-tooltip aria-haspopup="true" class="has-tip button tiny radius warning map-rotate-notice" style="display: none;" title="Map interaction other than zoom is disabled when map is rotated.">
                     <i class="fi-alert"></i>
                   </span>
-                  <a id="orient-map" class="button tiny round success" title="Orient map with tulip"><i class="fi-compass"></i></a>
-                  <a id="hide-palette" class="button tiny round alert" title="Hide palette.">&#215;</a>
+                  <a id="orient-map" class="button_round" title="Orient map with tulip"><i class="fi-compass"></i></a>
+                  <a id="hide-palette" class="button_round" title="Hide palette."><i class="fi-check"></i></a>
                 </div>
               </div>
               <div id="waypoint-tulip-controls" class="content active">
                 <div class="row">
                   <div class="large-4 columns selection-label">
-                    <h5>
-                      <span data-tooltip aria-haspopup="true" class="has-tip track-selection" title="Select the type of tracks added to the tulip, the track type the rider will enter the tulip on, and the track type the rider will exit the tulip on.">
-                        Tulip track types
-                      </span>
-                    </h5>
+                    <div class="row" id="notification-options"  >
+                      <div class="left large-12 columns">
+                        <span data-tooltip aria-haspopup="true" class="has-tip" title="Change the waypoint open and validation radius.">
+                          Waypoint options
+                        </span>
+                        <br>
+                        <div>
+                          <div class="row collapse" id="notification-open-radius-wrapper">
+                            <div class="large-6 columns">
+                              <span data-tooltip aria-haspopup="true" class="has-tip prefix" title="Waypoint open radius.">
+                                Open(m):
+                              </span>
+                            </div>
+                            <div class="large-6 columns">
+                              <input type="number" id="notification-open-radius" min="10" max="2000" step="10">
+                            </div>
+                          </div>
+                          <div class="row collapse">
+                            <div class="large-6 columns">
+                              <span data-tooltip aria-haspopup="true" class="has-tip prefix" title="Waypoint validation radius.">
+                                Validation:
+                              </span>
+                            </div>
+                            <div class="large-6 columns">
+                              <input type="number" id="notification-validation-radius" min="5" max="2000" step="5">
+                            </div>
+                          </div>
+                          <div class="row collapse" id="notification-time-wrapper">
+                            <div class="large-6 columns">
+                              <span data-tooltip aria-haspopup="true" class="has-tip prefix" title="Time limit.">
+                                Time(s):
+                              </span>
+                            </div>
+                            <div class="large-6 columns">
+                              <input type="number" id="notification-time">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <div class="large-4 columns selection-label">
                     <h5>
@@ -183,6 +228,19 @@
                         </div>
                       </div>
                     </div>
+                    <div class="row">
+                      <div class="large-6 columns">
+                        <span data-tooltip aria-haspopup="true" class="has-tip" title="Click to add text to the tulip in the selected position using the placement grid.">
+                          Text
+                        </span>
+                      </div>
+                      <div class="large-6 columns">
+                        <div class="switch round tiny">
+                          <input id="toggle-insert-text" type="radio" name="toggle-insert-type">
+                          <label for="toggle-insert-text"></label>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <div class="large-4 column selection-label">
                     <h5>
@@ -191,6 +249,10 @@
                       </span>
                     </h5>
                     <div class="row">
+                      <div class="left large-12 columns note-glyph-selection">
+                        <div class="note-grid" data-target="add" id="note-add-glyph" data-tooltip aria-haspopup="true" class="has-tip" title="Click to add glyphs to the the note."><i class="fa fa-image"></i></i></div>
+                        <div class="note-grid" data-target="add" id="note-add-text" data-tooltip aria-haspopup="true" class="has-tip" title="Click to add text to the note."><i class="fa fa-t"></i></i></div>
+                      </div>
                       <div class="large-6 columns">
                         <span data-tooltip aria-haspopup="true" class="has-tip" title="Click to add show or hide the CAP heading for this instruction">
                           CAP
@@ -198,8 +260,21 @@
                       </div>
                       <div class="large-6 columns">
                         <div class="switch round tiny">
-                          <input id="toggle-heading" type="checkbox" name="toggle-heading" data-bind="checked: waypointShowHeading">
+                          <input id="toggle-heading" type="checkbox" name="toggle-heading" data-bind="checked: instructionShowHeading">
                           <label for="toggle-heading"></label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="large-6 columns">
+                        <span data-tooltip aria-haspopup="true" class="has-tip" title="Click to show or hide the coordinates for this instruction">
+                          Lat/Lon
+                        </span>
+                      </div>
+                      <div class="large-6 columns">
+                        <div class="switch round tiny">
+                          <input id="toggle-coordinates" type="checkbox" name="toggle-coordinates" data-bind="checked: instructionShowCoordinates">
+                          <label for="toggle-coordinates"></label>
                         </div>
                       </div>
                     </div>
@@ -208,23 +283,31 @@
                 </div>
                 <div class="row">
                   <div class="large-4 columns">
+                    <h5>
+                      <span data-tooltip aria-haspopup="true" class="has-tip track-selection" title="Select the type of tracks added to the tulip, the track type the rider will enter the tulip on, and the track type the rider will exit the tulip on.">
+                        Tulip track types
+                      </span>
+                    </h5>
                     <ul class="accordion track-selection" data-accordion>
                       <li class="accordion-navigation">
                         <a href="#added-track-tab" class='track-tab-title'>Add as</a>
                         <div id="added-track-tab" class="content active">
-                          <a title="off piste" href="#" class="button tiny radius secondary added-track-selector" id="off-piste-added">
+                          <a title="Low visible track" href="#" class="button tiny radius secondary added-track-selector" data-track="lowVisTrack" id="added-lowVisTrack">
+                            <img  src="./assets/svg/lvt.svg">
+                          </a>
+                          <a title="Off Track (HP)" href="#" class="button tiny radius secondary added-track-selector" data-track="offPiste" id="added-offPiste">
                             <img  src="assets/off-piste-added.png">
                           </a>
-                          <a title="track" href="#" class="button tiny radius secondary added-track-selector active" id="track-added">
-                            <img  src="assets/track-added.png">
+                          <a title="Small Track/Piste" href="#" class="button tiny radius secondary added-track-selector active" data-track="smallTrack" id="added-smallTrack">
+                            <img  src="assets/small-track-added.png">
                           </a>
-                          <a title="road" href="#" class="button tiny radius secondary added-track-selector" id="road-added">
-                            <img src="assets/road-added.png">
+                          <a title="Track/Piste" href="#" class="button tiny radius secondary added-track-selector" data-track="track" id="added-track">
+                            <img src="assets/track-added.png">
                           </a>
-                          <a title="main road" href="#" class="button tiny radius secondary added-track-selector" id="main-road-added">
-                            <img src="assets/main-road-added.png">
+                          <a title="Tarmac Road" href="#" class="button tiny radius secondary added-track-selector" data-track="tarmacRoad" id="added-tarmacRoad">
+                            <img src="assets/tarmac-road-added.png">
                           </a>
-                          <a title="divided road" href="#" class="button tiny radius secondary added-track-selector" id="dcw-added">
+                          <a title="Dual Carriageway" href="#" class="button tiny radius secondary added-track-selector" data-track="dcw" id="added-dcw">
                             <img src="assets/dcw-added.png">
                           </a>
                         </div>
@@ -232,19 +315,22 @@
                       <li class="accordion-navigation">
                         <a href="#entry-track-tab" class='track-tab-title'>Enter on</a>
                         <div id="entry-track-tab" class="content">
-                          <a title="off piste" href="#" class="button tiny radius secondary entry-track-selector" id="off-piste-entry">
+                          <a title="Low visible track" href="#" class="button tiny radius secondary entry-track-selector" data-track="lowVisTrack">
+                            <img  src="./assets/svg/lvt.svg">
+                          </a>
+                          <a title="Off Trach (HP)" href="#" class="button tiny radius secondary entry-track-selector" data-track="offPiste">
                             <img  src="assets/off-piste-entry.png">
                           </a>
-                          <a title="track" href="#" class="button tiny radius secondary entry-track-selector" id="track-entry">
-                            <img  src="assets/track-entry.png">
+                          <a title="Small Track/Piste" href="#" class="button tiny radius secondary entry-track-selector" data-track="smallTrack">
+                            <img  src="assets/small-track-entry.png">
                           </a>
-                          <a title="road" href="#" class="button tiny radius secondary entry-track-selector" id="road-entry">
-                            <img src="assets/road-entry.png">
+                          <a title="Track/Piste" href="#" class="button tiny radius secondary entry-track-selector" data-track="track">
+                            <img src="assets/track-entry.png">
                           </a>
-                          <a title="main road" href="#" class="button tiny radius secondary entry-track-selector" id="main-road-entry">
-                            <img src="assets/main-road-entry.png">
+                          <a title="Tarmac Road" href="#" class="button tiny radius secondary entry-track-selector" data-track="tarmacRoad">
+                            <img src="assets/tarmac-road-entry.png">
                           </a>
-                          <a title="divided road" href="#" class="button tiny radius secondary entry-track-selector" id="dcw-entry">
+                          <a title="Dual Carriageway" href="#" class="button tiny radius secondary entry-track-selector" data-track="dcw">
                             <img src="assets/dcw-entry.png">
                           </a>
                         </div>
@@ -252,19 +338,22 @@
                       <li class="accordion-navigation">
                         <a href="#exit-track-tab" class='track-tab-title'>Exit on</a>
                         <div id="exit-track-tab" class="content">
-                          <a title="off piste" href="#" class="button tiny radius secondary exit-track-selector" id="off-piste-exit">
+                          <a title="Low visible track" href="#" class="button tiny radius secondary exit-track-selector" data-track="lowVisTrack">
+                            <img  src="./assets/svg/lvt.svg">
+                          </a>
+                          <a title="Off Track (HP)" href="#" class="button tiny radius secondary exit-track-selector" data-track="offPiste">
                             <img  src="assets/off-piste-exit.png">
                           </a>
-                          <a title="track" href="#" class="button tiny radius secondary exit-track-selector" id="track-exit">
-                            <img  src="assets/track-exit.png">
+                          <a title="Small Track/Piste" href="#" class="button tiny radius secondary exit-track-selector" data-track="smallTrack">
+                            <img  src="assets/small-track-exit.png">
                           </a>
-                          <a title="road" href="#" class="button tiny radius secondary exit-track-selector" id="road-exit">
-                            <img src="assets/road-exit.png">
+                          <a title="Track/Piste" href="#" class="button tiny radius secondary exit-track-selector" data-track="track">
+                            <img src="assets/track-exit.png">
                           </a>
-                          <a title="main road" href="#" class="button tiny radius secondary exit-track-selector" id="main-road-exit">
-                            <img src="assets/main-road-exit.png">
+                          <a title="Tarmac Road" href="#" class="button tiny radius secondary exit-track-selector" data-track="tarmacRoad">
+                            <img src="assets/tarmac-road-exit.png">
                           </a>
-                          <a title="divided road" href="#" class="button tiny radius secondary exit-track-selector" id="dcw-exit">
+                          <a title="Dual Carriageway" href="#" class="button tiny radius secondary exit-track-selector" data-track="dcw">
                             <img src="assets/dcw-exit.png">
                           </a>
                         </div>
@@ -272,7 +361,20 @@
                     </ul>
                   </div>
                   <div class="left large-4 columns">
-                    <div class="glyph-selection hidden">
+                    <div class="text-selection" id="text-selection-grid">
+                      <div class="tl text-grid" data-top="30" data-left="30"><i class="fi-pencil"></i></div>
+                      <div class="tm text-grid" data-top="30" data-left="85"><i class="fi-pencil"></i></div>
+                      <div class="tr text-grid" data-top="30" data-left="145"><i class="fi-pencil"></i></div>
+
+                      <div class="ml text-grid" data-top="95" data-left="30"><i class="fi-pencil"></i></div>
+                      <div class="mm text-grid undo"><i class="fi-refresh"></i></div>
+                      <div class="mr text-grid" data-top="95" data-left="145"><i class="fi-pencil"></i></div>
+
+                      <div class="ll text-grid" data-top="140" data-left="30"><i class="fi-pencil"></i></div>
+                      <div class="lm text-grid" data-top="140" data-left="85"><i class="fi-pencil"></i></div>
+                      <div class="lr text-grid" data-top="140" data-left="145"><i class="fi-pencil"></i></div>
+                    </div>
+                    <div class="glyph-selection" id="glyph-selection-grid">
                       <div class="tl glyph-grid" data-top="30" data-left="30"><i class="fi-plus"></i></div>
                       <div class="tm glyph-grid" data-top="30" data-left="85"><i class="fi-plus"></i></div>
                       <div class="tr glyph-grid" data-top="30" data-left="145"><i class="fi-plus"></i></div>
@@ -285,7 +387,7 @@
                       <div class="lm glyph-grid" data-top="140" data-left="85"><i class="fi-plus"></i></div>
                       <div class="lr glyph-grid" data-top="140" data-left="145"><i class="fi-plus"></i></div>
                     </div>
-                    <div class="track-selection">
+                    <div class="track-selection" id="track-selection-grid">
                       <div class="tl track-grid" data-angle="-45"><div><i class="fi-arrow-up"></i></div></div>
                       <div class="tm track-grid" data-angle="0"><i class="fi-arrow-up"></i></div>
                       <div class="tr track-grid" data-angle="45"><div><i class="fi-arrow-up"></i></div></div>
@@ -300,71 +402,88 @@
                     </div>
                   </div>
                   <div class="left large-4 columns note-tools">
-                    <!--
-                      START This gets repositioned over the waypoint note in edit mode
-                    -->
-                    <div id="note-editor-container">
-                      <div id="note-editor" contenteditable="true">
+                    <div data-bind="visible: isDrawing">
+                      <div class="row">
+                        <h5><span data-tooltip aria-haspopup="true" class="has-tip text-modifier" title="Set drawing style.">Drawing styles</span></h5>
+                      </div>
+                      <div class="row">
+                        <input type="range" min="2" max="7" step="1" data-bind="value: brushWidth"/>
+                      </div>
+                      <div class="row drawColorPick">
+                        Line: <input type="color" data-bind="value: brushColor" id="drawing-color-picker-stroke"/>
+                        Fill: <input type="color" data-bind="value: fillColor" id="drawing-color-picker-fill"/>
+                      </div>
+                      <div class="row">
+                        <input type="checkbox" data-bind="checked: isPathFilled"  id="drawing-shape-filled"> Fill shape
+                      </div>
+                      <div class="row">
+                        <div id="drawing-preset-wadi" class="drawing-preset ">Wadi</div>
+                        <div id="drawing-preset-water" class="drawing-preset ">Water</div>
+                        <div id="drawing-preset-sand" class="drawing-preset ">Sand</div>
                       </div>
                     </div>
-                    <!--
-                       END This gets repositioned over the waypoint note in edit mode
-                    -->
-                    <div class="row">
-                      <div class="left large-12 columns note-glyph-selection">
-                        <span data-tooltip aria-haspopup="true" class="has-tip" title="Click to add glyphs to the end of the note.">
-                          Insert glyph
-                        </span>
-                        <div class="note-grid" data-target="add"><i class="fi-plus"></i></i></div>
+                    <div id="text-properties" data-bind="visible: canvasSelectedItemType() === 'TextElement'">
+                      <div class="row">
+                        <h5><span data-tooltip aria-haspopup="true" class="has-tip text-modifier" title="Select a text item to apply text sytles.">Text styles</span></h5>
                       </div>
-                    </div>
-                    <div class="row">
-                      <div class="left large-12 columns">
-                        <span data-tooltip aria-haspopup="true" class="has-tip" title="Use the slider to resize selected glyhs and text. Click the style buttons to restyle selected text.">
-                          Modify selection
-                        </span>
-                        <input type="range" min="3" max="6" value="4" id="note-selection-size-range" style="margin-top:10px;width:100%;" list="note-glyph-sizes">
-                        <datalist id="note-glyph-sizes">
-                        	<option>3</option>
-                        	<option>4</option>
-                        	<option>5</option>
-                        	<option>6</option>
-                        </datalist>
-
-                        <button id="note-selection-bold" class="tiny secondary"><i class="fi-bold"></i></button>
-                        <button id="note-selection-italic" class="tiny secondary "><i class="fi-italic"></i></button>
-                        <button id="note-selection-underline" class="tiny secondary"><i class="fi-underline"></i></button>
+                      <div class="row">
+                            <span data-tooltip aria-haspopup="true" class="has-tip text-modifier" title="Make text Bold." id="text-modifier-normal">
+                              Normal
+                            </span>
                       </div>
-                    </div>
-                    <div class="row hidden" id="notification-options"  >
-                      <div class="left large-12 columns">
-                        <span data-tooltip aria-haspopup="true" class="has-tip" title="Change the waypoint bubble radius and modifier.">
-                          Waypoint options
-                        </span>
-                        <br>
-                        <!-- <a href="#" id="show-notification-options" class="button tiny secondary radius" data-reveal-id="notification-modal"><i class="fi-target-two"></i></a> -->
-                        <div>
-                          <div class="row collapse">
+                      <div class="row">
+                            <span data-tooltip aria-haspopup="true" class="has-tip text-modifier" title="Make text Bold." id="text-modifier-bold">
+                              Bold
+                            </span>
+                      </div>
+                      <div class="row">
+                            <span data-tooltip aria-haspopup="true" class="has-tip text-modifier" title="Make text Italic." id="text-modifier-italic">
+                              Italic
+                            </span>
+                      </div>
+                      <div class="row">
+                            <span data-tooltip aria-haspopup="true" class="has-tip text-modifier" title="Make text Underline." id="text-modifier-underline">
+                              Underline
+                            </span>
+                      </div>
+                      <div class="row">
+                            <span data-tooltip aria-haspopup="true" class="has-tip text-modifier" title="Make text Red." id="text-modifier-red">
+                              Red
+                            </span>
+                      </div>
+                      <div class="row">
+                            <span data-tooltip aria-haspopup="true" class="has-tip text-modifier" title="Make text Green." id="text-modifier-green">
+                              Green
+                            </span>
+                      </div>
+                      <div class="row">
+                            <span data-tooltip aria-haspopup="true" class="has-tip text-modifier" title="Make text Light Gray." id="text-modifier-lgray">
+                              Light Gray
+                            </span>
+                      </div>
+                      <div class="row">
+                            <span data-tooltip aria-haspopup="true" class="has-tip text-modifier" title="Make text Cyan background." id="text-modifier-bgcyan">
+                              Cyan background
+                            </span>
+                      </div>
+                      <div class="row">
+                            <span data-tooltip aria-haspopup="true" class="has-tip text-modifier" title="Make text Yellow background." id="text-modifier-bgyellow">
+                              Yellow background
+                            </span>
+                      </div>
+                      <div class="row" id="stop-time-options">
+                          <h5 data-tooltip aria-haspopup="true" class="has-tip" title="Set stop time.">
+                            Stop time</h5>
+                          <div class="row collapse" id="stop-time-wrapper">
                             <div class="large-6 columns">
-                              <span data-tooltip aria-haspopup="true" class="has-tip prefix" title="Waypoint bubble radius for RallyComp or RallyBlitz. Please be sure the device your riders are using is compatible with adjustable waypoints.">
-                                bubble:
+                              <span data-tooltip aria-haspopup="true" class="has-tip prefix" title="Stop time.">
+                                Time(s):
                               </span>
                             </div>
                             <div class="large-6 columns">
-                              <input type="number" id="notification-bubble" min="50" max="800" step="50">
+                              <input type="number" id="stop-time">
                             </div>
                           </div>
-                          <div class="row collapse">
-                            <div class="large-6 columns">
-                              <span data-tooltip aria-haspopup="true" class="has-tip prefix" title="Waypoint modifier for RallyComp or RallyBlitz waypoints, please refer to their documentation for the effects of using this modifier on a particular type of waypoint.">
-                                modifier:
-                              </span>
-                            </div>
-                            <div class="large-6 columns">
-                              <input type="number" id="notification-modifier">
-                            </div>
-                          </div>
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -380,27 +499,39 @@
   <!--
     Define templates
   -->
-  <!--  waypoint template-->
+  <!--  instruction template-->
   <script type="text/html" id="waypoint-template">
-    <div class='waypoint row'>
-      <div class='waypoint-distance'>
+    <div class='waypoint row' data-bind="css: assignInstructionColoring()">
+      <div class="waypoint-distance" data-bind="css: assignWaypointColoring()">
         <div class='total-distance'>
-          <div data-bind="text: totalDistance">
-          </div>
+          <div data-bind="text: filteredKmFromStart, css: { 'waypoint-danger-2': waypointDanger2(), 'total-distance-100m':filteredKmFromStart().length > 5 }"></div>
+          <div class="reset-zeroes" data-bind="visible: hasResetGlyph()">0.00</div>
+        </div>
+        <div class="waypoint-icon" data-bind="html: waypointIcon(), css: { 'waypoint-icon-none': waypointIcon() == undefined }">
         </div>
         <div class="relative-distance">
           <div data-bind="text: distFromPrev">
           </div>
         </div>
+        <div class="instruction-number">
+          <div data-bind="text: instructionNumber()">
+          </div>
+        </div>
       </div>
-      <div class='waypoint-tulip'>
-        <canvas data-bind="waypointCanvasRendered" width='180' height='180'>
+      <div class='waypoint-tulip' data-bind="css: assignTulipColoring()">
+        <canvas data-bind="instructionCanvasRendered" width='180' height='180'>
         </canvas>
+        <div class="tulip-checkpoint-number" data-bind="text: checkpointNumber(), visible: checkpointNumber()"></div>
       </div>
       <div class='waypoint-note'>
-        <p data-bind="html: noteHTML"></p>
-        <div class='heading' data-bind="visible: showHeading">
-          <label>CAP </label><span data-bind="text: heading"></span>
+        <canvas data-bind="noteCanvasRendered" width='180' height='180'>
+        </canvas>
+        <div class='heading' data-bind="css: { 'heading-coordinates-hidden': !showHeading()}, text: heading">
+        </div>
+        <div class="coordinates" data-bind="css: { 'heading-coordinates-hidden': !showCoordinates()}">
+          <span data-bind="html: coordinates"></span>
+        </div>
+        <div class="waypoint-number" data-bind="css: { 'waypoint-number-hidden': !waypointNumber(), 'waypoint-number-coord':showCoordinates()}, text:waypointNumber()">
         </div>
       </div>
     </div>
@@ -415,331 +546,120 @@
     <i class="fi-x" id="glyph-search-clear"></i>
     <ul id="glyph-search-results" class="small-block-grid-5">
     </ul>
-    <ul class="accordion" data-accordion>
-      <li class="accordion-navigation">
-        <a href="#detail-glyphs">Route Details</a>
-        <div id="detail-glyphs" class="content">
-          <ul class="tabs" data-tab>
-            <li class="tab-title active"><a href="#description-detail">Descriptions</a></li>
-            <li class="tab-title"><a href="#condition-detail">Conditions</a></li>
-            <li class="tab-title"><a href="#action-detail">Actions</a></li>
-          </ul>
-
-          <div class="tabs-content">
-            <div class="content active" id="description-detail">
-              <ul class="small-block-grid-5">
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/bad.svg"></a><p>bad</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/many.svg"></a><p>many</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/medium.svg"></a><p>medium</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/big.svg"></a><p>big</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/more-or-less-visible.svg"></a><p>more or less visible</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/narrow.svg"></a><p>narrow</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/imperative.svg"></a><p>imperative</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/tight.svg"></a><p>tight</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/twisty.svg"></a><p>twisty</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/winding-main-track.svg"></a><p>winding main track</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/winding-track.svg"></a><p>winding track</p></li>
-              </ul>
-            </div>
-
-            <div class="content" id="condition-detail">
-              <ul class="small-block-grid-5">
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/collapsed.svg"></a><p>collapsed</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/dry-river.svg"></a><p>river</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/dune.svg"></a><p>dune</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/small-dune.svg"></a><p>small dune</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/gravel.svg"></a><p>gravel</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/stone.svg"></a><p>stone</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/road.svg"></a><p>road</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/rocks-text.svg"></a><p>rocks</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/rocky.svg"></a><p>rocky</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/rough.svg"></a><p>rough</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/rut.svg"></a><p>ruts</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/wash-river.svg"></a>wash/river<p></p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/vegetation.svg"></a><p>vegetation</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/sand.svg"></a><p></p></li>
-              </ul>
-            </div>
-            <div class="content" id="action-detail">
-              <ul class="small-block-grid-5">
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/left.svg"></a><p>left</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/on-the-left.svg"></a><p>on the left</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/right.svg"></a><p>right</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/on-the-right.svg"></a><p>on the right</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/left-right.svg"></a><p>left then right</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/right-left.svg"></a><p>right then left</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/keep-straight.svg"></a><p>keep straight</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/keep-straight-on-main-road.svg"></a><p>keep straight on main road</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/keep-straight-on-main-track.svg"></a><p>keep straight on main track</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/slow-down.svg"></a><p>slow down</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/always.svg"></a><p>always</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/in.svg"></a><p>in</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/leave.svg"></a><p>leave</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/average-bearing.svg"></a><p>average bearing</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/bearing.svg"></a><p>bearing (CAP)</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/between.svg"></a><p>between</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/to-take.svg"></a><p>to take</p></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </li>
-      <li class="accordion-navigation">
-        <a href="#track-glyphs">Track Descriptions</a>
-        <div id="track-glyphs" class="content">
-          <ul class="small-block-grid-5">
-            <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/big.svg"></a><p>big</p></li>
-            <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/big-track.svg"></a><p> big track</p></li>
-            <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/main-track.svg"></a><p> main track</p></li>
-            <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/off-track.svg"></a><p>off track</p></li>
-            <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/off-track-forbidden.svg"></a><p>off track forbidden</p></li>
-            <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/parallel-tracks.svg"></a><p>parallel tracks</p></li>
-            <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/road.svg"></a><p>road</p></li>
-            <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/track.svg"></a><p>track</p></li>
-            <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/winding-track.svg"></a><p>winding track</p></li>
-            <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/winding-main-track.svg"></a><p>winding main track</p></li>
-          </ul>
-        </div>
-      </li>
-      <li class="accordion-navigation">
-        <a href="#feature-glyphs">Terrain Features</a>
-        <div id="feature-glyphs" class="content">
-          <ul class="tabs" data-tab>
-            <li class="tab-title active"><a href="#man-made-feature">Man Made</a></li>
-            <li class="tab-title"><a href="#natural-feature">Natural</a></li>
-            <li class="tab-title"><a href="#symbols-feature">Symbols</a></li>
-          </ul>
-          <div class="tabs-content">
-            <div class="content active" id="man-made-feature">
-              <ul class="small-block-grid-5">
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/antenna.svg"></a><p>antenna</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/barrel.svg"></a><p>barrel</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/water-tank.svg"></a><p>water tank</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/well.svg"></a><p>well</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/billboard.svg"></a><p>billboard</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/pointy-sign.svg"></a><p>pointy sign</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/post.svg"></a><p>post</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/buildings.svg"></a><p>buildings</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/bridge.svg"></a><p>bridge</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/house.svg"></a><p>house</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cemetery.svg"></a><p>cemetery</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/ruins.svg"></a><p>ruins</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/church.svg"></a><p>church</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cairn.svg"></a><p>cairn</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cattle-guard-1.svg"></a><p>cattle guard one</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cattle-guard-2.svg"></a><p>cattle guard two</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/fence.svg"></a><p>fence</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/barbed-wire-fence.svg"></a><p>barbed wire fence</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/corral.svg"></a><p>corral</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/gate-barrier.svg"></a><p>gate barrier</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/gate-swing.svg"></a><p>swinging gate</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/low-wall.svg"></a><p>low wall</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/mine.svg"></a><p>mine</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/pumpjack.svg"></a><p>pumpjack</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/pipeline.svg"></a><p>pipeline</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/railroad.svg"></a><p>railroad</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/electric-line.svg"></a><p>electric line</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/electric-line2.svg"></a><p>electric line two</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/electric-pole.svg"></a><p>electric pole</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/electric-pole2.svg"></a><p>second electric pole</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/high-voltage-line.svg"></a><p>high voltage line</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/water-trough.svg"></a><p>water trough</p></li>
-              </ul>
-            </div>
-            <div class="content" id="natural-feature">
-              <ul class="small-block-grid-5">
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/ford.svg"></a><p>ford</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/wash.svg"></a><p>wash</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/wash-bend1.svg"></a><p>wash bend one</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/wash-bend2.svg"></a><p>wash bend two</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/rio.svg"></a><p>river</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/ruts.svg"></a><p>ruts</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/rocks.svg"></a><p>rocks</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/dunes.svg"></a><p>dunes</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/dunette.svg"></a><p>lil dune</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/mountain.svg"></a><p>mountain</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/mountain2.svg"></a><p>another mountain</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/undulations.svg"></a><p>undulations</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/palm-tree.svg"></a><p>palm tree</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/shrub.svg"></a><p>shrub?</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/tall-grass.svg"></a><p>tall grass</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/tree.svg"></a><p>tree</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/tree2.svg"></a><p>tree two</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/pond.svg"></a><p>pond</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/hill1.svg"></a><p>hill one</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/hill2.svg"></a><p>hill two</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/dunes1.svg"></a><p>dune one</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/dunes2.svg"></a><p>dune two</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cliff.svg"></a><p>cliff</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cliff1.svg"></a><p>cliff two</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cliff2.svg"></a><p>cliff too</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cliff3.svg"></a><p>another cliff</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cliff4.svg"></a><p>don't fall off this cliff</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cliff5.svg"></a><p>cliff five</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cliff6.svg"></a><p>cliff tannen</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cliff7.svg"></a><p>an eyelash. sike! it's a cliff</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/cliff8.svg"></a><p>cliff8</p></li>
-              </ul>
-            </div>
-            <div class="content" id="symbols-feature">
-              <ul class="small-block-grid-5">
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/uphill.svg"></a><p>uphill</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/downhill.svg"></a><p>downhill</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/step.svg"></a><p>step</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/step-down.svg"></a><p>step down</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/step-up.svg"></a><p>step up</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/sand-pit.svg"></a><p>sand pit</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/hole.svg"></a><p>hole</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/bump.svg"></a><p>bump</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/collapse.svg"></a><p>collapse</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/compression.svg"></a><p>compression</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/dip.svg"></a><p>dip</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/ditch.svg"></a><p>ditch</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/towards.svg"></a><p>towards</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/danger-3.svg"></a><p>kill</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/danger-2.svg"></a><p>maim</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/danger-1.svg"></a><p>boo-boo</p></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </li>
-      <li class="accordion-navigation">
-        <a href="#orga-glyphs">Orga</a>
-        <div id="orga-glyphs" class="content">
-          <ul class="tabs" data-tab>
-            <li class="tab-title active"><a href="#orga-notices">Notices</a></li>
-            <li class="tab-title"><a href="#speed-zones">Speed Zones</a></li>
-          </ul>
-          <div class="tabs-content">
-            <div class="content active" id="orga-notices">
-              <ul class="small-block-grid-5">
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/finish-of-selective-section.svg"></a><p>finish selective section</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/finish.svg"></a><p>finish</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/start-of-selective-section.svg"></a><p>start selective section</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/start.svg"></a><p>start</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/clock.svg"></a><p>time check</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/waypoint-masked.svg"></a><p>waypoint masked</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/waypoint-eclipsed.svg"></a><p>waypoint eclipsed</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/waypoint-safety.svg"></a><p>waypoint safety</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/control-point.svg"></a><p>control point</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/camp.svg"></a><p>camp</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/petrol-station.svg"></a><p>petrol station</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/village.svg"></a><p>village</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/danger-3.svg"></a><p></p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/danger-2.svg"></a><p></p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/danger-1.svg"></a><p></p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/stop.svg"></a><p></p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/sensitive-zone.svg"></a><p>sensitive zone</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/photo.svg"></a><p>photo</p></li>
-              </ul>
-            </div>
-            <div class="content" id="speed-zones">
-              <ul class="small-block-grid-5">
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-start.svg"></a><p>start speed zone</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-end.svg"></a><p>end speed zone</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-20.svg"></a><p>20kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-25.svg"></a><p>25kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-30.svg"></a><p>30kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-35.svg"></a><p>35kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-40.svg"></a><p>40kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-45.svg"></a><p>45kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-50.svg"></a><p>50kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-55.svg"></a><p>55kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-60.svg"></a><p>60kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-65.svg"></a><p>65kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-70.svg"></a><p>70kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-75.svg"></a><p>75kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-80.svg"></a><p>80kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-85.svg"></a><p>85kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-90.svg"></a><p>90kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-95.svg"></a><p>95kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-100.svg"></a><p>100kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-105.svg"></a><p>105kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-110.svg"></a><p>110kph</p></li>
-                <li><a class="th" href="#"><img class="glyph" src="./assets/svg/glyphs/speed-120.svg"></a><p>120kph</p></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </li>
-    </ul>
+    <div id="glyph-content"></div>
+    
+  </div>
+  <!-- Show about modal -->
+  <div id="about" class="reveal-modal glyph-modal" data-reveal aria-hidden="true" role="dialog">
+    <img src="assets/tulip-logo.png" width="100px" style="float: right;">
+    <h1>Tulip</h1><a class="close-reveal-modal" aria-label="Close">&#215;</a>
+    <div>Version: <div id="about-version">0.0.0</div></div>
+    <h3>Credits</h3>
+    <div>Original project by Drew Mitchell, Luke Bennett and Dave Peckham</jamesandrewmitchell>
+      <a href=" https://github.com/storm-factory/tulip" target="_blank" rel="noreferrer"> https://github.com/storm-factory/tulip</a>
+    </div>
+    <p>
+      <div>Fork maintained by Ilias Daradimos on <a href="https://gitlab.com/drid/tulip" target="_blank" rel="noreferrer">https://gitlab.com/drid/tulip</a>
+    <h3>License</h3>
+    <a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html" target="_blank" rel="noreferrer">GNU General Public License, version 2</a>
+    
+    <h3>Attributions</h3>
+    <div id="attributions">
+      <em>Loading attributions...</em>
+    </div>
+    
+    </div>
   </div>
 
-  <script>
+  <!-- <script>
     //Jquery sees it is running in CommonJS env, and wants to be used as such.
     window.$ = window.jQuery = require('./assets/libs/jquery-2.1.4.min.js');
-  </script>
+  </script> -->
+  <script src="node_modules/jquery/dist/jquery.min.js"></script>
   <!--
     Load the rest of our libraries
   -->
   <script src="assets/libs/jsclass/dist/browser/js.class.min.js"></script>
-  <script src="assets/libs/knockout-3.4.0.js"></script>
+  <script src="node_modules/knockout/build/output/knockout-latest.js"></script>
   <script src='assets/libs/fabric.min.js'></script>
   <script src='assets/libs/simplify.js'></script>
-  <script src='assets/libs/quill/quill.min.js'></script>
-  <script src='assets/libs/foundation-5.5.3/js/foundation.min.js'></script>
-  <script src='assets/libs/foundation-5.5.3/js/foundation/foundation.tooltip.js'></script>
-  <script src='assets/libs/foundation-5.5.3/js/vendor/modernizr.js'></script>
+  <script src='node_modules/quill/dist/quill.js'></script>
+  <script src='node_modules/foundation-sites/js/foundation.min.js'></script>
+  <script src='node_modules/foundation-sites/js/foundation/foundation.tooltip.js'></script>
+  <script src='node_modules/foundation-sites/js/vendor/modernizr.js'></script>
   <!--
     Load the application
   -->
   <script src='src/application.js'></script>
-  <script src='api_keys.js'></script>
+  <script src="src/load-credits.js"></script>
   <!--
     Load Modules
   -->
   <script src='src/modules/map-viewport-optimizer.js'></script>
   <script src='src/modules/track-editors.js'></script>
-  <script src='src/modules/track-remover.js'></script>
-  <script src='src/modules/glyph-remover.js'></script>
   <script src='src/modules/io.js'></script>
   <!--
     Load Controllers
   -->
   <script src='src/controllers/map-controller.js'></script>
+  <script src='src/controllers/roadbook-controller.js'></script>
   <script src='src/modules/glyph-controls.js'></script>
   <script src='src/modules/note-controls.js'></script>
   <!--
     Load Models
   -->
+  <script src='src/modules/text-element.js'></script>
   <script src='src/models/map-model.js'></script>
+  <script src='src/models/roadbook-model.js'></script>
+  <script src='src/modules/instruction-canvas.js'></script>
   <script src='src/modules/tracks.js'></script>
   <script src='src/modules/tulip.js'></script>
+  <script src='src/modules/note.js'></script>
   <script src='src/modules/notification.js'></script>
-  <script src='src/modules/roadbook.js'></script>
-  <script src='src/modules/waypoint.js'></script>
+  <script src='src/modules/instruction.js'></script>  
   <script>
+    fabric.Text.ATTRIBUTE_NAMES.push('id');
+    fabric.Object.prototype.toObject = (function(toObject) {
+      return function(propertiesToInclude) {
+        return toObject.call(this, ['id'].concat(propertiesToInclude || []));
+      };
+    })(fabric.Object.prototype.toObject);
+
+    fabric.TextElement = TextElement;
+    fabric.TextElement.fromObject = function (object, callback) {
+      const instance = new fabric.TextElement(object.text, object);
+      if (callback) {
+        callback(instance);
+      }
+      return instance;    };
   /*
     ---------------------------------------------------------------------------
     Instantiate the application
     ---------------------------------------------------------------------------
   */
-  $(document).ready(function(){
     app = new App();
-    ko.applyBindings(app.roadbook);
-    $(document).foundation();
 
-    new function(){
-      var s = document.createElement( 'script' );
-      s.setAttribute( 'src', "https://maps.googleapis.com/maps/api/js?key=" + api_keys.google_maps + "&callback=app.initMap" );
-      document.body.appendChild( s );
-    }
+    $(document).ready(function(){
+      ko.applyBindings(app.roadbook);
+      $(document).foundation();
+      $('#about-version').text(app.version)
+      function setMapSize(){
+        var width = window.innerWidth;
+        var height = window.innerHeight;
+        var hypotenuse = Math.sqrt(Math.pow(width,2)+Math.pow(height,2));
 
-    function setMapSize(){
-      var width = window.innerWidth;
-      var height = window.innerHeight;
-      var hypotenuse = Math.sqrt(Math.pow(width,2)+Math.pow(height,2));
-
-      $('#map').css('height', hypotenuse);
-      $('#map').css('width', hypotenuse);
-      $('#map').css('left', (width/2)-(hypotenuse/2));
-      $('#map').css('top', (height/2)-(hypotenuse/2));
-    }
-    setMapSize();
-    $(window).resize(function(){
+        $('#map').css('height', hypotenuse);
+        $('#map').css('width', hypotenuse);
+        $('#map').css('left', (width/2)-(hypotenuse/2));
+        $('#map').css('top', (height/2)-(hypotenuse/2));
+      }
       setMapSize();
-    })
-  });
+      $(window).resize(function(){
+        setMapSize();
+      })
+    });
+
+    app.initializeGoogleMaps();
   </script>
+
 </html>

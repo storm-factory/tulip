@@ -1,0 +1,44 @@
+site_name: Tulip
+repo_url: https://gitlab.com/drid/tulip
+site_url: https://drid.gitlab.io/tulip/
+nav:
+  - Home: index.md
+  - Downloads: downloads.md
+  - User Guide:
+    - Install: install.md
+    - Setup: setup.md
+    - Usage: usage.md
+    - OpenRally: openrally.md
+    - Shortcuts: shortcuts.md
+theme:
+  name: material
+  custom_dir: docs/overrides
+  palette:
+    primary: amber
+  features:
+    - navigation.tabs
+    - navigation.expand
+
+extra:
+  analytics:
+    provider: google
+    property: G-1VYMMX1XZ4
+
+extra_css:
+  - css/site.css
+  - https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css
+
+extra_javascript:
+  - js/umami-tracker.js
+
+
+markdown_extensions:
+  - attr_list
+  - md_in_html
+  - pymdownx.highlight:           # Core highlighter
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences

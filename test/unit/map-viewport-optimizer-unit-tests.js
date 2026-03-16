@@ -20,19 +20,19 @@ test( 'Sets the map for in bound markers and removes it for out of bound markers
   assert.end();
 } );
 
-test( 'Shows only waypoints at low zoom levels', function( assert ) {
+test( 'Shows only instructions at low zoom levels', function( assert ) {
   var optimizer = new mapOptimizer();
   var map = "I am map";
   var markers = [
-    {getMap: function(){return this.map}, setMap: function(map){return this.map = map;}, waypoint: true, map: map},
-    {getMap: function(){return this.map}, setMap: function(map){return this.map = map;}, waypoint: false, map: map},
-    {getMap: function(){return this.map}, setMap: function(map){return this.map = map;}, waypoint: false, map: map},
-    {getMap: function(){return this.map}, setMap: function(map){return this.map = map;}, waypoint: false, map: map},
-    {getMap: function(){return this.map}, setMap: function(map){return this.map = map;}, waypoint: true, map: map},
+    {getMap: function(){return this.map}, setMap: function(map){return this.map = map;}, instruction: true, map: map},
+    {getMap: function(){return this.map}, setMap: function(map){return this.map = map;}, instruction: false, map: map},
+    {getMap: function(){return this.map}, setMap: function(map){return this.map = map;}, instruction: false, map: map},
+    {getMap: function(){return this.map}, setMap: function(map){return this.map = map;}, instruction: false, map: map},
+    {getMap: function(){return this.map}, setMap: function(map){return this.map = map;}, instruction: true, map: map},
   ]
   var bounds = {contains: function(position){return position < 5}};
 
-  optimizer.showOnlyWaypointsAtZoom(map, markers);
+  optimizer.showOnlyInstructionsAtZoom(map, markers);
   assert.equal(markers[3].map, null, "It sets the map to null for normal markers at low zooms");
   assert.equal(markers[0].map, map, "It sets the map for waypoint markers at low zooms");
 

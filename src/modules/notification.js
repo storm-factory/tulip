@@ -9,107 +9,258 @@
   // NOTE this is a straight up model and the simplicity of such is beautiful
   // NOTE Buuuuut there are two static calls in the constructor, maybe look at the factory pattern
 */
-class Notification{
-  constructor(name){
-    var type = Notification.mapFileNameToType(name);
-    if(type){
+class Notification {
+  constructor(name) {
+    var type = false
+    if (typeof (name) === "object") {
+      type = name.type;
+    }
+    else
+      type = Notification.mapFileNameToType(name);
+
+    if (type) {
       var notification = Notification.buildNotification(type);
       this.type = notification.type;
       this.openrallytype = notification.openrallytype;
-      this.bubble = notification.bubble;
-      this.modifier = notification.modifier;
-      this.modMin = notification.modMin;
-      this.modMax = notification.modMax;
-      this.modStep = notification.modStep;
+      this.openRadius = notification.openRadius;
+      this.validationRadius = notification.validationRadius;
       this.fill = notification.fill;
+      this.time = notification.time;
     }
   }
 
-  static mapFileNameToType(filename){
+  static mapFileNameToType(filename, reverse = false) {
     var map = {
       "waypoint-masked": "wpm",
+      "waypoint-visible": "wpv",
       "waypoint-eclipsed": "wpe",
-      "danger-3": "wps",
-      "waypoint-safety": "wps",
+      "waypoint-control": "wpc",
+      "waypoint-navigation": "wpn",
+      "waypoint-precise": "wpp",
+      "waypoint-security": "wps",
+      "control-start-selective-section": "dss",
       "start": "dss",
-      "start-of-selective-section": "dss",
+      "control-arrival-selective-section": "fss",
       "finish": "fss",
-      "finish-of-selective-section": "fss",
+      "control-checkpoint": "cp",
       "speed-start": "dsz",
       "speed-end": "fsz",
+      "control-start-neutralization": "dn",
+      "control-start-neutralization-speed-limit": "dns",
+      "control-finish-neutralization": "fn",
+      "control-start-transfer": "dt",
+      "control-start-transfer-speed-limit": "dts",
+      "control-finish-transfer": "ft",
     }
+    if (reverse)
+      return Object.keys(map).find(key => map[key] === filename);
     return map[filename];
   }
 
 
-  static buildNotification(type){
+  static buildNotification(type) {
     var types = {
       wpm: {
-          type: "wpm",
-		  openrallytype: "wpm",
-          fill: '#008CBA',
-          bubble: 400,
-          modifier: 400,
-          modMin: 100,
-          modMax: 800,
-          modStep: 100,
+        type: "wpm",
+        openrallytype: "wpm",
+        fill: '#008CBA',
+        openRadius: 800,
+        validationRadius: 90,
+        modMin: 100,
+        modMax: 800,
+        modStep: 10,
+      },
+      wpv: {
+        type: "wpv",
+        openrallytype: "wpv",
+        fill: '#008CBA',
+        validationRadius: 200,
+        modMin: 10,
+        modMax: 800,
+        modStep: 10,
       },
       wpe: {
-          type: "wpe",
-		  openrallytype: "wpe",
-          fill: '#008CBA',
-          bubble: 50,
+        type: "wpe",
+        openrallytype: "wpe",
+        fill: '#008CBA',
+        openRadius: 1000,
+        validationRadius: 90,
+        modMin: 10,
+        modMax: 1000,
+        modStep: 10,
+      },
+      wpn: {
+        type: "wpn",
+        openrallytype: "wpn",
+        fill: '#ff20fb',
+        openRadius: 800,
+        validationRadius: 200,
+        modMin: 10,
+        modMax: 800,
+        modStep: 10,
+      },
+      wpc: {
+        type: "wpc",
+        openrallytype: "wpc",
+        fill: '#ffffb9',
+        validationRadius: 300,
+        modMin: 10,
+        modMax: 600,
+        modStep: 10,
+      },
+      wpp: {
+        type: "wpp",
+        openrallytype: "wpp",
+        fill: '#cccccc',
+        openRadius: 100,
+        validationRadius: 20,
+        modMin: 1,
+        modMax: 100,
+        modStep: 1,
       },
       wps: {
-          type: "wps",
-          openrallytype: "wps",
-          fill: '#ff4200',
-          bubble: 200,
-          modifier: 200,
-          modMin: 10,
-          modMax: 400,
-          modStep: 10,
+        type: "wps",
+        openrallytype: "wps",
+        fill: '#ff4200',
+        openRadius: 1000,
+        validationRadius: 30,
+        modMin: 100,
+        modMax: 1000,
+        modStep: 10,
       },
       dss: {
-          type: "dss",
-          openrallytype: "dss",
-          fill: '#ffba29',
-          bubble: 50,
+        type: "dss",
+        openrallytype: "dss",
+        fill: '#ff4242',
+        openRadius: 1000,
+        validationRadius: 200,
+        modMin: 10,
+        modMax: 1000,
+        modStep: 10,
       },
       fss: {
-          type: "fss",
-          openrallytype: "ass",
-          fill: '#ffba29',
-          bubble: 50,
+        type: "fss",
+        openrallytype: "ass",
+        fill: '#ff6060',
+        openRadius: 800,
+        validationRadius: 90,
+        modMin: 10,
+        modMax: 800,
+        modStep: 10,
       },
       dsz: {
-          type: "dsz",
-          openrallytype: "dz",
-          fill: '#ffba29',
-          bubble: 200,
-          modifier: 5,
-          modMin: 5,
-          modMax: 200,
-          modStep: 5,
+        type: "dsz",
+        openrallytype: "dz",
+        fill: '#ffba29',
+        openRadius: 1000,
+        validationRadius: 90,
+        modMin: 10,
+        modMax: 1000,
+        modStep: 10,
       },
       fsz: {
-          type: "fsz",
-          openrallytype: "fz",
-          fill: '#ffba29',
-          bubble: 50,
+        type: "fsz",
+        openrallytype: "fz",
+        fill: '#3db54a',
+        openRadius: 1000,
+        validationRadius: 90,
+        modMin: 10,
+        modMax: 1000,
+        modStep: 10,
+      },
+      cp: {
+        type: "cp",
+        openrallytype: "checkpoint",
+        fill: '#ba6bab',
+        openRadius: 1000,
+        validationRadius: 90,
+        modMin: 10,
+        modMax: 1000,
+        modStep: 10
+      },
+      dn: {
+        type: "dn",
+        openrallytype: "neutralization",
+        fill: '#a8aaad',
+        openRadius: 1000,
+        validationRadius: 90,
+        modMin: 10,
+        modMax: 1000,
+        modStep: 10,
+        time: 600
+      },
+      dns: {
+        type: "dns",
+        openrallytype: "neutralization",
+        fill: '#ffba29',
+        openRadius: 1000,
+        validationRadius: 90,
+        modMin: 10,
+        modMax: 1000,
+        modStep: 10,
+        time: 600
+      },
+      fn: {
+        type: "fn",
+        openrallytype: "fn",
+        fill: '#a8aaad',
+        openRadius: 1000,
+        validationRadius: 90,
+        modMin: 10,
+        modMax: 1000,
+        modStep: 10
+      },
+      dt: {
+        type: "dt",
+        openrallytype: "dt",
+        fill: '#a8aaad',
+        openRadius: 1000,
+        validationRadius: 90,
+        modMin: 10,
+        modMax: 1000,
+        modStep: 10,
+        time: 600
+      },
+      dts: {
+        type: "dts",
+        openrallytype: "dt",
+        fill: '#ffba29',
+        openRadius: 1000,
+        validationRadius: 90,
+        modMin: 10,
+        modMax: 1000,
+        modStep:105,
+        time: 600
+      },
+      ft: {
+        type: "ft",
+        openrallytype: "ft",
+        fill: '#a8aaad',
+        openRadius: 1000,
+        validationRadius: 90,
+        modMin: 10,
+        modMax: 1000,
+        modStep: 10
       },
     }
     return types[type];
   }
 
-  static nameMatchesClass(name,type){
+  static nameMatchesClass(name, type) {
     return (Notification.mapFileNameToType(name) == type);
+  }
+
+  static getUiElements(type) {
+    var n = Notification.buildNotification(type);
+    return { "modMin": n.modMin, "modMax": n.modMax, "modStep": n.modStep, "fill": n.fill }
   }
 }
 
 /*
   Node exports for test suite
 */
-module.exports.nameMatchesClass = Notification.nameMatchesClass;
-module.exports.mapFileNameToType = Notification.mapFileNameToType;
-module.exports.buildNotification = Notification.buildNotification;
+if (typeof window == 'undefined') {
+  module.exports.nameMatchesClass = Notification.nameMatchesClass;
+  module.exports.mapFileNameToType = Notification.mapFileNameToType;
+  module.exports.buildNotification = Notification.buildNotification;
+}

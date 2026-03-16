@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block extrahead %}
+{{ super() }}
+{% if page and page.meta and page.meta.extra_javascript %}
+{% for js in page.meta.extra_javascript %}
+<script src="{{ js | url }}" defer></script>
+{% endfor %}
+{% endif %}
+<meta name="google-site-verification" content="0__2tBn9H_OJaSV_XF7FMkN7IkiAeM1r2ixUXv-K36g" />
+<meta name="description"
+  content="{% if page and page.meta and page.meta.description %}{{ page.meta.description }}{% else %}Tulip - Open source roadbook creation software{% endif %}">
+<meta property="og:title" content="{{ page.title | d(config.site_name) }}">
+<meta property="og:description"
+  content="{% if page and page.meta and page.meta.description %}{{ page.meta.description }}{% else %}Tulip - Open source roadbook creation software{% endif %}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ page.canonical_url | d(config.site_url) }}">
+{% endblock %}
+

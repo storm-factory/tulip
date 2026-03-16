@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   version="1.1"
+   width="105.02305mm"
+   height="105.02305mm"
+   viewBox="0 0 105.26565 105.26565"
+   id="svg556"
+   sodipodi:docname="roadsign_no-entry.svg"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs560" />
+  <sodipodi:namedview
+     id="namedview558"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="2.3329348"
+     inkscape:cx="162.242"
+     inkscape:cy="198.67679"
+     inkscape:window-width="1870"
+     inkscape:window-height="1131"
+     inkscape:window-x="1490"
+     inkscape:window-y="851"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg556" />
+  <g
+     transform="translate(-53.484349,-107.06769)"
+     id="g554">
+    <path
+       d="m 53.485114,159.41667 a 52.632824,52.632824 0 0 1 52.909706,-52.34825 52.632824,52.632824 0 0 1 52.35448,52.90355 52.632824,52.632824 0 0 1 -52.89738,52.3607 52.632824,52.632824 0 0 1 -52.366934,-52.8912"
+       style="fill:#f00000;stroke:none"
+       id="path550" />
+    <path
+       d="M 68.791667,159.41667 H 142.875"
+       style="fill:none;stroke:#ffffff;stroke-width:15"
+       id="path552" />
+  </g>
+</svg>

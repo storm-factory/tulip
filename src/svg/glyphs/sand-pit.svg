@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generator: Adobe Illustrator 19.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+
+<svg
+   version="1.1"
+   id="Layer_1"
+   x="0px"
+   y="0px"
+   viewBox="0 0 250 250"
+   style="enable-background:new 0 0 250 250;"
+   xml:space="preserve"
+   sodipodi:docname="sand-pit.svg"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+   id="defs813" /><sodipodi:namedview
+   id="namedview811"
+   pagecolor="#ffffff"
+   bordercolor="#000000"
+   borderopacity="0.25"
+   inkscape:showpageshadow="2"
+   inkscape:pageopacity="0.0"
+   inkscape:pagecheckerboard="0"
+   inkscape:deskcolor="#d1d1d1"
+   showgrid="false"
+   inkscape:zoom="4.556"
+   inkscape:cx="125"
+   inkscape:cy="125"
+   inkscape:window-width="2510"
+   inkscape:window-height="1363"
+   inkscape:window-x="0"
+   inkscape:window-y="0"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="Layer_1" />
+<style
+   type="text/css"
+   id="style806">
+	.st0{fill:none;stroke:#000000;stroke-width:6;stroke-linecap:round;stroke-miterlimit:10;}
+</style>
+<path
+   style="color:#000000;fill:#ff0000;stroke-linecap:round;stroke-miterlimit:10;-inkscape-stroke:none;stroke:#000000"
+   d="m 78.548828,75.199219 c -6.892659,0.233173 -16.103184,1.042228 -25.371094,3.339843 -9.26791,2.297616 -18.6847,6.080273 -25.951172,12.53711 C 19.960091,97.533008 15,106.81919 15,119.09961 c 0,12.28042 4.956704,21.58672 12.21875,28.08008 7.262046,6.49336 16.676602,10.32878 25.943359,12.67773 C 71.695625,164.55533 90,163.29297 90,163.29297 l -0.199219,0.008 H 232 a 3,3 0 0 0 3,-3 3,3 0 0 0 -3,-3 H 89.699219 l -0.09961,0.006 c 0,0 -17.596441,1.13646 -34.96289,-3.26562 C 45.953494,151.83998 37.41919,148.25116 31.21875,142.70703 25.01831,137.1629 21,129.81916 21,119.09961 c 0,-10.71956 4.014922,-18.03341 10.210937,-23.539063 6.196016,-5.505652 14.728085,-9.046839 23.410157,-11.199219 17.364144,-4.30476 34.96289,-3.068359 34.96289,-3.068359 l 0.107422,0.0078 H 232 a 3,3 0 0 0 3,-3 3,3 0 0 0 -3,-3 H 89.800781 l 0.216797,0.0078 c 0,0 -4.576091,-0.342548 -11.46875,-0.109375 z"
+   id="XMLID_2_" />
+<path
+   style="color:#000000;fill:#ff0000;stroke-linecap:round;stroke-miterlimit:10;-inkscape-stroke:none;stroke:#000000"
+   d="m 164.97461,47.28125 a 3,3 0 0 0 -1.69336,1.548828 L 92.880859,199.63086 a 3,3 0 0 0 1.449219,3.98828 3,3 0 0 0 3.988281,-1.44922 L 168.71875,51.369141 a 3,3 0 0 0 -1.44922,-3.988282 3,3 0 0 0 -2.29492,-0.09961 z"
+   id="XMLID_1_" />
+</svg>

@@ -1,14 +1,19 @@
 {
   "name": "tulip",
-  "version": "1.8.2",
-  "description": "A application for creating rally fun times",
+  "productName": "Tulip",
+  "version": "1.11.2",
+  "description": "Rally Roadbook Creator",
   "main": "main.js",
+  "type": "commonjs",
   "scripts": {
-    "start": "electron ."
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/storm-factory/tulip.git"
+    "start": "electron .",
+    "build-linux": "electron-builder --linux --publish never",
+    "build-win": "electron-builder --windows --publish never",
+    "build-mac": "electron-builder --mac --publish never",
+    "test": "tape test/unit/*-tests.js",
+    "convert-svg": "node utils/convert_svgs.js",
+    "changelog": "git cliff --unreleased --tag \"v$npm_package_version\" --prepend CHANGELOG.md",
+    "release": "scripts/version.sh"
   },
   "keywords": [
     "Electron",
@@ -16,14 +21,117 @@
     "rally",
     "tulip"
   ],
-  "author": "Drew Mitchell",
+  "author": "Drew Mitchell <jamesandrewmitchell@gmail.com>",
+  "contributors": [
+    "Luke Bennett",
+    "Dave Peckham",
+    "Ilias Daradimos <judgedrid@gmail.com>"
+  ],
   "license": "GPL-2.0",
-  "bugs": {
-    "url": "https://github.com/storm-factory/tulip/issues"
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/drid/tulip.git"
   },
-  "homepage": "https://github.com/storm-factory/tulip",
+  "bugs": {
+    "url": "https://gitlab.com/drid/tulip/-/issues"
+  },
+  "homepage": "https://drid.gitlab.io/tulip",
   "devDependencies": {
-    "electron-prebuilt": "^1.2.0",
-    "tape": "^4.6.3"
+    "electron": "^29.4.6",
+    "electron-builder": "^26.8.1",
+    "jsdom": "^26.1.0",
+    "source-map-support": "^0.5.21",
+    "tape": "^4.17.0",
+    "xml2js": "^0.6.2"
+  },
+  "dependencies": {
+    "@electron/remote": "^2.0.9",
+    "@fortawesome/fontawesome-free": "^7.1.0",
+    "@sentry/cli": "^2.42.2",
+    "@sentry/electron": "^6.1.0",
+    "electron-is-dev": "^1.2.0",
+    "electron-squirrel-startup": "^1.0.0",
+    "foundation-icons": "^2.0.0",
+    "foundation-sites": "^5.5.3",
+    "jquery": "^2.1.4",
+    "knockout": "^3.4.0",
+    "quill": "^2.0.3"
+  },
+  "snap": {
+    "productName": "tulip-roadbook",
+    "grade": "devel"
+  },
+  "build": {
+    "appId": "tulip.app",
+    "publish": {
+      "provider": "gitlab",
+      "projectId": "62883636"
+    },
+    "win": {
+      "icon": "tulip-logo.ico",
+      "artifactName": "${productName}-Setup-${version}-${arch}.${ext}",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        },
+        {
+          "target": "msi",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ]
+    },
+    "mac": {
+      "category": "Editors",
+      "icon": "tulip-logo.icns",
+      "target": [
+        {
+          "target": "zip"
+        }
+      ]
+    },
+    "linux": {
+      "category": "Editors",
+      "icon": "tulip-logo.icns",
+      "executableName": "tulip-roadbook",
+      "target": [
+        {
+          "target": "snap"
+        },
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "deb",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "rpm",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ]
+    },
+    "deb": {
+      "afterInstall": "scripts/after-install.sh"
+    },
+    "rpm": {
+      "afterInstall": "scripts/after-install.sh"
+    }
   }
 }

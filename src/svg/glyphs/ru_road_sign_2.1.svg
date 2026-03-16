@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="952.68" height="952.68" version="1.1">
+<title>2.1 Главная дорога</title>
+<path style="fill:#ffffff;" d="m 444.52 939.50 a 45 45 0 0 0 31.82 13.18 a 45 45 0 0 0 31.82 -13.18 l 431.34 -431.34 a 45 45 0 0 0 13.18 -31.82 a 45 45 0 0 0 -13.18 -31.82 l -431.34 -431.34 a 45 45 0 0 0 -31.82 -13.18 a 45 45 0 0 0 -31.82 13.18 l -431.34 431.34 a 45 45 0 0 0 -13.18 31.82 a 45 45 0 0 0 13.18 31.82 z"/>
+<rect style="fill:none;stroke:#000000;stroke-width:2;" x="324.65" y="-349" width="698" height="698" rx="44" ry="44" transform="rotate(45)"/>
+<rect style="fill:none;stroke:#000000;stroke-width:10;" x="338.65" y="-335" width="670" height="670" rx="30" ry="30" transform="rotate(45)"/>
+<rect style="fill:#ffcc00;stroke:#000000;stroke-width:10;" x="454.90" y="-218.75" width="437.50" height="437.50" rx="45" ry="45" transform="rotate(45)"/>
+</svg>

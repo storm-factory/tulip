@@ -1,24 +1,95 @@
+
+#  Tulip
 <div align="center">
-  <img src="https://github.com/SenorDrewMitchell/tulip/blob/master/assets/tulip-logo3.png" width="100" height="100" />
+  <img src="assets/tulip-logo3.png" width="100" height="100" align="right"/>
 </div>
-###  Tulip
--An editor for rally roadbooks built in the electron atom environment using web technologies
+An editor for rally roadbooks built in the electron atom environment using web technologies
+
+It is a fork of https://github.com/storm-factory/tulip
 
 ****
 
-## To download and use for local development
-1. Install [Node.js](https://nodejs.org/)
-2. Using npm install [electron-prebuilt](https://github.com/electron-userland/electron-prebuilt)
-3. Fork this repo
-4. Clone somewhere fancy on your local machine
-5. Add your mapping api keys to `api_keys.js.example`, then rename to `api_keys.js`
-6. Navigate to local working directory `$ cd tulip`
-7. Launch electron `electron .`
+Features:
+* Import GPX file
+* Plan route on map
+* Instruction streetview
+* Export route GPX and OpenRally GPX
+* Print/Export roadbook PDF
+* Works on Linux/Mac/Windows
 
-## To download, package, and use for fun
-1. Install [Node.js](https://nodejs.org/)
-2. Using npm install [electron-prebuilt](https://github.com/electron-userland/electron-prebuilt)
-3. Download the latest stable release
-4. Add your mapping api keys to `api_keys.js.example`, then rename to `api_keys.js`
-5. Navigate to local working directory `$ cd tulip`
-6. Use the electron-packager module to package the app. Runnable examples can be found in the build_tulip.sh script
+**[Instruction manual](http://drid.gitlab.io/tulip)**
+
+## Install
+### Using Release artifacts
+You may download Tulip from the available [releases on GitLAB](https://gitlab.com/drid/tulip/-/releases)
+
+There are binaries in the form of:
+* RPM
+* DEB
+* AppImage
+* Snap
+* Windows executables
+
+### Using snap store
+
+[![Get it from the Snap Store](https://snapcraft.io/en/light/install.svg)](https://snapcraft.io/tulip-roadbook)
+
+or from console:
+```bash
+sudo snap install --edge tulip-roadbook
+```
+
+### Build and install
+You will need [inkscape](https://inkscape.org/) installed on your system
+
+Clone or download the repository and go to source code folder
+```bash
+# Install node modules
+npm install
+# Generate SVGs
+npm run convert-svg
+```
+Available build commands are:
+```bash
+# All linux binaries
+npm run build-linux
+# Windows binaries
+npm run build-win
+# Mac
+npm run build-mac
+```
+also for specific Linux package type you can use electron builder directly
+```bash
+# AppImage
+npx electron-builder --linux appimage
+# Snap
+npx electron-builder --linux snap
+# DEB
+npx electron-builder --linux deb
+# RPM
+npx electron-builder --linux rpm
+```
+## 🐛 Reporting Issues
+
+If you find a bug, please report it in the GitLab Issues section:  
+[https://gitlab.com/drid/tulip/-/issues](https://gitlab.com/drid/tulip/-/issues)
+## 🤝 Contributing
+
+We welcome contributions! Please submit all merge requests to our **GitLab repository** at:  
+[https://gitlab.com/drid/tulip](https://gitlab.com/drid/tulip)  
+
+The GitHub repository is a **read-only mirror** and does not accept contributions.
+
+For guidelines on contributing, see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## LICENSE
+
+Tulip is licensed under GPLv2 (see [LICENSE](LICENSE) for full text)
+
+The Liberation Sans font is included in this project.
+Copyright (c) 2007, Red Hat, Inc. All rights reserved.
+Licensed under the Liberation Font License (see [LIBERATION_LICENSE](LIBERATION_LICENSE) for full text).
+
+## Attributions
+
+Glyphs and icons attributions can be found in [GLYPHS.md](GLYPHS.md)

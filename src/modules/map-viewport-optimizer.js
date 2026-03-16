@@ -6,40 +6,40 @@
   At lower zoom levels only waypoint markers will be rendered
   At higher zoom levels only point and waypoint markers within the viewport will be rendered
 */
-class MapOptimizer{
+class MapOptimizer {
 
-  bindToMap(map,markers){
+  bindToMap(map, markers) {
     var _this = this;
-    google.maps.event.addListener(map, 'idle', function(){_this.showMarkers(map,markers)});
+    google.maps.event.addListener(map, 'idle', function () { _this.showMarkers(map, markers) });
   }
 
-  showMarkers(map,markers){
-    if(map.getZoom() >= 14){
-      this.showMarkersInViewport(map,markers,map.getBounds());
-    }else{
-      this.showOnlyWaypointsAtZoom(map,markers);
+  showMarkers(map, markers) {
+    if (map.getZoom() >= 14) {
+      this.showMarkersInViewport(map, markers, map.getBounds());
+    } else {
+      this.showOnlyInstructionsAtZoom(map, markers);
     }
   }
 
   showMarkersInViewport(map, markers, bounds) {
-    for(var i=0;i<markers.length;i++){
-      if(bounds.contains(markers[i].getPosition())){
-        if(markers[i].getMap() == null){
+    for (var i = 0; i < markers.length; i++) {
+      if (bounds.contains(markers[i].getPosition())) {
+        if (markers[i].getMap() == null) {
           markers[i].setMap(map);
         }
-      }else {
+      } else {
         markers[i].setMap(null);
       }
     }
   }
 
-  showOnlyWaypointsAtZoom(map, markers){
-    for(var i=0;i<markers.length;i++){
-      if(markers[i].waypoint){
-        if(markers[i].getMap() == null){
+  showOnlyInstructionsAtZoom(map, markers) {
+    for (var i = 0; i < markers.length; i++) {
+      if (markers[i].instruction) {
+        if (markers[i].getMap() == null) {
           markers[i].setMap(map);
         }
-      }else{
+      } else {
         markers[i].setMap(null);
       }
     }
@@ -49,4 +49,6 @@ class MapOptimizer{
 /*
   Node exports for test suite
 */
-module.exports.optimizer = MapOptimizer;
+if (typeof window == 'undefined') {
+  module.exports.optimizer = MapOptimizer;
+}

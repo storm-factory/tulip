@@ -1,0 +1,23 @@
+# robots.txt for Tulip documentation
+# https://drid.gitlab.io/tulip/robots.txt
+
+User-agent: *
+Allow: /
+
+# Optional: very light crawl delay if you notice aggressive bots (most ignore it)
+# Crawl-delay: 10
+
+# Prevent indexing of temporary / build artifacts if they ever leak
+Disallow: /404.html
+Disallow: /.git/
+Disallow: /__pycache__/
+Disallow: /*.bak
+Disallow: /*~
+
+# Explicitly allow important static assets (usually not needed, but harmless)
+Allow: /css/
+Allow: /img/
+Allow: /js/
+
+# Point to your sitemap (very useful)
+Sitemap: https://drid.gitlab.io/tulip/sitemap.xml

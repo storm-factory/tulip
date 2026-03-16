@@ -1,8 +1,0 @@
-/*
-  You need to create a google developer account and get a maps web api and directions web api key.
-  Once you have add those keys below and rename this file to api_keys.js
-*/
-const api_keys = Object.freeze({
-  google_directions: '<your_direction_key>',
-  google_maps: '<your_maps_key>',
-});

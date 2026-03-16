@@ -1,380 +1,258 @@
-@font-face{
-  font-family:bellybeans;
-  src:url(../fonts/bellybeans.ttf);
-}
-@font-face{
-  font-family:Lato-Regular;
-  src:url(../fonts/Lato-Regular.ttf);
-}
-@font-face{
-  font-family:Lato-Regular-outline;
-  src:url(../fonts/Lato-Regular-outline.ttf);
-}
-
-/*
-  for native printing expirementation
-*/
 html {
-  width:525px;
-  margin-left:50px;
-  margin-right:50px;
-  margin-top:0px;
-  margin-bottom:0px;
+  width: 616px;
+  margin: auto;
 }
 
 body {
-    background: #fff;
-    font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+  background: #fff;
+  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+  -webkit-print-color-adjust: exact;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+  padding-top: 0px;
+  margin-top: 0px;
+  padding-right: 0px;
+  margin-right: 0px;
 }
-#roadbook {
-  padding-top: 1.2rem;
-  padding-bottom: 1.2rem;
+
+/* Tinted overlay */
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
   height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  /* Tinted overlay */
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Centered text */
+#overlay-text {
+  color: white;
+  font-size: 3rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+@media print {
+  #overlay {
+    display: none !important;
+  }
+  #overlay-text {
+    display: none !important;
+  }
+}
+
+#roadbook-header {
+  margin-bottom: 20px;
 }
 
 #roadbook-name {
-  font-size: 35px;
   text-align: left;
-  width: 350px !important;
-  font-family: bellybeans !important;
-  border-left: 1px solid #000;
-  min-height: 90px;
-  overflow: hidden;
-  word-wrap: normal;
-}
-#roadbook-desc {
-  font-size: 15px;
-  text-align: left;
-  padding: 0;
+  padding: 0.2rem 0.9rem;
+  font-size: 1.6em;
 }
 
-#roadbook-name,
-#roadbook-desc {
-  color: #000;
-  font-family: Tahoma, Geneva, sans-serif;
+#roadbook-name p {
+  margin: 0px;
 }
 
-#roadbook-total-distance{
-	max-height: 90px;  
-	width: 165px !important;
-	border: 0px solid #f00;
-}
-#roadbook-total-distance p{
-  font-family: "Lucida Console", Monaco, monospace;
-  color: #000;
-  text-align: center;
-  font-size: 35px;
-}
-
-*{
-	box-sizing: border-box;
-}
 .waypoint-note p div img.small,
-.waypoint-note p img.small{
+.waypoint-note p img.small {
   height: 35px;
 }
 
-.waypoint-note p div img,
-.waypoint-note p img,
 .waypoint-note div img.normal,
-.waypoint-note img.normal {
+.waypoint-note img.normal,
+.waypoint-note p div img,
+.waypoint-note p img {
   height: 55px;
 }
 
 .waypoint-note p div img.large,
-.waypoint-note p img.large{
+.waypoint-note p img.large {
   height: 75px;
 }
 
 .waypoint-note p div img.huge,
-.waypoint-note p img.huge{
+.waypoint-note p img.huge {
   height: 95px;
 }
 
-.break{
- margin-top: 1px;
- display: block;
- clear: both;
- page-break-after: always;
+.break {
+  margin-top: 1px;
+  display: block;
+  clear: both;
+  page-break-after: always;
 }
 
 .glyph-container {
   height: 53px;
 }
+
 .glyph-container img {
   height: 53px;
   width: 53px;
 }
 
-
-
-
-
-.waypoint {
-	width: 525px !important;
-	height: 128px; /*FIM standard, overridden by most page sizes*/
-	border-left: 2px solid #000;
-	border-right: 2px solid #000;
-	border-top: 1px solid #000;
-	border-bottom: 1px solid #000;
-	margin-left: 0 !important;
-	margin-right: 0 !important;
-	position: relative;
-}
-.waypoint.letter {
-    height: 135px;
-}
-.waypoint.legal {
-	height: 130px;
-}
-.waypoint.A5 {
-	height: 128px;
-}
-.waypoint.PackedLetter {
-	height: 131px;
-}
-
-.waypoint-distance {
-	width: 150px;
-	height: 100%;
-	position:absolute;
-	top: 0px;
-	left: 0px;
-	border-right: 2px solid #000;
-}
-
-.waypoint-tulip {
-	width:180px;
-	height: 100%;
-	border: 0px solid #0f0;
-	position: absolute;
-	top: 0px;
-	left: 152px;
-}
-
-.waypoint-tulip img {
-	height: 96%;
-	width:  96%;
-	padding-left: 0px;
-	position:absolute;
-	top:2%;
-	left:2%;
-	border:0px solid #f00;
-}
-
-.waypoint-note {
-	padding-left: 4px;
-	padding-right: 4px;
-	width: 188px;
-	height: 100%;
-	position: absolute;
-	top: 0px;
-	right: 0px;
-	border-left: 2px solid #000;
-}
-
-
-
-
-
-.waypoint-note p {
-	height: 100%;
-	font-size: medium;
-	width: 100%;
-	margin: 0;
-	overflow: hidden;
-	word-wrap: break-word;
-	line-height: 1;
-}
-
-.total-distance {
-	font-size: 0; /* eliminate the space between regular and hundredths digits */
-	text-align: right;
-	border: 0px solid #f00;
-	position: absolute;
-	top:25;
-	right:5;
-}
-
-
-
-.regularDigit {
-	font-size:45px;
-	font-family:Lato-Regular;
-}
-.hundredthDigit {
-	font-size:45px;
-	font-family:Lato-Regular;
-}
-.hundredthDigit.outline {
-	font-size:45px;
-	font-family:Lato-Regular-outline;
-}
-.hundredthDigit.none {
-	font-size:0px;
-}
-
-.relative-distance {
-	font-family:Lato-Regular;
-	color: #000;
-	font-size: 18px;
-	text-align: right;
-	padding-right: 10px;
-	position: absolute;
-	height: 27px;
-	width:80px;
-	bottom: 0px;
-	right: 0px;
-	border-top: 1px solid black;
-	border-left: 1px solid black;
-}
-.waypoint-index {
-	height: 16px;
-	width: 24px;
-	bottom:0px;
-	left:0px;
-	position:absolute;
-	padding-top:3px;
-	font-size: 11px;
-	text-align:center;
-}
-.heading {
-	font-family:Lato-Regular;
-	font-size: 18pt;
-	position: absolute;
-	height: 40px;
-	width: 100px;
-	bottom: 0px;
-	left: 0px;
-	border-top: 0px solid black;
-	border-right: 0px solid black;
-	padding-left: 10px;
-}
-.heading label {
-	display: inline;
-	font-size: 26pt;
-}
-
-
-
-/*
-  Sticky nav
-*/
 .print-button {
   text-align: right;
 }
-.paper-dropdown{
+
+.paper-dropdown {
   text-align: left;
 }
+
 .logo {
   text-align: center;
   font-family: bellybeans !important;
   font-size: 2.5em;
-  text-shadow: -3px 3px 2px rgba(0,0,0, 1);
+  text-shadow: -3px 3px 2px rgba(0, 0, 0, 1);
   background-color: #787878;
   color: #ffba29;
-  border-radius: 5px;
 }
+
 .main-nav {
   background: #ffba29;
-  height: 135px;
+  height: 55px;
   z-index: 150;
   margin-bottom: 20px;
-  padding-top: 10px;
-  padding-left: 0px;
-  box-shadow: 0 2px 3px rgba(0,0,0,.4);
-  width: 565px;
+  padding-top: 5px;
+  padding-left: 20px;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, .4);
+  width: 650px;
   margin-left: -25px;
-  border-radius: 5px;
- 
 }
 
 .main-nav-scrolled {
+  padding-top: 5px;
   position: fixed;
+  width: 100%;
+  top: 0;
 }
-/*
-  neccessary foundation stuff
-*/
+
 img {
   vertical-align: middle;
 }
 
 .left {
-  float: left !important; }
+  float: left !important;
+}
 
 .right {
-  float: right !important; }
-
-.clearfix:before, .clearfix:after {
-  content: " ";
-  display: table; }
-.clearfix:after {
-  clear: both; }
-.row {
-	margin: 0 auto;
-	max-width: 62.5rem;
-	width: 100%; 
+  float: right !important;
 }
-.row:before, .row:after {
-	content: " ";
-	display: table; }
-.row:after {
-	clear: both; }
 
-.column + .column:last-child,
-.columns + .column:last-child, .column +
-.columns:last-child,
-.columns +
-.columns:last-child {
-  float: right; }
-.column + .column.end,
-.columns + .column.end, .column +
-.columns.end,
-.columns +
-.columns.end {
-  float: left; }
+.clearfix:after,
+.clearfix:before {
+  content: " ";
+  display: table;
+}
+
+.clearfix:after {
+  clear: both;
+}
+
+.row {
+  margin: 0 auto;
+  max-width: 62.5rem;
+  width: 100%;
+}
+
+.row:after,
+.row:before {
+  content: " ";
+  display: table;
+}
+
+.row:after {
+  clear: both;
+}
+
 .column,
 .columns {
-	position: relative;
-	padding-left: 0.9375rem;
-	padding-right: 0.9375rem;
-	float: left;}
+  padding-left: 0.9375rem;
+  padding-right: 0.9375rem;
+  width: 100%;
+  float: left;
+}
+
+.main-nav.column+.column:last-child,
+.main-nav.column+.columns:last-child,
+.main-nav.columns+.column:last-child,
+.main-nav.columns+.columns:last-child {
+  float: right;
+}
+
+.column+.column.end,
+.column+.columns.end,
+.columns+.column.end,
+.columns+.columns.end {
+  float: left;
+}
+
+.column,
+.columns {
+  position: relative;
+  padding-left: 0.9375rem;
+  padding-right: 0.9375rem;
+  float: left;
+}
+
 .large-1 {
-  width: 8.33333%; }
+  width: 8.33333%;
+}
 
 .large-2 {
-  width: 16.66667%; }
+  width: 16.66667%;
+}
 
 .large-3 {
-  width: 25%; }
+  width: 25%;
+}
 
 .large-4 {
-  width: 33.33333%; }
+  width: 33.33333%;
+}
 
 .large-5 {
-  width: 41.66667%; }
+  width: 41.66667%;
+}
 
 .large-6 {
-  width: 50%; }
+  width: 50%;
+}
 
 .large-7 {
-  width: 58.33333%; }
+  width: 58.33333%;
+}
 
 .large-8 {
-  width: 66.66667%; }
+  width: 66.66667%;
+}
 
 .large-9 {
-  width: 75%; }
+  width: 75%;
+}
 
 .large-10 {
-  width: 83.33333%; }
+  width: 83.33333%;
+}
 
 .large-11 {
-  width: 91.66667%; }
+  width: 91.66667%;
+}
 
 .large-12 {
-  width: 100%; }
-button, .button {
+  width: 100%;
+}
+
+.button,
+button {
   -webkit-appearance: none;
   border-radius: 0;
   border-style: solid;
@@ -394,23 +272,46 @@ button, .button {
   border-color: #007095;
   color: #FFFFFF;
   transition: background-color 300ms ease-out;
-  width: 130px;
+  width: 65px;
 }
-button:hover, button:focus, .button:hover, .button:focus {
-  background-color: #007095; }
-button:hover, button:focus, .button:hover, .button:focus {
-  color: #FFFFFF; }
-button.large, .button.large {
+
+.button:focus,
+.button:hover,
+button:focus,
+button:hover {
+  background-color: #007095;
+}
+
+.button:focus,
+.button:hover,
+button:focus,
+button:hover {
+  color: #FFFFFF;
+}
+
+.button.large,
+button.large {
   padding: 1.125rem 2.25rem 1.1875rem 2.25rem;
-  font-size: 1.25rem; }
-button.small, .button.small {
+  font-size: 1.25rem;
+}
+
+.button.small,
+button.small {
   padding: 0.875rem 1.75rem 0.9375rem 1.75rem;
-  font-size: 0.8125rem; }
-button.tiny, .button.tiny {
+  font-size: 0.8125rem;
+}
+
+.button.tiny,
+button.tiny {
   padding: 0.625rem 1.25rem 0.6875rem 1.25rem;
-  font-size: 0.6875rem; }
-button.radius, .button.radius {
-  border-radius: 3px; }
+  font-size: 0.6875rem;
+}
+
+.button.radius,
+button.radius {
+  border-radius: 3px;
+}
+
 select {
   -webkit-appearance: none !important;
   -moz-appearance: none !important;
@@ -429,12 +330,70 @@ select {
   padding: 0.5rem;
   border-radius: 0;
   height: 2.7rem;
-  width: 150px;
+  width: 100px;
 }
+
 select.radius {
   border-radius: 3px;
 }
+
 select:focus {
   background-color: #f3f3f3;
   border-color: #999999;
+}
+
+#generator {
+  clear: both;
+}
+
+#generator h1 {
+  text-align: center;
+}
+
+#roadbook-footer {
+  clear: both;
+  padding-top: 30px;
+}
+
+.coordinate-info {
+  display: flex;
+  justify-content: space-between;
+  text-align: center;
+  line-height: 0.2em;
+}
+
+.edge-coordinates {
+  border: 2px solid black;
+  padding-top: 0.6em;
+}
+
+.edge-coordinates:first-of-type {
+  margin-right: 5px;
+}
+
+#roadbook-footer #roadbook-total-distance,
+#roadbook-footer #roadbook-total-waypoints,
+#roadbook-footer #roadbook-fuel-range {
+  font-size: 20px;
+  text-align: center;
+}
+
+#roadbook-footer #roadbook-total-distance,
+#roadbook-footer #roadbook-total-waypoints {
+  margin-right: 5px;
+}
+
+#roadbook-footer #roadbook-total-distance p,
+#roadbook-footer #roadbook-total-waypoints p,
+#roadbook-footer #roadbook-fuel-range p {
+  margin: 0px;
+}
+
+#footer-roadbook-info {
+  display: flex;
+  justify-content: space-between;
+}
+
+.waypoint {
+  width: 100%;
 }

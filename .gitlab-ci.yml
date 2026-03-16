@@ -1,0 +1,235 @@
+stages:
+  - test
+  - build
+  - package
+  - release
+  - deploy
+
+variables:
+  BUILDER_IMAGE: electronuserland/builder:latest
+  BUILDER_IMAGE_WIN: electronuserland/builder:20-wine-mono-07.24
+
+unit-testing:
+  stage: test
+  image: ${BUILDER_IMAGE}
+  before_script:
+    - npm install electron-builder
+  script:
+    - npm test
+  rules:
+  - changes:
+      - "docs/**/*"
+    when: never
+
+  - changes:
+      - "**/*.js"
+      - "**/*.ts"
+      - "**/*.json"
+      - "**/*.html"
+    when: on_success
+
+  - changes:
+      - "src/**/*"
+    when: on_success
+
+  - when: never
+
+generate-glyphs:
+  stage: build
+  image: ${BUILDER_IMAGE}
+  rules:
+  - if: $CI_COMMIT_TAG
+  - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH
+  before_script:
+    - apt-get update -y
+    - apt-get install -y inkscape fonts-liberation fonts-liberation2 fonts-arkpandora
+    - npm install xml2js
+  script:
+    - npm run convert-svg
+  artifacts:
+      name: $CI_COMMIT_REF_SLUG
+      paths:
+        - $CI_PROJECT_DIR/assets/svg/
+      when: on_success
+
+build-win:
+  stage: build
+  image: ${BUILDER_IMAGE_WIN}
+  needs: 
+    - generate-glyphs
+  rules:
+    - if: $CI_COMMIT_TAG
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH
+  before_script:
+    - apt-get update -y
+    - apt-get install --no-install-recommends -y gcc-multilib g++-multilib
+    - npm ci
+  script:
+    - npm run build-win
+    - |
+      for filepath in dist/*\ *; do
+        if [ -f "$filepath" ]; then
+          mv -v "$filepath" $(echo $filepath | sed 's/\ /-/g')
+        fi
+      done
+  artifacts:
+    name: $CI_COMMIT_REF_SLUG
+    paths:
+      - dist/*.exe
+      - dist/*.msi
+      - dist/latest.yml
+    when: on_success
+
+build-linux:
+  stage: build
+  image: ${BUILDER_IMAGE}
+  needs: 
+    - generate-glyphs
+  rules:
+    - if: $CI_COMMIT_TAG
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH
+  before_script:
+    - apt-get update -y
+    - apt-get install -y fakeroot
+    - npm ci
+  script:
+    - export VERSION=$(node -e "console.log(require('./package.json').version)")
+    - echo "VERSION=$VERSION" >> variables.env
+    - export APPNAME=$(node -e "console.log(require('./package.json').productName)")
+    - echo "APPNAME=$APPNAME" >> variables.env
+    - npm run build-linux
+  artifacts:
+    reports:
+      dotenv: variables.env
+    name: $CI_COMMIT_REF_SLUG
+    paths:
+      - dist/*.AppImage
+      - dist/*.snap
+      - dist/*.deb
+      - dist/*.rpm
+      - dist/latest-linux*.yml
+    when: on_success
+
+build-mac:
+  stage: build
+  # tags:
+  #   - saas-macos-medium-m1
+  # image: macos-14-xcode-15
+  image: ${BUILDER_IMAGE}
+  needs: 
+    - generate-glyphs
+  rules:
+    - if: $CI_COMMIT_TAG
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH
+  before_script:
+    # - brew install --cask electron-builder
+    - npm ci
+  script:
+    - export VERSION=$(node -e "console.log(require('./package.json').version)")
+    - echo "VERSION=$VERSION" >> variables.env
+    - export APPNAME=$(node -e "console.log(require('./package.json').productName)")
+    - echo "APPNAME=$APPNAME" >> variables.env
+    - npm run build-mac
+  artifacts:
+    reports:
+      dotenv: variables.env
+    name: $CI_COMMIT_REF_SLUG
+    paths:
+      - dist/*.dmg
+      - dist/*.zip
+      - dist/latest-mac.yml
+    when: on_success
+
+release_job:
+  stage: release
+  image: gitlab/glab:latest
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^v?[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)?$/ && $CI_COMMIT_TAG'
+  before_script:
+    - apk add bash curl python3
+    - curl -sL https://sentry.io/get-cli/ | bash
+    - export SENTRY_ORG=drid
+    - export SENTRY_PROJECT=tulip
+    - export SENTRY_AUTH_TOKEN
+    - sentry-cli releases new "$VERSION"
+    - sentry-cli releases set-commits "$VERSION" --auto --ignore-missing
+    - sentry-cli releases finalize "$VERSION"
+  script:
+    - glab auth login --job-token $CI_JOB_TOKEN
+    - glab release create $CI_COMMIT_TAG
+    - |
+      #Function to get asset label
+      get_name() {
+        local filename="$1"
+        local arch=""
+        case "$filename" in
+          *arm64.*) arch="arm64" ;;
+          *amd64.*) arch="amd64" ;;
+          *aarch64.*) arch="aarch64" ;;
+          *armv7l.*) arch="armv7l" ;;
+          *ia32.*) arch="32 bit" ;;
+          *x64.*) arch="64 bit" ;;
+          *) arch="" ;;
+        esac
+
+        case "$filename" in
+          *.AppImage) echo "AppImage $arch" ;;
+          *.snap) echo "Snap $arch" ;;
+          *.deb) echo "Linux DEB $arch" ;;
+          *.rpm) echo "Linux RPM $arch" ;;
+          *.exe) echo "Windows $arch" ;;
+          *.msi) echo "Windows MSI $arch" ;;
+          *mac.zip) echo "MacOS ZIP $arch" ;;
+          *) echo "$filename" ;;
+        esac
+      }
+      
+      # Function to get link typefor filepath in dist/*.{zip,deb,rpm,AppImage,snap,exe,msi} dist/latest*.yml
+      get_link_type() {
+        local filename="$1"
+        case "$filename" in
+          *.yml) echo "other" ;;
+          *) echo "package" ;;
+        esac
+      }
+      ls -l dist
+      for filepath in dist/*.zip dist/*.deb dist/*.rpm dist/*.AppImage dist/*.snap dist/*.exe dist/*.msi dist/latest*.yml; do
+        if [ -f "$filepath" ]; then
+          filename=$(basename "$filepath")
+          name=$(get_name "$filename")
+          type=$(get_link_type "$filename")
+          echo "$filename -> $name - $type"
+          glab release upload --use-package-registry --package-name "Tulip" $CI_COMMIT_TAG "$filepath#$name#$type"
+        fi
+      done
+
+publish-snap:
+  stage: release
+  image: snapcore/snapcraft:stable
+  dependencies:
+    - build-linux
+  script:
+    - echo $SNAPCRAFT_STORE_CREDENTIALS | snapcraft login --with -
+    - |
+      for snap in dist/*.snap
+      do
+        snapcraft upload --release=edge $snap
+      done
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^v?[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)?$/ && $CI_COMMIT_TAG'
+
+pages:
+  stage: deploy
+  image: python:3.9
+  script:
+    - pip install 'mkdocs<2.0' mkdocs-material
+    - mkdocs build --site-dir public
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      changes:
+        - docs/**/*  # Trigger for changes in the docs/ folder
+        - mkdocs.yml # Trigger for changes in the MkDocs config
+  environment: production

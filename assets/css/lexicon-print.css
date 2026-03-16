@@ -1,35 +1,77 @@
-*{
-	box-sizing: border-box;
+/* General Layout */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica;
+    padding: 25px;
+    background-color: #f9f9f9;
+    margin: 0;
 }
-html {
-	width:720px;
+
+.lexicon-group-section {
+    margin-bottom: 30px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fff;
+    page-break-inside: avoid; /* Prevents splitting a table across pages when printing */
 }
-.firstrow {
-	height:53px;
-	width:100%;
-	border-top:1px solid black;
-	border-bottom:1px solid black;
-	border-right:1px solid black;
-	float:clear;
+
+.table-header {
+    background: #f0f0f0;
+    padding: 10px 15px;
+    font-weight: bold;
+    font-size: 1.1em;
+    border-bottom: 1px solid #ddd;
+    color: #222;
 }
-.otherrow {
-	height:53px;
-	width:100%;
-	border-bottom:1px solid black;
-	border-right:1px solid black;
-	float:clear;
+
+/* 3-Column Grid */
+.grid-table {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
 }
-.glyphcolumn {
-	padding-left:0px;
-	height:100%;
-	width:8.33%;
-	border-left:1px solid black;
-	border-right:0px solid black;
-	float:left;
+
+.grid-cell {
+    display: flex;
+    align-items: center;
+    padding: 6px;
+    border-right: 1px solid #eee;
+    border-bottom: 1px solid #eee;
 }
-.desccolumn {
-	padding:6px;
-	height:100%;
-	width:16.66%;
-	float:left;
+
+/* Remove right border on every 3rd cell (the end of the row) */
+.grid-cell:nth-child(3n) {
+    border-right: none;
+}
+
+.grid-cell img {
+    width: 50px;
+    height: 60px;
+    margin-right: 6px;
+    object-fit: contain;
+}
+
+.grid-cell span {
+    font-size: 0.9em;
+    color: #444;
+    text-transform: capitalize;
+}
+
+/* Print Specific Adjustments */
+@media print {
+    .lexicon-group-section {
+        page-break-inside: avoid;
+        break-inside: avoid;
+        margin-bottom: 30px;
+        display: block;
+    }
+
+    /* .lexicon-group-section { page-break-before: always; } */
+
+    .table-header {
+        page-break-after: avoid; 
+        break-after: avoid;
+    }
+
+    .grid-table {
+        page-break-inside: avoid;
+    }
 }

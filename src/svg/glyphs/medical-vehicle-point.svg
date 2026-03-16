@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="175"
+   height="175"
+   viewBox="0 0 175 175"
+   version="1.1"
+   id="svg1211"
+   xml:space="preserve"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="medical-vehicle-point.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><sodipodi:namedview
+     id="namedview1213"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="px"
+     showgrid="false"
+     inkscape:zoom="4.3714286"
+     inkscape:cx="87.5"
+     inkscape:cy="87.5"
+     inkscape:window-width="1428"
+     inkscape:window-height="1233"
+     inkscape:window-x="2"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1" /><defs
+     id="defs1208" /><g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"><circle
+       style="fill:#3d93d0;stroke:#000000;stroke-width:8.53235;stroke-linecap:round;stroke-linejoin:round"
+       id="path1279"
+       cx="87.469307"
+       cy="87.47541"
+       r="82.932777" /><path
+       id="rect1736"
+       style="fill:#ffffff;stroke:#000000;stroke-width:7.55906;stroke-linecap:round;stroke-linejoin:round"
+       d="M 68.039062 30.462891 L 68.039062 69.601562 L 31.638672 69.601562 L 31.638672 105.39844 L 68.039062 105.39844 L 68.039062 144.53711 L 106.96094 144.53711 L 106.96094 105.39844 L 143.36133 105.39844 L 143.36133 69.601562 L 106.96094 69.601562 L 106.96094 30.462891 L 68.039062 30.462891 z " /></g></svg>

@@ -1,0 +1,52 @@
+.grid.cards .card i.fa-brands,
+.grid.cards .card i.fab {
+    font-size: 6rem !important;
+    line-height: 1;
+    display: block;
+    margin: 0 auto 1.2rem auto;
+    opacity: 0.9;
+}
+
+.grid.cards .card {
+    text-align: center;
+    padding-top: 1.5rem;
+}
+
+.grid.cards .card li, .grid.cards .card p {
+    text-align: left;
+}
+
+.grid.cards .card:hover i.fa-brands,
+.grid.cards .card:hover i.fab {
+    transform: scale(1.08);
+    transition: transform 0.2s ease;
+}
+
+/* Responsive: smaller on tablets/mobile if needed */
+@media screen and (max-width: 76.9375em) {
+
+    .grid.cards .card i.fa-brands,
+    .grid.cards .card i.fab {
+        font-size: 5rem !important;
+    }
+}
+
+@media screen and (max-width: 40em) {
+
+    .grid.cards .card i.fa-brands,
+    .grid.cards .card i.fab {
+        font-size: 4rem !important;
+    }
+}
+
+.grid.cards .fa-linux {
+    color: #000;
+}
+
+.grid.cards .fa-apple {
+    color: #a2a2a2;
+}
+
+.grid.cards .fa-microsoft {
+    color: #0078d4;
+}

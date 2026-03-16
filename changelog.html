@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Changelog Window</title>
+  <link rel="stylesheet" href="node_modules/foundation-icons/foundation-icons.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f0f0;
+    }
+
+    .content-container {
+      flex: 1;
+      background-color: white;
+      margin: 20px;
+      padding: 15px;
+      overflow-y: auto;
+      /* Enable vertical scrolling */
+      border-radius: 5px;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: #f0f0f0;
+      border-top: 1px solid #ccc;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    label {
+      font-size: 16px;
+    }
+
+    input[type="checkbox"] {
+      margin-right: 8px;
+    }
+
+    h2 {
+      border-bottom: 1px solid;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="content-container">
+    <h1>Changelog</h1>
+    Full list of changes on https://gitlab.com/drid/tulip/-/blob/master/CHANGELOG.md
+
+    <h2>[1.11.2] - 2026-03-14</h2>
+    <h3>🐛 Bug Fixes</h3>
+    <ul>
+      <li>Instruction scrolling</li>
+    </ul>
+    <h2>[1.11.1] - 2026-03-05</h2>
+    <h3>🐛 Bug Fixes</h3>
+    <ul>
+      <li>Missing glyph changes glyph size</li>
+      <li>Note glyph overlap when adding</li>
+      <li>Fill Speed Zone adds mutliple glyphs on 2nd run</li>
+      <li>Instruction bottom border cosmetics</li>
+      <li>Add missing L and R abbreviations</li>
+    </ul>
+    <h2>[1.11.0] - 2026-03-03</h2>
+    <h3>🚀 Features</h3>
+    <ul>
+      <li>Add recent file menu</li>
+      <li>Add DN/DT tulip coloring</li>
+      <li>Adjust page margins for Roll and A5</li>
+      <li>Add dynamic CAP glyphs</li>
+      <li>Focus streetview via markers</li>
+    </ul>
+    <h3>🐛 Bug Fixes</h3>
+    <ul>
+      <li>UX for marker delete</li>
+      <li>Glyphs selectable after autofill</li>
+      <li>Handling of loading non existent recent file</li>
+    </ul>
+    <h3>💼 Other</h3>
+    <ul>
+      <li>Resolve “TypeError: Cannot read properties of null (reading
+        ‘webContents’)”</li>
+    </ul>
+    <h2>[1.10.5] - 2025-12-20</h2>
+    <h3>🚀 Features</h3>
+    <ul>
+      <li>Implement drawing on tulip and note</li>
+      <li>Add lexicon table</li>
+      <li>Enforce color for Qt,E3, -V</li>
+      <li>Rearrange editor elements</li>
+      <li>Show text modifier only when text is selected</li>
+      <li>Add global danger glyphs</li>
+    </ul>
+    <h3>🐛 Bug Fixes</h3>
+    <ul>
+      <li>Fix track selection</li>
+      <li>Remove +V glyph</li>
+    </ul>
+
+    <h2>[1.10.4] - 2025-12-16</h2>
+    <h3>🚀 Features</h3>
+    <ul>
+      <li>User glyphs</li>
+    </ul>
+    <h3>🐛 Bug Fixes</h3>
+    <ul>
+      <li>Missing glyphs icon saved to roadbook</li>
+      <li>GPX export fails when instruction has been deleted</li>
+      <li>Import GPX name and description when RB has default values</li>
+    </ul>
+
+    <h2>[1.10.3] - 2025-11-02</h2>
+    <h3>🐛 Bug Fixes</h3>
+    <ul>
+      <li>Km marker rotation not persisting</li>
+      <li>Use native Quill toolbar</li>
+    </ul>
+    <h2>[1.10.2] - 2025-11-01</h2>
+    <h3>🚀 Features</h3>
+    <ul>
+      <li>Handle roadbook schema versions</li>
+    </ul>
+    <h2>[1.10.1] - 2025-10-31</h2>
+    <b>Important note:</b> Roadbooks saved with this version are not compatible with older versions. Backup your
+    roadbooks.
+    <p>Roadbooks from v1.9.6 and earlier are migrated on load. Notes may need editing and glyphs may need resizing</p>
+    <h3>🚀 Features</h3>
+    <ul>
+      <li>Add km marker</li>
+      <li>Add action to autofill speed limit in zones</li>
+      <li>Add streetview to instructions</li>
+      <li>Add road signs</li>
+    </ul>
+    <h3>🐛 Bug Fixes</h3>
+    <ul>
+      <li>Speed limit end detected as speed limit</li>
+      <li>Update UI elements</li>
+    </ul>
+
+    <h2>Version 1.10.0</h2>
+    <b>Important note:</b> Roadbooks saved with this version are not compatible with older versions. Backup your
+    roadbooks.
+    <p>Roadbooks from v1.9.6 and earlier are migrated on load. Notes may need editing and glyphs may need resizing</p>
+    <h3>Features</h3>
+    <ul>
+      <li>Make instruction notes a canvas. Glyphs and text items are migrated</li>
+      <li>Add option to add text to tulip</li>
+      <li><b>Openrally:</b> Export tulip and note images</li>
+      <li>Add filename to window title</li>
+      <li>Add menu link for online manual</li>
+      <li>Add change added track type</li>
+      <li>Openrally: Option to export in strict or undocumented format</li>
+      <li>Add time option to stop glyph</li>
+      <li>Add tulip object stacking order</li>
+      <li>Change track type to comply with FIM/FIA</li>
+      <li>Change track graphics for better visibility</li>
+      <li>Add migration of old track types</li>
+    </ul>
+
+    <h3>Bug fixes</h3>
+
+    <ul>
+      <li>Open rally export</li>
+      <li>Ask to save before closing app</li>
+      <li>GPX Import crash if no points</li>
+      <li>GPX import creating duplicate 1st and last instruction</li>
+      <li>Prevent glyphs from being changed when not edited</li>
+      <li>Remove track handles when clicking on canvas</li>
+      <li>Allow only one canvas element selected among note and tulip</li>
+    </ul>
+
+    <h2>Version 1.9.6</h2>
+    <h3>Bug fixes</h3>
+    <ul>
+      <li>Roadbook logo removal</li>
+      <li>Glyphs not detected during edit</li>
+    </ul>
+
+    <h2>Version 1.9.5</h2>
+    <h3>Features</h3>
+    <ul>
+      <li>Cleanup glyphs, add "old tulip" section</li>
+      <li>Add option to set map home location</li>
+      <li>Zoom to entire track when opening roadbook</li>
+      <li>Rename track names to align with FIM<br>
+        off piste <i class="fi-arrow-right"></i>Off Track (HP)<br>
+        track <i class="fi-arrow-right"></i> Small Track/Piste<br>
+        road <i class="fi-arrow-right"></i> Track/Piste<br>
+        main road <i class="fi-arrow-right"></i> Tarmac Road
+      </li>
+      <li>Add track type Low/Less visible</li>
+      <li>Add MODIF and NEW NOTE glyphs</li>
+      <li>Added this changelog</li>
+      <li>Tulip glyphs can now be deleted by selecting them and use the trash button or Del/Backspace key</li>
+      <li>Secondary track handles are now shown only when selected</li>
+      <li>Add option to add custom logo on roadbook header</li>
+      <li>Add app version display and storage</li>
+      <li>Add multiple new glyphs</li>
+      <li>Display app version in main window.</li>
+    </ul>
+    <h3>Bug fixes</h3>
+    <ul>
+      <li>Glyph file in all caps is not detected and causes exception
+      <li>Keep roadbook visible when opening file</li>
+      <li>Disable save roadbook button when editing instruction</li>
+      <li>Handle unknown track type and default to 'track'</li>
+      <li>Add track handles only to track items</li>
+      <li>Handle PDF output errors and show message</li>
+      <li>Glyphs not converted in win builds</li>
+      <li>Progress overlay was saved on PDF</li>
+      <li>Older roadbooks had the main track in black color. This information is saved in the roadbook.
+        Now main track is always blue and it is updated uppon roadbook save.
+      </li>
+      <li>Since some glyphs have changed and may change in the future,
+        a "Missing glyph" image is used in place of the missing glyph.</li>
+      <li>Fixed qypoint radius change to reflected on map. Radius is now updated in real time.
+        Opening radius minimum size is restricted to validation radius size.</li>
+      <li>Radius limits where updated.</li>
+      <li>Min, Max and step for waypoint radius control where stored in the roadbook providing inconsistent user
+        experience. Application now is enforcing these values.</li>
+    </ul>
+    <h2>Version 1.9.4</h2>
+    <h3>Features</h3>
+    <ul>
+      <li>Add service zone, above bridge, under bridge, and concrete pass glyphs</li>
+      <li>Add abbreviations</li>
+      <li>Misc glyphs</li>
+    </ul>
+    <h3>Bug fixes</h3>
+    <p>Resolve issues with map orientation and tulip exit edit buttons</p>
+  </div>
+  <div class="footer">
+    <label>
+      <input type="checkbox" id="showOnStart" checked> Show on startup
+    </label>
+    <button onclick="submitResult()">OK</button>
+  </div>
+
+  <script>
+    // const { ipcRenderer } = require('electron');
+
+    function submitResult() {
+      const showOnStart = document.getElementById('showOnStart').checked;
+      window.globalNode.sendChangelogResult({ showOnStart });
+      window.close(); // Close the changelog window after sending the result
+    }
+  </script>
+</body>
+
+</html>

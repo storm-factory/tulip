@@ -15,28 +15,43 @@
 
     The Application handles bootstrapping the user interface and any non Mapping
     function. The UI is mainly composed of the UI Map which is managed by the
-    MapEditor object. The Map Editor creates Waypoints based off interaction.
+    MapController and MapModel objects. The MapController creates Waypoints based off interaction.
     Each Waypoint has a Tulip which is uses the TrackEditor class to handle the complexity
     of editing tracks.
   ---------------------------------------------------------------------------
 */
-var App = Class({
-  // singleton: true,
 
-  create: function(){
+class App {
+  constructor() {
     /*
       declare some state instance variables
     */
-    this.glyphPlacementPosition = {top: 30,left: 30};
+    this.glyphPlacementPosition = { top: 30, left: 30 };
     this.canEditMap = true;
     this.pointDeleteMode = false;
-    //Dialogs for file IO
-    this.dialog = require('electron').remote.dialog;
+    this.documentPath = false;
+
+    /*
+      IPC to Main process
+    */
+    this.ipc = globalNode.ipcRenderer;
+
     /*
       instantiate the roadbook
+      TODO rename variable
     */
-    this.roadbook = new Roadbook();
+    this.roadbook = new RoadbookModel();
+    this.roadbook.bindToKnockout();
 
+    this.roadbookController = new RoadbookController(this.roadbook);
+    this.roadbook.controller = this.roadbookController;
+
+    const viewModel = {
+      isSaved: this.roadbookController.isSaved, // Bind to roadbookController's observable
+    };
+    this.roadbookController.isSaved.subscribe((newValue) => {
+      this.ipc.send('update-saved-state', newValue);
+    });
     /*
       instantiate import/export
     */
@@ -45,20 +60,28 @@ var App = Class({
     /*
       file io
     */
-    this.fs = require('fs');
-    /*
-      IPC to Main process
-    */
-    this.ipc = require('electron').ipcRenderer; //TODO try require('ipcRenderer')
+    this.fs = globalNode.fs;
+
+    this.version = globalNode.getVersion()
+    this.schemaVersion = 2;
+
     /*
       initialize UI listeners
     */
+
     this.initListeners();
 
-    this.glyphControls = new GlyphControls();
-
     this.noteControls = new NoteControls();
-  },
+
+    this.settings = this.loadSettings();
+
+    this.glyphStructure = JSON.parse(this.fs.readFileSync(globalNode.getAppPath() + '/src/modules/glyphs.json', 'utf8'));
+    this.glyphControls = new GlyphControls(this.glyphStructure);
+    if (this.settings.user_glyph_path)
+      this.ipc.send('get-user-glyphs', this.settings.user_glyph_path)
+
+    this.ipc.send('get-documents-path');
+  }
 
   /*
     ---------------------------------------------------------------------------
@@ -67,336 +90,542 @@ var App = Class({
     ---------------------------------------------------------------------------
   */
 
-  canExport: function(){
+  canExport() {
     var can;
     can = this.roadbook.filePath != null;
     return can
-  },
+  }
 
-  canSave: function(){
+  canSave() {
     var can;
-    can = this.roadbook.finishWaypointEdit();
-    can = can || this.roadbook.newWaypoints;
+    can = this.roadbook.finishInstructionEdit();
     can = can || this.roadbook.finishNameDescEdit();
     return can;
-  },
+  }
 
-  openRoadBook: function(){
-    var _this = this;
-    this.dialog.showOpenDialog({ filters: [
-       { name: 'tulip', extensions: ['tlp'] }
-      ]},function (fileNames) {
-      var fs = require('fs');
-      if (fileNames === undefined) return;
-        _this.startLoading();
-        //TODO this needs to be passed to create when choice is added
-        //we need to figure out how to watch a file while it's being edited so if it's moved it gets saved to the right place ***fs.watch***
-        var fileName = fileNames[0];
-        _this.fs.readFile(fileName, 'utf-8', function (err, data) {
-          var json = JSON.parse(data);
-          // We need to ask whether they want to open a new roadbook or append an existing one to the currently
-          // being edited RB
-          _this.roadbook.appendRouteFromJSON(json,fileName); //TODO this needs to only pass json once choice is added
-        });
-        $('#toggle-roadbook').click();
-        $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
-        $('#print-roadbook').removeClass('disabled')
-        $('#export-gpx').removeClass('disabled')
-        $('#export-openrally-gpx').removeClass('disabled')
+  openLastRoadBook() {
+    const fileName = localStorage.getItem('lastRoadBook');
+    this.ipc.send('check-file-existence', fileName);
+
+    this.ipc.on('file-exists', (event, fileName) => {
+      localStorage.setItem('lastRoadBook', fileName);
+      this.loadRoadBook(fileName);
     });
-  },
+  }
 
-  exportGPX: function(){
-    if(this.canExport()){
-      var gpx = this.io.exportGPX();
-      var filename = this.roadbook.filePath.replace('tlp','gpx');
-      this.fs.writeFile(filename, gpx, function (err) {});
-      $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
-      alert('You gpx has been exported to the same directory you saved your roadbook');
-    } else {
-      alert('F@#k1ng Kamaz! You must save your roadbook before you can export GPX tracks');
-    }
-  },
-
-  exportOpenRallyGPX: function(){
-    if(this.canExport()){
-      var gpx = this.io.exportOpenRallyGPX();
-      var filename = this.roadbook.filePath.replace('.tlp','-openrally.gpx');
-      this.fs.writeFile(filename, gpx, function (err) {});
-      $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
-      alert('You gpx has been exported to the same directory you saved your roadbook');
-    } else {
-      alert('F@#k1ng Kamaz! You must save your roadbook before you can export GPX tracks');
-    }
-  },
-
-  importGPX: function(){
+  loadRoadBook(fileName, append = false) {
     var _this = this;
-    this.dialog.showOpenDialog({ filters: [
-       { name: 'import gpx', extensions: ['gpx'] }
-      ]},function (fileNames) {
-      var fs = require('fs');
-      if (fileNames === undefined) return;
-      _this.startLoading();
+
+    _this.startLoading();
+    //TODO this needs to be passed to create when choice is added
+    //we need to figure out how to watch a file while it's being edited so if it's moved it gets saved to the right place ***fs.watch***
+    _this.fs.readFile(fileName, 'utf-8', function (err, data) {
+      if (err) {
+        _this.stopLoading();
+        globalNode.dialog().showMessageBoxSync({
+          message: err.message,
+          type: 'error',
+          buttons: ['OK']
+        });
+        return;
+      }
+      try {
+        var json = JSON.parse(data.replaceAll("{user_glyphs_path}", _this.settings.user_glyph_path ?? ""));
+        if (!_this.checkRoadbookVersion(json))
+          return
+        if (!append) {
+          _this.newRoadbook()
+        }
+        _this.roadbook.appendRouteFromJSON(json, fileName); //TODO this needs to only pass json once choice is added   
+        _this.roadbook.updateTotalDistance();
+        localStorage.setItem('lastRoadBook', fileName);
+      } catch (error) {
+        console.error(error);
+      }
+    });
+    _this.showRoadbook();
+    $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
+    this.updateWindowTitle(fileName);
+    this.ipc.send('save-recent-filename', fileName);
+  }
+
+  checkRoadbookVersion(json) {
+    var _this = this;
+    var schemaVersion;
+    if (!json.schemaVersion) {
+      schemaVersion = (json.appVersion == '1.10.0' ? 2 : 1)
+    } else {
+      schemaVersion = json.schemaVersion;
+    }
+    console.log("Schema version:", schemaVersion);
+    if (schemaVersion < this.schemaVersion) {
+      globalNode.dialog().showMessageBoxSync({
+        message: "This is a roadbook from an old Tulip version\n\nRoadbook schema has changed to accommodate new notes format, saving this roadbook will make it incompatible with versions 1.9.6 and earlier.\
+        \n1.Make a backup or save under new name\n2.Check roadbook glyphs for size and position.\n3.See changelog for details",
+        type: 'info',
+        buttons: ['Understood']
+      })
+    }
+    if (schemaVersion > this.schemaVersion) {
+      globalNode.dialog().showMessageBoxSync({
+        message: "This roadbook has been created with a later version of Tulip and cannot be loaded.\n\Please update Tulip",
+        type: 'info',
+        buttons: ['OK']
+      });
+      return false;
+    }
+    return true;
+  }
+
+  openRoadBook(append = false) {
+    var _this = this;
+    var defaultPath = "";
+    try {
+      defaultPath = localStorage.getItem('lastRoadBook').match(/^(.*[\\/])/)[1];
+    } catch { }
+    globalNode.dialog().showOpenDialog({
+      'title': 'Open Roadbook',
+      'defaultPath': defaultPath,
+      properties: ['openFile'],
+      filters: [
+        { name: 'tulip', extensions: ['tlp'] }
+      ]
+    }).then(openInfo => {
+      if (openInfo.canceled) return;
+
+      var fs = globalNode.fs;
+      var fileNames = openInfo.filePaths;
+
+      if (fileNames === undefined)
+        return;
+
+      _this.loadRoadBook(fileNames[0], append)
+    });
+  }
+
+  openRoadBookLogo() {
+    var _this = this;
+    globalNode.dialog().showOpenDialog({
+      filters: [
+        { name: 'Image files', extensions: ['png', 'jpg', 'jpeg'] }
+      ]
+    }).then(openInfo => {
+      if (openInfo.canceled) return;
+
+      var fs = globalNode.fs;
+      var fileNames = openInfo.filePaths;
+
+      if (fileNames === undefined)
+        return;
+
+      _this.loadRoadBookLogo(fileNames[0])
+    });
+  }
+
+  loadRoadBookLogo(fileName) {
+    var _this = this;
+
+    _this.fs.readFile(fileName, null, function (err, data) {
+      var imageType = fileName.split('.').pop();
+      var imgSrc = "data:image/" + imageType + ";base64," + globalNode.uint8ArrayToBase64(data);
+      _this.roadbook.customLogo(imgSrc);
+    });
+  }
+
+  openUserGlyphFolder() {
+    var _this = this;
+    globalNode.dialog().showOpenDialog({
+      title: 'Select user glyphs folder',
+      defaultPath: localStorage.getItem('lastRoadBook')?.match(/^(.*[\\/])/)[1],
+      buttonLabel: 'Select Folder',          // custom button text
+      properties: ['openDirectory', 'createDirectory'] // createDirectory lets user make new folder
+    }).then(openInfo => {
+      if (openInfo.canceled) return;
+
+      var glyphsPath = openInfo.filePaths[0];
+
+      if (glyphsPath === undefined)
+        return;
+
+      _this.settings.user_glyph_path = glyphsPath;
+      $('#user_glyph_path_text').text(glyphsPath);
+      _this.requestUserGlyphsUpdate(glyphsPath);
+    });
+  }
+
+  requestUserGlyphsUpdate(glyphsPath = null) {
+    if (!glyphsPath)
+      glyphsPath = this.settings.user_glyph_path || null;
+    if (glyphsPath)
+      this.ipc.send('get-user-glyphs', glyphsPath);
+  }
+
+  exportGPX() {
+    if (this.canExport()) {
+      var gpx = this.io.exportGPX();
+      var filename = this.roadbook.filePath.replace('tlp', 'gpx');
+      globalNode.fs.writeFile(filename, gpx, function (err) { });
       $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
+      globalNode.dialog().showMessageBoxSync({
+        message: "Your gpx has been exported to the same directory you saved your roadbook",
+        type: 'info',
+        buttons: ['OK']
+      });
+    } else {
+      globalNode.dialog().showMessageBoxSync({
+        message: "You must save your roadbook before you can export GPX tracks",
+        type: 'info',
+        buttons: ['OK']
+      });
+    }
+  }
+
+  exportOpenRallyGPX() {
+    if (this.canExport()) {
+      var gpx = this.io.exportOpenRallyGPX(this.settings.openRallyStrict);
+
+      var filename = this.roadbook.filePath.replace('.tlp', '-openrally.gpx');
+
+      globalNode.fs.writeFile(filename, gpx, function (err) { });
+
+      console.log("exported openrally gpx to", filename);
+
+      $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
+      globalNode.dialog().showMessageBoxSync({
+        message: "Your gpx has been exported to the same directory you saved your roadbook",
+        type: 'info',
+        buttons: ['OK']
+      });
+    } else {
+      globalNode.dialog().showMessageBoxSync({
+        message: "You must save your roadbook before you can export GPX tracks",
+        type: 'info',
+        buttons: ['OK']
+      });
+    }
+  }
+
+  importGPX() {
+    var _this = this;
+
+    globalNode.dialog().showOpenDialog({
+      filters: [
+        { name: 'import gpx', extensions: ['gpx'] }
+      ]
+    }).then(openInfo => {
+      var fileNames = openInfo.filePaths;
+
+      if (fileNames === undefined)
+        return;
+
+      _this.startLoading();
+
+      $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
+
       var fileName = fileNames[0];
-      _this.fs.readFile(fileName, 'utf-8', function (err, data) {
-        _this.io.importGPX(data);
+      console.log("Reading GPX file:", fileName);
+
+      globalNode.fs.readFile(fileName, 'utf-8', function (err, data) {
+        try {
+          _this.io.importGPX(data);
+        } catch (error) {
+          console.error(error);
+        }
       });
     });
-  },
+  }
 
-  printRoadbook: function(){
-    if(this.canExport()){
+  printRoadbook() {
+    if (this.canExport()) {
       $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
-      this.ipc.send('ignite-print',app.roadbook.statelessJSON());
+      this.ipc.send('ignite-print', app.roadbook.statelessJSON(), this.settings);
     } else {
-      alert('You must save your roadbook before you can export it as a PDF');
+      globalNode.dialog().showMessageBoxSync({
+        message: "You must save your roadbook before you can save it as PDF.",
+        type: 'info',
+        buttons: ['OK']
+      });
     }
-  },
-  printLexicon: function(){
-	if(this.canExport()){
-		$('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
-		this.ipc.send('ignite-lexicon',app.roadbook.filePath);
-	}else {
-      alert('You must save your roadbook before you can save the Lexicon. No, really. Sorry.');
-    }
-  },
-  saveRoadBook: function(){
-    if(this.roadbook.filePath == null){
-      // Request documents directory path from node
-      this.ipc.send('get-documents-path');
-    } else {
-      this.roadbook.finishWaypointEdit();
-      this.fs.writeFile(this.roadbook.filePath, JSON.stringify(this.roadbook.statefulJSON(), null, 2), function (err) {});
-    }
-  },
+  }
 
-  saveRoadBookAs: function(){
-    if(this.roadbook.filePath == null){
-      // Request documents directory path from node TODO we really only need to do this once...
-      this.ipc.send('get-documents-path');
-    } else {
-      this.showSaveDialog('Save roadbook as',this.roadbook.filePath)
+  saveRoadBook() {
+    try {
+      if (this.roadbook.filePath == null) {
+        this.saveRoadBookAs();
+      } else {
+        this.roadbook.finishInstructionEdit();
+        var tulipFile = this.roadbook.statefulJSON();
+        delete tulipFile.filePath;
+        this.fs.writeFile(this.roadbook.filePath, JSON.stringify(tulipFile, null, 2), function (err) { });
+        this.roadbookController.isSaved(true);
+      }
+    } catch (error) {
+      console.error(error);
     }
-  },
+  }
 
-  showSaveDialog: function(title,path) {
+  saveRoadBookAs() {
+    var filePath;
+    if (this.roadbook.filePath == null) {
+      filePath = this.documentPath + '/'
+        + (this.roadbook.name() == 'Name your roadbook' ? 'Untitled' : this.roadbook.name().replace(/\s/g, '-'))
+        + ".tlp"
+    } else {
+      filePath = this.roadbook.filePath
+    }
+    this.showSaveDialog('Save roadbook as', filePath)
+  }
+
+  showSaveDialog(title, path) {
     var _this = this;
-    this.dialog.showSaveDialog({
-                                title: title,
-                                defaultPath: path,
-                                filters: [{ name: 'tulip', extensions: ['tlp'] }]
-      },function (fileName) {
-      if (fileName === undefined) return;
-        // assign the file path to the json for first time players
-        // TODO figure out what to do if the user changes the name of the file
-        var tulipFile = _this.roadbook.statefulJSON();
-        tulipFile.filePath = fileName;
-        _this.roadbook.filePath = fileName;
-        tulipFile = JSON.stringify(tulipFile, null, 2);
-        _this.fs.writeFile(fileName, tulipFile, function (err) {});
-        return true
-    });
-  },
 
-  startLoading: function(){
+    globalNode.dialog().showSaveDialog({
+      title: title,
+      defaultPath: path,
+      filters: [{ name: 'tulip', extensions: ['tlp'] }]
+    }).then(dialogInfo => {
+      var fileName = dialogInfo.filePath;
+
+      if (dialogInfo.canceled)
+        return;
+
+      // assign the file path to the json for first time players
+      // TODO figure out what to do if the user changes the name of the file
+      var tulipFile = _this.roadbook.statefulJSON();
+      delete tulipFile.filePath;
+      _this.roadbook.filePath = fileName;
+      tulipFile = JSON.stringify(tulipFile, null, 2);
+
+      _this.fs.writeFile(fileName, tulipFile, function (err) { });
+
+      console.log("Saved roadbook to ", fileName);
+
+      localStorage.setItem('lastRoadBook', fileName);
+      this.updateWindowTitle(fileName);
+      this.roadbookController.isSaved(true);
+      this.ipc.send('save-recent-filename', fileName);
+      return true;
+    });
+  }
+
+  startLoading() {
     $('#loading').show();
     google.maps.event.addListener(this.mapController.map, 'idle', this.stopLoading); //TODO pass to map controller with callback
-  },
+  }
 
-  stopLoading: function(){
+  stopLoading() {
     $('#loading').hide();
-  },
+  }
 
-  initMap: function(){
+  initMap() {
     this.mapModel = new MapModel();
-    this.mapController = new MapController(this.mapModel);
+    this.mapController = new MapController(this.mapModel, this.settings.homeView, !this.settings.loadLastRoadbook);
     this.mapController.placeMapAttribution();
-  },
+    if (this.settings.loadLastRoadbook) {
+      this.openLastRoadBook();
+    }
+  }
 
-  toggleRoadbook: function(){
+  toggleRoadbook() {
     $('.roadbook-container').toggleClass('collapsed');
     $('.roadbook-container').toggleClass('expanded');
 
     $('#toggle-roadbook i').toggleClass('fi-arrow-down');
     $('#toggle-roadbook i').toggleClass('fi-arrow-up');
-  },
+  }
 
+  showRoadbook() {
+    $('.roadbook-container').removeClass('collapsed');
+    $('.roadbook-container').addClass('expanded');
+
+    $('#toggle-roadbook i').removeClass('fi-arrow-down');
+    $('#toggle-roadbook i').addClass('fi-arrow-up');
+  }
+
+  newRoadbook() {
+    this.roadbook.newRoadbook();
+    while (true) {
+      try {
+        app.mapModel.deletePointFromRoute(0);
+        app.mapModel.deleteInstructionFromRoadbook(0);
+      }
+      catch (error) {
+        break;
+      }
+    }
+  }
+
+  setHomeView() {
+    const center = this.mapController.getMapCenter()
+    this.settings.homeView = {
+      lat: center.lat(),
+      lon: center.lng(),
+      zoom: this.mapController.getMapZoom()
+    }
+  }
+  saveSettings() {
+    const settings = this.settings;
+    settings.loadLastRoadbook = $('#open_last').prop('checked');
+    settings.gmapKey = $('#gmap_key').val();
+    settings.googleDirectionsKey = $('#google_directions_key').val();
+    settings.openDevConsole = $('#open_dev_console').prop('checked');
+    try {
+      settings.tulipNearDistance = parseInt($('#tulip_near_distance').val());
+    } catch (ex) {
+      console.log(ex);
+      settings.tulipNearDistance = 300;
+    }
+    settings.showCapHeading = $('#show_cap_heading').prop('checked');
+    settings.showCoordinates = $('#show_coordinates').prop('checked');
+    settings.coordinatesFormat = $('#coordinates_format').find(":selected").val();
+    settings.showChangelogOnStart = this.settings.showChangelogOnStart ?? { 'version': this.version };
+    settings.openRallyStrict = $('#openrally_strict').prop('checked');
+
+
+    localStorage.setItem('settings', JSON.stringify(settings));
+    app.settings = settings;
+    $('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-left');
+    this.refreshInstructionElements();
+  }
+
+  loadSettings() {
+    const settings = JSON.parse(localStorage.getItem('settings') ?? "{}");
+    if (settings.openRallyStrict === undefined) {
+      settings.openRallyStrict = false;
+    }
+    $('#open_last').prop('checked', settings.loadLastRoadbook ?? false);
+    $('#gmap_key').val(settings.gmapKey ?? '');
+    $('#google_directions_key').val(settings.googleDirectionsKey ?? '');
+    $('#open_dev_console').prop('checked', settings.openDevConsole ?? false);
+    $('#tulip_near_distance').val(settings.tulipNearDistance ?? 300);
+    $('#show_cap_heading').prop('checked', settings.showCapHeading ?? false);
+    $('#show_coordinates').prop('checked', settings.showCoordinates ?? false);
+    $('#coordinates_format').val(settings.coordinatesFormat ?? 'ddmmss');
+    $('#openrally_strict').prop('checked', settings.openRallyStrict);
+    $('#user_glyph_path_text').text(settings.user_glyph_path ?? "No path selected");
+
+    if (settings.openDevConsole) {
+      this.ipc.send('open-dev-tools');
+    }
+    if (settings.showChangelogOnStart === undefined ||
+      (settings.showChangelogOnStart.showOnStart || (settings.showChangelogOnStart.version != this.version))) {
+      this.ipc.send('open-changelog');
+    }
+    if (!settings.homeView) {
+      settings.homeView = null;
+    }
+    return settings;
+  }
+
+  initializeGoogleMaps() {
+    const proxyUrl = "https://datasets.stadar.org/maps/api/js?libraries=geometry&callback=app.initMap&loading=async";
+    if (this.settings.gmapKey) {
+      const mapsUrl = `https://maps.googleapis.com/maps/api/js?key=${this.settings.gmapKey}&libraries=geometry&callback=app.initMap&loading=async`;
+      console.log("Using Google Maps key from settings.");
+      this.loadGoogleMaps(mapsUrl);
+    } else {
+      console.log("No Google Maps key found. Checking proxy...");
+      this.checkProxyAvailability(proxyUrl).then((proxyAvailable) => {
+        if (proxyAvailable) {
+          console.log("Proxy is available. Using it.");
+          this.loadGoogleMaps(proxyUrl);
+        } else {
+          console.log("No API key and proxy is unavailable.");
+          globalNode.dialog().showMessageBoxSync({
+            message: "You must set your Google Maps key in settings and restart the app.",
+            type: 'info',
+            buttons: ['OK']
+          });
+          $('.off-canvas-wrap').foundation('offcanvas', 'show', 'move-left');
+        }
+      });
+    }
+  }
+
+  loadGoogleMaps(mapsUrl) {
+    const script = document.createElement("script");
+    script.src = mapsUrl;
+    script.async = true;
+    script.defer = true;
+    document.head.appendChild(script);
+  }
+
+  async checkProxyAvailability(proxyUrl) {
+    return fetch(proxyUrl, { method: "GET" }) // Quick check if proxy responds
+      .then((response) => response.ok)
+      .catch(() => false);
+  }
+
+  refreshInstructionElements() {
+
+  }
+
+  updateWindowTitle(filename = '') {
+    if (filename != '')
+      filename = " - " + filename;
+    document.title = "Tulip " + this.version + filename;
+  }
   /*
     ---------------------------------------------------------------------------
     Roadbook Listeners
     ---------------------------------------------------------------------------
   */
-  initListeners: function(){
+  initListeners() {
 
     var _this = this
 
-    $("#import-gpx").click(function(){
-      _this.importGPX();
-    });
-
-    $('#toggle-roadbook').click(function(){
+    $('#toggle-roadbook').on("click", function () {
       _this.toggleRoadbook();
       $(this).blur();
     });
 
-    $('#export-gpx').click(function(){
-      _this.exportGPX();
-    });
-
-    $('#export-openrally-gpx').click(function(){
-      _this.exportOpenRallyGPX();
-    });
-
-    $('#new-roadbook').click(function(){
-      //TODO Something less hacky please
-      location.reload();
-    });
-
-    $('#open-roadbook').click(function(){
-      _this.openRoadBook();
-    });
-
-    $('#print-roadbook').click(function(){
-      _this.printRoadbook();
-    });
-    $('#print-lexicon').click(function(){
-      _this.printLexicon();
-    });
-
-    $('#save-roadbook').click(function(e){
+    $('#save-roadbook').on('click', function (e) {
       e.preventDefault();
-      if(_this.canSave()){
-        $(this).addClass('secondary');
-        if(e.shiftKey){
+      if (_this.canSave()) {
+        if (e.shiftKey) {
           _this.saveRoadBookAs();
-        }else {
+        } else {
           _this.saveRoadBook();
         }
       }
       $(this).blur();
     });
 
-    $('#roadbook-desc, #roadbook-name').find('a.show-editor').click(function(){
-      $(this).hide();
-      $(this).siblings('.hide-editor').show();
-      $(this).siblings('.roadbook-header-input-container').slideDown('fast');
-      if($(this).hasClass('rb-name')){
-        $(this).parent('div').find(':input').focus();
+    $('#user_glyph_path_select').on('click', function () {
+      _this.openUserGlyphFolder();
+    })
+
+    $('#set-current-view-as-home').on('click', function () {
+      _this.setHomeView();
+      _this.saveSettings();
+    });
+
+    $('#save-settings').on('click', function () {
+      _this.saveSettings();
+    });
+
+    $('[name="toggle-insert-type"]').on('change', function (e) {
+      if (e.target.id == 'toggle-insert-track') {
+        $('.track-selection').removeClass('hidden');
+        $('#track-selection-grid').show();
+        $('#glyph-selection-grid').hide();
+        $('#text-selection-grid').hide();
       }
-      if($(this).hasClass('rb-desc')){
-        $('#roadbook-desc p').slideUp('fast');
-        _this.roadbook.descriptionTextEditor.focus();
-      }
-      $('#save-roadbook').removeClass('secondary');
-      _this.roadbook.editingNameDesc = true;
-    });
-
-    $('#roadbook-desc, #roadbook-name').find('a.hide-editor').click(function(){
-      $(this).hide();
-      $(this).siblings('.show-editor').show();
-      $(this).siblings('.roadbook-header-input-container').slideUp('fast');
-      if($(this).hasClass('rb-desc')){
-        $('#roadbook-desc p').slideDown('fast');
-      }
-    });
-
-    /*
-      Waypoint palette
-    */
-    $('#hide-palette').click(function(){
-      _this.roadbook.finishWaypointEdit();
-    });
-
-    $('#toggle-heading').change(function(){
-      $('#note-editor-container').toggleClass('hideCap',!_this.roadbook.waypointShowHeading())
-      _this.roadbook.currentlyEditingWaypoint.showHeading(_this.roadbook.waypointShowHeading());
-    });
-
-    $('.track-grid').click(function(e){
-      if($(this).hasClass('undo')){
-        if(e.shiftKey){
-          _this.roadbook.currentlyEditingWaypoint.tulip.beginRemoveTrack();
-        }else{
-          _this.roadbook.currentlyEditingWaypoint.tulip.removeLastTrack();
-        }
-        return
-      }
-      var angle = $(this).data('angle');
-      _this.roadbook.currentlyEditingWaypoint.tulip.addTrack(angle);
-    });
-
-    // TODO change to object literal lookup
-    $('.added-track-selector').click(function(e) {
-      e.preventDefault();
-      if('off-piste-added' == $(this).attr('id')){
-        _this.roadbook.changeEditingWaypointAdded('offPiste')
-      }else if('track-added' == $(this).attr('id')){
-        _this.roadbook.changeEditingWaypointAdded('track')
-      }else if('road-added' == $(this).attr('id')){
-        _this.roadbook.changeEditingWaypointAdded('road')
-      }else if('main-road-added' == $(this).attr('id')){
-        _this.roadbook.changeEditingWaypointAdded('mainRoad')
-      }else if('dcw-added' == $(this).attr('id')){
-        _this.roadbook.changeEditingWaypointAdded('dcw')
-      }
-
-      $('.added-track-selector').removeClass('active');
-      $(this).addClass('active');
-    });
-
-    $('.entry-track-selector').click(function(e) {
-      e.preventDefault();
-      if('off-piste-entry' == $(this).attr('id')){
-        _this.roadbook.changeEditingWaypointEntry('offPiste')
-      }else if('track-entry' == $(this).attr('id')){
-        _this.roadbook.changeEditingWaypointEntry('track')
-      }else if('road-entry' == $(this).attr('id')){
-        _this.roadbook.changeEditingWaypointEntry('road')
-      }else if('main-road-entry' == $(this).attr('id')){
-        _this.roadbook.changeEditingWaypointEntry('mainRoad')
-      }else if('dcw-entry' == $(this).attr('id')){
-        _this.roadbook.changeEditingWaypointEntry('dcw')
+      else if (e.target.id == 'toggle-insert-glyph') {
+        $('.track-selection').addClass('hidden');
+        $('#track-selection-grid').hide();
+        $('#glyph-selection-grid').show();
+        $('#text-selection-grid').hide();
+      } else if (e.target.id == 'toggle-insert-text') {
+        $('.track-selection').addClass('hidden');
+        $('#track-selection-grid').hide();
+        $('#glyph-selection-grid').hide();
+        $('#text-selection-grid').show();
       }
     });
 
-    $('.exit-track-selector').click(function(e) {
-      e.preventDefault();
-      if('off-piste-exit' == $(this).attr('id')){
-        _this.roadbook.changeEditingWaypointExit('offPiste')
-      }else if('track-exit' == $(this).attr('id')){
-        _this.roadbook.changeEditingWaypointExit('track')
-      }else if('road-exit' == $(this).attr('id')){
-        _this.roadbook.changeEditingWaypointExit('road')
-      }else if('main-road-exit' == $(this).attr('id')){
-        _this.roadbook.changeEditingWaypointExit('mainRoad')
-      }else if('dcw-exit' == $(this).attr('id')){
-        _this.roadbook.changeEditingWaypointExit('dcw')
-      }
-    });
-
-    $('[name="toggle-insert-type"]').change(function(){
-      $('.track-selection').toggleClass('hidden');
-      $('.glyph-selection').toggleClass('hidden');
-    });
-
-    /*
-      escape key exits delete modes
-    */
-    $(document).keyup(function(e) {
-      if(e.keyCode == 27){
-        if(_this.roadbook.currentlyEditingWaypoint){
-          _this.roadbook.currentlyEditingWaypoint.tulip.finishRemove();
-          _this.roadbook.currentlyEditingWaypoint.tulip.beginEdit();
-        }
-        if(_this.mapController.markerDeleteMode == true){
-          // TODO move this to the map controller
-          var marker = _this.mapModel.markers[_this.mapModel.deleteQueue.pop()];
-          _this.mapController.returnPointToNaturalColor(marker);
-          _this.mapController.markerDeleteMode = false;
-        }
-      }
+    $('#roadbook-logo-remove').on('click', function () {
+      _this.roadbook.customLogo(null);
     })
 
     /*
@@ -406,163 +635,222 @@ var App = Class({
     */
     // Listener to get path to documents directory from node for saving roadbooks
     // NOTE only use this for roadbooks which haven't been named
-    this.ipc.on('documents-path', function(event, arg){
-      var path = arg+'/';
-      path += _this.roadbook.name() == 'Name your roadbook' ? 'Untitled' : _this.roadbook.name().replace(/\s/g, '-')
-      _this.showSaveDialog('Save roadbook', path)
+    this.ipc.on('documents-path', function (event, arg) {
+      _this.documentPath = arg;
     });
 
-    this.ipc.on('save-roadbook', function(event, arg){
+    this.ipc.on('save-roadbook', function (event, arg) {
       _this.saveRoadBook();
     });
 
-    this.ipc.on('save-roadbook-as', function(event, arg){
+    this.ipc.on('save-roadbook-as', function (event, arg) {
       _this.saveRoadBookAs();
     });
 
-    this.ipc.on('open-roadbook', function(event, arg){
+    this.ipc.on('open-roadbook', function (event, arg) {
       _this.openRoadBook();
     });
 
-    this.ipc.on('reload-roadbook', function(event, arg){
+    this.ipc.on('load-roadbook', function (event, fileName) {
+      _this.loadRoadBook(fileName);
+    });
+
+    this.ipc.on('append-roadbook', function (event, arg) {
+      _this.openRoadBook(true);
+    });
+
+    this.ipc.on('reload-roadbook', function (event, arg) {
       location.reload();
     });
 
-    this.ipc.on('toggle-roadbook', function(event, arg){
+    this.ipc.on('toggle-roadbook', function (event, arg) {
       _this.toggleRoadbook();
     });
 
-    this.ipc.on('import-gpx', function(event, arg){
+    this.ipc.on('import-gpx', function (event, arg) {
       _this.importGPX();
     });
 
-    this.ipc.on('export-gpx', function(event, arg){
+    this.ipc.on('export-gpx', function (event, arg) {
       _this.exportGPX();
     });
 
-    this.ipc.on('export-openrally-gpx', function(event, arg){
+    this.ipc.on('export-openrally-gpx', function (event, arg) {
       _this.exportOpenRallyGPX();
     });
 
-    this.ipc.on('export-pdf', function(event, arg){
+    this.ipc.on('export-pdf', function (event, arg) {
       _this.printRoadbook();
     });
 
-	this.ipc.on('export-lexicon', function(event, arg){
-      _this.printLexicon();
-    });
-	
-    this.ipc.on('zoom-in', function(event, arg){
+    this.ipc.on('zoom-in', function (event, arg) {
       _this.mapController.zin();
     });
 
-    this.ipc.on('zoom-out', function(event, arg){
+    this.ipc.on('zoom-out', function (event, arg) {
       _this.mapController.zout();
     });
-
-    this.ipc.on('add-glyph', function(event, arg){
-      if(_this.roadbook.currentlyEditingWaypoint){
-        _this.glyphControls.showGlyphModal(30,30);
+    this.ipc.on('add-glyph', function (event, arg) {
+      if (_this.roadbook.currentlyEditingInstruction) {
+        _this.glyphControls.showGlyphModal(30, 30);
       }
     });
 
-    this.ipc.on('add-track-0', function(event, arg){
-      if(_this.roadbook.currentlyEditingWaypoint){
-        _this.roadbook.currentlyEditingWaypoint.tulip.addTrack(0);
+    this.ipc.on('add-track-0', function (event, arg) {
+      if (_this.roadbook.currentlyEditingInstruction) {
+        _this.roadbook.currentlyEditingInstruction.tulip.addTrack(0);
       }
     });
 
-    this.ipc.on('add-track-45', function(event, arg){
-      if(_this.roadbook.currentlyEditingWaypoint){
-        _this.roadbook.currentlyEditingWaypoint.tulip.addTrack(45);
+    this.ipc.on('add-track-45', function (event, arg) {
+      if (_this.roadbook.currentlyEditingInstruction) {
+        _this.roadbook.currentlyEditingInstruction.tulip.addTrack(45);
       }
     });
 
-    this.ipc.on('add-track-90', function(event, arg){
-      if(_this.roadbook.currentlyEditingWaypoint){
-        _this.roadbook.currentlyEditingWaypoint.tulip.addTrack(90);
+    this.ipc.on('add-track-90', function (event, arg) {
+      if (_this.roadbook.currentlyEditingInstruction) {
+        _this.roadbook.currentlyEditingInstruction.tulip.addTrack(90);
       }
     });
 
-    this.ipc.on('add-track-135', function(event, arg){
-      if(_this.roadbook.currentlyEditingWaypoint){
-        _this.roadbook.currentlyEditingWaypoint.tulip.addTrack(135);
+    this.ipc.on('add-track-135', function (event, arg) {
+      if (_this.roadbook.currentlyEditingInstruction) {
+        _this.roadbook.currentlyEditingInstruction.tulip.addTrack(135);
       }
     });
 
-    this.ipc.on('add-track-180', function(event, arg){
-      if(_this.roadbook.currentlyEditingWaypoint){
-        _this.roadbook.currentlyEditingWaypoint.tulip.addTrack(180);
+    this.ipc.on('add-track-180', function (event, arg) {
+      if (_this.roadbook.currentlyEditingInstruction) {
+        _this.roadbook.currentlyEditingInstruction.tulip.addTrack(180);
       }
     });
 
-    this.ipc.on('add-track-225', function(event, arg){
-      if(_this.roadbook.currentlyEditingWaypoint){
-        _this.roadbook.currentlyEditingWaypoint.tulip.addTrack(225);
+    this.ipc.on('add-track-225', function (event, arg) {
+      if (_this.roadbook.currentlyEditingInstruction) {
+        _this.roadbook.currentlyEditingInstruction.tulip.addTrack(225);
       }
     });
 
-    this.ipc.on('add-track-270', function(event, arg){
-      if(_this.roadbook.currentlyEditingWaypoint){
-        _this.roadbook.currentlyEditingWaypoint.tulip.addTrack(270);
+    this.ipc.on('add-track-270', function (event, arg) {
+      if (_this.roadbook.currentlyEditingInstruction) {
+        _this.roadbook.currentlyEditingInstruction.tulip.addTrack(270);
       }
     });
 
-    this.ipc.on('add-track-315', function(event, arg){
-      if(_this.roadbook.currentlyEditingWaypoint){
-        _this.roadbook.currentlyEditingWaypoint.tulip.addTrack(315);
+    this.ipc.on('add-track-315', function (event, arg) {
+      if (_this.roadbook.currentlyEditingInstruction) {
+        _this.roadbook.currentlyEditingInstruction.tulip.addTrack(315);
       }
     });
 
-    this.ipc.on('set-track-hp', function(event, arg){
-      if(_this.roadbook.currentlyEditingWaypoint){
-        _this.roadbook.changeEditingWaypointAdded('offPiste');
+    this.ipc.on('set-track-lvt', function (event, arg) {
+      if (_this.roadbook.currentlyEditingInstruction) {
+        _this.roadbook.changeEditingInstructionAdded('lowVisTrack');
         $('.added-track-selector').removeClass('active');
         $($('.added-track-selector')[0]).addClass('active');
       }
     });
 
-    this.ipc.on('set-track-p', function(event, arg){
-      if(_this.roadbook.currentlyEditingWaypoint){
-        _this.roadbook.changeEditingWaypointAdded('track');
+    this.ipc.on('set-track-hp', function (event, arg) {
+      if (_this.roadbook.currentlyEditingInstruction) {
+        _this.roadbook.changeEditingInstructionAdded('offPiste');
+        $('.added-track-selector').removeClass('active');
+        $($('.added-track-selector')[0]).addClass('active');
+      }
+    });
+
+    this.ipc.on('set-track-p', function (event, arg) {
+      if (_this.roadbook.currentlyEditingInstruction) {
+        _this.roadbook.changeEditingInstructionAdded('smallTrack');
         $('.added-track-selector').removeClass('active');
         $($('.added-track-selector')[1]).addClass('active');
       }
     });
 
-    this.ipc.on('set-track-pp', function(event, arg){
-      if(_this.roadbook.currentlyEditingWaypoint){
-        _this.roadbook.changeEditingWaypointAdded('road');
+    this.ipc.on('set-track-pp', function (event, arg) {
+      if (_this.roadbook.currentlyEditingInstruction) {
+        _this.roadbook.changeEditingInstructionAdded('track');
         $('.added-track-selector').removeClass('active');
         $($('.added-track-selector')[2]).addClass('active');
       }
     });
 
-    this.ipc.on('set-track-ro', function(event, arg){
-      if(_this.roadbook.currentlyEditingWaypoint){
-        _this.roadbook.changeEditingWaypointAdded('mainRoad');
+    this.ipc.on('set-track-ro', function (event, arg) {
+      if (_this.roadbook.currentlyEditingInstruction) {
+        _this.roadbook.changeEditingInstructionAdded('tarmacRoad');
         $('.added-track-selector').removeClass('active');
         console.log($('.added-track-selector')[3]);
         $($('.added-track-selector')[3]).addClass('active');
       }
     });
 
-    this.ipc.on('set-track-dcw', function(event, arg){
-      if(_this.roadbook.currentlyEditingWaypoint){
-        _this.roadbook.changeEditingWaypointAdded('dcw');
+    this.ipc.on('set-track-dcw', function (event, arg) {
+      if (_this.roadbook.currentlyEditingInstruction) {
+        _this.roadbook.changeEditingInstructionAdded('dcw');
         $('.added-track-selector').removeClass('active');
         $($('.added-track-selector')[4]).addClass('active');
       }
     });
 
+    this.ipc.on('new-roadbook', function (event, arg) {
+      var nr = window.confirm("Start a new roadbook? Unsaved changes will be lost");
+      if (nr) {
+        _this.updateWindowTitle();
+        _this.newRoadbook();
+      }
+    });
+
+    this.ipc.on('open-settings', function (event, arg) {
+      $('.off-canvas-wrap').foundation('offcanvas', 'show', 'move-left');
+    })
+
+    this.ipc.on('show-about-info', function (event, arg) {
+      $('#about').foundation('reveal', 'open');
+    });
+
     window.addEventListener("beforeunload", function (event) {
-      if(_this.roadbook.filePath){
+      if (_this.roadbook.filePath) {
         var rb = JSON.stringify(this.roadbook.statefulJSON(), null, 2);
-        var save = _this.dialog.showMessageBox({message: "Would you like to save before closing? All unsaved changes will be lost.", buttons: ['ok', 'nope'], type: 'question'});
-        if(save == 0){
-          _this.fs.writeFile(_this.roadbook.filePath, rb, function (err) {});
+        var save = _this.dialog.showMessageBox({ message: "Would you like to save before closing? All unsaved changes will be lost.", buttons: ['ok', 'nope'], type: 'question' });
+        if (save == 0) {
+          _this.fs.writeFile(_this.roadbook.filePath, rb, function (err) { });
         }
       }
     });
-  },
-});
+
+    this.ipc.on('changelog-result', (event, result) => {
+      var setting = result || {
+        'showOnStart': this.settings?.showChangelogOnStart?.showOnStart ?? true
+      };
+      setting['version'] = this.version;
+      this.settings.showChangelogOnStart = setting;
+      this.saveSettings();
+    });
+
+    this.ipc.on('open-changelog', (event, result) => {
+      this.ipc.send('open-changelog');
+    });
+
+    this.ipc.on('add-roadbook-logo', function (event, arg) {
+      _this.openRoadBookLogo();
+    });
+
+    this.ipc.on('send-to-back', function (event, arg) {
+      app.roadbook.currentlyEditingInstruction.tulip.sendBackwardActiveGlyph();
+    });
+
+    this.ipc.on('bring-to-front', function (event, arg) {
+      app.roadbook.currentlyEditingInstruction.tulip.bringForwardActiveGlyph();
+    });
+
+    this.ipc.on('fill-zone-speed-limit', function (event, arg) {
+      app.roadbook.fillZoneSpeedLimit();
+    });
+
+    this.ipc.on('user-glyphs', (event, result) => {
+      _this.userGlyphs = result;
+      _this.glyphControls.updateUserGlyphs(result);
+    });
+  }
+};

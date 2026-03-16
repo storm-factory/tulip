@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="250mm"
+   height="250mm"
+   viewBox="0 0 250 250"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="bumpy_broken.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     showguides="true"
+     inkscape:zoom="1.2054417"
+     inkscape:cx="472.02616"
+     inkscape:cy="472.44094"
+     inkscape:window-width="2510"
+     inkscape:window-height="1363"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1">
+    <sodipodi:guide
+       position="157.91558,71.663659"
+       orientation="0,-1"
+       id="guide4424"
+       inkscape:locked="false" />
+  </sodipodi:namedview>
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="color:#000000;fill:#ff0000;stroke-linecap:round;stroke-linejoin:round;-inkscape-stroke:none;stroke:#000000"
+       d="m 236.64258,63.513672 a 7.4147414,7.4147414 0 0 0 -5.19141,3.148437 L 170.31836,155.31641 V 71.921875 A 7.4147414,7.4147414 0 0 0 156.80078,67.712891 L 96.896484,154.58398 V 72.007812 A 7.4147414,7.4147414 0 0 0 83.482422,67.652344 L 5.6972656,174.77148 a 7.414,7.414 0 0 0 1.6425781,10.35547 7.414,7.414 0 0 0 10.3554683,-1.64258 L 82.068359,94.833984 v 83.562496 a 7.4147414,7.4147414 0 0 0 13.517578,4.20899 L 155.49023,95.734375 v 83.394535 a 7.4147414,7.4147414 0 0 0 13.51758,4.20898 l 61.29688,-88.892578 0.58398,84.734378 a 7.414,7.414 0 0 0 7.46485,7.36133 7.414,7.414 0 0 0 7.36328,-7.46485 L 244.96875,70.818359 a 7.4147414,7.4147414 0 0 0 -8.32617,-7.304687 z"
+       id="path3696" />
+  </g>
+</svg>

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="44.313042mm"
+   height="20.719526mm"
+   viewBox="0 0 44.313042 20.719526"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="reset-distance.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="5.1929747"
+     inkscape:cx="70.479835"
+     inkscape:cy="61.332862"
+     inkscape:window-width="2510"
+     inkscape:window-height="1363"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2">
+    <mask
+       maskUnits="userSpaceOnUse"
+       x="0"
+       y="0"
+       width="1"
+       height="1"
+       id="mask4710">
+      <g
+         id="g4720">
+        <g
+           clip-path="url(#clipPath4708)"
+           id="g4718">
+          <g
+             id="g4716">
+            <g
+               transform="matrix(1,0,0,-1,0,623.622)"
+               id="g4714">
+              <path
+                 d="m 145.525,514.129 h 14.173 v 14.17407 h -14.173 z"
+                 style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+                 id="path4712" />
+            </g>
+          </g>
+        </g>
+      </g>
+    </mask>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath4708">
+      <path
+         d="M 6.441045,-1657.6683 H 455.41452 V 13308.114 H 6.441045 Z"
+         id="path4706" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath4728">
+      <path
+         d="M 6.441045,-1657.6683 H 455.41452 V 13308.114 H 6.441045 Z"
+         id="path4726" />
+    </clipPath>
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-16.098346,-31.51573)">
+    <text
+       xml:space="preserve"
+       style="font-weight:bold;font-size:9.8739px;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Bold';font-variant-ligatures:no-common-ligatures;font-variant-position:super;font-variant-caps:small-caps;fill:#1a1a1a;stroke:none;stroke-width:1.70895"
+       x="21.517933"
+       y="52.138832"
+       id="text455"><tspan
+         sodipodi:role="line"
+         id="tspan453"
+         style="fill:#1a1a1a;stroke:none;stroke-width:1.70895"
+         x="21.517933"
+         y="52.138832">RESET</tspan></text>
+    <g
+       id="g930"
+       transform="translate(-0.94338025,-8.4016158)">
+      <g
+         id="g722"
+         transform="matrix(1.7640916,0,0,1.7640916,-22.764389,-20.547199)">
+        <rect
+           style="fill:#1a1a1a;stroke:none;stroke-width:0.707954"
+           id="rect717"
+           width="5.6816735"
+           height="6.0394921"
+           x="22.564653"
+           y="34.275173" />
+        <text
+           xml:space="preserve"
+           style="font-weight:bold;font-size:4.5861px;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Bold';font-variant-ligatures:no-common-ligatures;font-variant-position:super;font-variant-caps:small-caps;fill:#ffffff;stroke:none;stroke-width:0.79375"
+           x="24.133564"
+           y="38.873631"
+           id="text663"><tspan
+             sodipodi:role="line"
+             id="tspan661"
+             style="fill:#ffffff;stroke-width:0.79375"
+             x="24.133564"
+             y="38.873631">0</tspan></text>
+      </g>
+      <g
+         id="g722-2"
+         transform="matrix(1.7640916,0,0,1.7640916,-11.334372,-20.547199)">
+        <rect
+           style="fill:#1a1a1a;stroke:none;stroke-width:0.707954"
+           id="rect717-6"
+           width="5.6816735"
+           height="6.0394921"
+           x="22.564653"
+           y="34.275173" />
+        <text
+           xml:space="preserve"
+           style="font-weight:bold;font-size:4.5861px;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Bold';font-variant-ligatures:no-common-ligatures;font-variant-position:super;font-variant-caps:small-caps;fill:#ffffff;stroke:none;stroke-width:0.79375"
+           x="24.133564"
+           y="38.873631"
+           id="text663-1"><tspan
+             sodipodi:role="line"
+             id="tspan661-8"
+             style="fill:#ffffff;stroke-width:0.79375"
+             x="24.133564"
+             y="38.873631">0</tspan></text>
+      </g>
+      <g
+         id="g722-7"
+         transform="matrix(1.7640916,0,0,1.7640916,0.095645,-20.547199)">
+        <rect
+           style="fill:#1a1a1a;stroke:none;stroke-width:0.707954"
+           id="rect717-9"
+           width="5.6816735"
+           height="6.0394921"
+           x="22.564653"
+           y="34.275173" />
+        <text
+           xml:space="preserve"
+           style="font-weight:bold;font-size:4.5861px;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Bold';font-variant-ligatures:no-common-ligatures;font-variant-position:super;font-variant-caps:small-caps;fill:#ffffff;stroke:none;stroke-width:0.79375"
+           x="24.133564"
+           y="38.873631"
+           id="text663-2"><tspan
+             sodipodi:role="line"
+             id="tspan661-0"
+             style="fill:#ffffff;stroke-width:0.79375"
+             x="24.133564"
+             y="38.873631">0</tspan></text>
+      </g>
+      <g
+         id="g722-23"
+         transform="matrix(1.7640916,0,0,1.7640916,11.525662,-20.547199)">
+        <rect
+           style="fill:#1a1a1a;stroke:none;stroke-width:0.707954"
+           id="rect717-7"
+           width="5.6816735"
+           height="6.0394921"
+           x="22.564653"
+           y="34.275173" />
+        <text
+           xml:space="preserve"
+           style="font-weight:bold;font-size:4.5861px;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Bold';font-variant-ligatures:no-common-ligatures;font-variant-position:super;font-variant-caps:small-caps;fill:#ffffff;stroke:none;stroke-width:0.79375"
+           x="24.133564"
+           y="38.873631"
+           id="text663-5"><tspan
+             sodipodi:role="line"
+             id="tspan661-9"
+             style="fill:#ffffff;stroke-width:0.79375"
+             x="24.133564"
+             y="38.873631">0</tspan></text>
+      </g>
+    </g>
+  </g>
+</svg>

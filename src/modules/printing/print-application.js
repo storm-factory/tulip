@@ -11,161 +11,140 @@
   https://github.com/electron/electron/blob/master/docs/api/window-open.md
   ---------------------------------------------------------------------------
 */
-// TODO get rid of singleton badness
-var PrintApp = Class({
-  singleton: true,
-  create: function(){
+
+class PrintApp {
+  pageSizes;
+  pageSize;
+
+  constructor() {
     var _this = this;
+    this.settings = null;
     this.name = ko.observable('');
     this.desc = ko.observable('');
+    this.customLogo = ko.observable('');
     this.totalDistance = ko.observable('');
-    this.waypoints = ko.observableArray([]);
+    this.waypointCount = ko.observable('');
+    this.fuelRange = ko.observable('');
+    this.instructions = ko.observableArray([]);
+    this.start_lat = ko.observable(0);
+    this.start_lon = ko.observable(0);
+    this.end_lat = ko.observable(0);
+    this.end_lon = ko.observable(0);
 
-    this.ipc = require('electron').ipcRenderer;
-    this.ipc.on('print-data', function(event, arg){
+    this.ipc = globalNode.ipcRenderer;
+    this.ipc.on('print-data', function (event, arg, settings) {
+      _this.settings = settings;
       _this.parseJson(arg);
     });
 
-    this.pageFormats = ko.observableArray([
-		{text:"Letter", value:"Letter"},
-		{text:"Legal",  value:"Legal"},
-		{text:"A5",     value:"A5"},
-		{text:"PackedLetter", value:"PackedLetter"}
-		]);
-    this.pageFormat = ko.observable();
-    this.pageLengths = ko.observableArray([
-		{text: "Page", value: "Page"},
-		{text: "Roll", value: "Roll"}
-		]);
-    this.pageLength = ko.observable();
-	this.numberFormats = ko.observableArray([
-		{text: "Plain Hundredths", value: "Plain"},
-		{text: "Outline Hundredths", value:"Outline"},
-		{text: "No Hundredths", value:"None"}
-		]);
-	this.numberFormat = ko.observable();
+    this.pageSizes = ko.observableArray([{ text: 'A5', value: 'A5' }, { text: 'Roll', value: 'Roll' }]);
+    this.pageSize = ko.observable('Roll');
     this.ipc.send('print-launched', true);
-  },
+  }
 
-  parseJson: function(json){
+  parseJson(json) {
     this.name(json.name);
     this.desc(json.desc);
+    this.customLogo(json.customLogo);
     this.totalDistance(json.totalDistance);
-    this.waypoints(json.waypoints);
+    this.fuelRange(json.fuelRange);
+    this.instructions(json.instructions);
+    this.waypointCount(ko.unwrap(this.instructions).length)
     this.filePath = json.filePath;
+    this.start_lat(this.degFormat(json.instructions[0].lat, 'lat'));
+    this.start_lon(this.degFormat(json.instructions[0].long, 'lon'));
+    this.end_lat(this.degFormat(json.instructions[json.instructions.length - 1].lat, 'lat'));
+    this.end_lon(this.degFormat(json.instructions[json.instructions.length - 1].long, 'lon'));
+  }
 
-    // Default to Letter Format
-    $('.break').remove();
-	this.addPageBreaks();
-  },
-
-  requestPdfPrint: function(){
+  requestPdfPrint() {
     $('nav').hide();
-    this.rerenderForPageSize();
-	this.rerenderForNumberFormat();
-    var pageFormat = this.pageFormat();
-    var pageLength = this.pageLength();
-    var sizeName = pageFormat + '_' + pageLength;
-	var size = 'Letter';
+    this.rerenderForPageSize()
+    var size = this.pageSize();
+    const dpi = 150;
+    var margins = {
+          'top': 10 / 25.4,
+          'bottom': 10 / 25.4,
+          'left': 10 / 25.4,
+          'right': 10 / 25.4
+        }
+    if (size == "Roll") {
+      const roadBookWidthMm = 150;
+      const pageWidth = roadBookWidthMm / 25.4;
+      const docAspect = $(document).height() / $(document).width()
 
-	var pageCss=document.createElement("style");
-	pageCss.type = "text/css";
+      size = {
+        width: pageWidth,
+        height: pageWidth * docAspect
+      }
+      margins = {
+          'top': 10 / 25.4,
+          'bottom': 10 / 25.4,
+          'left': 4.5 / 25.4,
+          'right': 4.5 / 25.4
+        }
+    }
+    var data = {
+      'filepath': this.filePath,
+      'opts': {
+        'pageSize': size,
+        'margins': margins,
+        'dpi': dpi
+      }
+    };
 
-   if((pageFormat == 'Letter') && (pageLength == 'Page')){
-		size = 'Letter';
-		pageCss.innerHTML = "@page{margin-left:0px; margin-top:40px; margin-right:0px; margin-bottom:0px}";
-		$('html').css('margin-left', '25px');
-	}
-	if((pageFormat == 'Letter') && (pageLength == 'Roll')){
-		size = {height: $(document).height()*265+100000, width: 216000};
-		pageCss.innerHTML = "@page{margin-left:0px; margin-top:40px; margin-right:0px; margin-bottom:0px}";
-		$('html').css('margin-left', '25px');
-	}
-    if((pageFormat == 'Legal') && (pageLength == 'Page')){
-		size = 'Legal';
-		pageCss.innerHTML = "@page{margin-left:0px; margin-top:20px; margin-right:0px; margin-bottom:0px}";
-		$('html').css('margin-left', '25px');
-	}
-	if((pageFormat == 'Legal') && (pageLength == 'Roll')){
-		size = {height: $(document).height()*265+100000, width: 216000};
-		pageCss.innerHTML = "@page{margin-left:0px; margin-top:40px; margin-right:0px; margin-bottom:0px}";
-		$('html').css('margin-left', '25px');
-	}
-    if((pageFormat == 'A5') && (pageLength == 'Page')){
-		size = 'A5';
-		pageCss.innerHTML = "@page{margin-left:0px; margin-top:40px; margin-right:0px; margin-bottom:0px}";
-		$('html').css('margin-left', '25px');
-	}
-	if((pageFormat == 'A5') && (pageLength == 'Roll')){
-		size = {height: $(document).height()*265+100000, width: 148000};
-		pageCss.innerHTML = "@page{margin-left:0px; margin-top:40px; margin-right:0px; margin-bottom:0px}";
-		$('html').css('margin-left', '25px');
-	}
-    if((pageFormat == 'PackedLetter') && (pageLength == 'Page')){
-		size = 'Letter';
-		pageCss.innerHTML = "@page{margin-left:0px; margin-top:2px; margin-right:0px; margin-bottom:0px}";
-		$('html').css('margin-left', '25px');
-	}
-	if((pageFormat == 'PackedLetter')	&& (pageLength == 'Roll')){
-		size = {height: $(document).height()*265+100000, width: 216000};
-		pageCss.innerHTML = "@page{margin-left:0px; margin-top:0px; margin-right:0px; margin-bottom:0px}";
-		$('html').css('margin-left', '25px');
-	}
+    globalNode.printToPdf(data);
+  }
 
-	document.body.appendChild(pageCss);
-
-    var data = {'filepath': this.filePath, 'opts': {'pageSize': size, 'pageSizeName': sizeName, 'marginsType' : '1'}};
-
-    this.ipc.send('print-pdf', data);
-  },
-
-  rerenderForPageSize: function(){
-	var pageFormat = this.pageFormat();
-	var pageLength = this.pageLength();
-	 $('.waypoint').removeClass('Letter');
-	 $('.waypoint').removeClass('Legal');
-	 $('.waypoint').removeClass('A5');
-	 $('.waypoint').removeClass('PackedLetter');
-	if((pageFormat == 'Letter')) $('.waypoint').addClass('Letter');
-	if((pageFormat == 'Legal')) $('.waypoint').addClass('Legal');
-	if((pageFormat == 'A5')) $('.waypoint').addClass('A5');
-	if((pageFormat == 'PackedLetter')) $('.waypoint').addClass('PackedLetter');
-
+  rerenderForPageSize() {
+    var pageSize = this.pageSize();
+    $('.waypoint, .waypoint-note, .waypoint-distance, .waypoint-tulip').removeClass('A5');
     $('.break').remove();
-    if((pageLength == "Page")){
+
+    if (pageSize == "A5") {
       this.addPageBreaks();
-	}
-  },
-  rerenderForNumberFormat: function(){
-    var numberFormat = this.numberFormat();
-	$('.hundredthDigit').removeClass('none');
-	$('.hundredthDigit').removeClass('outline');
-	if(numberFormat == "Outline"){
-		$('.hundredthDigit').addClass('outline');
-	}
-	if(numberFormat == "None"){
-		$('.hundredthDigit').addClass('none');
-	}
-  },
-  addPageBreaks(){
-    var pageFormat = this.pageFormat();
-  	$('#roadbook').find('#roadbook-header').after($('<div>').attr('class', 'break'));
-	var waypoints = $('#roadbook').find('.waypoint');
-	var offset = 1;
-	var interval = 1;
+      $('.waypoint, .waypoint-note, .waypoint-distance, .waypoint-tulip').addClass('A5');
+    }
+  }
 
-	if(pageFormat == 'Letter') interval = 7;
-	if(pageFormat == 'Legal') interval = 10;
-	if(pageFormat == 'A5') interval = 5;
-	if(pageFormat == 'PackedLetter') interval = 8;
+  addPageBreaks() {
+    if ($('.break').length > 0) { return };
+    $('#roadbook').find('#roadbook-header').after($('<div>').attr('class', 'break'));
+    var instructions = $('#roadbook').find('.waypoint')
 
-	for(i=0;i<waypoints.length;i++){
-		if((((i+offset)%interval) == 0) && (i>0)){
-			$(waypoints[i]).after($('<div>').attr('class', 'break'));
-		}
-	}
-  },
-});
+    // Default to A5 Format
+    for (var i = 0; i < instructions.length; i++) {
+      if ((((i + 1) % 5) == 0) && (i > 0)) {
+        $(instructions[i]).after($('<div>').attr('class', 'break'));
+        $(instructions[i]).css("border-bottom", "2px solid");
+      }
+    }
+  }
+
+  degFormat(coordinate, type) {
+    if (type == 'lon') {
+      suffix = (coordinate >= 0 ? 'E' : 'W');
+    } else {
+      suffix = (coordinate >= 0 ? 'N' : 'S');
+
+    }
+    coordinate = Math.abs(coordinate);
+    var d = Math.floor(coordinate);
+    var m = (coordinate - d) * 60;
+    var s = (m - Math.floor(m)) * 60;
+    var suffix;
+    switch (this.settings.coordinatesFormat) {
+      case 'dd':
+        return coordinate.toFixed(6) + '&deg;' + suffix;
+      case 'ddmm':
+        return d + '&deg; ' + m.toFixed(3) + "'" + suffix;
+      case 'ddmmss':
+        return d + '&deg; ' + Math.floor(m) + "' " + s.toFixed(3) + '"' + suffix;
+      default:
+        return coordinate.toFixed(6) + '&deg;' + suffix;
+    }
+  }
+};
 
 /*
   ---------------------------------------------------------------------------
@@ -173,28 +152,23 @@ var PrintApp = Class({
   ---------------------------------------------------------------------------
 */
 var printApp;
-$(document).ready(function(){
-  printApp = PrintApp.instance();
+$(document).ready(function () {
+  printApp = new PrintApp();
   ko.applyBindings(printApp);
 
-  $(window).scroll(function() {
-    if( $(this).scrollTop() > 0 ) {
+  $(window).scroll(function () {
+    if ($(this).scrollTop() > 0) {
       $(".main-nav").addClass("main-nav-scrolled");
     } else {
       $(".main-nav").removeClass("main-nav-scrolled");
     }
   });
 
-  $('#page-format').change(function(){
+  $('#print-size').on('change', function () {
     printApp.rerenderForPageSize();
   });
-  $('#page-length').change(function(){
-    printApp.rerenderForPageSize();
-  });
-  $('#number-format').change(function(){
-    printApp.rerenderForNumberFormat();
-  });
-  $('.button').click(function(){
+  $('.button').on('click', function () {
+    document.getElementById('overlay').style.display = 'flex';
     printApp.requestPdfPrint();
   });
 });

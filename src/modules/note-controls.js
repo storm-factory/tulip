@@ -1,83 +1,60 @@
-// TODO This is a controller from the waypoint palette view to the roadbook model's currentlyEditingWaypoint
+// TODO This is a controller from the waypoint palette view to the roadbook model's currentlyEditingInstruction
 class NoteControls {
   constructor() {
     var _this = this;
 
-    $('#note-editor').on('input', function() {
-      _this.checkForNotification()
-    });
-
-    $('#note-selection-size-range').change(function(e){
-      document.execCommand('fontSize',null,$(this).val());
-      var sizes = {3: 'small', 4: 'normal', 5: 'large', 6: 'huge'}
-      var size = sizes[$(this).val()];
-      _this.resizeSelection(size);
-    });
-
-    $('#note-selection-bold').click(function(){
-      document.execCommand('bold',null,false);
+    $('#note-selection-bold').on('click', function () {
+      document.execCommand('bold', null, false);
       $(this).toggleClass('active');
       $(this).blur();
     })
 
-    $('#note-selection-italic').click(function(){
-      document.execCommand('italic',null,false)
+    $('#note-selection-italic').on('click', function () {
+      document.execCommand('italic', null, false)
       $(this).toggleClass('active');
       $(this).blur();
     })
 
-    $('#note-selection-underline').click(function(){
-      document.execCommand('underline',null,false)
+    $('#note-selection-underline').on('click', function () {
+      document.execCommand('underline', null, false)
       $(this).toggleClass('active');
       $(this).blur();
     })
 
-    $('#show-notification-options').click(function(){
-      var notification = app.roadbook.currentlyEditingWaypoint.notification;
-      $('#notification-bubble').val(notification.bubble);
-      $('#notification-modifier').val(notification.modifier);
-      $('#notification-modifier').attr('min', notification.modMin);
-      $('#notification-modifier').attr('max', notification.modMax);
-      $('#notification-modifier').attr('step', notification.modStep);
-    });
-
-    $('#notification-bubble, #notification-modifier').change(function(){
-      var notification = app.roadbook.currentlyEditingWaypoint.notification;
-      notification.bubble = $('#notification-bubble').val();
-      notification.modifier = $('#notification-modifier').val();
-      _this.checkForNotification(); //TODO This needs refactored
-    });
-
-  }
-
-  updateNotificationControls(notification){
-    $('#notification-bubble').val(notification.bubble);
-    $('#notification-modifier').val(notification.modifier);
-    $('#notification-modifier').attr('min', notification.modMin);
-    $('#notification-modifier').attr('max', notification.modMax);
-    $('#notification-modifier').attr('step', notification.modStep);
-  }
-
-  resizeSelection(size){
-    var sel = window.getSelection();
-    var images = $('#note-editor img')
-    console.log($(images));
-    for(var i=0;i<images.length;i++){
-      if(sel.containsNode(images[i])){
-        $(images[i]).removeClass();
-        $(images[i]).addClass(size);
+    //TODO decouple this
+    $('#notification-open-radius, #notification-validation-radius').on('keyup input', function () {
+      var notification = app.roadbook.currentlyEditingInstruction.notification;
+      notification.openRadius = parseInt($('#notification-open-radius').val());
+      notification.validationRadius = parseInt($('#notification-validation-radius').val());
+      if (notification.validationRadius > notification.openRadius) {
+        notification.openRadius = notification.validationRadius;
+        $('#notification-open-radius').val(notification.openRadius);
       }
+      $('#notification-open-radius').attr('min', notification.validationRadius);
+      notification.time = $('#notification-time').val();
+      app.roadbook.currentlyEditingInstruction.updateWaypointBubble();
+      app.roadbook.currentlyEditingInstruction.parseGlyphInfo(); // TODO: this must be handled by instruction
+    });
+
+  }
+
+  updateNotificationControls(notification) {
+    $('#notification-open-radius').val(notification.openRadius);
+    $('#notification-validation-radius').val(notification.validationRadius);
+    $('#notification-time').val(notification.time);
+    $('#notification-validation-radius').attr('min', Notification.getUiElements(notification.type).modMin);
+    $('#notification-validation-radius').attr('max', Notification.getUiElements(notification.type).modMax);
+    $('#notification-validation-radius').attr('step', Notification.getUiElements(notification.type).modStep);
+    if (notification.openRadius) {
+      $('#notification-open-radius-wrapper').removeClass('waypoint-parameter-none')
+    } else {
+      $('#notification-open-radius-wrapper').addClass('waypoint-parameter-none')
+    }
+    if (notification.time) {
+      $('#notification-time-wrapper').removeClass('waypoint-parameter-none')
+    } else {
+      $('#notification-time-wrapper').addClass('waypoint-parameter-none')
     }
   }
-  /*
-    Here we check the note section for WPM glyphs, !!! glyphs, and eventually speed zone glyphs
-    so that we can capture data for rally blitz or rally comp exports
-  */
-  checkForNotification(){
-    if(app.roadbook.currentlyEditingWaypoint){
-      // reduce DOM image objects in the text editor to a collection of glyph names
-      var glyphs = $('#note-editor').find("img").toArray().map(function(g){return $(g).attr('src').match(/\/([a-z0-9,-]*)\./)[1]})
-      app.roadbook.currentlyEditingWaypoint.manageNotifications(glyphs);
-    }
-  }
+
 }
